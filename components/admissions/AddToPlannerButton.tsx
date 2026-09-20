@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { CheckCircle2, ListPlus, Loader2 } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
 
 type Props = {
   admissionId: string
@@ -18,16 +17,14 @@ export default function AddToPlannerButton({ admissionId }: Props) {
   const [message, setMessage] = useState('')
   const autoAddAttempted = useRef(false)
 
+  const redirectToLogin = useCallback(() => {
+    const params = new URLSearchParams(searchParams.toString())
+    params.set('addToPlanner', '1')
+    router.push(`/account/login?next=${encodeURIComponent(`${pathname}?${params.toString()}`)}`)
+  }, [pathname, router, searchParams])
+
   const addToPlanner = useCallback(async () => {
     if (state === 'saving' || state === 'saved') return
-    const { data } = await supabase.auth.getSession()
-    if (!data.session) {
-      const params = new URLSearchParams(searchParams.toString())
-      params.set('addToPlanner', '1')
-      router.push(`/account/login?next=${encodeURIComponent(`${pathname}?${params.toString()}`)}`)
-      return
-    }
-
     setState('saving')
     setMessage('')
     try {
@@ -37,6 +34,11 @@ export default function AddToPlannerButton({ admissionId }: Props) {
         body: JSON.stringify({ admission_id: admissionId, status: 'not_started', checklist: {}, notes: '' }),
       })
       const result = await response.json().catch(() => ({}))
+      if (response.status === 401) {
+        setState('idle')
+        redirectToLogin()
+        return
+      }
       if (!response.ok) throw new Error(result.error || 'This admission could not be added to your planner.')
       setState('saved')
       const params = new URLSearchParams(searchParams.toString())
@@ -46,7 +48,7 @@ export default function AddToPlannerButton({ admissionId }: Props) {
       setState('error')
       setMessage(reason instanceof Error ? reason.message : 'This admission could not be added to your planner.')
     }
-  }, [admissionId, pathname, router, searchParams, state])
+  }, [admissionId, pathname, redirectToLogin, router, searchParams, state])
 
   useEffect(() => {
     if (searchParams.get('addToPlanner') !== '1' || autoAddAttempted.current) return

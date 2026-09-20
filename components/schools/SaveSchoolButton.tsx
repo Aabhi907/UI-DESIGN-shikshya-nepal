@@ -3,7 +3,6 @@
 import { Bookmark } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
 
 export default function SaveSchoolButton({ schoolId }: { schoolId: string }) {
   const [saved, setSaved] = useState(false)
@@ -16,14 +15,19 @@ export default function SaveSchoolButton({ schoolId }: { schoolId: string }) {
 
   useEffect(() => {
     const controller = new AbortController()
-    supabase.auth.getSession().then(({ data }) => {
-      if (!data.session) { setRequiresSignIn(true); return null }
-      return fetch(`/api/saved-schools/${schoolId}`, { cache: 'no-store', signal: controller.signal })
-    })
-      .then(async response => response?.ok ? response.json() : null)
-      .then(data => data && setSaved(Boolean(data.saved)))
+    fetch(`/api/saved-schools/${schoolId}`, { cache: 'no-store', signal: controller.signal })
+      .then(async response => {
+        if (response.status === 401) {
+          setRequiresSignIn(true)
+          return { saved: false }
+        }
+        const data = await response.json().catch(() => ({}))
+        if (!response.ok) throw new Error(data.error || 'Your shortlist status could not be checked.')
+        return data
+      })
+      .then(data => setSaved(Boolean(data.saved)))
       .catch(reason => {
-        if (reason instanceof Error && reason.name !== 'AbortError') setError('Could not check your shortlist.')
+        if (reason instanceof Error && reason.name !== 'AbortError') setError(reason.message)
       })
       .finally(() => setChecking(false))
     return () => controller.abort()
@@ -31,12 +35,6 @@ export default function SaveSchoolButton({ schoolId }: { schoolId: string }) {
 
   async function toggle() {
     if (loading || checking) return
-    const { data: sessionData } = await supabase.auth.getSession()
-    if (!sessionData.session) {
-      setRequiresSignIn(true)
-      router.push(`/account/login?next=${encodeURIComponent(pathname)}`)
-      return
-    }
     setLoading(true)
     setError('')
     const previous = saved
@@ -45,6 +43,7 @@ export default function SaveSchoolButton({ schoolId }: { schoolId: string }) {
       const response = await fetch(`/api/saved-schools/${schoolId}`, { method: previous ? 'DELETE' : 'POST' })
       if (response.status === 401) {
         setSaved(previous)
+        setRequiresSignIn(true)
         router.push(`/account/login?next=${encodeURIComponent(pathname)}`)
         return
       }
