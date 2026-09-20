@@ -1,10 +1,11 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { GitCompare, X, Plus, MapPin, Star, Building2, Search, Award, BookOpen, Check, GraduationCap, AlertCircle, Share2 } from 'lucide-react'
 import { cleanCollegeText } from '@/lib/college-display'
+import ComparisonEvidenceGraph from '@/components/colleges/ComparisonEvidenceGraph'
 
 interface College {
   id: string
@@ -56,8 +57,15 @@ const feePeriodLabel: Record<string, string> = {
   unknown: 'period not documented',
 }
 
-function feeEvidenceLabel(programs: CollegeDetail['programs']) {
-  const documented = programs.filter((program) => program.fee != null)
+function normaliseProgramName(value: string) {
+  return value.trim().toLocaleLowerCase('en-US').replace(/\s+/g, ' ')
+}
+
+function feeEvidenceLabel(programs: CollegeDetail['programs'], programName?: string) {
+  const matchingPrograms = programName
+    ? programs.filter((program) => program.program?.name && normaliseProgramName(program.program.name) === normaliseProgramName(programName))
+    : programs
+  const documented = matchingPrograms.filter((program) => program.fee != null)
   if (!documented.length) return 'Not listed'
   const visible = documented.slice(0, 4).map((program) => {
     const amount = `NPR ${program.fee!.toLocaleString()}`
@@ -81,6 +89,8 @@ export default function ComparePage() {
   const [error, setError] = useState('')
   const [shareStatus, setShareStatus] = useState('')
   const [initializing, setInitializing] = useState(true)
+  const [selectedProgram, setSelectedProgram] = useState('')
+  const [showOnlyDifferences, setShowOnlyDifferences] = useState(false)
 
   const searchColleges = useCallback(async (q: string) => {
     if (q.trim().length < 2) { setResults([]); return }
@@ -160,6 +170,32 @@ export default function ComparePage() {
     router.replace(`/compare${params.size ? `?${params.toString()}` : ''}`, { scroll: false })
   }, [selected, initializing, router])
 
+  const sharedPrograms = useMemo(() => {
+    const occurrences = new Map<string, { label: string; collegeIds: Set<string> }>()
+    selected.forEach((college) => {
+      const seenAtCollege = new Set<string>()
+      detailData[college.id]?.programs.forEach((item) => {
+        if (!item.program?.name) return
+        const key = normaliseProgramName(item.program.name)
+        if (!key || seenAtCollege.has(key)) return
+        seenAtCollege.add(key)
+        const current = occurrences.get(key) || { label: item.program.name.trim(), collegeIds: new Set<string>() }
+        current.collegeIds.add(college.id)
+        occurrences.set(key, current)
+      })
+    })
+    return Array.from(occurrences.values())
+      .filter((item) => item.collegeIds.size >= 2)
+      .sort((left, right) => left.label.localeCompare(right.label, 'en'))
+      .map((item) => item.label)
+  }, [detailData, selected])
+
+  useEffect(() => {
+    if (selectedProgram && !sharedPrograms.some((program) => normaliseProgramName(program) === normaliseProgramName(selectedProgram))) {
+      setSelectedProgram('')
+    }
+  }, [selectedProgram, sharedPrograms])
+
   const addCollege = (college: College) => {
     if (selected.length >= MAX || selected.find(c => c.id === college.id)) return
     setSelected(prev => [...prev, college])
@@ -182,7 +218,7 @@ export default function ComparePage() {
       case 'avg_rating': return d && d.reviews.length > 0 ? (d.reviews.reduce((a, r) => a + r.rating, 0) / d.reviews.length).toFixed(1) : d ? 'No reviews yet' : 'Loading…'
       case 'review_count': return d ? d.reviews.length.toString() : 'Loading…'
       case 'scholarship_count': return d ? d.scholarships.toString() : 'Loading…'
-      case 'fee_range': return d ? feeEvidenceLabel(d.programs) : 'Loading…'
+      case 'fee_range': return d ? feeEvidenceLabel(d.programs, selectedProgram || undefined) : 'Loading…'
       case 'seat_count': { const seats=d?.programs.map(p=>p.seats).filter((count):count is number=>count!=null)||[];return seats.length?`${seats.reduce((sum,count)=>sum+count,0).toLocaleString()} across ${seats.length} program${seats.length===1?'':'s'}`:d?'Not listed':'Loading…' }
       case 'program_scholarships': { const count=d?.programs.filter(p=>p.scholarship_available).length;return d?(count?`${count} of ${d.programs.length}`:'None documented'):'Loading…' }
       case 'education_levels': return college.education_levels?.map(x=>x==='plus_two'?'+2':x.charAt(0).toUpperCase()+x.slice(1)).join(', ')||'Not listed'
@@ -191,6 +227,11 @@ export default function ComparePage() {
       default: return 'Not listed'
     }
   }
+
+  const detailsLoaded = selected.every((college) => Boolean(detailData[college.id]))
+  const displayedRows = showOnlyDifferences && detailsLoaded
+    ? ROW_LABELS.filter(({ key }) => new Set(selected.map((college) => getVal(college, key).trim().toLocaleLowerCase('en-US'))).size > 1)
+    : ROW_LABELS
 
   const copyComparisonLink = async () => {
     try {
@@ -308,14 +349,18 @@ export default function ComparePage() {
       {/* Comparison Table */}
       {selected.length >= 2 ? (
         <div>
-          <div className="mb-3 flex items-center justify-between gap-3">
-            <p className="text-xs text-gray-500 sm:hidden">Swipe sideways to see every college.</p>
-            <div className="ml-auto flex items-center gap-2"><span aria-live="polite" className="text-xs text-gray-500">{shareStatus}</span><button type="button" onClick={() => void copyComparisonLink()} className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-bold text-gray-600 hover:border-blue-300 hover:text-primary"><Share2 className="h-3.5 w-3.5" />Copy comparison link</button></div>
+          {detailsLoaded && <ComparisonEvidenceGraph colleges={selected} details={detailData} />}
+          <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
+            <div className="flex flex-wrap items-end gap-4">
+              {sharedPrograms.length > 0 && <label className="block text-xs font-semibold text-gray-700">Compare fees for the same programme<select value={selectedProgram} onChange={(event) => setSelectedProgram(event.target.value)} className="mt-1 block min-h-11 rounded-lg border border-gray-200 bg-white px-3 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary"><option value="">All recorded programmes</option>{sharedPrograms.map((program) => <option key={program} value={program}>{program}</option>)}</select></label>}
+              <label className="flex min-h-11 cursor-pointer items-center gap-2 text-sm font-semibold text-gray-700"><input type="checkbox" checked={showOnlyDifferences} onChange={(event) => setShowOnlyDifferences(event.target.checked)} className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary" />Only show differences</label>
+            </div>
+            <div className="ml-auto flex flex-wrap items-center justify-end gap-2"><p className="text-xs text-gray-500 sm:hidden">Swipe sideways to see every college.</p><span aria-live="polite" className="text-xs text-gray-500">{shareStatus || (showOnlyDifferences ? detailsLoaded ? `${displayedRows.length} differing fields` : 'Loading comparison details…' : '')}</span><button type="button" onClick={() => void copyComparisonLink()} className="inline-flex min-h-11 items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-bold text-gray-600 hover:border-blue-300 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"><Share2 className="h-3.5 w-3.5" aria-hidden="true" />Copy comparison link</button></div>
           </div>
           <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
           <div className="overflow-x-auto">
             <table className="min-w-[760px] w-full">
-              <caption className="sr-only">Side-by-side comparison of selected colleges. Missing information is labelled as not listed.</caption>
+              <caption className="sr-only">Side-by-side comparison of selected colleges. {showOnlyDifferences ? 'Only fields with different recorded values are shown. ' : ''}Missing information is labelled as not listed.</caption>
               <thead>
                 <tr className="bg-gray-50 border-b border-gray-200">
                   <th scope="col" className="sticky left-0 z-[1] bg-gray-50 text-left px-6 py-4 text-sm font-semibold text-gray-700 w-40">Feature</th>
@@ -328,9 +373,9 @@ export default function ComparePage() {
                 </tr>
               </thead>
               <tbody>
-                {ROW_LABELS.map(({ key, label }, idx) => (
+                {displayedRows.map(({ key, label }, idx) => (
                   <tr key={key} className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'}>
-                    <th scope="row" className={`sticky left-0 z-[1] px-6 py-4 text-left text-sm font-medium text-gray-600 ${idx % 2 === 0 ? 'bg-white' : 'bg-[#fafafa]'}`}>{label}</th>
+                    <th scope="row" className={`sticky left-0 z-[1] px-6 py-4 text-left text-sm font-medium text-gray-600 ${idx % 2 === 0 ? 'bg-white' : 'bg-[#fafafa]'}`}>{key === 'fee_range' && selectedProgram ? `${selectedProgram} fees` : label}</th>
                     {selected.map(college => {
                       const val = getVal(college, key)
                       return (
@@ -363,7 +408,8 @@ export default function ComparePage() {
             </table>
           </div>
         </div>
-        <p className="mt-4 text-xs leading-5 text-gray-500">Fees, seats and scholarships can change during admission season. Counts cover only programs recorded in SikshyaNepal. Treat “Not listed” as unavailable data—not as “none”—and confirm final details with the college.</p>
+        {showOnlyDifferences && detailsLoaded && displayedRows.length === 0 && <p role="status" className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">The recorded fields are currently the same. Turn off “Only show differences” to inspect the full evidence.</p>}
+        <p className="mt-4 text-xs leading-5 text-gray-500">Fees, seats and scholarships can change during admission season. Select a shared programme above to compare fees like-for-like; otherwise each college shows all recorded programme fees. Counts cover only programs recorded in SikshyaNepal. Treat “Not listed” as unavailable data—not as “none”—and confirm final details with the college.</p>
         </div>
       ) : selected.length === 1 ? (
         <div className="text-center py-12 bg-white rounded-2xl border border-gray-200">
@@ -379,10 +425,10 @@ export default function ComparePage() {
           <GitCompare className="w-14 h-14 text-gray-200 mx-auto mb-3" />
           <h3 className="font-semibold text-gray-700 mb-2">No Colleges Selected</h3>
           <p className="text-sm text-gray-400 mb-5 max-w-sm mx-auto">Choose up to three colleges to compare programs, published fees and student reviews.</p>
-          <button onClick={() => setShowSearch(true)}
-            className="px-6 py-2.5 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors">
-            Start Comparing
-          </button>
+          <div className="mt-5 flex flex-wrap justify-center gap-3"><button onClick={() => setShowSearch(true)}
+            className="min-h-11 px-6 py-2.5 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
+            Start comparing
+          </button><Link href="/account/saved" className="inline-flex min-h-11 items-center rounded-xl border border-gray-200 px-5 py-2.5 text-sm font-bold text-primary hover:border-blue-300 hover:bg-blue-50">Choose from saved colleges</Link></div>
         </div>
       )}
     </div>

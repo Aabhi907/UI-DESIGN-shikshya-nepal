@@ -3,7 +3,6 @@
 import { Bookmark } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
 
 export default function SaveCollegeButton({ collegeId }: { collegeId: string }) {
   const [saved, setSaved] = useState(false)
@@ -16,13 +15,12 @@ export default function SaveCollegeButton({ collegeId }: { collegeId: string }) 
 
   useEffect(() => {
     const controller = new AbortController()
-    supabase.auth.getSession().then(({ data }) => {
-      if (!data.session) { setRequiresSignIn(true); setChecking(false); return null }
-      return fetch(`/api/saved-colleges/${collegeId}`, { cache: 'no-store', signal: controller.signal })
-    })
+    fetch(`/api/saved-colleges/${collegeId}`, { cache: 'no-store', signal: controller.signal })
       .then(async response => {
-        if (!response) return { saved: false }
-        if (response.status === 401) return { saved: false }
+        if (response.status === 401) {
+          setRequiresSignIn(true)
+          return { saved: false }
+        }
         const data = await response.json().catch(() => ({}))
         if (!response.ok) throw new Error(data.error || 'Your shortlist status could not be checked.')
         return data
@@ -37,12 +35,6 @@ export default function SaveCollegeButton({ collegeId }: { collegeId: string }) 
 
   async function toggle() {
     if (loading) return
-    const { data: sessionData } = await supabase.auth.getSession()
-    if (!sessionData.session) {
-      setRequiresSignIn(true)
-      router.push(`/account/login?next=${encodeURIComponent(pathname)}`)
-      return
-    }
     const previous = saved
     const next = !saved
     setSaved(next)
@@ -52,6 +44,7 @@ export default function SaveCollegeButton({ collegeId }: { collegeId: string }) 
       const response = await fetch(`/api/saved-colleges/${collegeId}`, { method: next ? 'POST' : 'DELETE' })
       if (response.status === 401) {
         setSaved(previous)
+        setRequiresSignIn(true)
         router.push(`/account/login?next=${encodeURIComponent(pathname)}`)
         return
       }

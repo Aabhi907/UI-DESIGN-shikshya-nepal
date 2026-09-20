@@ -1,7 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect, useMemo, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { Suspense, useEffect, useMemo, useState } from 'react'
 import { AlertCircle, ArrowRight, Bookmark, Calculator, CalendarCheck, CheckCircle2, Clock3, GitCompare, Loader2, MapPin, Trash2 } from 'lucide-react'
 import { cleanCollegeText } from '@/lib/college-display'
 import SavedSchools from '../saved-schools/page'
@@ -32,8 +33,9 @@ const sourceState = (value:string|null) => {
   return days<=180?{label:`Checked ${days===0?'today':`${days} days ago`}`,tone:'bg-emerald-50 text-emerald-700',current:true}:{label:'Recheck recommended',tone:'bg-amber-50 text-amber-800',current:false}
 }
 
-export default function SavedPage() {
-  const [savedType, setSavedType] = useState<'colleges' | 'schools'>('colleges')
+function SavedPageContent() {
+  const searchParams = useSearchParams()
+  const savedType = searchParams.get('type') === 'schools' ? 'schools' : 'colleges'
   const [items, setItems] = useState<Saved[]>([])
   const [selected, setSelected] = useState<string[]>([])
   const [needsLogin, setNeedsLogin] = useState(false)
@@ -43,8 +45,14 @@ export default function SavedPage() {
   const [selectionMessage, setSelectionMessage] = useState('')
 
   useEffect(() => {
-    setSavedType(new URLSearchParams(window.location.search).get('type') === 'schools' ? 'schools' : 'colleges')
+    if (savedType === 'schools') {
+      setLoading(false)
+      return
+    }
     const controller = new AbortController()
+    setLoading(true)
+    setError('')
+    setNeedsLogin(false)
     fetch('/api/saved-colleges', { cache: 'no-store', signal: controller.signal })
       .then(async response => {
         if (response.status === 401) { setNeedsLogin(true); return [] }
@@ -57,7 +65,7 @@ export default function SavedPage() {
       })
       .finally(() => setLoading(false))
     return () => controller.abort()
-  }, [])
+  }, [savedType])
 
   const compareUrl = useMemo(() => {
     const params = new URLSearchParams()
@@ -98,11 +106,11 @@ export default function SavedPage() {
     }
   }
 
-  if (savedType === 'schools') return <main className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-12"><h1 className="font-display text-3xl font-extrabold text-ink">Saved institutions</h1><p className="mt-2 text-gray-500">Keep your college and school shortlists together.</p><nav aria-label="Saved institution type" className="mt-6 inline-flex rounded-xl border border-gray-200 bg-white p-1"><Link href="/account/saved" className="min-h-11 rounded-lg px-4 py-3 text-sm font-bold text-gray-600">Colleges</Link><Link href="/account/saved?type=schools" aria-current="page" className="min-h-11 rounded-lg bg-primary px-4 py-3 text-sm font-bold text-white">Schools</Link></nav><SavedSchools /></main>
+  if (savedType === 'schools') return <main className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-12"><h1 className="font-display text-3xl font-extrabold text-ink">Saved institutions</h1><p className="mt-2 text-gray-500">Keep your college and school shortlists together.</p><nav aria-label="Saved institution type" className="mt-6 inline-flex rounded-xl border border-gray-200 bg-white p-1"><Link href="/account/saved" className="min-h-11 rounded-lg px-4 py-3 text-sm font-bold text-gray-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Colleges</Link><Link href="/account/saved?type=schools" aria-current="page" className="min-h-11 rounded-lg bg-primary px-4 py-3 text-sm font-bold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Schools</Link></nav><SavedSchools /></main>
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-12">
-      <nav aria-label="Saved institution type" className="mb-7 inline-flex rounded-xl border border-gray-200 bg-white p-1"><Link href="/account/saved" aria-current="page" className="min-h-11 rounded-lg bg-primary px-4 py-3 text-sm font-bold text-white">Colleges</Link><Link href="/account/saved?type=schools" className="min-h-11 rounded-lg px-4 py-3 text-sm font-bold text-gray-600">Schools</Link></nav>
+      <nav aria-label="Saved institution type" className="mb-7 inline-flex rounded-xl border border-gray-200 bg-white p-1"><Link href="/account/saved" aria-current="page" className="min-h-11 rounded-lg bg-primary px-4 py-3 text-sm font-bold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Colleges</Link><Link href="/account/saved?type=schools" className="min-h-11 rounded-lg px-4 py-3 text-sm font-bold text-gray-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Schools</Link></nav>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="flex items-center gap-2 font-display text-3xl font-extrabold text-ink"><Bookmark className="h-7 w-7 text-blue-600" />Saved colleges</h1>
@@ -121,8 +129,7 @@ export default function SavedPage() {
 
       {error && <p role="alert" className="mt-6 flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700"><AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />{error}</p>}
 
-      {!loading && !needsLogin && items.length > 0 && <section className="mt-7 grid gap-3 sm:grid-cols-4" aria-label="Shortlist progress"><div className="rounded-xl border border-slate-200 bg-white p-4"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Shortlist</p><p className="mt-1 text-2xl font-bold text-ink">{items.length}</p><p className="text-xs text-slate-500">saved college{items.length===1?'':'s'}</p></div><div className="rounded-xl border border-slate-200 bg-white p-4"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Ready to compare</p><p className="mt-1 text-2xl font-bold text-ink">{selected.length}/2</p><p className="text-xs text-slate-500">select at least two</p></div><div className="rounded-xl border border-slate-200 bg-white p-4"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Admissions open</p><p className="mt-1 text-2xl font-bold text-ink">{openAdmissionTotal}</p><p className="text-xs text-slate-500">current saved-college listings</p></div><div className="rounded-xl border border-slate-200 bg-white p-4"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Decision ready</p><p className="mt-1 text-2xl font-bold text-ink">{decisionReadyCount}</p><p className="text-xs text-slate-500">program, fee and fresh check</p></div></section>}
-      {!loading && !needsLogin && items.length > 0 && <section className="mt-7 grid gap-3 sm:grid-cols-4" aria-label="Shortlist progress"><div className="rounded-xl border border-slate-200 bg-white p-4"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Shortlist</p><p className="mt-1 text-2xl font-bold text-ink">{items.length}</p><p className="text-xs text-slate-500">saved college{items.length===1?'':'s'}</p></div><div className="rounded-xl border border-slate-200 bg-white p-4"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Ready to compare</p><p className="mt-1 text-2xl font-bold text-ink">{selected.length}/2</p><p className="text-xs text-slate-500">select at least two</p></div><div className="rounded-xl border border-slate-200 bg-white p-4"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Admissions open</p><p className="mt-1 text-2xl font-bold text-ink">{openAdmissionTotal}</p><p className="text-xs text-slate-500">current saved-college listings</p></div><div className="rounded-xl border border-slate-200 bg-white p-4"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Decision ready</p><p className="mt-1 text-2xl font-bold text-ink">{decisionReadyCount}</p><p className="text-xs text-slate-500">program, fee and fresh check</p></div></section>}
+      {!loading && !needsLogin && items.length > 0 && <section className="mt-7 grid gap-3 sm:grid-cols-4" aria-label="Shortlist progress"><div className="rounded-xl border border-slate-200 bg-white p-4"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Shortlist</p><p className="mt-1 text-2xl font-bold text-ink">{items.length}</p><p className="text-xs text-slate-500">saved college{items.length===1?'':'s'}</p></div><div className="rounded-xl border border-slate-200 bg-white p-4"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Selected to compare</p><p className="mt-1 text-2xl font-bold text-ink">{selected.length}/3</p><p className="text-xs text-slate-500">choose two or three</p></div><div className="rounded-xl border border-slate-200 bg-white p-4"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Admissions open</p><p className="mt-1 text-2xl font-bold text-ink">{openAdmissionTotal}</p><p className="text-xs text-slate-500">current saved-college listings</p></div><div className="rounded-xl border border-slate-200 bg-white p-4"><p className="text-xs font-bold uppercase tracking-wide text-slate-500">Decision ready</p><p className="mt-1 text-2xl font-bold text-ink">{decisionReadyCount}</p><p className="text-xs text-slate-500">program, fee and fresh check</p></div></section>}
       {!loading && !needsLogin && items.length > 0 && <p id="comparison-selection-help" className="mt-3 text-sm text-gray-600" aria-live="polite">{selectionMessage || (selectionLimitReached ? 'Comparison is ready with three colleges. Remove one if you want to choose a different option.' : 'Select two or three colleges to compare them side by side.')}</p>}
 
       {loading ? (
@@ -163,4 +170,8 @@ export default function SavedPage() {
       )}
     </main>
   )
+}
+
+export default function SavedPage() {
+  return <Suspense fallback={<main className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-12"><div className="h-8 w-48 animate-pulse rounded bg-slate-200 motion-reduce:animate-none" /></main>}><SavedPageContent /></Suspense>
 }

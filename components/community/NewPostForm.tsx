@@ -14,15 +14,20 @@ function PostForm({ alias }: { alias: string }) {
     setError('')
     const form = event.currentTarget
     const payload = new FormData(form)
-    const response = await fetch('/api/community/posts', { method: 'POST', body: payload })
-    const result = await response.json()
-    if (!response.ok) {
-      setError(result.error || 'Could not send your discussion.')
+    try {
+      const response = await fetch('/api/community/posts', { method: 'POST', body: payload })
+      const result = await response.json().catch(() => ({}))
+      if (!response.ok) {
+        setError(result.error || 'Could not send your discussion. Please try again.')
+        setState('idle')
+        return
+      }
+      form.reset()
+      setState('done')
+    } catch {
+      setError('We could not reach SikshyaNepal. Check your connection and try again.')
       setState('idle')
-      return
     }
-    form.reset()
-    setState('done')
   }
 
   if (state === 'done') return <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5"><p className="font-bold text-emerald-950">Sent for review</p><p className="mt-1 text-sm leading-6 text-emerald-800">It will appear as @{alias} after moderation. Your Google identity remains private.</p><button onClick={() => setState('idle')} className="mt-3 text-sm font-bold text-emerald-900 underline">Start another discussion</button></div>
@@ -38,7 +43,7 @@ function PostForm({ alias }: { alias: string }) {
       <input name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
     </div>
     {error && <p role="alert" className="mt-4 rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</p>}
-    <button disabled={state === 'saving'} className="mt-5 w-full rounded-xl bg-primary px-5 py-3 text-sm font-bold text-white disabled:opacity-50">{state === 'saving' ? 'Sending safely…' : 'Submit for moderation'}</button>
+    <button disabled={state === 'saving'} aria-busy={state === 'saving'} className="mt-5 w-full rounded-xl bg-primary px-5 py-3 text-sm font-bold text-white disabled:opacity-50">{state === 'saving' ? 'Sending safely…' : 'Submit for moderation'}</button>
   </form>
 }
 
