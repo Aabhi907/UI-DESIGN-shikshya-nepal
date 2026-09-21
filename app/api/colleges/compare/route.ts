@@ -6,6 +6,10 @@ import { createAdminSupabaseClient } from '@/lib/supabase'
 // every student's browser.
 const collegeFields = 'id,name,slug,location,affiliation,established_year,education_levels,facilities,verification_status'
 const slugPattern = /^[a-z0-9-]{1,120}$/i
+const SEARCH_CACHE = 'public, s-maxage=60, stale-while-revalidate=300'
+// Comparison fields can affect an application decision. Fetch the current
+// database record instead of serving a stale edge response.
+const COMPARISON_CACHE = 'private, no-store'
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
@@ -17,14 +21,14 @@ export async function GET(request: Request) {
     if (query.length < 2 || query.length > 80) return NextResponse.json({ error: 'Enter between 2 and 80 characters.' }, { status: 400 })
     const { data, error } = await db.from('colleges').select(collegeFields).ilike('name', `%${query}%`).or('status.eq.active,status.is.null').order('name').limit(10)
     if (error) { console.error('[college-compare:search]', error); return NextResponse.json({ error: 'College search is temporarily unavailable.' }, { status: 500 }) }
-    return NextResponse.json({ colleges: data || [] }, { headers: { 'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300' } })
+    return NextResponse.json({ colleges: data || [] }, { headers: { 'Cache-Control': SEARCH_CACHE } })
   }
 
   if (!slugs.length || slugs.some(slug => !slugPattern.test(slug))) return NextResponse.json({ error: 'Choose valid colleges to compare.' }, { status: 400 })
   const { data: colleges, error: collegeError } = await db.from('colleges').select(collegeFields).in('slug', slugs).or('status.eq.active,status.is.null')
   if (collegeError) { console.error('[college-compare:colleges]', collegeError); return NextResponse.json({ error: 'Comparison data is temporarily unavailable.' }, { status: 500 }) }
   const ids = (colleges || []).map(college => college.id)
-  if (!ids.length) return NextResponse.json({ colleges: [], details: {} })
+  if (!ids.length) return NextResponse.json({ colleges: [], details: {} }, { headers: { 'Cache-Control': COMPARISON_CACHE } })
   const [programs, reviews, scholarships] = await Promise.all([
     db.from('college_programs').select('college_id,fee,fee_period,fee_academic_year,seats,scholarship_available,program:programs(name,degree_level)').in('college_id', ids),
     db.from('reviews').select('college_id,rating').in('college_id', ids).eq('is_approved', true),
@@ -36,5 +40,5 @@ export async function GET(request: Request) {
     reviews: (reviews.data || []).filter(row => row.college_id === id).map(row => ({ rating: row.rating })),
     scholarships: (scholarships.data || []).filter(row => row.college_id === id).length,
   }]))
-  return NextResponse.json({ colleges: colleges || [], details }, { headers: { 'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300' } })
+  return NextResponse.json({ colleges: colleges || [], details }, { headers: { 'Cache-Control': COMPARISON_CACHE } })
 }
