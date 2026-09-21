@@ -38,6 +38,19 @@ function eventKey(results: ResultNotification[]) {
   return createHash('sha256').update(`results\n${stable}`).digest('hex')
 }
 
+async function completeDeliveryRun(
+  db: ReturnType<typeof createAdminSupabaseClient>,
+  id: string,
+  values: { status: 'sent' | 'partial' | 'failed'; recipient_count?: number; sent_count?: number; error_count?: number },
+) {
+  const { error } = await db
+    .from('notification_delivery_runs')
+    .update({ ...values, completed_at: new Date().toISOString() })
+    .eq('id', id)
+
+  if (error) console.error('[notify-subscribers:delivery-log]', error)
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body: unknown = await req.json()
@@ -78,11 +91,18 @@ export async function POST(req: NextRequest) {
     }
     if (runError || !run) return NextResponse.json({ error: 'Notification delivery could not be recorded. No email was sent.' }, { status: 503 })
 
-    const { sent, errors, recipients } = await sendResultNotification(results)
-    const status = errors ? (sent ? 'partial' : 'failed') : 'sent'
-    const { error: updateError } = await db.from('notification_delivery_runs').update({ status, recipient_count: recipients, sent_count: sent, error_count: errors, completed_at: new Date().toISOString() }).eq('id', run.id)
-    if (updateError) console.error('[notify-subscribers:delivery-log]', updateError)
-    return NextResponse.json({ sent, errors, recipients, status })
+    try {
+      const { sent, errors, recipients } = await sendResultNotification(results)
+      const status = errors ? (sent ? 'partial' : 'failed') : 'sent'
+      await completeDeliveryRun(db, run.id, { status, recipient_count: recipients, sent_count: sent, error_count: errors })
+      return NextResponse.json({ sent, errors, recipients, status })
+    } catch (error) {
+      // A failed delivery must be visible to an editor. Leaving it as
+      // "processing" would permanently block the event key and hide a failure.
+      await completeDeliveryRun(db, run.id, { status: 'failed', error_count: 1 })
+      console.error('[notify-subscribers:delivery]', error)
+      return NextResponse.json({ error: 'Result alerts could not be delivered. The failure was recorded for review.' }, { status: 503 })
+    }
   } catch (e) {
     console.error('[notify-subscribers]', e)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

@@ -80,8 +80,16 @@ export function recordReviewIssues(record: {
   if (!title) issues.push('Title is missing')
   else if (/(?:\.\.\.|…)$/.test(title)) issues.push('Title is truncated')
   if (!record.sourceUrl?.trim()) issues.push('Original source is missing')
-  else if (!/^https?:\/\//i.test(record.sourceUrl.trim())) issues.push('Original source link is invalid')
+  else {
+    try {
+      const source = new URL(record.sourceUrl.trim())
+      if (source.protocol !== 'https:') issues.push('Original source must use HTTPS')
+    } catch {
+      issues.push('Original source link is invalid')
+    }
+  }
   if (!record.publishedDate) issues.push('Publication date is missing')
+  else if (Number.isNaN(Date.parse(record.publishedDate))) issues.push('Publication date is invalid')
   if (record.requireSummary && content.length < 200) issues.push('Original summary is too short')
   issues.push(...findEditorialSlop(`${title}\n${content}`).map((item) => `Rewrite ${item.pattern}`))
   return issues

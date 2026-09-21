@@ -148,6 +148,18 @@ git checkout -b codex/short-description
 
 Keep each contribution focused. Do not mix visual cleanup, schema changes and unrelated refactors in the same pull request.
 
+### Decide before building
+
+AI can speed up implementation, but it cannot choose the right student problem, decide which information is safe to publish, or validate an assumption. Before a non-trivial change, write a short decision brief in the pull request or issue:
+
+1. **Student problem** — who is blocked and at which moment in their journey?
+2. **Smallest useful outcome** — what can they do after this change that they could not reliably do before?
+3. **Data and permissions** — which source, table, role and visibility rule are involved?
+4. **Failure behaviour** — what does the student see if data, authentication or an external provider is unavailable?
+5. **Evidence of success** — which user feedback, correction rate, search signal or completion measure will tell us it helped?
+
+Build one narrow slice, test it with real scenarios, then improve it from evidence. Do not ask an AI to create a broad feature bundle from one vague prompt. Reuse proven components and patterns, but never copy placeholder data, generic copy or another product's assumptions into student-facing pages.
+
 ### Data and editorial standards
 
 - Treat university, college, CEHRD, NEB, TU, KU, PU and CTEVT pages as sources—not automatically correct facts.
@@ -178,6 +190,8 @@ In practice:
 
 ### Pull request checklist
 
+Use the repository pull-request template. It requires a student outcome, narrow scope, data/permission review, failure behaviour and success evidence before implementation details.
+
 - [ ] I tested the changed task on desktop and narrow mobile widths.
 - [ ] I tested keyboard navigation and a meaningful empty/error state.
 - [ ] I ran the commands in **Commands** above.
@@ -206,6 +220,7 @@ Do not merge a change that depends on an unrecorded dashboard action. Document r
 - [SEO launch checklist](docs/SEO_LAUNCH_CHECKLIST.md)
 - [AEO playbook](docs/AEO_PLAYBOOK.md)
 - [Launch readiness audit](docs/LAUNCH_READINESS_AUDIT.md)
+- [System operating model](docs/SYSTEM_OPERATING_MODEL.md)
 
 ## License
 

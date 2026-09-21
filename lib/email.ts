@@ -142,8 +142,9 @@ function buildEmailHtml(results: ResultNotification[]): string {
 export async function sendResultNotification(results: ResultNotification[]): Promise<{ sent: number; errors: number; recipients: number }> {
   if (!results.length) return { sent: 0, errors: 0, recipients: 0 }
   if (!resend) {
-    console.warn('[email] RESEND_API_KEY not set — skipping notification')
-    return { sent: 0, errors: 0, recipients: 0 }
+    // Treat an absent provider as a failed delivery, not a successful batch
+    // with zero messages. The caller records this for an administrator.
+    throw new Error('Result alerts are not configured.')
   }
 
   const supabase = createAdminSupabaseClient()
@@ -152,8 +153,12 @@ export async function sendResultNotification(results: ResultNotification[]): Pro
     .select('email, token')
     .eq('is_active', true)
 
-  if (error || !subscribers?.length) {
-    console.warn('[email] No active subscribers or fetch error:', error?.message)
+  if (error) {
+    console.error('[email] Could not load active subscribers:', error.message)
+    throw new Error('Active result-alert subscribers could not be loaded.')
+  }
+  if (!subscribers?.length) {
+    console.info('[email] No active result-alert subscribers')
     return { sent: 0, errors: 0, recipients: 0 }
   }
 
