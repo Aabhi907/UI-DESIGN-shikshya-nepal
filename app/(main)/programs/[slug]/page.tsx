@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import { BookOpen, Clock, ArrowLeft, Building2, BadgeCheck, BriefcaseBusiness, CircleDollarSign, ExternalLink, GraduationCap } from 'lucide-react'
 import Badge from '@/components/ui/Badge'
-import type { Program, CollegeProgram, Admission, Scholarship } from '@/types'
+import type { Program, CollegeProgram, Admission, Scholarship, UniversityProgramOffering, University } from '@/types'
 import JsonLd from '@/components/seo/JsonLd'
 import { absoluteUrl, breadcrumbSchema } from '@/lib/seo'
 import { cache } from 'react'
@@ -33,11 +33,10 @@ const getProgram = cache(async function getProgram(slug: string) {
   const { data: program } = await supabase.from('programs').select('*').eq('slug', slug).single()
   if (!program) return null
 
-  const { data: colleges } = await supabase
-    .from('college_programs')
-    .select('*, college:colleges(*)')
-    .eq('program_id', program.id)
-    .limit(20)
+  const [{ data: colleges }, { data: offeringRows }] = await Promise.all([
+    supabase.from('college_programs').select('*, college:colleges(*)').eq('program_id', program.id).limit(20),
+    supabase.from('university_program_offerings').select('*, university:universities(id,name,slug,short_name,website,created_at)').eq('program_id', program.id).eq('status', 'published').order('updated_at', { ascending: false }),
+  ])
 
   const visibleColleges = ((colleges || []) as CollegeProgram[]).filter(item => item.college && (item.college.status === 'active' || item.college.status == null))
   const collegeIds = visibleColleges.map(item => item.college_id)
@@ -47,7 +46,13 @@ const getProgram = cache(async function getProgram(slug: string) {
     collegeIds.length ? supabase.from('scholarships').select('*,college:colleges(id,name,slug)').in('college_id',collegeIds).eq('is_active',true).or(`deadline.is.null,deadline.gte.${today}`).order('deadline',{ascending:true,nullsFirst:false}).limit(8) : Promise.resolve({ data: [] }),
   ])
 
-  return { program: program as Program, colleges: visibleColleges, admissions: (admissions || []) as Admission[], scholarships: (scholarships || []) as Scholarship[] }
+  return {
+    program: program as Program,
+    colleges: visibleColleges,
+    offerings: (offeringRows || []) as (UniversityProgramOffering & { university?: University | null })[],
+    admissions: (admissions || []) as Admission[],
+    scholarships: (scholarships || []) as Scholarship[],
+  }
 })
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
@@ -67,9 +72,9 @@ export default async function ProgramDetailPage({ params }: { params: { slug: st
   const data = await getProgram(params.slug)
   if (!data) notFound()
 
-  const { program, colleges, admissions, scholarships } = data
+  const { program, colleges, offerings, admissions, scholarships } = data
   const sourceBacked = Boolean(program.source_url && program.last_verified_at)
-  const durationLabel = sourceBacked ? program.duration : 'Confirm with university'
+  const durationLabel = offerings.length > 1 ? 'Varies by university' : offerings[0]?.duration || (sourceBacked ? program.duration : 'Confirm with university')
   const fees = colleges.map(item => item.fee).filter((fee): fee is number => fee != null)
   const feeMin = program.average_fee_min ?? (fees.length ? Math.min(...fees) : null)
   const feeMax = program.average_fee_max ?? (fees.length ? Math.max(...fees) : null)
@@ -78,7 +83,7 @@ export default async function ProgramDetailPage({ params }: { params: { slug: st
     : 'No reliable fee range is recorded yet. Ask each college whether its quote is annual, semester-based or the total programme cost.'
   const programAnswers = [
     { question: `What is ${program.name} in Nepal?`, answer: program.overview && sourceBacked ? conciseAnswer(program.overview) : sourceBacked ? `${program.name} is a ${program.degree_level} programme in the ${program.faculty} field. Its source-backed duration is ${program.duration}.` : `${program.name} is listed as a ${program.degree_level} programme in the ${program.faculty} field. Its duration and entry rules still need an original university or regulator source.` },
-    { question: `Who is eligible for ${program.name}?`, answer: program.eligibility || 'Eligibility differs by university and intake. Confirm the required previous qualification, subjects, grades and entrance process in the current official admission notice.' },
+    { question: `Who is eligible for ${program.name}?`, answer: offerings.length ? `${offerings.length} source-backed university variant${offerings.length === 1 ? ' is' : 's are'} listed below. Compare the eligibility and entrance requirements for the university awarding your degree.` : program.eligibility || 'Eligibility differs by university and intake. Confirm the required previous qualification, subjects, grades and entrance process in the current official admission notice.' },
     { question: `How much does ${program.name} cost in Nepal?`, answer: feeAnswer },
     { question: `Where can I study ${program.name} in Nepal?`, answer: colleges.length ? `SikshyaNepal currently links ${colleges.length} active college profile${colleges.length === 1 ? '' : 's'} offering this programme. Review the list below and confirm the current intake with each college.` : 'No active college profile is linked to this programme yet. Check again later or verify options with the relevant university.' },
   ]
@@ -119,16 +124,17 @@ export default async function ProgramDetailPage({ params }: { params: { slug: st
         <p className="text-xs font-bold uppercase tracking-widest text-blue-700">Quick answer</p>
         <h2 id="program-quick-answer" className="mt-2 text-lg font-bold text-gray-950">What should I know about {program.name}?</h2>
         <p className="mt-3 text-sm leading-6 text-gray-700">
-          {sourceBacked ? `${program.name} is a ${program.degree_level} programme in ${program.faculty}, with a source-backed duration of ${program.duration}.` : `The programme name, level and linked colleges are listed here, but its duration and entry rules are awaiting an original university or regulator source.`} {colleges.length ? `${colleges.length} active college profile${colleges.length === 1 ? ' is' : 's are'} currently linked below.` : 'No active college profile is linked yet.'}
+          {offerings.length ? `${program.name} has ${offerings.length} source-backed university variant${offerings.length === 1 ? '' : 's'} listed below. Duration and entry rules may differ by awarding university.` : sourceBacked ? `${program.name} is a ${program.degree_level} programme in ${program.faculty}, with a source-backed duration of ${program.duration}.` : `The programme name, level and linked colleges are listed here, but its duration and entry rules are awaiting an original university or regulator source.`} {colleges.length ? `${colleges.length} active college profile${colleges.length === 1 ? ' is' : 's are'} currently linked below.` : 'No active college profile is linked yet.'}
         </p>
         <p className="mt-3 text-xs leading-5 text-gray-500">Eligibility, fees and intakes can change. Use the source and freshness section and confirm the latest notice before applying.</p>
       </section>
 
       <div className="mb-6 grid gap-4 md:grid-cols-3">
-        <div className="rounded-2xl border bg-white p-5"><GraduationCap className="h-5 w-5 text-blue-600"/><h2 className="mt-3 font-bold">Eligibility</h2><p className="mt-2 text-sm leading-6 text-gray-600">{program.eligibility || 'Confirm current eligibility with the awarding university or college.'}</p></div>
+        <div className="rounded-2xl border bg-white p-5"><GraduationCap className="h-5 w-5 text-blue-600"/><h2 className="mt-3 font-bold">Eligibility</h2><p className="mt-2 text-sm leading-6 text-gray-600">{offerings.length ? `Compare ${offerings.length} university-specific entr${offerings.length === 1 ? 'y' : 'ies'} below.` : program.eligibility || 'Confirm current eligibility with the awarding university or college.'}</p></div>
         <div className="rounded-2xl border bg-white p-5"><CircleDollarSign className="h-5 w-5 text-emerald-600"/><h2 className="mt-3 font-bold">Published fee range</h2><p className="mt-2 text-sm text-gray-600">{feeMin != null ? `NPR ${feeMin.toLocaleString()}${feeMax && feeMax !== feeMin ? ` – ${feeMax.toLocaleString()}` : ''}` : 'Fees vary by college.'}</p><p className="mt-2 text-xs leading-5 text-gray-400">Confirm whether each amount is annual, semester-based or total.</p></div>
-        <div className="rounded-2xl border bg-white p-5"><BadgeCheck className="h-5 w-5 text-violet-600"/><h2 className="mt-3 font-bold">Entrance</h2><p className="mt-2 text-sm leading-6 text-gray-600">{program.entrance_requirements || 'Check the latest university admission notice.'}</p></div>
+        <div className="rounded-2xl border bg-white p-5"><BadgeCheck className="h-5 w-5 text-violet-600"/><h2 className="mt-3 font-bold">Entrance</h2><p className="mt-2 text-sm leading-6 text-gray-600">{offerings.length ? 'Entrance rules are shown by awarding university below.' : program.entrance_requirements || 'Check the latest university admission notice.'}</p></div>
       </div>
+      {offerings.length > 0 && <section className="mb-6 rounded-2xl border bg-white p-6" aria-labelledby="university-variants"><p className="text-xs font-bold uppercase tracking-widest text-blue-700">Compare awarding universities</p><h2 id="university-variants" className="mt-2 text-xl font-bold text-gray-950">University-specific programme details</h2><p className="mt-2 max-w-3xl text-sm leading-6 text-gray-600">Choose the university that will award the degree. These facts come from the linked official programme sources and should still be checked against the current intake notice.</p><div className="mt-5 grid gap-4 md:grid-cols-2">{offerings.map(item => <article key={item.id} className="rounded-xl border border-gray-200 p-5"><div className="flex items-start justify-between gap-4"><div><h3 className="font-bold text-gray-950">{item.university?.name || item.source_name}</h3>{item.display_name && item.display_name !== program.name && <p className="mt-1 text-xs text-gray-500">{item.display_name}</p>}</div><span className="whitespace-nowrap rounded-full bg-blue-50 px-2.5 py-1 text-xs font-bold text-blue-700">{item.duration}</span></div><dl className="mt-4 space-y-3 text-sm"><div><dt className="font-semibold text-gray-900">Eligibility</dt><dd className="mt-1 leading-6 text-gray-600">{item.eligibility || 'Not documented in the current source.'}</dd></div><div><dt className="font-semibold text-gray-900">Entrance</dt><dd className="mt-1 leading-6 text-gray-600">{item.entrance_requirements || 'Not documented in the current source.'}</dd></div></dl><div className="mt-4 border-t pt-3 text-xs text-gray-500"><p>Checked {new Date(item.last_verified_at).toLocaleDateString('en-NP', { day: 'numeric', month: 'short', year: 'numeric' })}</p><a href={item.official_program_url} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1 font-bold text-blue-700">Official programme source <ExternalLink className="h-3.5 w-3.5"/></a></div></article>)}</div></section>}
       {program.overview && <section className="mb-6 rounded-2xl border bg-white p-6"><h2 className="text-xl font-bold">About {program.name}</h2><p className="mt-3 whitespace-pre-line leading-7 text-gray-600">{program.overview}</p></section>}
       {(program.curriculum_highlights?.length || program.career_paths?.length) ? <div className="mb-6 grid gap-6 md:grid-cols-2">{program.curriculum_highlights?.length ? <section className="rounded-2xl border bg-white p-6"><h2 className="flex items-center gap-2 text-lg font-bold"><BookOpen className="h-5 w-5 text-blue-600"/>Curriculum highlights</h2><ul className="mt-4 space-y-2 text-sm text-gray-600">{program.curriculum_highlights.map(item=><li key={item}>• {item}</li>)}</ul></section>:null}{program.career_paths?.length?<section className="rounded-2xl border bg-white p-6"><h2 className="flex items-center gap-2 text-lg font-bold"><BriefcaseBusiness className="h-5 w-5 text-emerald-600"/>Career paths</h2><ul className="mt-4 space-y-2 text-sm text-gray-600">{program.career_paths.map(item=><li key={item}>• {item}</li>)}</ul></section>:null}</div>:null}
 

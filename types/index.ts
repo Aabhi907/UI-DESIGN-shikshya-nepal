@@ -157,6 +157,8 @@ export interface CollegeProgram {
   fee_last_verified_at?: string | null
   seats: number | null
   scholarship_available: boolean
+  university_program_offering_id?: string | null
+  offering?: UniversityProgramOffering | null
   program?: Program
   college?: College
 }
@@ -168,6 +170,26 @@ export interface University {
   short_name: string
   website: string | null
   created_at: string
+}
+
+export interface UniversityProgramOffering {
+  id: string
+  program_id: string
+  university_id: string
+  display_name: string | null
+  duration: string
+  eligibility: string | null
+  entrance_requirements: string | null
+  overview: string | null
+  curriculum_highlights: string[]
+  official_program_url: string
+  source_name: string
+  source_published_at: string | null
+  last_verified_at: string
+  status: 'draft' | 'published' | 'archived'
+  created_at: string
+  updated_at: string
+  university?: University | null
 }
 
 export interface EntranceExam {

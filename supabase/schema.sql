@@ -231,10 +231,31 @@ CREATE TABLE IF NOT EXISTS admission_deadline_history (
 -- ============================================================
 -- COLLEGE PROGRAMS (Junction Table)
 -- ============================================================
+CREATE TABLE IF NOT EXISTS university_program_offerings (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  program_id UUID NOT NULL REFERENCES programs(id) ON DELETE CASCADE,
+  university_id UUID NOT NULL REFERENCES universities(id) ON DELETE CASCADE,
+  display_name TEXT,
+  duration TEXT NOT NULL,
+  eligibility TEXT,
+  entrance_requirements TEXT,
+  overview TEXT,
+  curriculum_highlights TEXT[] NOT NULL DEFAULT '{}',
+  official_program_url TEXT NOT NULL CHECK (official_program_url ~ '^https://'),
+  source_name TEXT NOT NULL,
+  source_published_at TIMESTAMPTZ,
+  last_verified_at TIMESTAMPTZ NOT NULL,
+  status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft', 'published', 'archived')),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE(program_id, university_id)
+);
+
 CREATE TABLE IF NOT EXISTS college_programs (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   college_id UUID NOT NULL REFERENCES colleges(id) ON DELETE CASCADE,
   program_id UUID NOT NULL REFERENCES programs(id) ON DELETE CASCADE,
+  university_program_offering_id UUID REFERENCES university_program_offerings(id) ON DELETE SET NULL,
   fee DECIMAL(12, 2),
   seats INTEGER,
   scholarship_available BOOLEAN DEFAULT FALSE,
@@ -492,6 +513,8 @@ CREATE INDEX IF NOT EXISTS idx_reviews_verification_status ON reviews(verificati
 CREATE INDEX IF NOT EXISTS idx_scholarships_college ON scholarships(college_id);
 CREATE INDEX IF NOT EXISTS idx_college_programs_college ON college_programs(college_id);
 CREATE INDEX IF NOT EXISTS idx_college_programs_program ON college_programs(program_id);
+CREATE INDEX IF NOT EXISTS idx_university_program_offerings_public ON university_program_offerings(program_id, status, university_id);
+CREATE INDEX IF NOT EXISTS idx_college_programs_offering ON college_programs(university_program_offering_id) WHERE university_program_offering_id IS NOT NULL;
 
 -- ============================================================
 -- ROW LEVEL SECURITY
@@ -502,6 +525,7 @@ ALTER TABLE data_corrections ENABLE ROW LEVEL SECURITY;
 ALTER TABLE admissions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE admission_deadline_history ENABLE ROW LEVEL SECURITY;
 ALTER TABLE programs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE university_program_offerings ENABLE ROW LEVEL SECURITY;
 ALTER TABLE college_programs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE universities ENABLE ROW LEVEL SECURITY;
 ALTER TABLE results ENABLE ROW LEVEL SECURITY;
@@ -522,8 +546,9 @@ CREATE POLICY "Public read admission deadline history" ON admission_deadline_his
 CREATE POLICY "Public read published review responses" ON review_responses FOR SELECT TO anon USING (status = 'published');
 CREATE POLICY "Public read active schools" ON schools FOR SELECT TO anon USING (status = 'active');
 CREATE POLICY "Public read programs" ON programs FOR SELECT TO anon USING (true);
+CREATE POLICY "Public read published university programme offerings" ON university_program_offerings FOR SELECT TO anon, authenticated USING (status = 'published');
 CREATE POLICY "Public read college_programs" ON college_programs FOR SELECT TO anon USING (true);
-CREATE POLICY "Public read universities" ON universities FOR SELECT TO anon USING (true);
+CREATE POLICY "Public read universities" ON universities FOR SELECT TO anon, authenticated USING (true);
 CREATE POLICY "Public read results" ON results FOR SELECT TO anon USING (true);
 CREATE POLICY "Public read notices" ON notices FOR SELECT TO anon USING (true);
 CREATE POLICY "Public read news" ON news FOR SELECT TO anon USING (true);
