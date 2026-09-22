@@ -28,6 +28,7 @@ import {
   BarChart3,
   Megaphone,
   ShieldCheck,
+  ShieldAlert,
   CheckCircle2,
   FileSearch,
 } from 'lucide-react'
@@ -40,6 +41,7 @@ const navItems = [
   { label: 'Announcements',    href: '/admin/announcements',    icon: Megaphone },
   { label: 'Schools',          href: '/admin/schools',          icon: School },
   { label: 'Data Corrections', href: '/admin/corrections',      icon: Flag, pending: true },
+  { label: 'Safety & Privacy Reports', href: '/admin/safety-reports', icon: ShieldAlert, pending: true },
   { label: 'Admissions',       href: '/admin/admissions',       icon: CalendarCheck2, revenue: true },
   { label: 'Entrance Exams',   href: '/admin/entrance-exams',   icon: CalendarClock },
   { label: 'Opportunities',    href: '/admin/opportunities',    icon: Send },

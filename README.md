@@ -59,6 +59,7 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 COMMUNITY_HASH_SALT=
 
 # Optional integrations
+SAFETY_REPORT_EMAIL=                   # inbox for /safety and /privacy reports; falls back to ADMIN_EMAIL
 RESEND_API_KEY=
 NOTIFICATION_SECRET=
 NEXT_PUBLIC_ONESIGNAL_APP_ID=
