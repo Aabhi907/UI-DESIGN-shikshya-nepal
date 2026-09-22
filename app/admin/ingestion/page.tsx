@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { ExternalLink, Inbox, PencilLine, ShieldCheck, X } from 'lucide-react'
+import { CheckCheck, ExternalLink, Inbox, Loader2, PencilLine, ShieldCheck, X } from 'lucide-react'
 
 type Item = { id: string; title: string; target_type: string; scraper_name: string; source_url: string; fetched_at: string; quality_flags: string[]; status: string; payload: Record<string, unknown>; college_id?: string | null; confidence_score?: number; content_hash?: string | null; raw_snapshot?: string | null; reviewer_notes?: string | null; content_category?: string; claim_risk?: 'low' | 'medium' | 'high'; auto_publish_eligible?: boolean }
 
@@ -14,6 +14,8 @@ export default function IngestionPage() {
   const [drafts, setDrafts] = useState<Record<string, string>>({})
   const [editing, setEditing] = useState<Record<string, boolean>>({})
   const [error, setError] = useState('')
+  const [bulkPublishing, setBulkPublishing] = useState(false)
+  const [bulkMessage, setBulkMessage] = useState('')
 
   const load = () => fetch(`/api/admin/ingestion?status=${status}`, { cache: 'no-store' }).then(async response => {
     const data = await response.json()
@@ -24,27 +26,53 @@ export default function IngestionPage() {
 
   useEffect(() => { void load() }, [status]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  async function decide(item: Item, decision: 'approved' | 'rejected') {
+  async function decide(item: Item, decision: 'approved' | 'rejected', options: { confirm?: boolean; quiet?: boolean } = {}) {
     setError('')
     let payload: Record<string, unknown> | undefined
     if (decision === 'approved') {
-      try { payload = JSON.parse(drafts[item.id] || stringify(item.payload)) as Record<string, unknown> } catch { setError(`The extracted data for “${item.title}” is not valid JSON.`); return }
-      if (Array.isArray(payload) || typeof payload !== 'object' || !payload) { setError('Extracted data must be a JSON object.'); return }
-      if (!confirm(`Publish “${String(payload.title || item.title)}” to ${item.target_type}?`)) return
+      try { payload = JSON.parse(drafts[item.id] || stringify(item.payload)) as Record<string, unknown> } catch { const message=`The extracted data for “${item.title}” is not valid JSON.`; if(!options.quiet)setError(message); return { ok: false, error: message } }
+      if (Array.isArray(payload) || typeof payload !== 'object' || !payload) { const message='Extracted data must be a JSON object.'; if(!options.quiet)setError(message); return { ok: false, error: message } }
+      if (options.confirm !== false && !confirm(`Publish “${String(payload.title || item.title)}” to ${item.target_type}?`)) return { ok: false, cancelled: true }
     }
     const response = await fetch(`/api/admin/ingestion/${item.id}`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: decision, reviewer_notes: notes[item.id] || '', payload }) })
     const data = await response.json()
-    if (!response.ok) return setError(data.error || 'Review failed')
+    if (!response.ok) {
+      if (!options.quiet) setError(data.error || 'Review failed')
+      return { ok: false, error: data.error || 'Review failed' }
+    }
     setItems(all => all.filter(current => current.id !== item.id))
     if (data.evidence_warning) setError(`Content published, but evidence was not proposed: ${data.evidence_warning}`)
+    return { ok: true }
+  }
+
+  async function publishAllPending() {
+    const pending = items.filter(item => item.status === 'pending')
+    if (!pending.length) return
+    if (!confirm(`Publish all ${pending.length} pending items that meet the existing source and content requirements? Incomplete items will be skipped and remain in the queue.`)) return
+
+    setBulkPublishing(true)
+    setError('')
+    setBulkMessage('')
+    let published = 0
+    const skipped: string[] = []
+    for (const item of pending) {
+      const result = await decide(item, 'approved', { confirm: false, quiet: true })
+      if (result.ok) published += 1
+      else if (!result.cancelled) skipped.push(item.title)
+    }
+    setBulkPublishing(false)
+    setBulkMessage(skipped.length
+      ? `Published ${published}. Kept ${skipped.length} incomplete item${skipped.length === 1 ? '' : 's'} in the queue for correction.`
+      : `Published all ${published} pending item${published === 1 ? '' : 's'}.`)
   }
 
   return <div className="p-8 text-gray-100">
     <div className="flex flex-wrap items-end justify-between gap-4">
-      <div><h1 className="flex items-center gap-2 text-2xl font-bold"><Inbox className="h-6 w-6 text-yellow-400" />Editorial ingestion queue</h1><p className="mt-1 text-sm text-gray-400">Nothing collected from the internet becomes public until an editor checks the original source and approves it.</p></div>
-      <select value={status} onChange={event => setStatus(event.target.value)} className="rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-sm"><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option><option value="all">All</option></select>
+      <div><h1 className="flex items-center gap-2 text-2xl font-bold"><Inbox className="h-6 w-6 text-yellow-400" />Editorial ingestion queue</h1><p className="mt-1 text-sm text-gray-400">Publish ready source-backed items individually or as a batch. Incomplete records stay in the queue instead of creating broken pages.</p></div>
+      <div className="flex flex-wrap items-center gap-3"><button type="button" onClick={() => void publishAllPending()} disabled={bulkPublishing || !items.some(item => item.status === 'pending')} className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-emerald-700 px-4 text-sm font-semibold text-white transition-colors hover:bg-emerald-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-300 disabled:cursor-not-allowed disabled:opacity-50">{bulkPublishing ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : <CheckCheck className="h-4 w-4" aria-hidden="true" />}{bulkPublishing ? 'Publishing pending items…' : 'Publish all pending'}</button><select value={status} onChange={event => setStatus(event.target.value)} className="min-h-11 rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-sm"><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option><option value="all">All</option></select></div>
     </div>
     {error && <p className="mt-5 rounded-lg bg-red-950/50 p-3 text-red-300">{error}</p>}
+    {bulkMessage && <p role="status" className="mt-5 rounded-lg border border-emerald-800 bg-emerald-950/40 p-3 text-emerald-200">{bulkMessage}</p>}
     <div className="mt-6 grid gap-4 xl:grid-cols-2">{items.map(item => <article key={item.id} className="rounded-xl border border-gray-700 bg-gray-800 p-5">
       <div className="flex items-start justify-between gap-3"><div><div className="flex flex-wrap gap-2"><span className="rounded bg-gray-700 px-2 py-1 text-[10px] font-bold uppercase text-cyan-300">{item.content_category || item.target_type}</span><span className={`rounded px-2 py-1 text-[10px] font-bold uppercase ${item.claim_risk === 'high' ? 'bg-red-950/70 text-red-300' : item.claim_risk === 'low' ? 'bg-emerald-950/60 text-emerald-300' : 'bg-amber-950/60 text-amber-300'}`}>{item.claim_risk || 'medium'} claim risk</span><span className={`rounded px-2 py-1 text-[10px] font-bold uppercase ${Number(item.confidence_score || 0) >= 90 ? 'bg-emerald-950/60 text-emerald-300' : Number(item.confidence_score || 0) >= 70 ? 'bg-amber-950/60 text-amber-300' : 'bg-red-950/60 text-red-300'}`}>Confidence {item.confidence_score ?? 0}/100</span></div><h2 className="mt-2 font-semibold text-white">{item.title}</h2><p className="mt-1 text-xs text-gray-500">{item.scraper_name} · {new Date(item.fetched_at).toLocaleString()}</p></div><a href={item.source_url} target="_blank" rel="noopener noreferrer" className="rounded p-2 text-blue-400" title="Open original source"><ExternalLink className="h-4 w-4" /></a></div>
       {item.quality_flags?.length > 0 && <div className="mt-3 flex flex-wrap gap-2">{item.quality_flags.map(flag => <span key={flag} className={`rounded px-2 py-1 text-xs ${flag === 'source_changed' ? 'bg-blue-950/70 font-semibold text-blue-300' : 'bg-amber-950/60 text-amber-300'}`}>{flag.replaceAll('_', ' ')}</span>)}</div>}
