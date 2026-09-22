@@ -179,12 +179,7 @@ class PUResultsScraper(BaseScraper):
                     record["semester"] = f"{sem} Semester"
                     break
 
-            if self.insert_record("results", record):
-                self.send_notification(
-                    title="New PU Result Published 📢",
-                    message=f"{title} is now available",
-                    url=f"https://sikshyanepal.vercel.app/results/{record['slug']}",
-                )
+            self.insert_record("results", record)
 
     # ── Main entry point ───────────────────────────────────────────────────
 

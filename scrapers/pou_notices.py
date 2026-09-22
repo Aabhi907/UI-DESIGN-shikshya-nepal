@@ -48,7 +48,7 @@ class POUNoticesScraper(BaseScraper):
         # Strategy 1: table rows / list items with links
         for row in soup.select("table tr, .notice-list li, .announcement-list li, ul.list li"):
             link_tag = row.find("a", href=True)
-            if not link_tag:
+            if not link_tag or self.is_navigation_link(link_tag):
                 continue
             title = link_tag.get_text(strip=True)
             if not title or len(title) < 8 or title in seen:
@@ -64,7 +64,7 @@ class POUNoticesScraper(BaseScraper):
             for tag in (parent, row):
                 for span in tag.find_all(["td", "span", "small", "div"]):
                     text = span.get_text(strip=True)
-                    if any(c.isdigit() for c in text) and len(text) < 20:
+                    if self.looks_like_date(text):
                         date_raw = text
                         break
                 if date_raw:
@@ -97,7 +97,7 @@ class POUNoticesScraper(BaseScraper):
         if not items:
             for anchor in soup.find_all("a", href=True):
                 title = anchor.get_text(strip=True)
-                if len(title) < 10 or title in seen:
+                if len(title) < 10 or title in seen or self.is_navigation_link(anchor):
                     continue
                 if any(kw in title.lower() for kw in NOTICE_KEYWORDS):
                     seen.add(title)
@@ -128,7 +128,7 @@ class POUNoticesScraper(BaseScraper):
             else:
                 title = raw_title
 
-            date_str = self.parse_date(item["date_raw"]) if item.get("date_raw") else None
+            date_str = self.parse_date(item["date_raw"], fallback_to_today=False) if item.get("date_raw") else None
             slug     = self.slugify_with_date(title, item.get("date_raw", ""))
 
             if self.check_exists("notices", slug):
@@ -153,12 +153,7 @@ class POUNoticesScraper(BaseScraper):
                 "published_date": date_str,
             }
 
-            if self.insert_record("notices", record):
-                self.send_notification(
-                    title="New PU Notice 📋",
-                    message=title,
-                    url=f"https://sikshyanepal.vercel.app/notices/{record['slug']}",
-                )
+            self.insert_record("notices", record)
 
     # ── Main entry point ───────────────────────────────────────────────────
 

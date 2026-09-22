@@ -47,7 +47,7 @@ class NEBNoticesScraper(BaseScraper):
         for row in soup.select("table.table tr, table tr"):
             cells    = row.find_all("td")
             link_tag = row.find("a", href=True)
-            if not link_tag or len(cells) < 1:
+            if not link_tag or len(cells) < 1 or self.is_navigation_link(link_tag):
                 continue
             title = link_tag.get_text(strip=True)
             if not title or len(title) < 8 or title in seen:
@@ -56,7 +56,7 @@ class NEBNoticesScraper(BaseScraper):
             date_str = ""
             for cell in cells:
                 text = cell.get_text(strip=True)
-                if any(c.isdigit() for c in text) and len(text) < 20:
+                if self.looks_like_date(text):
                     date_str = text
                     break
             items.append({"title": title, "notice_url": _norm(link_tag["href"]), "date_raw": date_str})
@@ -67,7 +67,7 @@ class NEBNoticesScraper(BaseScraper):
                         "article", ".post-item", ".entry", ".card"]:
                 for el in soup.select(sel):
                     link_tag = el.find("a", href=True)
-                    if not link_tag:
+                    if not link_tag or self.is_navigation_link(link_tag):
                         continue
                     title = link_tag.get_text(strip=True)
                     if not title or len(title) < 8 or title in seen:
@@ -91,7 +91,7 @@ class NEBNoticesScraper(BaseScraper):
             ]
             for anchor in soup.find_all("a", href=True):
                 title = anchor.get_text(strip=True)
-                if len(title) < 10 or title in seen:
+                if len(title) < 10 or title in seen or self.is_navigation_link(anchor):
                     continue
                 if any(kw in title.lower() for kw in keywords):
                     seen.add(title)
@@ -106,7 +106,7 @@ class NEBNoticesScraper(BaseScraper):
             if not title:
                 continue
 
-            date_str = self.parse_date(item["date_raw"]) if item["date_raw"] else None
+            date_str = self.parse_date(item["date_raw"], fallback_to_today=False) if item["date_raw"] else None
             slug     = self.slugify_with_date(title, item.get("date_raw", ""))
 
             if self.check_exists("notices", slug):
@@ -131,12 +131,7 @@ class NEBNoticesScraper(BaseScraper):
                 "published_date": date_str,
             }
 
-            if self.insert_record("notices", record):
-                self.send_notification(
-                    title="New NEB Notice 📋",
-                    message=title,
-                    url=f"https://sikshyanepal.vercel.app/notices/{record['slug']}",
-                )
+            self.insert_record("notices", record)
 
     def scrape(self) -> dict:
         university_id = self.get_university_id("NEB", "National Examinations Board")

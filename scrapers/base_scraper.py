@@ -30,6 +30,19 @@ DEFAULT_HEADERS = {
     "Accept-Language": "en-US,en;q=0.5",
 }
 
+NAV_CONTAINER_TAGS = {"nav", "header", "footer", "marquee"}
+NAV_ATTRIBUTE_HINTS = (
+    "navbar", "nav-item", "nav-link", "navigation", "dropdown", "menu",
+    "header-top", "site-header", "top-bar", "topbar", "breadcrumb", "f-links",
+)
+DATE_PATTERN = re.compile(
+    r"\b\d{1,4}[-/.]\d{1,2}[-/.]\d{1,4}\b"
+    r"|\b\d{1,2}\s+[A-Za-z]{3,9},?\s+\d{4}\b"
+    r"|\b[A-Za-z]{3,9}\s+\d{1,2},\s+\d{4}\b"
+)
+YEAR_PATTERN = re.compile(r"(?<!\d)(19[89]\d|20\d\d)(?!\d)")
+BS_AD_YEAR_OFFSET = 57
+
 load_dotenv()
 
 logging.basicConfig(
@@ -44,6 +57,7 @@ class BaseScraper:
         self.name = name
         self.logger = logging.getLogger(name)
         self.inserted = 0
+        self.published = 0
         self.skipped = 0
         self.errors = 0
         self.supabase: Client = self._connect()
@@ -163,6 +177,8 @@ class BaseScraper:
             flags.append("short_title")
         if not data.get("content"):
             flags.append("missing_body")
+        if self.mentions_only_old_years(title):
+            flags.append("old_year_in_title")
         snapshot = str(data.get("content") or "").strip()[:50000]
         content_material = snapshot or json.dumps(data, sort_keys=True, default=str)
         confidence = 80
@@ -273,6 +289,7 @@ class BaseScraper:
                     "reviewed_by": "college-newsroom-automation", "reviewed_at": now,
                     "published_record_id": published.data[0]["id"],
                 }).eq("fingerprint", queue_row["fingerprint"]).execute()
+                self.published += 1
                 self.logger.info(f"Auto-published low-risk college update: {payload['title'][:80]}")
         except Exception as error:
             self.logger.warning(f"Auto-publication skipped: {error}")
@@ -403,10 +420,10 @@ class BaseScraper:
         return f"{base}-{ts}"
 
     @staticmethod
-    def parse_date(raw: str) -> str:
+    def parse_date(raw: str, fallback_to_today: bool = True) -> str | None:
         """
-        Try to parse a date string into ISO 8601 format.
-        Returns today's date string as fallback.
+        Parse a Gregorian date string into ISO 8601. When the text cannot be
+        read, returns today's date if fallback_to_today, otherwise None.
         """
         raw = raw.strip()
         formats = [
@@ -415,50 +432,41 @@ class BaseScraper:
         ]
         for fmt in formats:
             try:
-                return datetime.strptime(raw, fmt).isoformat()
+                parsed = datetime.strptime(raw, fmt)
             except ValueError:
                 continue
-        return datetime.now().isoformat()
+            # Bikram Sambat dates (e.g. 2082-05-12) parse as far-future Gregorian dates.
+            if parsed.year > datetime.now().year + 1:
+                break
+            return parsed.isoformat()
+        return datetime.now().isoformat() if fallback_to_today else None
 
-    # ------------------------------------------------------------------
-    # Push notifications (OneSignal REST API)
-    # ------------------------------------------------------------------
+    @staticmethod
+    def is_navigation_link(tag) -> bool:
+        """True when a link sits in site chrome (menus, header, footer, ticker) rather than a notice list."""
+        for parent in tag.parents:
+            if parent.name in NAV_CONTAINER_TAGS:
+                return True
+            attrs = " ".join(
+                list(parent.get("class") or []) + [parent.get("id") or "", parent.get("role") or ""]
+            ).lower()
+            if any(hint in attrs for hint in NAV_ATTRIBUTE_HINTS):
+                return True
+        return False
 
-    def send_notification(self, title: str, message: str, url: str) -> None:
-        """
-        Send a push notification via OneSignal REST API.
-        Silently skips if ONESIGNAL_APP_ID or ONESIGNAL_REST_API_KEY are not set.
-        Never raises — failures are logged as warnings only.
-        """
-        app_id  = os.getenv("ONESIGNAL_APP_ID")
-        api_key = os.getenv("ONESIGNAL_REST_API_KEY")
-        if not app_id or not api_key:
-            return
+    @staticmethod
+    def looks_like_date(text: str) -> bool:
+        return len(text) <= 40 and bool(DATE_PATTERN.search(text))
 
-        payload = {
-            "app_id": app_id,
-            "included_segments": ["All"],
-            "headings":  {"en": title},
-            "contents":  {"en": message},
-            "url":       url,
-        }
-        try:
-            import requests as req
-            resp = req.post(
-                "https://onesignal.com/api/v1/notifications",
-                json=payload,
-                headers={
-                    "Authorization": f"Basic {api_key}",
-                    "Content-Type":  "application/json",
-                },
-                timeout=10,
-            )
-            if resp.status_code == 200:
-                self.logger.info(f"Push sent: {title}")
-            else:
-                self.logger.warning(f"Push failed ({resp.status_code}): {resp.text[:200]}")
-        except Exception as e:
-            self.logger.warning(f"Push notification error: {e}")
+    @staticmethod
+    def mentions_only_old_years(title: str) -> bool:
+        """True when every year in the title (AD or BS) is at least two years old."""
+        this_year = datetime.now().year
+        years = [int(y) for y in YEAR_PATTERN.findall(title)]
+        if not years:
+            return False
+        as_ad = [y - BS_AD_YEAR_OFFSET if y > this_year + 1 else y for y in years]
+        return max(as_ad) <= this_year - 2
 
     # ------------------------------------------------------------------
     # PDF helpers
@@ -618,12 +626,13 @@ class BaseScraper:
 
     def summary(self) -> dict:
         self.logger.info(
-            f"Done — inserted: {self.inserted}, "
+            f"Done — queued: {self.inserted}, published: {self.published}, "
             f"skipped: {self.skipped}, errors: {self.errors}"
         )
         return {
             "scraper": self.name,
             "inserted": self.inserted,
+            "published": self.published,
             "skipped": self.skipped,
             "errors": self.errors,
         }

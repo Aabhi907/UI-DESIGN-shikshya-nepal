@@ -66,18 +66,18 @@ def notify_subscribers(new_results: list[dict]) -> None:
         logger.warning(f"Email notification failed: {e}")
 
 
-def trigger_vercel_deploy(total_inserted: int) -> None:
+def trigger_vercel_deploy(total_published: int) -> None:
     hook_url = os.getenv("VERCEL_DEPLOY_HOOK_URL")
     if not hook_url:
         logger.info("VERCEL_DEPLOY_HOOK_URL not set — skipping redeploy trigger")
         return
-    if total_inserted == 0:
-        logger.info("No new records — skipping Vercel redeploy")
+    if total_published == 0:
+        logger.info("Nothing published this run — skipping Vercel redeploy")
         return
     try:
         resp = requests.post(hook_url, timeout=10)
         if resp.status_code == 201:
-            logger.info(f"Vercel deploy triggered ({total_inserted} new records)")
+            logger.info(f"Vercel deploy triggered ({total_published} published records)")
         else:
             logger.warning(f"Vercel deploy returned {resp.status_code}: {resp.text[:200]}")
     except Exception as e:
@@ -127,7 +127,7 @@ def run() -> int:
         ("Colleges",      CollegeScraper),
     ]
 
-    totals = {"inserted": 0, "skipped": 0, "errors": 0}
+    totals = {"inserted": 0, "published": 0, "skipped": 0, "errors": 0}
     failed_scrapers  = []
     per_scraper: list[tuple[str, dict]] = []
     new_result_records: list[dict] = []  # accumulate inserted result rows for email
@@ -139,6 +139,7 @@ def run() -> int:
         try:
             result = ScraperClass().scrape()
             totals["inserted"] += result.get("inserted", 0)
+            totals["published"] += result.get("published", 0)
             totals["skipped"]  += result.get("skipped", 0)
             totals["errors"]   += result.get("errors", 0)
             per_scraper.append((label, result))
@@ -167,26 +168,29 @@ def run() -> int:
     # Grand totals
     logger.info("")
     logger.info("SCRAPER RUN COMPLETE")
-    logger.info(f"  New records inserted : {totals['inserted']}")
+    logger.info(f"  Queued for review    : {totals['inserted']}")
+    logger.info(f"  Published            : {totals['published']}")
     logger.info(f"  Duplicates skipped   : {totals['skipped']}")
     logger.info(f"  Record-level errors  : {totals['errors']}")
     if failed_scrapers:
         logger.warning(f"  Scrapers that crashed: {', '.join(failed_scrapers)}")
     logger.info("=" * 50)
 
-    trigger_vercel_deploy(totals["inserted"])
+    # Queued items are not public until an editor approves them, so only
+    # published records justify a rebuild or a public announcement.
+    trigger_vercel_deploy(totals["published"])
 
     # Email subscribers about new results
     notify_subscribers(new_result_records)
 
-    # Facebook summary post (only when new records inserted)
-    if totals["inserted"] > 0:
+    site_url = (os.getenv("SIKSHYANEPAL_URL") or "").strip().rstrip("/")
+    if totals["published"] > 0 and site_url:
         post_to_facebook(
             message=(
-                f"📢 {totals['inserted']} new update{'s' if totals['inserted'] > 1 else ''} just published on SikshyaNepal!\n"
-                "Check the latest results and notices 👉"
+                f"📢 {totals['published']} new update{'s' if totals['published'] > 1 else ''} just published on SikshyaNepal!\n"
+                "Check the latest college news 👉"
             ),
-            link="https://sikshyanepal.vercel.app",
+            link=f"{site_url}/news",
         )
 
     # Exit 1 only if every single scraper crashed
