@@ -250,10 +250,9 @@ class TUResultsScraper(BaseScraper):
             }
 
             title_lower = title.lower()
-            for prog in PROGRAM_MAP:
-                if prog in title_lower:
-                    record["program"] = prog.upper().replace("B.E", "BE")
-                    break
+            program = self.detect_program(title, PROGRAM_MAP)
+            if program:
+                record["program"] = program
             for sem in SEM_MAP:
                 if sem in title_lower:
                     record["semester"] = f"{sem} Semester"

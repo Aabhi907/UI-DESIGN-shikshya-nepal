@@ -117,10 +117,9 @@ class KUResultsScraper(BaseScraper):
             }
 
             title_lower = title.lower()
-            for prog in ["be", "bsc", "bba", "mba", "msc", "phd", "mbbs"]:
-                if prog in title_lower:
-                    record["program"] = prog.upper()
-                    break
+            program = self.detect_program(title, ["be", "bsc", "bba", "mba", "msc", "phd", "mbbs"])
+            if program:
+                record["program"] = program
             for sem in ["1st", "2nd", "3rd", "4th", "5th", "6th", "7th", "8th"]:
                 if sem in title_lower:
                     record["semester"] = f"{sem} Semester"

@@ -455,6 +455,20 @@ class BaseScraper:
         return False
 
     @staticmethod
+    def detect_program(title: str, programs: list[str]) -> str | None:
+        """
+        First programme code in the title as a whole word, allowing dotted forms
+        (B.E., B.Sc.), so "be" does not match "BEd" or "BEcon".
+        """
+        lowered = title.lower()
+        for prog in programs:
+            tokens = prog.replace(".", "").split()
+            body = r"[\s.]+".join(r"\.?".join(re.escape(ch) for ch in token) for token in tokens)
+            if re.search(r"(?<![a-z])" + body + r"\.?(?![a-z])", lowered):
+                return prog.replace(".", "").upper()
+        return None
+
+    @staticmethod
     def looks_like_date(text: str) -> bool:
         return len(text) <= 40 and bool(DATE_PATTERN.search(text))
 
