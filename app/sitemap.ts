@@ -2,8 +2,7 @@ import { MetadataRoute } from 'next'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import { careers } from '@/lib/careers'
 import { COLLEGE_NEWS_TOPICS } from '@/lib/college-news'
-
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://sikshyanepal.vercel.app'
+import { SITE_URL as BASE_URL } from '@/lib/seo'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const supabase = createServerSupabaseClient()

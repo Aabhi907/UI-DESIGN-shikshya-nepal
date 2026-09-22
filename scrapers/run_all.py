@@ -43,7 +43,7 @@ def notify_subscribers(new_results: list[dict]) -> None:
     Silently skips if SIKSHYANEPAL_URL or NOTIFICATION_SECRET are not set,
     or if there are no new results.
     """
-    site_url = os.getenv("SIKSHYANEPAL_URL")
+    site_url = (os.getenv("SIKSHYANEPAL_URL") or "").strip().rstrip("/")
     secret   = os.getenv("NOTIFICATION_SECRET")
     if not site_url or not secret:
         logger.info("SIKSHYANEPAL_URL / NOTIFICATION_SECRET not set — skipping email notification")

@@ -58,6 +58,7 @@ export const metadata: Metadata = {
   title: { absolute: "SikshyaNepal — Schools, Colleges, Results & Notices in Nepal" },
   description:
     'Find Nepal schools, colleges, programs, exam results, notices and scholarships with sources you can check.',
+  alternates: { canonical: '/' },
 }
 
 const UNIVERSITY_SHOWCASE = [
