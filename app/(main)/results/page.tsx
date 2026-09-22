@@ -37,10 +37,12 @@ async function getResults(sp: { q?: string; university?: string; program?: strin
     )
   }
   if (sp.program) {
+    const program = sp.program.toLowerCase()
+    // Whole word, allowing dotted forms (B.E., B.Sc.) but not BEd or BEcon for BE.
+    const letters = program.replace(/[^a-z]/g, '').split('').join('\\.?')
+    const wholeWord = new RegExp(`(^|[^a-z])${letters}\\.?(?![a-z])`, 'i')
     results = results.filter(
-      (r) =>
-        r.program?.toLowerCase().includes(sp.program!.toLowerCase()) ||
-        r.title.toLowerCase().includes(sp.program!.toLowerCase())
+      (r) => r.program?.toLowerCase() === program || wholeWord.test(r.title)
     )
   }
 
