@@ -1,14 +1,25 @@
 import { Resend } from 'resend'
-import { createServerSupabaseClient } from '@/lib/supabase'
-import type { Result } from '@/types'
+import { createAdminSupabaseClient } from '@/lib/supabase'
+
+export type ResultNotification = {
+  title: string
+  slug: string
+  university?: { short_name?: string | null } | null
+}
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://sikshyanepal.vercel.app'
 const FROM_EMAIL = 'SikshyaNepal <onboarding@resend.dev>'
 
+function escapeHtml(value: string) {
+  return value.replace(/[&<>'"]/g, character => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;',
+  })[character]!)
+}
+
 // ── HTML email template ──────────────────────────────────────────────────────
 
-function buildEmailHtml(results: Result[]): string {
+function buildEmailHtml(results: ResultNotification[]): string {
   const preview   = results.slice(0, 5)
   const remaining = results.length - preview.length
 
@@ -21,15 +32,15 @@ function buildEmailHtml(results: Result[]): string {
           <tr>
             <td style="vertical-align:top;padding-right:12px;">
               <p style="margin:0 0 4px;font-size:14px;font-weight:600;color:#0f1629;line-height:1.4;">
-                ${r.title}
+                ${escapeHtml(r.title)}
               </p>
               <span style="display:inline-block;padding:2px 8px;background:#dde6fd;color:#1847c4;
                            border-radius:4px;font-size:11px;font-weight:700;font-family:monospace;">
-                ${r.university?.short_name ?? 'University'}
+                ${escapeHtml(r.university?.short_name ?? 'University')}
               </span>
             </td>
             <td style="vertical-align:middle;white-space:nowrap;">
-              <a href="${BASE_URL}/results/${r.slug}"
+              <a href="${BASE_URL}/results/${encodeURIComponent(r.slug)}"
                  style="display:inline-block;padding:8px 16px;background:#1847c4;color:#ffffff;
                         font-size:12px;font-weight:600;text-decoration:none;border-radius:6px;">
                 View Result →
@@ -71,7 +82,7 @@ function buildEmailHtml(results: Result[]): string {
                 SikshyaNepal
               </p>
               <p style="margin:4px 0 0;font-size:12px;color:#a5c0fa;">
-                Nepal&apos;s complete education platform
+                College, admission and result updates for Nepal
               </p>
             </td>
           </tr>
@@ -128,22 +139,27 @@ function buildEmailHtml(results: Result[]): string {
 
 // ── Main send function ───────────────────────────────────────────────────────
 
-export async function sendResultNotification(results: Result[]): Promise<{ sent: number; errors: number }> {
-  if (!results.length) return { sent: 0, errors: 0 }
+export async function sendResultNotification(results: ResultNotification[]): Promise<{ sent: number; errors: number; recipients: number }> {
+  if (!results.length) return { sent: 0, errors: 0, recipients: 0 }
   if (!resend) {
-    console.warn('[email] RESEND_API_KEY not set — skipping notification')
-    return { sent: 0, errors: 0 }
+    // Treat an absent provider as a failed delivery, not a successful batch
+    // with zero messages. The caller records this for an administrator.
+    throw new Error('Result alerts are not configured.')
   }
 
-  const supabase = createServerSupabaseClient()
+  const supabase = createAdminSupabaseClient()
   const { data: subscribers, error } = await supabase
     .from('subscribers')
     .select('email, token')
     .eq('is_active', true)
 
-  if (error || !subscribers?.length) {
-    console.warn('[email] No active subscribers or fetch error:', error?.message)
-    return { sent: 0, errors: 0 }
+  if (error) {
+    console.error('[email] Could not load active subscribers:', error.message)
+    throw new Error('Active result-alert subscribers could not be loaded.')
+  }
+  if (!subscribers?.length) {
+    console.info('[email] No active result-alert subscribers')
+    return { sent: 0, errors: 0, recipients: 0 }
   }
 
   const subject = `📢 ${results.length} New Result${results.length > 1 ? 's' : ''} Published on SikshyaNepal`
@@ -184,5 +200,5 @@ export async function sendResultNotification(results: Result[]): Promise<{ sent:
   }
 
   console.log(`[email] Notification complete — sent: ${sent}, errors: ${errors}`)
-  return { sent, errors }
+  return { sent, errors, recipients: subscribers.length }
 }

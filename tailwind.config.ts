@@ -9,8 +9,9 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        display: ['var(--font-sora)', 'Georgia', 'serif'],
-        sans:    ['var(--font-dm-sans)', 'system-ui', 'sans-serif'],
+        display: ['var(--font-noto-serif)', 'var(--font-noto-devanagari)', 'Georgia', 'serif'],
+        nepali:  ['var(--font-noto-devanagari)', 'system-ui', 'sans-serif'],
+        sans:    ['var(--font-dm-sans)', 'var(--font-noto-devanagari)', 'system-ui', 'sans-serif'],
         mono:    ['var(--font-dm-mono)', 'Menlo', 'monospace'],
       },
       colors: {
@@ -45,9 +46,9 @@ const config: Config = {
         },
         // ── Borders ──────────────────────────────────
         border: {
-          DEFAULT: '#e5e7eb',
-          strong:  '#d1d5db',
-          subtle:  '#f3f4f6',
+          DEFAULT: '#e6e4df',
+          strong:  '#d4d1ca',
+          subtle:  '#f3f1eb',
         },
         // ── Brand alias (backward compat) ────────────
         brand: {

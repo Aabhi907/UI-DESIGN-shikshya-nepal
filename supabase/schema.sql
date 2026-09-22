@@ -49,12 +49,12 @@ CREATE TABLE IF NOT EXISTS programs (
 INSERT INTO programs (name, slug, duration, degree_level, faculty) VALUES
   ('Bachelor of Information Technology (BIT)', 'bit', '4 Years', 'bachelor', 'IT'),
   ('Bachelor of Science in Computer Science and Information Technology (B.Sc. CSIT)', 'bsc-csit', '4 Years', 'bachelor', 'IT'),
-  ('Bachelor of Computer Application (BCA)', 'bca', '3 Years', 'bachelor', 'IT'),
+  ('Bachelor of Computer Application (BCA)', 'bca', '4 Years', 'bachelor', 'IT'),
   ('Bachelor of Engineering (BE) in Computer', 'be-computer', '4 Years', 'bachelor', 'Engineering'),
   ('Bachelor of Engineering (BE) in Civil', 'be-civil', '4 Years', 'bachelor', 'Engineering'),
   ('Bachelor of Engineering (BE) in Electronics', 'be-electronics', '4 Years', 'bachelor', 'Engineering'),
   ('Bachelor of Business Administration (BBA)', 'bba', '4 Years', 'bachelor', 'Management'),
-  ('Bachelor of Business Management (BBM)', 'bbm', '3 Years', 'bachelor', 'Management'),
+  ('Bachelor of Business Management (BBM)', 'bbm', '4 Years', 'bachelor', 'Management'),
   ('Bachelor of Business Studies (BBS)', 'bbs', '4 Years', 'bachelor', 'Management'),
   ('Bachelor of Arts (BA)', 'ba', '4 Years', 'bachelor', 'Humanities'),
   ('Bachelor of Science (B.Sc.)', 'bsc', '4 Years', 'bachelor', 'Science'),
@@ -62,7 +62,7 @@ INSERT INTO programs (name, slug, duration, degree_level, faculty) VALUES
   ('Bachelor of Pharmacy (B.Pharm)', 'bpharm', '4 Years', 'bachelor', 'Medical'),
   ('Bachelor of Nursing (B.Nurs)', 'bnursing', '4 Years', 'bachelor', 'Medical'),
   ('Bachelor of Education (B.Ed.)', 'bed', '4 Years', 'bachelor', 'Education'),
-  ('Bachelor of Law (LLB)', 'llb', '5 Years', 'bachelor', 'Law'),
+  ('Bachelor of Law (LLB)', 'llb', '3 Years', 'bachelor', 'Law'),
   ('Master of Business Administration (MBA)', 'mba', '2 Years', 'master', 'Management'),
   ('Master of Information Technology (MIT)', 'mit', '2 Years', 'master', 'IT'),
   ('Master of Science in Computer Science and Information Technology (M.Sc. CSIT)', 'msc-csit', '2 Years', 'master', 'IT'),
@@ -296,7 +296,12 @@ CREATE TABLE IF NOT EXISTS news (
   author TEXT DEFAULT 'SikshyaNepal Editorial Team',
   tags TEXT[],
   published_date TIMESTAMPTZ DEFAULT NOW(),
-  created_at TIMESTAMPTZ DEFAULT NOW()
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  author_name TEXT NOT NULL DEFAULT 'SikshyaNepal Editorial', source_name TEXT, source_url TEXT,
+  last_verified_at TIMESTAMPTZ, updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  status TEXT NOT NULL DEFAULT 'published', content_category TEXT NOT NULL DEFAULT 'college_news',
+  education_levels TEXT[] NOT NULL DEFAULT '{}', college_id UUID REFERENCES colleges(id) ON DELETE SET NULL,
+  automation_mode TEXT NOT NULL DEFAULT 'manual', disclosure TEXT
 );
 
 -- ============================================================
@@ -322,7 +327,10 @@ CREATE TABLE IF NOT EXISTS content_ingestion_items (
   reviewed_by TEXT, reviewed_at TIMESTAMPTZ, published_record_id UUID, content_hash TEXT, raw_snapshot TEXT,
   confidence_score SMALLINT NOT NULL DEFAULT 0 CHECK (confidence_score BETWEEN 0 AND 100),
   verification_status TEXT NOT NULL DEFAULT 'pending' CHECK (verification_status IN ('pending', 'source_verified', 'editor_verified', 'rejected')),
-  last_source_check_at TIMESTAMPTZ, fetched_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  last_source_check_at TIMESTAMPTZ, content_category TEXT NOT NULL DEFAULT 'college_news',
+  claim_risk TEXT NOT NULL DEFAULT 'medium', college_id UUID REFERENCES colleges(id) ON DELETE SET NULL,
+  auto_publish_eligible BOOLEAN NOT NULL DEFAULT FALSE, generation_version TEXT,
+  fetched_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(), updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
@@ -526,7 +534,8 @@ CREATE POLICY "Public read old_questions" ON old_questions FOR SELECT TO anon US
 CREATE POLICY "Public read entrance_exams" ON entrance_exams FOR SELECT TO anon USING (true);
 CREATE POLICY "Users manage own saved schools" ON saved_schools FOR ALL TO authenticated USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid());
 
--- Allow insert for reviews (students can submit)
-CREATE POLICY "Anyone can submit review" ON reviews FOR INSERT TO anon WITH CHECK (true);
+-- Reviews are submitted only through the server-side /api/reviews route. That
+-- route requires a signed-in user, records a private accountability link and
+-- always places submissions into moderation before publication.
 CREATE POLICY "Anyone can report corrections" ON data_corrections FOR INSERT TO anon WITH CHECK (status = 'pending');
 CREATE POLICY "Public read published admissions" ON admissions FOR SELECT TO anon USING (status = 'published');

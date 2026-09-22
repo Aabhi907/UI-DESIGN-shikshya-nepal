@@ -1,143 +1,176 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
-import { Bell, X, Sparkles } from 'lucide-react'
-
-// Minimal OneSignal type — only what we use
-declare global {
-  interface Window {
-    OneSignalDeferred?: Array<(os: OneSignalAPI) => Promise<void> | void>
-  }
-}
-interface OneSignalAPI {
-  Notifications: {
-    permission: boolean
-    requestPermission: () => Promise<void>
-  }
-}
+import { useCallback, useEffect, useState } from 'react'
+import { Bell, CheckCircle2, Loader2, Mail, X } from 'lucide-react'
 
 type Variant = 'float' | 'header'
+type SubscriptionState = 'idle' | 'loading' | 'success' | 'error'
 
 interface Props {
   variant: Variant
 }
 
+/**
+ * Result alerts are email subscriptions, not browser push notifications.
+ * This keeps the promise visible to students aligned with the delivery service
+ * that is actually configured and avoids a broken third-party push prompt.
+ */
 export default function SubscribeButton({ variant }: Props) {
-  const [modalOpen, setModalOpen]       = useState(false)
-  const [subscribed, setSubscribed]     = useState(false)
-  const [requesting, setRequesting]     = useState(false)
-  const [dismissed, setDismissed]       = useState(false)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [subscribed, setSubscribed] = useState(false)
+  const [dismissed, setDismissed] = useState(false)
+  const [email, setEmail] = useState('')
+  const [state, setState] = useState<SubscriptionState>('idle')
+  const [error, setError] = useState('')
 
-  // Check subscription state once SDK is ready
   useEffect(() => {
-    if (typeof window === 'undefined') return
-    window.OneSignalDeferred = window.OneSignalDeferred || []
-    window.OneSignalDeferred.push((os) => {
-      setSubscribed(os.Notifications.permission)
-    })
-    // Also load dismissed state from localStorage
-    setDismissed(localStorage.getItem('sn_push_dismissed') === '1')
-  }, [])
-
-  const handleSubscribe = useCallback(() => {
-    setRequesting(true)
-    window.OneSignalDeferred = window.OneSignalDeferred || []
-    window.OneSignalDeferred.push(async (os) => {
-      try {
-        await os.Notifications.requestPermission()
-        setSubscribed(os.Notifications.permission)
-      } finally {
-        setRequesting(false)
-        setModalOpen(false)
-      }
-    })
+    setSubscribed(localStorage.getItem('sn_email_alert_subscribed') === '1')
+    setDismissed(localStorage.getItem('sn_alert_prompt_dismissed') === '1')
   }, [])
 
   const handleDismiss = useCallback(() => {
     setModalOpen(false)
     setDismissed(true)
-    localStorage.setItem('sn_push_dismissed', '1')
+    localStorage.setItem('sn_alert_prompt_dismissed', '1')
   }, [])
 
-  // The modal (shared between both variants)
-  const modal = modalOpen && (
-    <div className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center p-4">
-      {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={handleDismiss} />
+  const handleSubmit = useCallback(async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const address = email.trim().toLowerCase()
+    if (!address) {
+      setError('Enter your email address to receive alerts.')
+      setState('error')
+      return
+    }
 
-      {/* Panel */}
-      <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 animate-in slide-in-from-bottom-4 duration-200">
+    setState('loading')
+    setError('')
+
+    try {
+      const response = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: address }),
+      })
+      const payload = await response.json().catch(() => ({})) as { error?: string }
+
+      if (!response.ok) {
+        setError(payload.error || 'We could not save your alert request. Please try again.')
+        setState('error')
+        return
+      }
+
+      localStorage.setItem('sn_email_alert_subscribed', '1')
+      localStorage.setItem('sn_alert_prompt_dismissed', '1')
+      setSubscribed(true)
+      setDismissed(true)
+      setEmail('')
+      setState('success')
+    } catch {
+      setError('Your connection interrupted the request. Please try again.')
+      setState('error')
+    }
+  }, [email])
+
+  const modal = modalOpen && (
+    <div className="fixed inset-0 z-[200] flex items-end justify-center p-4 sm:items-center" role="dialog" aria-modal="true" aria-labelledby="notification-dialog-title">
+      <button aria-label="Close notification dialog" className="absolute inset-0 cursor-default bg-slate-950/50 backdrop-blur-sm" onClick={handleDismiss} />
+
+      <div className="relative w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl motion-safe:animate-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-200">
         <button
+          type="button"
           onClick={handleDismiss}
-          className="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors"
+          aria-label="Close notification dialog"
+          className="absolute right-3 top-3 flex h-11 w-11 items-center justify-center rounded-full text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
         >
-          <X className="w-4 h-4 text-gray-500" />
+          <X aria-hidden="true" className="h-4 w-4" />
         </button>
 
-        <div className="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-          <Bell className="w-7 h-7 text-blue-600" />
+        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50">
+          <Bell aria-hidden="true" className="h-7 w-7 text-blue-700" />
         </div>
 
-        <h3 className="text-lg font-bold text-gray-900 text-center mb-2">
-          Get instant alerts when exam results drop
+        <h3 id="notification-dialog-title" className="mb-2 text-center text-lg font-bold text-slate-950">
+          Get result and notice alerts
         </h3>
-        <p className="text-sm text-gray-500 text-center mb-6">
-          Be the first to know when TU, KU, NEB, and CTEVT publish new results and notices.
-          No spam — only real updates.
+        <p className="mb-5 text-center text-sm leading-5 text-slate-600">
+          Enter your email and we&apos;ll send an alert when SikshyaNepal publishes a TU, KU, NEB or CTEVT update.
         </p>
 
-        <button
-          onClick={handleSubscribe}
-          disabled={requesting}
-          className="w-full flex items-center justify-center gap-2 py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 disabled:opacity-60 transition-colors mb-3"
-        >
-          <Bell className="w-4 h-4" />
-          {requesting ? 'Enabling…' : 'Subscribe for free'}
-        </button>
+        {state === 'success' ? (
+          <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-center" role="status">
+            <CheckCircle2 aria-hidden="true" className="mx-auto mb-1 h-5 w-5 text-emerald-700" />
+            <p className="text-sm font-semibold text-emerald-900">Email alerts are on.</p>
+            <p className="mt-1 text-xs leading-5 text-emerald-800">You can unsubscribe at any time from an alert email.</p>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} noValidate>
+            <label htmlFor="result-alert-email" className="mb-1.5 block text-sm font-semibold text-slate-800">Email address</label>
+            <div className="flex gap-2">
+              <div className="relative min-w-0 flex-1">
+                <Mail aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+                <input
+                  id="result-alert-email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  value={email}
+                  onChange={(event) => { setEmail(event.target.value); if (state === 'error') setState('idle') }}
+                  aria-describedby={error ? 'result-alert-error' : 'result-alert-help'}
+                  aria-invalid={state === 'error'}
+                  placeholder="you@example.com"
+                  className="h-12 w-full rounded-xl border border-slate-300 bg-white py-2 pl-9 pr-3 text-sm text-slate-950 placeholder:text-slate-400 focus:border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-100"
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={state === 'loading'}
+                className="inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-xl bg-blue-700 px-4 text-sm font-semibold text-white transition-colors hover:bg-blue-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {state === 'loading' && <Loader2 aria-hidden="true" className="h-4 w-4 animate-spin" />}
+                {state === 'loading' ? 'Saving' : 'Get alerts'}
+              </button>
+            </div>
+            {error ? (
+              <p id="result-alert-error" role="alert" className="mt-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm leading-5 text-red-800">{error}</p>
+            ) : (
+              <p id="result-alert-help" className="mt-3 text-xs leading-5 text-slate-500">No spam. You can unsubscribe at any time.</p>
+            )}
+          </form>
+        )}
 
-        <button
-          onClick={handleDismiss}
-          className="w-full py-2.5 text-sm text-gray-500 hover:text-gray-700 transition-colors"
-        >
-          Maybe later
+        <button type="button" onClick={handleDismiss} className="mt-4 w-full rounded-lg py-2 text-sm font-medium text-slate-600 transition-colors hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600">
+          {state === 'success' ? 'Done' : 'Maybe later'}
         </button>
       </div>
     </div>
   )
 
-  // ── Header variant (desktop bell icon) ──
   if (variant === 'header') {
     return (
       <>
         <button
-          onClick={() => subscribed ? undefined : setModalOpen(true)}
-          title={subscribed ? 'Notifications enabled' : 'Enable notifications'}
-          className={`p-2 rounded-lg transition-colors ${
-            subscribed
-              ? 'text-blue-600 bg-blue-50 cursor-default'
-              : 'text-gray-500 hover:text-blue-600 hover:bg-blue-50'
-          }`}
+          type="button"
+          onClick={() => !subscribed && setModalOpen(true)}
+          title={subscribed ? 'Email alerts enabled' : 'Get result and notice alerts'}
+          aria-label={subscribed ? 'Email alerts enabled' : 'Get result and notice alerts'}
+          className={`flex h-11 w-11 items-center justify-center rounded-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-offset-2 ${subscribed ? 'cursor-default bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-blue-50 hover:text-blue-700'}`}
         >
-          {subscribed ? <Bell className="w-5 h-5" /> : <Bell className="w-5 h-5" />}
+          <Bell aria-hidden="true" className="h-5 w-5" />
         </button>
         {modal}
       </>
     )
   }
 
-  // ── Float variant (mobile bottom-right) ──
-  // Don't render once subscribed or permanently dismissed
   if (subscribed || dismissed) return null
 
   return (
     <>
-      <button
-        onClick={() => setModalOpen(true)}
-        className="lg:hidden fixed bottom-20 right-4 z-50 flex items-center gap-2 px-4 py-3 bg-blue-600 text-white text-sm font-semibold rounded-full shadow-lg hover:bg-blue-700 active:scale-95 transition-all"
-        aria-label="Subscribe for result notifications"
-      >
-        <Sparkles className="w-4 h-4" />
-        Get Alerts
+      <button type="button" onClick={() => setModalOpen(true)} className="fixed bottom-20 right-4 z-50 inline-flex min-h-11 items-center gap-2 rounded-full bg-blue-700 px-4 py-3 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-blue-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-700 focus-visible:ring-offset-2 lg:hidden">
+        <Bell aria-hidden="true" className="h-4 w-4" />
+        Get alerts
       </button>
       {modal}
     </>

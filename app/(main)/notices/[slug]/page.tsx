@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   const notice = await getNotice(params.slug)
   if (!notice) return { title: 'Notice Not Found' }
   return {
-    title:       `${notice.title} | SikshyaNepal`,
+    title:       notice.title,
     description: notice.content?.slice(0, 160) || `Notice from ${notice.university?.name}`,
     alternates:  { canonical: `${BASE_URL}/notices/${notice.slug}` },
   }
@@ -61,7 +61,7 @@ export default async function NoticeDetailPage({ params }: { params: { slug: str
 
       {/* ── Header card ───────────────────────────────────────────────── */}
       <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm mb-6">
-        <div className="bg-gradient-to-r from-orange-500 to-orange-600 p-8 text-white">
+        <div className="bg-[#9a302c] p-8 text-white">
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
               <Bell className="w-6 h-6 text-white" />
@@ -86,10 +86,10 @@ export default async function NoticeDetailPage({ params }: { params: { slug: str
         </div>
 
         <div className="p-6">
-          <div className="flex items-center gap-2 text-sm text-gray-500 mb-6">
-            <Calendar className="w-4 h-4" />
-            <span>Published on {formatDate(notice.published_date)}</span>
-          </div>
+          {notice.published_date && <div className="flex items-center gap-2 text-sm text-gray-500 mb-6">
+            <Calendar className="w-4 h-4" aria-hidden="true" />
+            <time dateTime={notice.published_date}>Published {formatDate(notice.published_date)}</time>
+          </div>}
 
           {notice.content && (
             <div className="prose prose-gray max-w-none mb-6">

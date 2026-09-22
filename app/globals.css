@@ -9,10 +9,16 @@
   --accent:      #c93b37;
   --navy:        #16233f;
   --surface:     #ffffff;
+  --surface-soft:#f5f4f1;
   --page-bg:     #f8f7f3;
-  --text:        #182230;
+  --text:        #0f1629;
+  --text-secondary: #374151;
   --text-muted:  #667085;
   --border:      #e6e4df;
+  --border-strong: #d4d1ca;
+  --shadow-rest: 0 1px 2px rgba(15, 22, 41, 0.035), 0 4px 12px rgba(15, 22, 41, 0.02);
+  --shadow-hover: 0 6px 16px rgba(15, 22, 41, 0.06);
+  --measure-reading: 68ch;
 }
 
 @layer base {
@@ -23,20 +29,70 @@
     text-rendering: optimizeLegibility;
   }
 
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+
+  button {
+    letter-spacing: 0.001em;
+    touch-action: manipulation;
+  }
+
+  ::selection {
+    background: #dce5f5;
+    color: #0f1629;
+  }
+
   body {
-    @apply bg-[#f8f7f3] text-ink font-sans leading-relaxed;
+    @apply bg-[#f8f7f3] text-ink font-sans text-[16px] leading-relaxed;
     font-feature-settings: "cv02", "cv03", "cv04";
+    font-optical-sizing: auto;
     letter-spacing: 0.002em;
   }
 
-  /* The serif is reserved for editorial hierarchy; body copy stays straightforward. */
-  h1 {
-    font-weight: 800;
-    letter-spacing: -0.035em;
+  /* Public headings share one editorial voice; admin tools keep their own shell styling. */
+  .site-shell :where(h1, h2, h3, h4) {
+    font-family: var(--font-noto-serif), var(--font-noto-devanagari), Georgia, serif;
+    color: var(--text);
+    font-kerning: normal;
   }
-  h2 {
+  .site-shell h1 {
+    font-weight: 750;
+    letter-spacing: -0.035em;
+    line-height: 1.08;
+    text-wrap: balance;
+  }
+  .site-shell h2 {
     font-weight: 700;
     letter-spacing: -0.028em;
+    line-height: 1.16;
+    text-wrap: balance;
+  }
+  .site-shell :where(h3, h4) {
+    letter-spacing: -0.018em;
+    text-wrap: balance;
+  }
+  .site-shell :where(p, li) {
+    text-wrap: pretty;
+  }
+  label {
+    letter-spacing: 0.004em;
+  }
+
+  /* Devanagari needs its own shaping metrics; Latin fallbacks create uneven rhythm. */
+  .site-shell :lang(ne) {
+    font-family: var(--font-noto-devanagari), system-ui, sans-serif;
+    letter-spacing: 0;
+    line-height: 1.7;
+  }
+
+  .site-shell :lang(ne) :where(h1, h2, h3, h4) {
+    font-family: var(--font-noto-devanagari), system-ui, sans-serif;
+    letter-spacing: -0.015em;
+    line-height: 1.28;
   }
 
   /* Limit motion to controls. Text should not animate while a student reads. */
@@ -59,13 +115,9 @@
     *, *::before, *::after { animation: none !important; transition: none !important; }
   }
 
-  ::selection {
-    background: #1e429f;
-    color: #ffffff;
-  }
-
   :focus-visible {
-    @apply outline-none ring-2 ring-primary ring-offset-2;
+    outline: 3px solid #f97316;
+    outline-offset: 3px;
   }
 
   ::-webkit-scrollbar       { width: 6px; height: 6px; }
@@ -79,17 +131,17 @@
 
   /* ── Buttons ─────────────────────────────────────────────────── */
   .btn {
-    @apply inline-flex items-center justify-center gap-2 font-semibold rounded-lg
-           transition-all duration-150 select-none cursor-pointer active:scale-[0.97];
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl font-semibold
+           transition-colors duration-150 select-none cursor-pointer;
   }
   .btn-primary {
     @apply btn px-5 py-2.5 bg-primary text-white text-sm
-           hover:bg-primary-600 shadow-card hover:shadow-card-md;
+           hover:bg-primary-600;
     border-radius: 0.65rem;
   }
   .btn-outline {
     @apply btn px-5 py-2.5 bg-white text-primary border-2 border-primary text-sm
-           hover:bg-primary-50 shadow-card;
+           hover:bg-primary-50;
   }
   .btn-ghost {
     @apply btn px-4 py-2 text-ink-secondary text-sm hover:bg-gray-100 hover:text-ink;
@@ -98,50 +150,102 @@
   .btn-navy  { @apply btn-primary; }
   .btn-blue  { @apply btn-primary; }
 
-  /* ── Section labels ──────────────────────────────────────────── */
-  /* Resend-style micro-label: 11px, bold, very wide tracking */
+  /* ── Section labels: restrained editorial markers, not floating pills ── */
   .section-tag {
-    @apply inline-flex items-center px-3 py-1 rounded-full font-bold
-           bg-accent-50 text-accent-600 border border-accent-200 mb-3;
-    font-size: 11px;
-    letter-spacing: 0.1em;
+    @apply inline-flex items-center border-l-2 border-accent pl-2 font-semibold text-accent-600 mb-3;
+    font-size: 0.8125rem;
+    letter-spacing: 0.01em;
   }
   .section-tag-blue {
-    @apply inline-flex items-center px-3 py-1 rounded-full font-bold
-           bg-primary-50 text-primary border border-primary-100 mb-3;
-    font-size: 11px;
-    letter-spacing: 0.1em;
+    @apply inline-flex items-center border-l-2 border-primary pl-2 font-semibold text-primary mb-3;
+    font-size: 0.8125rem;
+    letter-spacing: 0.01em;
   }
   .section-heading {
-    @apply font-display font-bold text-3xl md:text-4xl text-ink leading-[1.12];
+    @apply font-display font-bold text-3xl md:text-4xl text-ink leading-[1.1];
     letter-spacing: -0.03em;
   }
   .section-sub {
-    @apply text-ink-secondary text-base mt-2 leading-relaxed;
+    @apply mt-3 max-w-2xl text-base leading-7 text-ink-secondary;
   }
   /* Legacy alias */
   .section-eyebrow { @apply section-tag; }
   .section-label   { @apply section-tag; }
 
+  /* Shared page typography keeps directory and tool pages recognisably related. */
+  .page-kicker {
+    @apply font-mono text-xs font-medium uppercase text-accent-600;
+    letter-spacing: 0.105em;
+  }
+  .page-title {
+    @apply font-display text-ink;
+    max-width: 22ch;
+    font-size: clamp(2.1rem, 4.4vw, 3.35rem);
+    font-weight: 750;
+    letter-spacing: -0.038em;
+    line-height: 1.06;
+    text-wrap: balance;
+  }
+  .page-lede {
+    max-width: var(--measure-reading);
+    font-size: clamp(1rem, 1.5vw, 1.125rem);
+    line-height: 1.72;
+    color: var(--text-secondary);
+    text-wrap: pretty;
+  }
+  .reading-copy {
+    max-width: var(--measure-reading);
+    font-size: 1rem;
+    line-height: 1.75;
+    color: var(--text-secondary);
+  }
+
   /* ── Cards ───────────────────────────────────────────────────── */
   .card {
-    @apply bg-card rounded-xl border border-border shadow-card;
-    box-shadow: 0 1px 2px rgba(24, 34, 48, 0.04);
+    @apply rounded-xl border bg-card;
+    border-color: var(--border);
+    box-shadow: var(--shadow-rest);
   }
   .card-hover {
-    @apply card transition-all duration-200 cursor-pointer;
+    @apply card cursor-pointer;
+    transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
   }
-  .card-hover:hover {
-    border-color: #b8c7e8;
-    box-shadow: 0 10px 24px rgba(24, 34, 48, 0.08);
-    transform: translateY(-1px);
+
+  /* Shared public content surface: calm at rest, clear on focus and hover. */
+  .editorial-card {
+    @apply rounded-xl border bg-white;
+    border-color: var(--border);
+    box-shadow: var(--shadow-rest);
+  }
+  .editorial-card-interactive {
+    transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+  }
+  .editorial-card-title {
+    @apply font-display font-bold text-ink;
+    letter-spacing: -0.018em;
+  }
+  .editorial-meta {
+    @apply text-[13px] leading-5 text-slate-600;
+  }
+  .editorial-kicker {
+    @apply font-mono text-xs font-medium uppercase text-accent-600;
+    letter-spacing: 0.105em;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .card-hover:hover,
+    .editorial-card-interactive:hover,
+    .group:hover .editorial-card-interactive {
+      border-color: #aebdde;
+      box-shadow: var(--shadow-hover);
+    }
   }
   /* Legacy aliases */
   .card-base { @apply card; }
 
   /* ── Filter chips ────────────────────────────────────────────── */
   .chip {
-    @apply px-4 py-1.5 rounded-full text-sm font-medium border
+    @apply px-3 py-1.5 rounded-lg text-sm font-medium border
            transition-all duration-150 cursor-pointer whitespace-nowrap;
   }
   .chip-active   { @apply chip bg-primary text-white border-primary; }

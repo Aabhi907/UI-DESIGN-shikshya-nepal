@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   const result = await getResult(params.slug)
   if (!result) return { title: 'Result Not Found' }
   return {
-    title:       `${result.title} | SikshyaNepal`,
+    title:       result.title,
     description: `Check ${result.title} result published by ${result.university?.name}. Program: ${result.program || 'All'}. Semester: ${result.semester || 'All'}.`,
     openGraph: {
       title:       `${result.title} | SikshyaNepal`,
@@ -88,7 +88,7 @@ export default async function ResultDetailPage({ params }: { params: { slug: str
 
       {/* ── Header card ───────────────────────────────────────────────── */}
       <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm mb-6">
-        <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-8 text-white">
+        <div className="bg-[#16233f] p-8 text-white">
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
               <FileText className="w-6 h-6 text-white" />
@@ -156,10 +156,10 @@ export default async function ResultDetailPage({ params }: { params: { slug: str
             )}
           </div>
 
-          <div className="flex items-center gap-2 text-sm text-gray-500 mb-6">
-            <Calendar className="w-4 h-4" />
-            <span>Published on {formatDate(result.published_date)}</span>
-          </div>
+          {result.published_date && <div className="flex items-center gap-2 text-sm text-gray-500 mb-6">
+            <Calendar className="w-4 h-4" aria-hidden="true" />
+            <time dateTime={result.published_date}>Published {formatDate(result.published_date)}</time>
+          </div>}
 
           {/* Action buttons */}
           <div className="space-y-3">

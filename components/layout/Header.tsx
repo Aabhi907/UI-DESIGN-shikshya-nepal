@@ -1,86 +1,100 @@
 'use client'
 
 import Link from 'next/link'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { usePathname } from 'next/navigation'
 import { Menu, X, ChevronDown, BookOpenCheck, Search } from 'lucide-react'
 import SubscribeButton from '@/components/notifications/SubscribeButton'
+import AccountButton from '@/components/auth/AccountButton'
 
-const navLinks = [
-  {
-    label: 'Schools',
-    href: '/schools',
-    sub: [
-      { label: 'All Schools',       href: '/schools' },
-      { label: 'Verified Schools',  href: '/schools?verified=true' },
-      { label: 'Secondary Schools', href: '/schools?level=secondary' },
-      { label: 'Community Schools', href: '/schools?ownership=community' },
-      { label: 'School Finder', href: '/tools/school-finder' },
-      { label: 'Add a School', href: '/submit-school' },
-      { label: 'Compare Schools', href: '/schools/compare' },
-      { label: 'Schools Near Me', href: '/schools/nearby' },
-    ],
-  },
-  { label: 'Admissions', href: '/admissions', sub: [
-    { label: 'All Admissions', href: '/admissions' },
-    { label: 'Admission Status', href: '/admissions/status' },
-    { label: 'Admission Planner', href: '/admissions/planner' },
-    { label: 'School Admissions', href: '/admissions?institution=school' },
-    { label: 'College Admissions', href: '/admissions?institution=college' },
-  ] },
+type NavigationItem = { label: string; href: string; group?: string }
+type NavigationLink = { label: string; href: string; sub?: NavigationItem[] }
+
+const navLinks: NavigationLink[] = [
   {
     label: 'Colleges',
     href: '/colleges',
     sub: [
-      { label: 'All Colleges',     href: '/colleges' },
-      { label: '+2 Colleges',      href: '/colleges?level=%2B2' },
+      { label: 'All Colleges', href: '/colleges' },
+      { label: '+2 Colleges', href: '/colleges?level=%2B2' },
       { label: 'Bachelor Colleges', href: '/colleges?level=bachelor' },
-      { label: 'Master Colleges',  href: '/colleges?level=master' },
+      { label: 'Master Colleges', href: '/colleges?level=master' },
       { label: 'Compare Colleges', href: '/compare' },
-      { label: 'Colleges Near Me', href: '/colleges/nearby' },
-      { label: 'Reviews',          href: '/colleges?tab=reviews' },
-      { label: 'Scholarships',     href: '/scholarships' },
+      { label: 'Plan Study Costs', href: '/tools/college-cost-calculator' },
     ],
   },
   {
-    label: 'Explore',
+    label: 'Programs',
     href: '/programs',
     sub: [
-      { label: 'Programs', href: '/programs' },
+      { label: 'All Programs', href: '/programs' },
       { label: 'IT & Computing', href: '/programs?faculty=it' },
-      { label: 'Engineering',    href: '/programs?faculty=engineering' },
-      { label: 'Management',     href: '/programs?faculty=management' },
-      { label: 'Medical',        href: '/programs?faculty=medical' },
-      { label: 'Career Explorer', href: '/careers' },
-      { label: 'Skills & Opportunities', href: '/opportunities' },
-      { label: 'Student Wellbeing', href: '/wellbeing' },
-      { label: 'Results', href: '/results' },
-      { label: 'Notices', href: '/notices' },
-      { label: 'Education News', href: '/news' },
-      { label: 'Scholarships', href: '/scholarships' },
-      { label: 'SEE & NEB GPA Calculator', href: '/tools/gpa-calculator' },
-      { label: 'College Cost Calculator', href: '/tools/college-cost-calculator' },
-      { label: 'College Finder', href: '/tools/college-finder' },
-      { label: 'Admission Checklist', href: '/tools/admission-checklist' },
-      { label: 'Program Finder Quiz', href: '/tools/program-finder' },
-      { label: 'My Path', href: '/my-path' },
-      { label: 'Saved colleges', href: '/account/saved' },
-      { label: 'Saved schools', href: '/account/saved-schools' },
-      { label: 'Claim an Institution', href: '/account/claim' },
-      { label: 'My Institutions', href: '/account/institutions' },
+      { label: 'Engineering', href: '/programs?faculty=engineering' },
+      { label: 'Management', href: '/programs?faculty=management' },
+      { label: 'Medical', href: '/programs?faculty=medical' },
+      { label: 'Study & Career Explorer', href: '/careers' },
     ],
   },
-  { label: 'नेपाली', href: '/ne' },
+  { label: 'Admissions', href: '/admissions', sub: [
+    { label: 'Open Admissions', href: '/admissions?deadline=open' },
+    { label: 'College Admissions', href: '/admissions?institution=college' },
+    { label: 'Deadlines', href: '/deadlines' },
+    { label: 'Admission Planner', href: '/admissions/planner' },
+  ]},
+  {
+    label: 'Schools',
+    href: '/schools',
+    sub: [
+      { label: 'All Schools', href: '/schools' },
+      { label: 'Verified Schools', href: '/schools?verified=true' },
+      { label: 'Secondary Schools', href: '/schools?level=secondary' },
+      { label: 'Community Schools', href: '/schools?ownership=community' },
+    ],
+  },
+  {
+    label: 'More',
+    href: '/news',
+    sub: [
+      { group: 'Updates', label: 'News & Guides', href: '/news' },
+      { group: 'Updates', label: 'Results', href: '/results' },
+      { group: 'Updates', label: 'Notices', href: '/notices' },
+      { group: 'Plan your next step', label: 'My Path', href: '/my-path' },
+      { group: 'Plan your next step', label: 'College Cost Calculator', href: '/tools/college-cost-calculator' },
+      { group: 'Plan your next step', label: 'SEE & NEB GPA Calculator', href: '/tools/gpa-calculator' },
+      { group: 'Plan your next step', label: 'Career Explorer', href: '/careers' },
+      { group: 'Plan your next step', label: 'Saved Institutions', href: '/account/saved' },
+      { group: 'Support & opportunities', label: 'Scholarships', href: '/scholarships' },
+      { group: 'Support & opportunities', label: 'Entrance Exams', href: '/entrance-exams' },
+      { group: 'Support & opportunities', label: 'Opportunities', href: '/opportunities' },
+      { group: 'Support & opportunities', label: 'Study Resources', href: '/study-resources' },
+      { group: 'Support & opportunities', label: 'Student Community', href: '/community' },
+      { group: 'Support & opportunities', label: 'Student Wellbeing', href: '/wellbeing' },
+      { group: 'Language', label: 'नेपाली (Beta)', href: '/ne' },
+    ],
+  },
 ]
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [openDrop,   setOpenDrop]   = useState<string | null>(null)
   const [scrolled,   setScrolled]   = useState(false)
+  const mobileTriggerRef = useRef<HTMLButtonElement>(null)
+  const mobileDialogRef = useRef<HTMLDivElement>(null)
+  const mobileCloseRef = useRef<HTMLButtonElement>(null)
+  const restoreMobileFocusRef = useRef(true)
   const pathname = usePathname()
 
+  const closeMobileMenu = useCallback((restoreFocus = true) => {
+    restoreMobileFocusRef.current = restoreFocus
+    setMobileOpen(false)
+  }, [])
+
   // Close dropdown on route change
-  useEffect(() => { setMobileOpen(false); setOpenDrop(null) }, [pathname])
+  useEffect(() => {
+    restoreMobileFocusRef.current = false
+    setMobileOpen(false)
+    setOpenDrop(null)
+  }, [pathname])
 
   // Scroll shadow
   useEffect(() => {
@@ -95,6 +109,38 @@ export default function Header() {
     return () => { document.body.style.overflow = '' }
   }, [mobileOpen])
 
+  // Keep keyboard focus inside the drawer, then return it to the trigger when
+  // the student dismisses the menu without navigating away.
+  useEffect(() => {
+    if (!mobileOpen) return
+    const previouslyFocused = document.activeElement as HTMLElement | null
+    const trigger = mobileTriggerRef.current
+    mobileCloseRef.current?.focus()
+
+    const trapFocus = (event: KeyboardEvent) => {
+      if (event.key !== 'Tab' || !mobileDialogRef.current) return
+      const controls = Array.from(mobileDialogRef.current.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      )).filter(control => control.getClientRects().length > 0)
+      if (!controls.length) return
+      const first = controls[0]
+      const last = controls[controls.length - 1]
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault()
+        last.focus()
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault()
+        first.focus()
+      }
+    }
+
+    document.addEventListener('keydown', trapFocus)
+    return () => {
+      document.removeEventListener('keydown', trapFocus)
+      if (restoreMobileFocusRef.current) (previouslyFocused || trigger)?.focus()
+    }
+  }, [mobileOpen])
+
   // Close dropdown when clicking outside
   useEffect(() => {
     if (!openDrop) return
@@ -107,15 +153,18 @@ export default function Header() {
     return () => document.removeEventListener('click', handleClickOutside)
   }, [openDrop])
 
-  // Close dropdown on Escape key
+  // Close any open navigation layer on Escape key.
   useEffect(() => {
-    if (!openDrop) return
+    if (!openDrop && !mobileOpen) return
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpenDrop(null)
+      if (e.key === 'Escape') {
+        setOpenDrop(null)
+        closeMobileMenu(true)
+      }
     }
     document.addEventListener('keydown', handleKey)
     return () => document.removeEventListener('keydown', handleKey)
-  }, [openDrop])
+  }, [closeMobileMenu, openDrop, mobileOpen])
 
   const isActive = (href: string) =>
     href === '/' ? pathname === '/' : pathname.startsWith(href)
@@ -135,7 +184,7 @@ export default function Header() {
               <div className="w-7 h-7 bg-primary rounded-lg flex items-center justify-center flex-shrink-0">
                 <BookOpenCheck className="w-4 h-4 text-white" />
               </div>
-              <span className="font-display font-bold text-[17px] leading-none tracking-tight">
+              <span className="font-display text-[18px] font-bold leading-none tracking-[-0.025em]">
                 <span className="text-ink">Sikshya</span>
                 <span className="text-primary">Nepal</span>
               </span>
@@ -153,10 +202,12 @@ export default function Header() {
                     /* Items with sub-menu: button toggles dropdown, no navigation */
                     <button
                       onClick={() => setOpenDrop(openDrop === link.label ? null : link.label)}
-                      className={`flex items-center gap-0.5 px-3.5 py-2 text-sm font-[500] rounded-lg transition-colors duration-150 ${
+                      aria-expanded={openDrop === link.label}
+                      aria-controls={`desktop-nav-${link.label.toLowerCase().replaceAll(' ', '-')}`}
+                      className={`flex min-h-11 items-center gap-0.5 border-b-2 px-3.5 py-2 text-sm font-[500] transition-colors duration-150 ${
                         isActive(link.href)
-                          ? 'text-primary bg-primary-50'
-                          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                          ? 'border-primary text-primary'
+                          : 'border-transparent text-gray-600 hover:border-gray-300 hover:text-gray-900'
                       }`}
                     >
                       {link.label}
@@ -166,10 +217,10 @@ export default function Header() {
                     /* Plain links: navigate directly */
                     <Link
                       href={link.href}
-                      className={`flex items-center gap-0.5 px-3.5 py-2 text-sm font-[500] rounded-lg transition-colors duration-150 ${
+                      className={`flex items-center gap-0.5 border-b-2 px-3.5 py-2 text-sm font-[500] transition-colors duration-150 ${
                         isActive(link.href)
-                          ? 'text-primary bg-primary-50'
-                          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                          ? 'border-primary text-primary'
+                          : 'border-transparent text-gray-600 hover:border-gray-300 hover:text-gray-900'
                       }`}
                     >
                       {link.label}
@@ -177,21 +228,21 @@ export default function Header() {
                   )}
 
                   {link.sub && openDrop === link.label && (
-                    <div className="absolute top-full left-0 z-50">
+                    <div className={`absolute top-full z-50 ${link.label === 'More' ? 'right-0' : 'left-0'}`}>
                       {/* Invisible bridge: fills the gap between trigger bottom and
                           dropdown top so the mouse never "misses" while moving down */}
                       <div className="absolute -top-2 left-0 right-0 h-2 bg-transparent" />
-                      <div className="mt-1.5 w-64 bg-white border border-border rounded-xl shadow-card-lg py-1.5 animate-slide-down">
-                        {link.sub.map((s) => (
+                      <div id={`desktop-nav-${link.label.toLowerCase().replaceAll(' ', '-')}`} className="mt-1.5 max-h-[70vh] w-72 overflow-y-auto overscroll-contain rounded-xl border border-border bg-white py-2 shadow-card-lg animate-slide-down">
+                        {link.sub.map((s, index) => <div key={s.label}>
+                          {s.group && (index === 0 || link.sub![index - 1].group !== s.group) && <p className="px-4 pb-1 pt-3 text-[11px] font-bold uppercase tracking-[0.12em] text-slate-400">{s.group}</p>}
                           <Link
-                            key={s.label}
                             href={s.href}
                             onClick={() => setOpenDrop(null)}
-                            className="block px-4 py-2.5 text-sm font-medium text-gray-600 hover:bg-primary-50 hover:text-primary transition-colors duration-150"
+                            className="block rounded-lg px-4 py-2.5 text-sm font-medium text-gray-600 hover:bg-primary-50 hover:text-primary transition-colors duration-150"
                           >
                             {s.label}
                           </Link>
-                        ))}
+                        </div>)}
                       </div>
                     </div>
                   )}
@@ -203,38 +254,53 @@ export default function Header() {
             <div className="hidden xl:flex items-center gap-2">
               <button onClick={() => window.dispatchEvent(new Event('open-site-search'))} className="inline-flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-sm font-semibold text-gray-500 hover:border-blue-200 hover:text-primary" aria-label="Search SikshyaNepal"><Search className="h-4 w-4" /><span className="hidden xl:inline">Search</span><kbd className="hidden xl:inline rounded border border-gray-200 px-1.5 py-0.5 text-[10px] text-gray-400">⌘K</kbd></button>
               <SubscribeButton variant="header" />
+              <AccountButton />
               <Link
-                href="/schools"
+                href="/colleges"
                 className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary-600 transition-colors duration-150"
                 style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.1)' }}
               >
-                Find School
+                Find a College
               </Link>
             </div>
 
             {/* ── Mobile ───────────────────────────────────── */}
-            <button
-              onClick={() => setMobileOpen(true)}
-              className="xl:hidden p-2 text-ink-secondary hover:bg-gray-100 rounded-lg"
-            >
-              <Menu className="w-5 h-5" />
-            </button>
+            <div className="flex items-center gap-1 xl:hidden">
+              <SubscribeButton variant="header" />
+              <button
+                ref={mobileTriggerRef}
+                type="button"
+                onClick={() => {
+                  if (mobileOpen) closeMobileMenu(true)
+                  else {
+                    restoreMobileFocusRef.current = true
+                    setMobileOpen(true)
+                  }
+                }}
+                className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-xl text-ink-secondary hover:bg-gray-100 active:bg-gray-200"
+                aria-label={mobileOpen ? 'Close navigation menu' : 'Open navigation menu'}
+                aria-expanded={mobileOpen}
+                aria-controls="mobile-site-navigation"
+              >
+                <Menu className="h-5 w-5" />
+              </button>
+            </div>
           </div>
         </div>
       </header>
 
       {/* ── Mobile slide-over ────────────────────────────────────── */}
       {mobileOpen && (
-        <div className="fixed inset-0 z-[60] xl:hidden">
+        <div id="mobile-site-navigation" className="fixed inset-0 z-[300] xl:hidden" role="dialog" aria-modal="true" aria-label="Site navigation">
           <div
             className="absolute inset-0 bg-black/40 animate-fade-in"
-            onClick={() => setMobileOpen(false)}
+            onClick={() => closeMobileMenu(true)}
           />
-          <div className="absolute right-0 inset-y-0 w-full max-w-sm bg-white flex flex-col animate-slide-down shadow-card-xl">
+          <div ref={mobileDialogRef} className="absolute inset-y-0 right-0 flex w-[min(100%,24rem)] flex-col bg-white shadow-card-xl motion-safe:animate-slide-down">
 
             {/* Header */}
             <div className="flex items-center justify-between px-5 h-16 border-b border-border flex-shrink-0">
-              <Link href="/" onClick={() => setMobileOpen(false)} className="flex items-center gap-2">
+              <Link href="/" onClick={() => closeMobileMenu(false)} className="flex items-center gap-2">
                 <div className="w-6 h-6 bg-primary rounded-md flex items-center justify-center flex-shrink-0">
                   <BookOpenCheck className="w-3.5 h-3.5 text-white" />
                 </div>
@@ -244,8 +310,11 @@ export default function Header() {
                 </span>
               </Link>
               <button
-                onClick={() => setMobileOpen(false)}
-                className="p-2 hover:bg-gray-100 rounded-lg text-ink-secondary"
+                ref={mobileCloseRef}
+                type="button"
+                onClick={() => closeMobileMenu(true)}
+                aria-label="Close navigation menu"
+                className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-xl text-ink-secondary hover:bg-gray-100 active:bg-gray-200"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -255,29 +324,28 @@ export default function Header() {
             <div className="flex-1 overflow-y-auto px-4 py-4 space-y-0.5">
               {navLinks.map((link) => (
                 <div key={link.label}>
-                  <Link
-                    href={link.href}
-                    onClick={() => setMobileOpen(false)}
-                    className={`flex items-center justify-between px-3 py-3 rounded-xl text-sm font-semibold transition-colors ${
-                      isActive(link.href)
-                        ? 'bg-primary-50 text-primary'
-                        : 'text-ink hover:bg-gray-50'
-                    }`}
+                  {link.sub ? <button
+                    type="button"
+                    onClick={() => setOpenDrop(openDrop === link.label ? null : link.label)}
+                    aria-expanded={openDrop === link.label}
+                    aria-controls={`mobile-nav-${link.label.toLowerCase().replaceAll(' ', '-')}`}
+                    className={`flex min-h-11 w-full items-center justify-between rounded-xl px-3 py-3 text-left text-sm font-semibold transition-colors ${isActive(link.href) ? 'bg-primary-50 text-primary' : 'text-ink hover:bg-gray-50'}`}
                   >
-                    {link.label}
-                  </Link>
-                  {link.sub && (
-                    <div className="ml-3 mt-0.5 mb-1 space-y-0.5">
-                      {link.sub.map((s) => (
+                    {link.label}<ChevronDown className={`h-4 w-4 transition-transform ${openDrop === link.label ? 'rotate-180' : ''}`}/>
+                  </button> : <Link href={link.href} onClick={() => closeMobileMenu(false)} className={`flex min-h-11 items-center rounded-xl px-3 py-3 text-sm font-semibold ${isActive(link.href) ? 'bg-primary-50 text-primary' : 'text-ink hover:bg-gray-50'}`}>{link.label}</Link>}
+                  {link.sub && openDrop === link.label && (
+                    <div id={`mobile-nav-${link.label.toLowerCase().replaceAll(' ', '-')}`} className="ml-3 mt-0.5 mb-1 space-y-0.5">
+                      <Link href={link.href} onClick={() => closeMobileMenu(false)} className="flex min-h-11 items-center rounded-lg px-3 py-2 text-sm font-bold text-primary hover:bg-primary-50">View {link.label}</Link>
+                      {link.sub.map((s, index) => <div key={s.label}>
+                        {s.group && (index === 0 || link.sub![index - 1].group !== s.group) && <p className="px-3 pb-1 pt-3 text-[11px] font-bold uppercase tracking-[0.12em] text-slate-400">{s.group}</p>}
                         <Link
-                          key={s.label}
                           href={s.href}
-                          onClick={() => setMobileOpen(false)}
-                          className="block px-3 py-2 text-sm text-ink-secondary hover:text-primary hover:bg-gray-50 rounded-lg transition-colors"
+                          onClick={() => closeMobileMenu(false)}
+                          className="flex min-h-11 items-center rounded-lg px-3 py-2 text-sm text-ink-secondary hover:bg-gray-50 hover:text-primary transition-colors"
                         >
                           {s.label}
                         </Link>
-                      ))}
+                      </div>)}
                     </div>
                   )}
                 </div>
@@ -286,17 +354,18 @@ export default function Header() {
 
             {/* Bottom CTAs */}
             <div className="p-4 border-t border-border space-y-2 flex-shrink-0">
+              <AccountButton mobile onNavigate={() => closeMobileMenu(false)} />
               <Link
-                href="/schools"
-                onClick={() => setMobileOpen(false)}
-                className="flex items-center justify-center gap-2 w-full py-3 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-primary-600 transition-colors"
+                href="/colleges"
+                onClick={() => closeMobileMenu(false)}
+                className="flex min-h-11 items-center justify-center gap-2 w-full py-3 bg-primary text-white text-sm font-semibold rounded-xl hover:bg-primary-600 transition-colors"
               >
-                Find My School
+                Find My College
               </Link>
               <Link
                 href="/results"
-                onClick={() => setMobileOpen(false)}
-                className="flex items-center justify-center gap-2 w-full py-3 bg-white text-primary border-2 border-primary text-sm font-semibold rounded-xl hover:bg-primary-50 transition-colors"
+                onClick={() => closeMobileMenu(false)}
+                className="flex min-h-11 items-center justify-center gap-2 w-full py-3 bg-white text-primary border-2 border-primary text-sm font-semibold rounded-xl hover:bg-primary-50 transition-colors"
               >
                 Check Results
               </Link>

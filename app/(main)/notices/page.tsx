@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import { Fragment } from 'react'
 import Link from 'next/link'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import NoticeCard from '@/components/notices/NoticeCard'
@@ -11,7 +12,7 @@ export const dynamic   = 'force-dynamic'
 export const revalidate = 0
 
 export const metadata: Metadata = {
-  title: 'University Notices Nepal | Admission, Exam & Results | SikshyaNepal',
+  title: 'University Notices Nepal | Admission, Exam & Results',
   description: 'Latest notices from TU, KU, PU and all universities in Nepal. Stay updated with admission deadlines and exam notices.',
 }
 
@@ -55,17 +56,14 @@ export default async function NoticesPage({
   }
 
   return (
-    <div className="bg-[#f0f4ff] min-h-screen">
+    <div className="bg-[#f8f7f3] min-h-screen">
 
       {/* ── Page header ─────────────────────────────────────── */}
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-8">
-          <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">University Notices</p>
-          <h1 className="font-display font-bold text-ink text-3xl sm:text-4xl mb-2"
-              style={{ letterSpacing: '-0.025em' }}>
-            Official Notices
-          </h1>
-          <p className="text-gray-500 text-sm mb-6">
+          <p className="page-kicker mb-3">University notices</p>
+          <h1 className="page-title">Official notices</h1>
+          <p className="page-lede mb-6 mt-3">
             Admission deadlines, exam schedules and official announcements from Nepal&apos;s universities
           </p>
           <SearchBar placeholder="Search notices..." redirectTo="/notices" />
@@ -90,7 +88,7 @@ export default async function NoticesPage({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
         {/* Count */}
-        <p className="text-sm text-gray-500 mb-4 font-mono">
+        <p className="mb-4 text-sm text-gray-500 tabular-nums">
           <span className="font-bold text-ink">{notices.length}</span>{' '}
           notice{notices.length !== 1 ? 's' : ''} found
           {searchParams.q && <> for &ldquo;{searchParams.q}&rdquo;</>}
@@ -99,8 +97,8 @@ export default async function NoticesPage({
         {notices.length > 0 ? (
           <div className="space-y-2.5">
             {notices.map((notice, idx) => (
-              <>
-                <NoticeCard key={notice.id} notice={notice} />
+              <Fragment key={notice.id}>
+                <NoticeCard notice={notice} />
                 {idx === 4 && (
                   <AdUnit
                     key="ad-notices"
@@ -109,7 +107,7 @@ export default async function NoticesPage({
                     className="my-1 rounded-xl border border-gray-200 bg-white min-h-[90px]"
                   />
                 )}
-              </>
+              </Fragment>
             ))}
           </div>
         ) : (

@@ -5,9 +5,9 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatDate(dateString: string | null | undefined): string {
-  if (!dateString) return 'Date not available'
+  if (!dateString) return ''
   const date = new Date(dateString)
-  if (isNaN(date.getTime())) return 'Date not available'
+  if (isNaN(date.getTime())) return ''
   return date.toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
@@ -36,9 +36,10 @@ export function timeAgo(dateString: string | null | undefined): string {
   if (days === 0) return 'Today'
   if (days === 1) return 'Yesterday'
   if (days < 7) return `${days} days ago`
-  if (days < 30) return `${Math.floor(days / 7)} weeks ago`
-  if (days < 365) return `${Math.floor(days / 30)} months ago`
-  return `${Math.floor(days / 365)} years ago`
+  if (days < 30) { const weeks = Math.floor(days / 7); return `${weeks} week${weeks === 1 ? '' : 's'} ago` }
+  if (days < 365) { const months = Math.floor(days / 30); return `${months} month${months === 1 ? '' : 's'} ago` }
+  const years = Math.floor(days / 365)
+  return `${years} year${years === 1 ? '' : 's'} ago`
 }
 
 export function slugify(text: string): string {
@@ -65,15 +66,15 @@ export function formatCurrency(amount: number): string {
 
 export const FACULTIES = [
   // +2 entry first — biggest audience (post-SEE students)
-  { name: '+2 Programs', slug: 'plus-two', icon: '📖', color: 'bg-amber-100 text-amber-700' },
-  { name: 'IT & Computing', slug: 'it', icon: '💻', color: 'bg-blue-100 text-blue-700' },
-  { name: 'Management', slug: 'management', icon: '📊', color: 'bg-green-100 text-green-700' },
-  { name: 'Engineering', slug: 'engineering', icon: '⚙️', color: 'bg-orange-100 text-orange-700' },
-  { name: 'Medical', slug: 'medical', icon: '🏥', color: 'bg-red-100 text-red-700' },
-  { name: 'Humanities', slug: 'humanities', icon: '📚', color: 'bg-purple-100 text-purple-700' },
-  { name: 'Science', slug: 'science', icon: '🔬', color: 'bg-teal-100 text-teal-700' },
-  { name: 'Education', slug: 'education', icon: '🎓', color: 'bg-yellow-100 text-yellow-700' },
-  { name: 'Law', slug: 'law', icon: '⚖️', color: 'bg-gray-100 text-gray-700' },
+  { name: '+2 Programs', slug: 'plus-two', color: 'bg-amber-100 text-amber-700' },
+  { name: 'IT & Computing', slug: 'it', color: 'bg-blue-100 text-blue-700' },
+  { name: 'Management', slug: 'management', color: 'bg-green-100 text-green-700' },
+  { name: 'Engineering', slug: 'engineering', color: 'bg-orange-100 text-orange-700' },
+  { name: 'Medical', slug: 'medical', color: 'bg-red-100 text-red-700' },
+  { name: 'Humanities', slug: 'humanities', color: 'bg-purple-100 text-purple-700' },
+  { name: 'Science', slug: 'science', color: 'bg-teal-100 text-teal-700' },
+  { name: 'Education', slug: 'education', color: 'bg-yellow-100 text-yellow-700' },
+  { name: 'Law', slug: 'law', color: 'bg-gray-100 text-gray-700' },
 ]
 
 export const UNIVERSITIES = [
