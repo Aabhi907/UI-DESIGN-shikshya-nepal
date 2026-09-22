@@ -8,11 +8,13 @@ import SubscribeButton from '@/components/notifications/SubscribeButton'
 import AccountButton from '@/components/auth/AccountButton'
 import Mascot from '@/components/design-system/Mascot'
 
-// Phase 1 design system nav. Interaction logic (focus trap, outside-click,
-// Escape, scroll lock) is carried over unchanged from components/layout/Header.tsx
-// — only the visual treatment and copy are new. Kept as its own component
-// rather than restyling Header.tsx in place, since Header is shared by every
-// page not yet converted to this system.
+// Site-wide nav (see the "Floating pill nav" Build Brief). Interaction logic
+// (focus trap, outside-click, Escape, scroll lock) is carried over unchanged
+// from the retired components/layout/Header.tsx — this now renders on every
+// route, so Header.tsx was deleted rather than kept as unreachable dead code.
+// Its two behaviours not already here (a ⌘K hint on Search, and a secondary
+// "Check Results" action in the mobile drawer) were ported below; everything
+// else in Header was already present in this component unchanged.
 
 type NavigationItem = { label: string; href: string; group?: string }
 type NavigationLink = { label: string; href: string; sub?: NavigationItem[] }
@@ -180,9 +182,8 @@ export default function Nav() {
 
   return (
     <>
-      <header className={`sticky top-0 z-50 bg-sn-ground/95 backdrop-blur transition-shadow duration-200 ${scrolled ? 'shadow-sn-card' : ''} border-b border-sn-border`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+      <header className="sticky top-0 z-50 px-5 pt-3 sm:px-8 sm:pt-4 lg:px-12">
+        <div className={`mx-auto flex h-16 max-w-7xl items-center justify-between rounded-full border border-sn-border bg-sn-surface/95 px-4 backdrop-blur transition-shadow duration-200 sm:px-6 ${scrolled ? 'shadow-sn-float' : 'shadow-sn-card'}`}>
             <Wordmark />
 
             <nav className="hidden xl:flex items-center gap-0.5">
@@ -234,7 +235,7 @@ export default function Nav() {
 
             <div className="hidden xl:flex items-center gap-2">
               <button onClick={() => window.dispatchEvent(new Event('open-site-search'))} className="inline-flex items-center gap-2 rounded-sn-control border border-sn-border-strong px-3 py-2 text-sm font-bold font-nunito text-sn-ink-soft hover:border-sn-primary hover:text-sn-primary" aria-label="Search SikshyaNepal">
-                <Search className="h-4 w-4" /><span className="hidden xl:inline">Search</span>
+                <Search className="h-4 w-4" /><span className="hidden xl:inline">Search</span><kbd className="hidden rounded border border-sn-border px-1.5 py-0.5 text-[10px] text-sn-ink-muted xl:inline">⌘K</kbd>
               </button>
               <SubscribeButton variant="header" />
               <AccountButton />
@@ -260,7 +261,6 @@ export default function Nav() {
                 <Menu className="h-5 w-5" />
               </button>
             </div>
-          </div>
         </div>
       </header>
 
@@ -316,6 +316,9 @@ export default function Nav() {
               <AccountButton mobile onNavigate={() => closeMobileMenu(false)} />
               <Link href="/colleges" onClick={() => closeMobileMenu(false)} className="flex min-h-11 items-center justify-center gap-2 w-full py-3 rounded-sn-control bg-sn-primary text-sm font-bold font-nunito text-white shadow-sn-button hover:bg-sn-primary-hover transition-colors">
                 Start your pathway
+              </Link>
+              <Link href="/results" onClick={() => closeMobileMenu(false)} className="flex min-h-11 items-center justify-center gap-2 w-full py-3 rounded-sn-control border border-sn-border-strong text-sm font-bold font-nunito text-sn-ink hover:border-sn-primary hover:text-sn-primary transition-colors">
+                Check Results
               </Link>
             </div>
           </div>
