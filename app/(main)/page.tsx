@@ -11,6 +11,11 @@ import EmailSubscribe from '@/components/notifications/EmailSubscribe'
 import type { Result, Notice, College } from '@/types'
 import type { Admission } from '@/types'
 import AdmissionCard from '@/components/admissions/AdmissionCard'
+import Mascot from '@/components/design-system/Mascot'
+import Card from '@/components/design-system/Card'
+import IconTile from '@/components/design-system/IconTile'
+import SectionHeader from '@/components/design-system/SectionHeader'
+import Button from '@/components/design-system/Button'
 import {
   Building2,
   School,
@@ -36,7 +41,7 @@ import {
 import type { LucideIcon } from 'lucide-react'
 
 const FACULTY_ICONS: Record<string, LucideIcon> = {
-  'plus-two':    BookOpen,      // +2 / Intermediate — first & most prominent
+  'plus-two':    BookOpen,
   'it':          Monitor,
   'management':  BarChart3,
   'engineering': Wrench,
@@ -50,14 +55,15 @@ const FACULTY_ICONS: Record<string, LucideIcon> = {
   'forestry':    TreePine,
   'architecture':Building2,
 }
+const FACULTY_TINTS: Array<'mint' | 'peach' | 'butter' | 'lilac'> = ['peach', 'mint', 'butter', 'lilac']
 
 export const dynamic   = 'force-dynamic'
 export const revalidate = 0
 
 export const metadata: Metadata = {
-  title: { absolute: "SikshyaNepal — Schools, Colleges, Results & Notices in Nepal" },
+  title: { absolute: 'SikshyaNepal — Decide What to Study After +2, and Where' },
   description:
-    'Find Nepal schools, colleges, programs, exam results, notices and scholarships with sources you can check.',
+    'Verified colleges, courses and career pathways for +2 and university in Nepal. Every fact sourced and dated. No fake reviews, no guesswork.',
   alternates: { canonical: '/' },
 }
 
@@ -144,9 +150,9 @@ function HeroCard({
   if (!result && !notice && !college) return null
 
   return (
-    <aside className="overflow-hidden border-t-4 border-[#c93b37] bg-white shadow-card-xl">
+    <aside className="overflow-hidden rounded-sn-card border border-sn-border bg-sn-surface shadow-sn-float">
       {college?.cover_url && (
-        <Link href={`/colleges/${college.slug}`} className="group relative block h-44 overflow-hidden bg-slate-100" aria-label={`View ${college.name}`}>
+        <Link href={`/colleges/${college.slug}`} className="group relative block h-44 overflow-hidden bg-sn-surface-alt" aria-label={`View ${college.name}`}>
           <Image
             src={college.cover_url}
             alt={`${college.name} campus`}
@@ -154,50 +160,33 @@ function HeroCard({
             sizes="(min-width: 1024px) 33vw, 100vw"
             className="object-cover transition-transform duration-200 group-hover:scale-[1.02]"
           />
-          <div className="absolute inset-x-0 bottom-0 bg-[#0d1b3e]/85 px-4 py-2.5 text-xs font-semibold text-white">
+          <div className="absolute inset-x-0 bottom-0 bg-sn-ink/85 px-4 py-2.5 text-xs font-bold font-nunito text-white">
             Featured college · {college.name}
           </div>
         </Link>
       )}
       <div className="p-5">
-
-      {/* Latest Result */}
-      {result && <Link href={`/results/${result.slug}`} className="group block py-3.5 border-b border-gray-100">
-        <p className="mb-1 text-xs font-semibold text-gray-500">
-          Latest Result
-        </p>
-        <p className="text-sm font-medium text-ink leading-snug line-clamp-2 group-hover:text-primary">
-          {result.title}
-        </p>
-        <span className="mt-2 inline-flex items-center gap-1 text-xs font-bold text-primary">View result <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" /></span>
-      </Link>}
-
-      {/* Latest Notice */}
-      {notice && <Link href={`/notices/${notice.slug}`} className="group block py-3.5 border-b border-gray-100">
-        <p className="mb-1 text-xs font-semibold text-gray-500">
-          Latest Notice
-        </p>
-        <p className="text-sm font-medium text-ink leading-snug line-clamp-2 group-hover:text-primary">
-          {notice.title}
-        </p>
-        <span className="mt-2 inline-flex items-center gap-1 text-xs font-bold text-primary">Read notice <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" /></span>
-      </Link>}
-
-      {/* Featured College — clickable */}
-      {college && <Link
-        href={`/colleges/${college.slug}`}
-        className="block py-3.5 group"
-      >
-        <p className="mb-1 text-xs font-semibold text-gray-500">
-          Featured College
-        </p>
-        <p className="text-sm font-medium text-ink leading-snug line-clamp-2 group-hover:text-[#1847c4] transition-colors">
-          {college.name}
-        </p>
-        {college.location && (
-          <p className="text-xs text-gray-400 mt-1">{college.location}</p>
+        {result && (
+          <Link href={`/results/${result.slug}`} className="group block py-3.5 border-b border-sn-border">
+            <p className="mb-1 text-xs font-bold font-nunito text-sn-ink-muted">Latest Result</p>
+            <p className="text-sm font-bold font-nunito leading-snug line-clamp-2 text-sn-ink group-hover:text-sn-primary">{result.title}</p>
+            <span className="mt-2 inline-flex items-center gap-1 text-xs font-bold font-nunito text-sn-primary">View result <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" /></span>
+          </Link>
         )}
-      </Link>}
+        {notice && (
+          <Link href={`/notices/${notice.slug}`} className="group block py-3.5 border-b border-sn-border">
+            <p className="mb-1 text-xs font-bold font-nunito text-sn-ink-muted">Latest Notice</p>
+            <p className="text-sm font-bold font-nunito leading-snug line-clamp-2 text-sn-ink group-hover:text-sn-primary">{notice.title}</p>
+            <span className="mt-2 inline-flex items-center gap-1 text-xs font-bold font-nunito text-sn-primary">Read notice <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" /></span>
+          </Link>
+        )}
+        {college && (
+          <Link href={`/colleges/${college.slug}`} className="block py-3.5 group">
+            <p className="mb-1 text-xs font-bold font-nunito text-sn-ink-muted">Featured College</p>
+            <p className="text-sm font-bold font-nunito leading-snug line-clamp-2 text-sn-ink group-hover:text-sn-primary transition-colors">{college.name}</p>
+            {college.location && <p className="text-xs font-nunito text-sn-ink-muted mt-1">{college.location}</p>}
+          </Link>
+        )}
       </div>
     </aside>
   )
@@ -212,110 +201,133 @@ export default async function HomePage() {
 
   return (
     <div>
-
       {/* ════════════════════════════════════════════════════════
-          HERO — two-column, light background
+          HERO
       ════════════════════════════════════════════════════════ */}
-      <section className="border-b border-[#e6e4df] bg-[#fcfbf8]">
+      <section className="border-b border-sn-border bg-sn-ground">
         <div className="max-w-7xl mx-auto px-4 pb-16 pt-14 sm:px-6 md:pb-20 md:pt-20 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16 items-center">
-
-            {/* ── Left column (60%) ────────────────────── */}
             <div className="lg:col-span-3">
+              <div className="mb-5 flex items-center gap-3">
+                <Mascot pose="wave" size={52} />
+                <p className="border-l-2 border-sn-primary pl-3 text-sm font-bold font-nunito text-sn-primary-hover">
+                  An independent education guide for Nepal
+                </p>
+              </div>
 
-              {/* Eyebrow */}
-              <p className="mb-4 border-l-2 border-[#c93b37] pl-3 text-sm font-semibold text-[#8f302c]">
-                An independent education guide for Nepal
-              </p>
-
-              {/* Headline */}
-              <h1
-                className="font-display font-extrabold text-ink leading-[1.1] mb-5 text-balance"
-                style={{ fontSize: 'clamp(2.6rem, 5.5vw, 3.75rem)', letterSpacing: '-0.03em' }}
-              >
-                Compare colleges<br />
-                <span className="text-[#1e429f]">before you apply.</span>
+              <h1 className="font-baloo font-extrabold text-sn-ink leading-[1.08] mb-5 text-balance" style={{ fontSize: 'clamp(2.4rem, 5.2vw, 3.6rem)', letterSpacing: '-0.02em' }}>
+                Decide what to study after +2 — and where.
               </h1>
 
-              {/* Sub */}
-              <p className="mb-8 max-w-xl text-lg leading-8 text-slate-600 md:text-xl">
-                Check programmes, published fees, admissions and source dates for colleges across Nepal.
+              <p className="mb-8 max-w-xl text-lg leading-8 font-nunito text-sn-ink-soft md:text-xl">
+                Verified colleges, courses and career pathways for +2 and university in Nepal. Every fact sourced and dated. No fake reviews, no guesswork.
               </p>
 
-              {/* Search */}
               <HeroSearch />
 
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Button.Link href="/tools/college-finder" variant="primary">Start your pathway<ArrowRight className="h-4 w-4" aria-hidden="true" /></Button.Link>
+                <Button.Link href="/colleges" variant="secondary">Browse colleges</Button.Link>
+              </div>
+
               <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                <Link href="/schools" className="group border-l-2 border-[#c93b37] bg-white p-4 shadow-sm transition hover:shadow-md"><div className="flex items-start gap-3"><div className="rounded-lg bg-[#fff5f3] p-2"><School className="h-5 w-5 text-[#c93b37]" /></div><div><p className="font-bold text-ink">Looking for a school?</p><p className="mt-1 text-xs leading-5 text-gray-600">ECD to Grade 10, for parents and guardians.</p><span className="mt-2 inline-flex items-center gap-1 text-xs font-bold text-primary">Find a school <ArrowRight className="h-3.5 w-3.5 transition group-hover:translate-x-0.5" /></span></div></div></Link>
-                <Link href="/colleges" className="group border-l-2 border-[#1e429f] bg-white p-4 shadow-sm transition hover:shadow-md"><div className="flex items-start gap-3"><div className="rounded-lg bg-primary-50 p-2"><GraduationCap className="h-5 w-5 text-primary" /></div><div><p className="font-bold text-ink">Planning after SEE or +2?</p><p className="mt-1 text-xs leading-5 text-gray-600">Explore +2, Bachelor, Master and diploma options.</p><span className="mt-2 inline-flex items-center gap-1 text-xs font-bold text-primary">Find a college <ArrowRight className="h-3.5 w-3.5 transition group-hover:translate-x-0.5" /></span></div></div></Link>
+                <Link href="/schools" className="group rounded-sn-card border border-sn-border bg-sn-surface p-4 shadow-sn-card transition hover:shadow-sn-float">
+                  <div className="flex items-start gap-3">
+                    <IconTile icon={School} tint="mint" />
+                    <div>
+                      <p className="font-bold font-nunito text-sn-ink">Looking for a school?</p>
+                      <p className="mt-1 text-xs leading-5 font-nunito text-sn-ink-soft">ECD to Grade 10, for parents and guardians.</p>
+                      <span className="mt-2 inline-flex items-center gap-1 text-xs font-bold font-nunito text-sn-primary">Find a school <ArrowRight className="h-3.5 w-3.5 transition group-hover:translate-x-0.5" aria-hidden="true" /></span>
+                    </div>
+                  </div>
+                </Link>
+                <Link href="/colleges" className="group rounded-sn-card border border-sn-border bg-sn-surface p-4 shadow-sn-card transition hover:shadow-sn-float">
+                  <div className="flex items-start gap-3">
+                    <IconTile icon={GraduationCap} tint="peach" />
+                    <div>
+                      <p className="font-bold font-nunito text-sn-ink">Planning after SEE or +2?</p>
+                      <p className="mt-1 text-xs leading-5 font-nunito text-sn-ink-soft">Explore +2, Bachelor, Master and diploma options.</p>
+                      <span className="mt-2 inline-flex items-center gap-1 text-xs font-bold font-nunito text-sn-primary">Find a college <ArrowRight className="h-3.5 w-3.5 transition group-hover:translate-x-0.5" aria-hidden="true" /></span>
+                    </div>
+                  </div>
+                </Link>
               </div>
             </div>
 
-            {/* ── Right column (40%) — live updates card ─ */}
             <div className="hidden lg:block lg:col-span-2 lg:pt-10">
-              <HeroCard
-                result={latestResult  ?? null}
-                notice={latestNotice  ?? null}
-                college={featuredCollege}
-              />
+              <HeroCard result={latestResult ?? null} notice={latestNotice ?? null} college={featuredCollege} />
             </div>
           </div>
         </div>
       </section>
 
-      <section className="border-b border-[#e6e4df] bg-[#f5f3ee]">
+      {/* ════════════════════════════════════════════════════════
+          QUICK LINKS
+      ════════════════════════════════════════════════════════ */}
+      <section className="border-b border-sn-border bg-sn-surface-alt">
         <div className="mx-auto max-w-7xl px-4 py-7 sm:px-6 lg:px-8">
-          <div className="mb-4 flex flex-wrap items-end justify-between gap-2"><h2 className="font-display text-xl font-bold text-ink">What do you need today?</h2><Link href="/search" className="text-sm font-bold text-primary hover:underline">Search everything →</Link></div>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">{[
-            { href: '/results', label: 'Check results', text: 'TU, KU, NEB & more', Icon: FileText },
-            { href: '/admissions?deadline=open', label: 'Admissions', text: 'Open & upcoming', Icon: CalendarCheck2 },
-            { href: '/schools', label: 'Find a school', text: 'ECD to Grade 10', Icon: School },
-            { href: '/colleges', label: 'Find a college', text: '+2 and higher', Icon: GraduationCap },
-            { href: '/scholarships', label: 'Scholarships', text: 'Funding options', Icon: Award },
-            { href: '/entrance-exams', label: 'Entrance exams', text: 'Dates & eligibility', Icon: CalendarClock },
-            { href: '/study-resources', label: 'Study resources', text: 'Syllabus & questions', Icon: BookOpen },
-            { href: '/notices', label: 'Latest notices', text: 'Official updates', Icon: Bell },
-          ].map(({ href, label, text, Icon }) => <Link key={href} href={href} className="group border border-gray-200 bg-white p-4 transition hover:border-primary"><span className="flex h-8 w-8 items-center justify-center border border-gray-200 bg-[#f8f7f3] text-primary"><Icon className="h-4 w-4" /></span><p className="mt-3 text-sm font-bold text-ink">{label}</p><p className="mt-1 text-xs text-gray-500">{text}</p></Link>)} </div>
+          <SectionHeader
+            title="What do you need today?"
+            action={<Link href="/search" className="text-sm font-bold font-nunito text-sn-primary hover:text-sn-primary-hover">Search everything →</Link>}
+            className="mb-4"
+          />
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
+            {[
+              { href: '/results', label: 'Check results', text: 'TU, KU, NEB & more', Icon: FileText, tint: 'peach' as const },
+              { href: '/admissions?deadline=open', label: 'Admissions', text: 'Open & upcoming', Icon: CalendarCheck2, tint: 'mint' as const },
+              { href: '/schools', label: 'Find a school', text: 'ECD to Grade 10', Icon: School, tint: 'butter' as const },
+              { href: '/colleges', label: 'Find a college', text: '+2 and higher', Icon: GraduationCap, tint: 'lilac' as const },
+              { href: '/scholarships', label: 'Scholarships', text: 'Funding options', Icon: Award, tint: 'peach' as const },
+              { href: '/entrance-exams', label: 'Entrance exams', text: 'Dates & eligibility', Icon: CalendarClock, tint: 'mint' as const },
+              { href: '/study-resources', label: 'Study resources', text: 'Syllabus & questions', Icon: BookOpen, tint: 'butter' as const },
+              { href: '/notices', label: 'Latest notices', text: 'Official updates', Icon: Bell, tint: 'lilac' as const },
+            ].map(({ href, label, text, Icon, tint }) => (
+              <Link key={href} href={href} className="group rounded-sn-card border border-sn-border bg-sn-surface p-4 shadow-sn-card transition hover:shadow-sn-float">
+                <IconTile icon={Icon} tint={tint} size={36} />
+                <p className="mt-3 text-sm font-bold font-nunito text-sn-ink">{label}</p>
+                <p className="mt-1 text-xs font-nunito text-sn-ink-muted">{text}</p>
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
 
       {admissions.length > 0 && (
-        <section className="border-b border-gray-200 bg-white">
+        <section className="border-b border-sn-border bg-sn-ground">
           <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-            <div className="mb-7 flex items-end justify-between gap-4"><h2 className="font-display text-3xl font-bold text-ink">Admissions open now</h2><Link href="/admissions" className="text-sm font-bold text-primary">All admissions →</Link></div>
+            <SectionHeader title="Admissions open now" action={<Link href="/admissions" className="text-sm font-bold font-nunito text-sn-primary">All admissions →</Link>} className="mb-7" />
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{admissions.map((admission) => <AdmissionCard key={admission.id} admission={admission} />)}</div>
           </div>
         </section>
       )}
 
-      {heroStats.length > 0 && <section style={{ backgroundColor: '#0d1b3e' }} className="py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-wrap justify-center sm:justify-between gap-0 divide-x divide-white/20">
-            {heroStats.map((stat) => (
-              <div key={stat.label} className="px-8 py-2 text-center">
-                <p className="text-2xl leading-none text-white tabular-nums" style={{ letterSpacing: '-0.02em' }}>
-                  <span style={{ fontWeight: 800 }}>{stat.value.toLocaleString()}</span>
-                  {' '}
-                  <span className="font-normal" style={{ opacity: 0.6 }}>{stat.label.toLowerCase()}</span>
-                </p>
-              </div>
-            ))}
+      {/* Platform's own counts — not third-party claims, so shown plainly rather than with an evidence chip. */}
+      {heroStats.length > 0 && (
+        <section className="bg-sn-ink py-8">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-wrap justify-center sm:justify-between gap-0 divide-x divide-white/15">
+              {heroStats.map((stat) => (
+                <div key={stat.label} className="px-8 py-2 text-center">
+                  <p className="font-baloo text-2xl leading-none text-white tabular-nums" style={{ letterSpacing: '-0.01em' }}>
+                    <span className="font-extrabold">{stat.value.toLocaleString()}</span>{' '}
+                    <span className="font-nunito font-normal text-white/60">{stat.label.toLowerCase()}</span>
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>}
+        </section>
+      )}
 
       {/* ════════════════════════════════════════════════════════
           EMAIL SUBSCRIBE BAR
       ════════════════════════════════════════════════════════ */}
-      <section className="bg-[#1847c4] border-b border-[#1340b0]">
+      <section className="bg-sn-primary border-b border-sn-primary-hover">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex flex-col sm:flex-row items-center gap-4">
             <div className="text-white flex-shrink-0 text-center sm:text-left">
-              <p className="font-semibold text-sm flex items-center gap-2 justify-center sm:justify-start">
-                <Bell className="w-4 h-4" />
-                Get result alerts in your inbox
-              </p>
-              <p className="text-blue-200 text-xs mt-0.5">Email updates when a new result or notice is published</p>
+              <p className="font-bold font-nunito text-sm flex items-center gap-2 justify-center sm:justify-start"><Bell className="w-4 h-4" aria-hidden="true" />Get result alerts in your inbox</p>
+              <p className="text-white/75 text-xs font-nunito mt-0.5">Email updates when a new result or notice is published</p>
             </div>
             <div className="w-full sm:flex-1 max-w-sm sm:max-w-none">
               <EmailSubscribe />
@@ -325,137 +337,78 @@ export default async function HomePage() {
       </section>
 
       {/* ════════════════════════════════════════════════════════
-          LATEST RESULTS — subtle blue bg
+          LATEST RESULTS & NOTICES
       ════════════════════════════════════════════════════════ */}
-      <section className="bg-[#f8f7f3] border-b border-gray-200">
+      <section className="bg-sn-ground border-b border-sn-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <div className="flex items-end justify-between mb-8">
-            <h2 className="font-display font-bold text-3xl text-ink" style={{ letterSpacing: '-0.025em' }}>
-              Results &amp; Notices
-            </h2>
-          </div>
-
+          <SectionHeader title="Results & Notices" className="mb-8" />
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Results panel */}
-            <div className="bg-white rounded-2xl border border-gray-200 p-5">
+            <Card className="!p-5">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 bg-blue-50 rounded-lg flex items-center justify-center">
-                    <FileText className="w-3.5 h-3.5 text-[#1847c4]" />
-                  </div>
-                  <span className="text-sm font-semibold text-ink">Latest Results</span>
+                  <IconTile icon={FileText} tint="peach" size={28} />
+                  <span className="text-sm font-bold font-nunito text-sn-ink">Latest Results</span>
                 </div>
-                <Link href="/results"
-                  className="text-sm font-semibold text-[#1847c4] hover:text-[#1340b0] transition-colors duration-150">
-                  View all
-                </Link>
+                <Link href="/results" className="text-sm font-bold font-nunito text-sn-primary hover:text-sn-primary-hover">View all</Link>
               </div>
               {results.length > 0 ? (
-                <div>
-                  {results.slice(0, 5).map((r) => (
-                    <ResultCard key={r.id} result={r} compact />
-                  ))}
-                </div>
+                <div>{results.slice(0, 5).map((r) => <ResultCard key={r.id} result={r} compact />)}</div>
               ) : (
-                <p className="text-sm text-gray-400 py-6 text-center">No results yet</p>
+                <p className="text-sm font-nunito text-sn-ink-muted py-6 text-center">No results yet</p>
               )}
-            </div>
+            </Card>
 
-            {/* Notices panel */}
-            <div className="bg-white rounded-2xl border border-gray-200 p-5">
+            <Card className="!p-5">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 bg-orange-50 rounded-lg flex items-center justify-center">
-                    <Bell className="w-3.5 h-3.5 text-orange-600" />
-                  </div>
-                  <span className="text-sm font-semibold text-ink">University Notices</span>
+                  <IconTile icon={Bell} tint="butter" size={28} />
+                  <span className="text-sm font-bold font-nunito text-sn-ink">University Notices</span>
                 </div>
-                <Link href="/notices"
-                  className="text-sm font-semibold text-[#1847c4] hover:text-[#1340b0] transition-colors duration-150">
-                  View all
-                </Link>
+                <Link href="/notices" className="text-sm font-bold font-nunito text-sn-primary hover:text-sn-primary-hover">View all</Link>
               </div>
               {notices.length > 0 ? (
-                <div>
-                  {notices.slice(0, 5).map((n) => (
-                    <NoticeCard key={n.id} notice={n} compact />
-                  ))}
-                </div>
+                <div>{notices.slice(0, 5).map((n) => <NoticeCard key={n.id} notice={n} compact />)}</div>
               ) : (
-                <p className="text-sm text-gray-400 py-6 text-center">No notices yet</p>
+                <p className="text-sm font-nunito text-sn-ink-muted py-6 text-center">No notices yet</p>
               )}
-            </div>
+            </Card>
           </div>
         </div>
       </section>
 
       {/* ════════════════════════════════════════════════════════
-          FEATURED COLLEGES — white
+          FEATURED COLLEGES
+          Note: CollegeCard is shared with un-converted listing pages and is
+          intentionally not restyled here — see the Build Report.
       ════════════════════════════════════════════════════════ */}
       {featuredColleges.length > 0 && (
-        <section className="bg-white border-b border-gray-100">
+        <section className="bg-sn-surface border-b border-sn-border">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-            <div className="flex items-end justify-between mb-8">
-              <h2 className="font-display text-3xl font-bold text-ink" style={{ letterSpacing: '-0.025em' }}>Featured colleges</h2>
-              <Link href="/colleges"
-                className="hidden sm:block text-sm font-semibold text-[#1847c4] hover:text-[#1340b0] transition-colors duration-150">
-                View all
-              </Link>
-            </div>
-
+            <SectionHeader title="Featured colleges" action={<Link href="/colleges" className="hidden sm:block text-sm font-bold font-nunito text-sn-primary hover:text-sn-primary-hover">View all</Link>} className="mb-8" />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {featuredColleges.map((college) => (
-                <CollegeCard key={college.id} college={college} />
-              ))}
+              {featuredColleges.map((college) => <CollegeCard key={college.id} college={college} />)}
             </div>
-
             <div className="mt-7 sm:hidden text-center">
-              <Link href="/colleges" className="btn-primary inline-flex">
-                <Building2 className="w-4 h-4" />
-                Explore All Colleges
-              </Link>
+              <Button.Link href="/colleges" variant="primary"><Building2 className="w-4 h-4" aria-hidden="true" />Explore All Colleges</Button.Link>
             </div>
           </div>
         </section>
       )}
 
       {/* ════════════════════════════════════════════════════════
-          BROWSE BY PROGRAM — subtle bg
+          BROWSE BY PROGRAM
       ════════════════════════════════════════════════════════ */}
-      <section className="bg-[#f8f7f3] border-b border-gray-200">
+      <section className="bg-sn-ground border-b border-sn-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <div className="flex items-end justify-between mb-8">
-            <h2 className="font-display font-bold text-3xl text-ink" style={{ letterSpacing: '-0.025em' }}>
-              Browse by Program
-            </h2>
-            <Link href="/programs"
-              className="hidden sm:block text-sm font-semibold text-[#1847c4] hover:text-[#1340b0] transition-colors duration-150">
-              All programs
-            </Link>
-          </div>
-
+          <SectionHeader title="Browse by Program" action={<Link href="/programs" className="hidden sm:block text-sm font-bold font-nunito text-sn-primary hover:text-sn-primary-hover">All programs</Link>} className="mb-8" />
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
-            {FACULTIES.map((faculty) => {
+            {FACULTIES.map((faculty, index) => {
               const Icon = FACULTY_ICONS[faculty.slug] ?? Monitor
-              // +2 Programs links to college filter (level=+2) — most relevant for post-SEE students
-              const href = faculty.slug === 'plus-two'
-                ? '/colleges?level=%2B2'
-                : `/programs?faculty=${faculty.slug}`
-              const isPlus2 = faculty.slug === 'plus-two'
+              const href = faculty.slug === 'plus-two' ? '/colleges?level=%2B2' : `/programs?faculty=${faculty.slug}`
               return (
-                <Link
-                  key={faculty.slug}
-                  href={href}
-                  className={`group flex flex-col items-center gap-3 border p-5 text-center transition-colors
-                             ${isPlus2 ? 'border-amber-300 bg-amber-50' : 'border-gray-200 bg-white'}
-                             hover:border-primary`}
-                >
-                  <div className={`flex h-11 w-11 items-center justify-center border ${isPlus2 ? 'border-amber-200 bg-white' : 'border-gray-200 bg-[#f8f7f3]'}`}>
-                    <Icon className={`h-6 w-6 ${isPlus2 ? 'text-amber-700' : 'text-primary'}`} />
-                  </div>
-                  <span className={`text-sm font-semibold leading-tight ${isPlus2 ? 'text-amber-800' : 'text-gray-900'} group-hover:text-primary`}>
-                    {faculty.name}
-                  </span>
+                <Link key={faculty.slug} href={href} className="group flex flex-col items-center gap-3 rounded-sn-card border border-sn-border bg-sn-surface p-5 text-center shadow-sn-card transition hover:shadow-sn-float">
+                  <IconTile icon={Icon} tint={FACULTY_TINTS[index % FACULTY_TINTS.length]} />
+                  <span className="text-sm font-bold font-nunito leading-tight text-sn-ink group-hover:text-sn-primary">{faculty.name}</span>
                 </Link>
               )
             })}
@@ -464,41 +417,22 @@ export default async function HomePage() {
       </section>
 
       {/* ════════════════════════════════════════════════════════
-          BROWSE BY UNIVERSITY — white
+          BROWSE BY UNIVERSITY
       ════════════════════════════════════════════════════════ */}
-      <section className="bg-white border-b border-gray-100">
+      <section className="bg-sn-surface border-b border-sn-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <div className="flex items-end justify-between mb-8">
-            <h2 className="font-display font-bold text-3xl text-ink" style={{ letterSpacing: '-0.025em' }}>
-              Browse by University
-            </h2>
-            <Link href="/colleges"
-              className="hidden sm:block text-sm font-semibold text-[#1847c4] hover:text-[#1340b0] transition-colors duration-150">
-              All colleges
-            </Link>
-          </div>
-
+          <SectionHeader title="Browse by University" action={<Link href="/colleges" className="hidden sm:block text-sm font-bold font-nunito text-sn-primary hover:text-sn-primary-hover">All colleges</Link>} className="mb-8" />
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            {UNIVERSITY_SHOWCASE.map((u) => {
+            {UNIVERSITY_SHOWCASE.map((u, index) => {
               const count = universityCounts[u.short] ?? 0
               return (
-                <Link
-                  key={u.short}
-                  href={`/colleges?affiliation=${encodeURIComponent(u.affiliation)}`}
-                  className="group flex flex-col gap-3 border border-gray-200 bg-white p-5 transition-colors hover:border-primary"
-                >
-                  <div className="flex h-11 w-11 items-center justify-center border border-gray-200 bg-[#f8f7f3]">
-                    <span className="font-display text-lg font-bold text-primary">{u.short}</span>
-                  </div>
+                <Link key={u.short} href={`/colleges?affiliation=${encodeURIComponent(u.affiliation)}`} className="group flex flex-col gap-3 rounded-sn-card border border-sn-border bg-sn-surface p-5 shadow-sn-card transition hover:shadow-sn-float">
+                  <span className={`flex h-11 w-11 items-center justify-center rounded-sn-control font-baloo text-lg font-bold text-sn-ink ${['bg-sn-tint-peach', 'bg-sn-tint-mint', 'bg-sn-tint-butter', 'bg-sn-tint-lilac'][index % 4]}`}>{u.short}</span>
                   <div>
-                    <p className="text-sm font-semibold text-gray-900 leading-tight">{u.label}</p>
-                    {count > 0 && (
-                      <p className="text-xs text-gray-400 mt-1">{count} college{count !== 1 ? 's' : ''}</p>
-                    )}
+                    <p className="text-sm font-bold font-nunito leading-tight text-sn-ink">{u.label}</p>
+                    {count > 0 && <p className="text-xs font-nunito text-sn-ink-muted mt-1">{count} college{count !== 1 ? 's' : ''}</p>}
                   </div>
-                  <span className="text-xs font-semibold text-[#1847c4]">
-                    Browse colleges
-                  </span>
+                  <span className="text-xs font-bold font-nunito text-sn-primary">Browse colleges</span>
                 </Link>
               )
             })}
@@ -507,72 +441,42 @@ export default async function HomePage() {
       </section>
 
       {/* ════════════════════════════════════════════════════════
-          PROMO CARDS — subtle bg
+          PROMO CARDS
       ════════════════════════════════════════════════════════ */}
-      <section className="bg-[#f8f7f3] border-b border-gray-200">
+      <section className="bg-sn-ground border-b border-sn-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Link href="/news" className="group flex items-center gap-4 rounded-lg border border-gray-200 bg-white p-5 transition-colors duration-150 hover:border-[#1847c4]">
-              <Newspaper className="h-6 w-6 flex-shrink-0 text-[#1847c4]" />
-              <div className="min-w-0 flex-1">
-                <h3 className="font-semibold text-ink text-sm">Education News</h3>
-                <p className="text-xs text-gray-400 mt-0.5 line-clamp-1">Latest from Nepal&apos;s education sector</p>
-              </div>
-              <ArrowRight className="h-4 w-4 flex-shrink-0 text-gray-400 transition-colors duration-150 group-hover:text-[#1847c4]" />
-            </Link>
-
-            <Link href="/scholarships" className="group flex items-center gap-4 rounded-lg border border-gray-200 bg-white p-5 transition-colors duration-150 hover:border-[#1847c4]">
-              <Award className="h-6 w-6 flex-shrink-0 text-[#1847c4]" />
-              <div className="min-w-0 flex-1">
-                <h3 className="font-semibold text-ink text-sm">Scholarships</h3>
-                <p className="text-xs text-gray-400 mt-0.5 line-clamp-1">Find funding for your education</p>
-              </div>
-              <ArrowRight className="h-4 w-4 flex-shrink-0 text-gray-400 transition-colors duration-150 group-hover:text-[#1847c4]" />
-            </Link>
-
-            <Link href="/compare" className="group flex items-center gap-4 rounded-lg border border-gray-200 bg-white p-5 transition-colors duration-150 hover:border-[#1847c4]">
-              <Building2 className="h-6 w-6 flex-shrink-0 text-[#1847c4]" />
-              <div className="min-w-0 flex-1">
-                <h3 className="font-semibold text-ink text-sm">Compare Colleges</h3>
-                <p className="text-xs text-gray-400 mt-0.5 line-clamp-1">Side-by-side college comparison</p>
-              </div>
-              <ArrowRight className="h-4 w-4 flex-shrink-0 text-gray-400 transition-colors duration-150 group-hover:text-[#1847c4]" />
-            </Link>
+            {[
+              { href: '/news', title: 'Education News', text: "Latest from Nepal's education sector", Icon: Newspaper, tint: 'peach' as const },
+              { href: '/scholarships', title: 'Scholarships', text: 'Find funding for your education', Icon: Award, tint: 'mint' as const },
+              { href: '/compare', title: 'Compare Colleges', text: 'Side-by-side college comparison', Icon: Building2, tint: 'lilac' as const },
+            ].map(({ href, title, text, Icon, tint }) => (
+              <Link key={href} href={href} className="group flex items-center gap-4 rounded-sn-card border border-sn-border bg-sn-surface p-5 shadow-sn-card transition hover:shadow-sn-float">
+                <IconTile icon={Icon} tint={tint} />
+                <div className="min-w-0 flex-1">
+                  <h3 className="font-bold font-nunito text-sn-ink text-sm">{title}</h3>
+                  <p className="text-xs font-nunito text-sn-ink-muted mt-0.5 line-clamp-1">{text}</p>
+                </div>
+                <ArrowRight className="h-4 w-4 flex-shrink-0 text-sn-ink-muted transition-colors group-hover:text-sn-primary" aria-hidden="true" />
+              </Link>
+            ))}
           </div>
         </div>
       </section>
 
       {/* ════════════════════════════════════════════════════════
-          APPLICATION CHECK — dark navy
+          APPLICATION CHECK
       ════════════════════════════════════════════════════════ */}
-      <section style={{ backgroundColor: '#0d1b3e' }} className="py-20 text-center">
+      <section className="bg-sn-ink py-20 text-center">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="font-display font-bold text-white text-4xl mb-2" style={{ letterSpacing: '-0.025em' }}>
-            Check the current notice before you pay.
-          </p>
-          <p className="text-slate-400 text-sm mb-8">
-            Fees, seats and deadlines can change. Each college profile shows its source and last-checked date when available.
-          </p>
+          <p className="font-baloo font-extrabold text-white text-3xl sm:text-4xl mb-2" style={{ letterSpacing: '-0.02em' }}>Check the current notice before you pay.</p>
+          <p className="text-white/60 font-nunito text-sm mb-8">Fees, seats and deadlines can change. Each college profile shows its source and last-checked date when available.</p>
           <div className="flex flex-wrap justify-center gap-3">
-            <Link
-              href="/colleges"
-              className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg
-                         bg-[#1847c4] text-white text-sm font-semibold hover:bg-[#1340b0] transition-colors"
-            >
-              Browse colleges
-            </Link>
-            <Link
-              href="/results"
-              className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg
-                         bg-white/8 text-white text-sm font-semibold border border-white/15
-                         hover:bg-white/15 transition-colors"
-            >
-              Check Results
-            </Link>
+            <Button.Link href="/colleges" variant="primary">Browse colleges</Button.Link>
+            <Link href="/results" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-sn-control border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-bold font-nunito text-white transition-colors hover:bg-white/15">Check Results</Link>
           </div>
         </div>
       </section>
-
     </div>
   )
 }

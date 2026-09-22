@@ -16,9 +16,7 @@ import {
   GraduationCap,
   GitCompare,
   ExternalLink,
-  BadgeCheck,
 } from "lucide-react";
-import Badge from "@/components/ui/Badge";
 import ReviewForm from "@/components/colleges/ReviewForm";
 import ReviewResponseForm from "@/components/colleges/ReviewResponseForm";
 import ApplyNowButton from "@/components/colleges/ApplyNowButton";
@@ -35,6 +33,11 @@ import { absoluteUrl, breadcrumbSchema, SITE_URL } from "@/lib/seo";
 import { collegeDisplayAffiliation, collegeDisplayLocation, collegeDisplayPrograms, hasActiveCollegeSponsorship, safeCollegeAddress, safeEmailAddress, safeExternalUrl, safePhoneHref } from "@/lib/college-display";
 import CollegeDecisionCheck from "@/components/colleges/CollegeDecisionCheck";
 import CollegeEvidenceLedger, { type CollegeEvidence } from "@/components/colleges/CollegeEvidenceLedger";
+import Card from "@/components/design-system/Card";
+import Pill from "@/components/design-system/Pill";
+import EvidenceChip from "@/components/design-system/EvidenceChip";
+import IconTile from "@/components/design-system/IconTile";
+import Mascot from "@/components/design-system/Mascot";
 
 const BASE_URL = SITE_URL;
 
@@ -53,6 +56,12 @@ function metadataDescription(college: College) {
 
 function routeSegment(value: string) {
   return value.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+/** Turn a source URL into a short, readable citation like "tribhuvan-university.edu.np". */
+function sourceLabel(url: string | null): string {
+  if (!url) return 'Official source';
+  try { return new URL(url).hostname.replace(/^www\./, '') } catch { return 'Official source' }
 }
 
 const getCollege = cache(async function getCollege(slug: string) {
@@ -156,7 +165,6 @@ export default async function CollegeProfilePage({
 
   const { college, programs, reviews, reviewStats, scholarships, admissions, news, evidence } = data;
   const avgRating = reviewStats.averageRating;
-  const verifiedReviewCount = reviews.filter(review => review.verification_status === 'verified').length;
   const linkedProgramNames = programs.map(item => item.program?.name).filter((name): name is string => Boolean(name));
   const fallbackProgramNames = collegeDisplayPrograms(college.programs_offered);
   const programNames = linkedProgramNames.length ? linkedProgramNames : fallbackProgramNames;
@@ -221,198 +229,165 @@ export default async function CollegeProfilePage({
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <JsonLd data={jsonLd} />
       {/* Breadcrumb */}
-      <nav aria-label="Breadcrumb" className="mb-6 flex min-w-0 items-center gap-2 text-sm text-gray-500">
-        <Link href="/" className="hover:text-blue-600">
-          Home
-        </Link>
+      <nav aria-label="Breadcrumb" className="mb-6 flex min-w-0 items-center gap-2 text-sm font-nunito text-sn-ink-muted">
+        <Link href="/" className="hover:text-sn-primary">Home</Link>
         <span aria-hidden="true">/</span>
-        <Link href="/colleges" className="hover:text-blue-600">
-          Colleges
-        </Link>
+        <Link href="/colleges" className="hover:text-sn-primary">Colleges</Link>
         <span aria-hidden="true">/</span>
-        <span aria-current="page" className="min-w-0 truncate font-medium text-gray-900">{college.name}</span>
+        <span aria-current="page" className="min-w-0 truncate font-bold text-sn-ink">{college.name}</span>
       </nav>
 
       {/* Hero */}
-      <div className="mb-8 overflow-hidden border-b border-l-2 border-border border-l-accent bg-card">
-        {/* A missing photo is left missing; a decorative placeholder would imply content we do not have. */}
+      <Card className="mb-8 overflow-hidden !p-0">
         {college.cover_url && (
-          <div className="relative h-[200px] overflow-hidden bg-[#26344f]">
-            <Image
-              src={college.cover_url}
-              alt={`${college.name} cover`}
-              fill
-              className="object-cover"
-              priority
-            />
-          {isSponsored && (
-            <div className="absolute top-4 right-4">
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-400 text-white shadow-sm">
-                {college.sponsor_label || 'Sponsored'}
-              </span>
-            </div>
-          )}
+          <div className="relative h-[200px] overflow-hidden bg-sn-surface-alt">
+            <Image src={college.cover_url} alt={`${college.name} cover`} fill className="object-cover" priority />
+            {isSponsored && (
+              <div className="absolute top-4 right-4">
+                <Pill tone="confirm">{college.sponsor_label || 'Sponsored'}</Pill>
+              </div>
+            )}
           </div>
         )}
-        <div className="px-1 pb-6 pt-5 sm:px-2">
+        <div className="px-5 pb-6 pt-5 sm:px-7">
           {/* Logo — circle avatar floating over cover */}
-          {(() => {
-            return (
-              <div className={`mb-4 flex h-16 w-16 flex-shrink-0 items-center justify-center overflow-hidden rounded-xl border border-gray-200 bg-white ${college.cover_url ? '-mt-12 ml-5 shadow-sm' : ''}`}>
-                {college.logo_url ? (
-                  <Image
-                    src={college.logo_url}
-                    alt={`${college.name} logo`}
-                    width={64}
-                    height={64}
-                    className="object-contain w-full h-full bg-white"
-                  />
-                ) : (
-                  <div className="flex h-full w-full items-center justify-center bg-primary">
-                    <span className="text-white font-bold text-2xl">{college.name.charAt(0)}</span>
-                  </div>
-                )}
+          <div className={`mb-4 flex h-16 w-16 flex-shrink-0 items-center justify-center overflow-hidden rounded-sn-control border border-sn-border bg-sn-surface ${college.cover_url ? '-mt-12 shadow-sn-card' : ''}`}>
+            {college.logo_url ? (
+              <Image src={college.logo_url} alt={`${college.name} logo`} width={64} height={64} className="object-contain w-full h-full bg-white" />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center bg-sn-primary">
+                <span className="text-white font-baloo font-extrabold text-2xl">{college.name.charAt(0)}</span>
               </div>
-            )
-          })()}
+            )}
+          </div>
 
-          {/* Name + meta — sits fully inside the white card, no overlap */}
+          {/* Name + meta */}
           <div className="mb-4">
-            <h1 className="max-w-4xl font-display text-[clamp(1.85rem,5vw,2.6rem)] font-[750] leading-[1.08] tracking-[-0.035em] text-ink">
+            <h1 className="max-w-4xl font-baloo text-[clamp(1.75rem,4.6vw,2.4rem)] font-extrabold leading-[1.1] tracking-[-0.015em] text-sn-ink">
               {college.name}
             </h1>
-            <div className="mt-3 flex flex-wrap gap-2"><SaveCollegeButton collegeId={college.id} /><Link href={`/compare?college1=${encodeURIComponent(college.slug)}`} className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 transition-colors hover:border-blue-300 hover:bg-blue-50"><GitCompare className="h-4 w-4" aria-hidden="true" />Compare</Link><ShareButton title={`${college.name} | SikshyaNepal`} /></div>
+            <div className="mt-3 flex flex-wrap gap-2"><SaveCollegeButton collegeId={college.id} /><Link href={`/compare?college1=${encodeURIComponent(college.slug)}`} className="inline-flex min-h-11 items-center gap-2 rounded-sn-control border border-sn-border-strong bg-sn-surface px-4 py-2.5 text-sm font-bold font-nunito text-sn-ink-soft transition-colors hover:border-sn-primary hover:bg-sn-primary-bg hover:text-sn-primary-hover"><GitCompare className="h-4 w-4" aria-hidden="true" />Compare</Link><ShareButton title={`${college.name} | SikshyaNepal`} /></div>
             <div className="mt-3 flex flex-wrap items-center gap-2.5">
               <VerificationBadge status={college.verification_status} />
-              {displayAffiliation && (
-                <Badge variant="blue">{displayAffiliation}</Badge>
-              )}
+              {displayAffiliation && <Pill tone="primary">{displayAffiliation}</Pill>}
               {college.established_year && (
-                <span className="flex items-center gap-1 text-xs font-medium text-ink-secondary">
-                  <Calendar aria-hidden="true" className="h-3.5 w-3.5" /> Est.{" "}
-                  {college.established_year}
+                <span className="flex items-center gap-1 text-xs font-bold font-nunito text-sn-ink-soft">
+                  <Calendar aria-hidden="true" className="h-3.5 w-3.5" /> Est. {college.established_year}
                 </span>
               )}
               {avgRating && (
-                <span className="flex items-center gap-1 text-xs text-ink-secondary font-medium">
+                <span className="flex items-center gap-1 text-xs font-bold font-nunito text-sn-ink-soft">
                   <Star aria-hidden="true" className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
                   {avgRating.toFixed(1)} ({reviewStats.reviewCount} reviews)
                 </span>
               )}
             </div>
-            {displayLocation && <p className="mt-3 flex items-start gap-1.5 text-sm font-medium text-gray-700"><MapPin aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{displayLocation}</p>}
-            {profileHighlights.length > 0 && <p className="mt-4 border-t border-border pt-3 text-sm leading-6 text-gray-600"><strong className="font-semibold text-ink">At a glance:</strong>{' '}{profileHighlights.join(' · ')}</p>}
+            {displayLocation && <p className="mt-3 flex items-start gap-1.5 text-sm font-bold font-nunito text-sn-ink-soft"><MapPin aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-sn-primary" />{displayLocation}</p>}
+            {profileHighlights.length > 0 && <p className="mt-4 border-t border-sn-border pt-3 text-sm leading-6 font-nunito text-sn-ink-soft"><strong className="font-bold text-sn-ink">At a glance:</strong>{' '}{profileHighlights.join(' · ')}</p>}
           </div>
 
           {/* Official contact actions */}
           <div className="grid grid-cols-2 gap-2 text-sm sm:flex sm:flex-wrap">
             {displayLocation && (
-              <a href={directionsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg border border-border bg-white px-3 font-semibold text-primary hover:border-primary" aria-label={`Get directions to ${college.name}`}>
+              <a href={directionsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-sn-control border border-sn-border bg-sn-surface px-3 font-bold font-nunito text-sn-primary hover:border-sn-primary" aria-label={`Get directions to ${college.name}`}>
                 <MapPin aria-hidden="true" className="h-4 w-4" /> Directions<ExternalLink aria-hidden="true" className="h-3 w-3" />
               </a>
             )}
             {phoneHref && (
-              <a
-                href={phoneHref}
-                className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg border border-border bg-white px-3 font-semibold text-gray-700 hover:border-primary hover:text-primary"
-              >
-                <Phone aria-hidden="true" className="h-4 w-4 text-primary" /> Call college
+              <a href={phoneHref} className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-sn-control border border-sn-border bg-sn-surface px-3 font-bold font-nunito text-sn-ink-soft hover:border-sn-primary hover:text-sn-primary">
+                <Phone aria-hidden="true" className="h-4 w-4 text-sn-primary" /> Call college
               </a>
             )}
             {emailAddress && (
-              <a
-                href={`mailto:${emailAddress}`}
-                className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg border border-border bg-white px-3 font-semibold text-gray-700 hover:border-primary hover:text-primary"
-              >
-                <Mail aria-hidden="true" className="h-4 w-4 text-primary" /> Email college
+              <a href={`mailto:${emailAddress}`} className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-sn-control border border-sn-border bg-sn-surface px-3 font-bold font-nunito text-sn-ink-soft hover:border-sn-primary hover:text-sn-primary">
+                <Mail aria-hidden="true" className="h-4 w-4 text-sn-primary" /> Email college
               </a>
             )}
             {websiteUrl && (
-              <a
-                href={websiteUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg border border-border bg-white px-3 font-semibold text-gray-700 hover:border-primary hover:text-primary"
-              >
-                <Globe aria-hidden="true" className="h-4 w-4 text-primary" /> Official website
-                <ExternalLink aria-hidden="true" className="h-3 w-3" />
+              <a href={websiteUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-sn-control border border-sn-border bg-sn-surface px-3 font-bold font-nunito text-sn-ink-soft hover:border-sn-primary hover:text-sn-primary">
+                <Globe aria-hidden="true" className="h-4 w-4 text-sn-primary" /> Official website<ExternalLink aria-hidden="true" className="h-3 w-3" />
               </a>
             )}
           </div>
         </div>
-      </div>
+      </Card>
 
       {isSponsored && (
-        <p className="mb-6 border-l-2 border-amber-500 bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-950">
+        <p className="mb-6 rounded-sn-control border border-sn-confirm bg-sn-confirm-bg px-4 py-3 text-sm leading-6 font-nunito text-sn-confirm-ink">
           <strong>{college.sponsor_label || 'Sponsored'}:</strong> {college.sponsor_disclosure || 'This college paid for placement. Payment does not change its verification status or student reviews.'}
         </p>
       )}
 
-      <section className="mb-6 rounded-2xl border border-blue-200 bg-white p-5 shadow-sm lg:hidden" aria-label="Admission actions">
-        <div className="flex items-start justify-between gap-3">
-          <div><h2 className="text-xl font-semibold text-gray-950">Admissions enquiry</h2><p className="mt-1 text-sm leading-6 text-gray-600">Ask about the current intake, eligibility and fees. This sends an enquiry, not an application.</p></div>
-          {admissions.length > 0 && <span className="shrink-0 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700">{admissions.length} open</span>}
-        </div>
-        <ApplyNowButton collegeName={college.name} collegeId={college.id} isSponsored={isSponsored} programs={enquiryPrograms} />
-        <Link href={`/admissions/planner?college=${encodeURIComponent(college.name)}`} className="mt-3 flex min-h-11 items-center justify-center rounded-xl border border-blue-200 bg-blue-50 text-sm font-semibold text-blue-800">Add to admission plan</Link>
-        {phoneHref && <a href={phoneHref} className="mt-3 flex min-h-11 items-center justify-center gap-2 rounded-xl border border-gray-300 text-sm font-semibold text-gray-700"><Phone className="h-4 w-4" />Call official number</a>}
+      <section className="mb-6 lg:hidden">
+        <Card className="border-sn-primary/30">
+          <div className="flex items-start justify-between gap-3">
+            <div><h2 className="text-xl font-baloo font-bold text-sn-ink">Admissions enquiry</h2><p className="mt-1 text-sm leading-6 font-nunito text-sn-ink-soft">Ask about the current intake, eligibility and fees. This sends an enquiry, not an application.</p></div>
+            {admissions.length > 0 && <Pill tone="verified">{admissions.length} open</Pill>}
+          </div>
+          <ApplyNowButton collegeName={college.name} collegeId={college.id} isSponsored={isSponsored} programs={enquiryPrograms} />
+          <Link href={`/admissions/planner?college=${encodeURIComponent(college.name)}`} className="mt-3 flex min-h-11 items-center justify-center rounded-sn-control border border-sn-border-strong bg-sn-primary-bg text-sm font-bold font-nunito text-sn-primary-hover">Add to admission plan</Link>
+          {phoneHref && <a href={phoneHref} className="mt-3 flex min-h-11 items-center justify-center gap-2 rounded-sn-control border border-sn-border-strong text-sm font-bold font-nunito text-sn-ink-soft"><Phone className="h-4 w-4" aria-hidden="true" />Call official number</a>}
+        </Card>
       </section>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
-          <section className="border-b border-gray-200 pb-6" aria-labelledby="college-at-a-glance">
-            <h2 id="college-at-a-glance" className="text-xl font-semibold text-gray-950">What students should know</h2>
-            <p className="mt-3 text-sm leading-6 text-gray-700">{answerSummary}</p>
-            <p className="mt-3 text-xs leading-5 text-gray-500">
-              {verifiedDate && college.source_name
-                ? `Source checked against ${college.source_name} on ${verifiedDate}. Fees, seats and deadlines can change; confirm them before applying.`
-                : 'Use the college’s official website or contact details to confirm changing information before applying.'}
-            </p>
+          <section aria-labelledby="college-at-a-glance">
+            <div className="mb-3 flex items-start gap-3">
+              <Mascot pose="read" size={40} />
+              <div>
+                <h2 id="college-at-a-glance" className="text-xl font-baloo font-bold text-sn-ink">What students should know</h2>
+                <p className="mt-2 text-sm leading-6 font-nunito text-sn-ink-soft">{answerSummary}</p>
+              </div>
+            </div>
+            <div className="mt-2">
+              {verifiedDate && college.source_name ? (
+                <EvidenceChip state="verified" source={college.source_name} checkedDate={college.last_verified_at!} />
+              ) : (
+                <EvidenceChip state="limited" label="Confirm changing details with the college directly" />
+              )}
+            </div>
           </section>
 
           <CollegeDecisionCheck collegeSlug={college.slug} sourceUrl={sourceUrl} website={websiteUrl} />
 
           <CollegeEvidenceLedger items={evidence} />
 
-          <div className="bg-white rounded-xl border border-gray-200 p-6">
+          <Card>
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
-                <h2 className="text-lg font-semibold text-gray-900">Source and verification</h2>
-                <p className="mt-1 text-sm text-gray-500">
+                <h2 className="text-lg font-baloo font-bold text-sn-ink">Source and verification</h2>
+                <p className="mt-1 text-sm font-nunito text-sn-ink-muted">
                   {college.source_name ? `Information checked against ${college.source_name}.` : 'Use the official college contact details to confirm current information.'}
                 </p>
               </div>
               <VerificationBadge status={college.verification_status} />
             </div>
-            <div className="mt-4 flex flex-wrap items-center gap-4 border-t border-gray-100 pt-4 text-sm">
-              {college.last_verified_at && (
-                <span className="text-gray-500">
-                  Last verified {new Date(college.last_verified_at).toLocaleDateString('en-NP', { day: 'numeric', month: 'long', year: 'numeric' })}
-                </span>
+            <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-sn-border pt-4 text-sm">
+              {college.last_verified_at && college.source_name ? (
+                <EvidenceChip state="verified" source={college.source_name} checkedDate={college.last_verified_at} />
+              ) : (
+                <EvidenceChip state="limited" />
               )}
               {sourceUrl && (
-                <a href={sourceUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-semibold text-blue-600">
-                  Open source <ExternalLink className="h-3.5 w-3.5" />
+                <a href={sourceUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-bold font-nunito text-sn-primary hover:text-sn-primary-hover">
+                  Open source <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
                 </a>
               )}
               <ReportCorrectionForm entityType="college" entityId={college.id} entityName={college.name} />
             </div>
-          </div>
+          </Card>
 
           {/* Programs */}
-          <div className="bg-white rounded-xl border border-gray-200 p-6">
+          <Card>
             <div className="flex items-center gap-2 mb-4">
-              <GraduationCap className="w-5 h-5 text-blue-600" />
-              <h2 className="text-lg font-semibold text-gray-900">
-                Programs Offered
-              </h2>
+              <IconTile icon={GraduationCap} tint="peach" size={32} />
+              <h2 className="text-lg font-baloo font-bold text-sn-ink">Programs Offered</h2>
             </div>
             {programs.length > 0 ? (
-              <>
               <div className="space-y-3">
                 {[...programs]
-                  // +2 programs float to the top
                   .sort((a, b) => {
                     const aIs2 = a.program?.degree_level === '+2'
                     const bIs2 = b.program?.degree_level === '+2'
@@ -424,266 +399,184 @@ export default async function CollegeProfilePage({
                     const isPlus2 = cp.program?.degree_level === '+2'
                     const feePeriods:Record<string,string>={monthly:'per month',semester:'per semester',annual:'per year',total_program:'total programme',one_time:'one-time'}
                     const feePeriod=cp.fee_period ? feePeriods[cp.fee_period] : null
+                    const feeSource = safeExternalUrl(cp.fee_source_url)
                     return (
-                      <div
-                        key={cp.program_id}
-                        className="flex flex-col gap-3 rounded-lg border border-gray-100 bg-gray-50 p-3 sm:flex-row sm:items-center sm:justify-between"
-                      >
+                      <div key={cp.program_id} className="flex flex-col gap-3 rounded-sn-control border border-sn-border bg-sn-surface-alt p-3.5 sm:flex-row sm:items-center sm:justify-between">
                         <div>
                           {cp.program?.slug ? (
-                            <Link href={`/programs/${cp.program.slug}`} className="text-sm font-semibold text-gray-800 hover:text-blue-700 hover:underline">
+                            <Link href={`/programs/${cp.program.slug}`} className="text-sm font-bold font-nunito text-sn-ink hover:text-sn-primary hover:underline">
                               {cp.program.name}
                             </Link>
                           ) : (
-                            <p className="font-medium text-gray-800 text-sm">{cp.program?.name}</p>
+                            <p className="font-bold font-nunito text-sn-ink text-sm">{cp.program?.name}</p>
                           )}
-                          <div className="flex items-center gap-2 mt-1">
-                            {/* Show +2 badge for intermediate programs, faculty badge otherwise */}
-                            {isPlus2
-                              ? <Badge variant="blue">+2</Badge>
-                              : <Badge variant="gray">{cp.program?.faculty}</Badge>
-                            }
-                            <span className="text-xs text-gray-500">
-                              {isPlus2 ? '2 Years (+2)' : cp.program?.duration}
-                            </span>
-                            {cp.scholarship_available && (
-                              <Badge variant="green">Scholarship Available</Badge>
-                            )}
+                          <div className="flex flex-wrap items-center gap-2 mt-1.5">
+                            {isPlus2 ? <Pill tone="primary">+2</Pill> : <Pill tone="neutral">{cp.program?.faculty}</Pill>}
+                            <span className="text-xs font-nunito text-sn-ink-muted">{isPlus2 ? '2 Years (+2)' : cp.program?.duration}</span>
+                            {cp.scholarship_available && <Pill tone="verified">Scholarship available</Pill>}
                           </div>
                         </div>
                         {cp.fee != null && (
-                          <div className="border-t border-gray-200 pt-3 sm:min-w-44 sm:border-l sm:border-t-0 sm:pl-4 sm:pt-0 sm:text-right">
-                            <p className="text-sm font-semibold text-gray-900">
-                              NPR {cp.fee.toLocaleString()}
+                          <div className="border-t border-sn-border pt-3 sm:min-w-52 sm:border-l sm:border-t-0 sm:pl-4 sm:pt-0 sm:text-right">
+                            <p className="text-sm font-bold font-nunito text-sn-ink">
+                              NPR {cp.fee.toLocaleString()}{feePeriod && <span className="ml-1 font-normal text-sn-ink-soft">{feePeriod}</span>}
                             </p>
-                            {feePeriod && <p className="mt-0.5 text-xs font-semibold text-primary">{feePeriod}</p>}
-                            {cp.fee_academic_year && <p className="mt-1 text-xs text-gray-500">Academic year {cp.fee_academic_year}</p>}
-                            {safeExternalUrl(cp.fee_source_url) && <a href={safeExternalUrl(cp.fee_source_url)!} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex min-h-11 items-center gap-1 text-xs font-bold text-primary hover:underline">Fee source <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" /></a>}
+                            {cp.fee_academic_year && <p className="mt-0.5 text-xs font-nunito text-sn-ink-muted">Academic year {cp.fee_academic_year}</p>}
+                            <div className="mt-2 sm:flex sm:justify-end">
+                              {feeSource && cp.fee_last_verified_at ? (
+                                <EvidenceChip state="verified" source={sourceLabel(feeSource)} checkedDate={cp.fee_last_verified_at} />
+                              ) : (
+                                <EvidenceChip state="confirm" />
+                              )}
+                            </div>
                           </div>
                         )}
                       </div>
                     )
                   })}
               </div>
-              </>
             ) : fallbackProgramNames.length ? (
               <div>
                 <div className="grid gap-2 sm:grid-cols-2">
                   {fallbackProgramNames.map((program) => (
-                    <div key={program} className="rounded-lg border border-gray-100 bg-gray-50 px-3 py-2.5 text-sm font-medium text-gray-700">
-                      {program}
-                    </div>
+                    <div key={program} className="rounded-sn-control border border-sn-border bg-sn-surface-alt px-3 py-2.5 text-sm font-nunito font-medium text-sn-ink-soft">{program}</div>
                   ))}
                 </div>
-                <p className="mt-4 text-xs leading-relaxed text-gray-500">
-                  Program list is from the college research pack. Confirm current intakes and eligibility on the official website before applying.
-                </p>
+                <p className="mt-4 text-xs leading-relaxed font-nunito text-sn-ink-muted">Program list is from the college research pack. Confirm current intakes and eligibility on the official website before applying.</p>
               </div>
-          ) : (
-              <div className="rounded-lg border border-[#e6e4df] bg-[#fcfbf8] p-4">
-                <p className="text-sm font-semibold text-ink">Contact the college for current programme details.</p>
-                <p className="mt-1 text-sm leading-6 text-ink-secondary">Programme offerings can change by intake. Use the official website or admissions office for the current list.</p>
-                {websiteUrl && <a href={websiteUrl} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex min-h-11 items-center gap-1 text-sm font-bold text-primary hover:text-primary-700">Check official website <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" /></a>}
+            ) : (
+              <div className="rounded-sn-control border border-sn-border bg-sn-surface-alt p-4">
+                <p className="text-sm font-bold font-nunito text-sn-ink">Contact the college for current programme details.</p>
+                <p className="mt-1 text-sm leading-6 font-nunito text-sn-ink-soft">Programme offerings can change by intake. Use the official website or admissions office for the current list.</p>
+                {websiteUrl && <a href={websiteUrl} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex min-h-11 items-center gap-1 text-sm font-bold font-nunito text-sn-primary hover:text-sn-primary-hover">Check official website <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" /></a>}
               </div>
             )}
-          </div>
+          </Card>
 
           {admissions.length > 0 && (
-            <div className="bg-white rounded-xl border border-gray-200 p-6">
+            <Card>
               <div className="mb-4 flex items-center justify-between gap-4">
-                <div><h2 className="text-lg font-semibold text-gray-900">Admissions open</h2><p className="mt-1 text-sm text-gray-500">Verified opportunities and deadlines from this college.</p></div>
-                <Link href={`/admissions?q=${encodeURIComponent(college.name)}`} className="text-sm font-semibold text-blue-600">View all</Link>
+                <div><h2 className="text-lg font-baloo font-bold text-sn-ink">Admissions open</h2><p className="mt-1 text-sm font-nunito text-sn-ink-muted">Verified opportunities and deadlines from this college.</p></div>
+                <Link href={`/admissions?q=${encodeURIComponent(college.name)}`} className="text-sm font-bold font-nunito text-sn-primary">View all</Link>
               </div>
               <div className="grid gap-4 sm:grid-cols-2">{admissions.map((admission) => <AdmissionCard key={admission.id} admission={admission} />)}</div>
-            </div>
+            </Card>
           )}
 
           {news.length > 0 && (
-            <section className="rounded-xl border border-gray-200 bg-white p-6" aria-labelledby="college-news-heading">
-              <div className="mb-4 flex items-end justify-between gap-4"><div><h2 id="college-news-heading" className="text-lg font-semibold text-gray-900">Latest updates from {college.name}</h2><p className="mt-1 text-sm text-gray-500">Admissions, results, achievements and campus events with original sources.</p></div><Link href={`/news?q=${encodeURIComponent(college.name)}`} className="whitespace-nowrap text-sm font-semibold text-blue-600">All updates</Link></div>
-              <div className="divide-y divide-gray-100">{news.map(article => <Link key={article.id} href={`/news/${article.slug}`} className="group flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0"><div><p className="text-xs font-semibold uppercase tracking-wide text-blue-600">{article.content_category?.replaceAll('_', ' ') || 'College news'}</p><h3 className="mt-1 text-sm font-semibold text-gray-800 group-hover:text-blue-700">{article.title}</h3></div><span className="text-xs text-gray-400">{new Date(article.published_date).toLocaleDateString('en-NP', { day: 'numeric', month: 'short', year: 'numeric' })}</span></Link>)}</div>
-            </section>
+            <Card as="section" aria-labelledby="college-news-heading">
+              <div className="mb-4 flex items-end justify-between gap-4"><div><h2 id="college-news-heading" className="text-lg font-baloo font-bold text-sn-ink">Latest updates from {college.name}</h2><p className="mt-1 text-sm font-nunito text-sn-ink-muted">Admissions, results, achievements and campus events with original sources.</p></div><Link href={`/news?q=${encodeURIComponent(college.name)}`} className="whitespace-nowrap text-sm font-bold font-nunito text-sn-primary">All updates</Link></div>
+              <div className="divide-y divide-sn-border">{news.map(article => <Link key={article.id} href={`/news/${article.slug}`} className="group flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0"><div><p className="text-xs font-bold font-nunito uppercase tracking-wide text-sn-primary">{article.content_category?.replaceAll('_', ' ') || 'College news'}</p><h3 className="mt-1 text-sm font-bold font-nunito text-sn-ink group-hover:text-sn-primary">{article.title}</h3></div><span className="text-xs font-nunito text-sn-ink-muted">{new Date(article.published_date).toLocaleDateString('en-NP', { day: 'numeric', month: 'short', year: 'numeric' })}</span></Link>)}</div>
+            </Card>
           )}
 
-          <section className="bg-white px-1 py-2" aria-labelledby="student-questions-heading">
-            <h2 id="student-questions-heading" className="text-lg font-semibold text-gray-900">Questions students ask about {college.name}</h2>
-            <div className="mt-5 divide-y divide-gray-100">{facts.map(fact => <details key={fact.question} className="group py-4 first:pt-0 last:pb-0"><summary className="cursor-pointer list-none pr-6 text-sm font-semibold text-gray-900 marker:hidden">{fact.question}<span className="float-right text-blue-600 group-open:rotate-45">+</span></summary><p className="mt-3 max-w-3xl text-sm leading-6 text-gray-600">{fact.answer}</p></details>)}</div>
+          <section aria-labelledby="student-questions-heading">
+            <h2 id="student-questions-heading" className="text-lg font-baloo font-bold text-sn-ink">Questions students ask about {college.name}</h2>
+            <div className="mt-5 divide-y divide-sn-border">{facts.map(fact => <details key={fact.question} className="group py-4 first:pt-0 last:pb-0"><summary className="cursor-pointer list-none pr-6 text-sm font-bold font-nunito text-sn-ink marker:hidden">{fact.question}<span className="float-right text-sn-primary group-open:rotate-45">+</span></summary><p className="mt-3 max-w-3xl text-sm leading-6 font-nunito text-sn-ink-soft">{fact.answer}</p></details>)}</div>
           </section>
 
           {/* Reviews */}
-          <div className="bg-white rounded-xl border border-gray-200 p-6">
-            <div className="mb-4 flex flex-wrap items-end justify-between gap-3"><div><h2 className="text-lg font-semibold text-gray-900">Student Reviews</h2><p className="mt-1 text-xs text-gray-500">Moderated experiences—not an official college ranking.</p></div>{reviews.length > 0 && <div className="flex gap-2 text-xs"><span className="rounded-full bg-gray-100 px-2.5 py-1 font-semibold text-gray-700">Showing {reviews.length} of {reviewStats.reviewCount}</span><span className="rounded-full bg-blue-50 px-2.5 py-1 font-semibold text-blue-700">{verifiedReviewCount} verified shown</span></div>}</div>
-            {reviewStats.reviewCount > 0 && reviewStats.reviewCount < 5 && <div className="mb-5 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2.5 text-xs leading-5 text-amber-900"><strong>Limited sample:</strong> {reviewStats.reviewCount === 1 ? 'This is one student experience.' : `These are ${reviewStats.reviewCount} student experiences.`} Do not treat the rating as representative of every programme, teacher or intake.</div>}
+          <Card>
+            <div className="mb-4 flex flex-wrap items-end justify-between gap-3"><div><h2 className="text-lg font-baloo font-bold text-sn-ink">Student Reviews</h2><p className="mt-1 text-xs font-nunito text-sn-ink-muted">Moderated experiences—not an official college ranking.</p></div>{reviews.length > 0 && <div className="flex gap-2 text-xs"><Pill tone="neutral">Showing {reviews.length} of {reviewStats.reviewCount}</Pill></div>}</div>
+            {reviewStats.reviewCount > 0 && reviewStats.reviewCount < 5 && <div className="mb-5"><EvidenceChip state="limited" label={reviewStats.reviewCount === 1 ? 'One student experience' : `${reviewStats.reviewCount} student experiences`} /><p className="mt-2 text-xs leading-5 font-nunito text-sn-ink-muted">Do not treat the rating as representative of every programme, teacher or intake.</p></div>}
             {reviews.length > 0 ? (
               <div className="space-y-4">
                 {reviews.map((review) => (
-                  <div
-                    key={review.id}
-                    className="border-b border-gray-100 last:border-0 pb-4 last:pb-0"
-                  >
+                  <div key={review.id} className="border-b border-sn-border last:border-0 pb-4 last:pb-0">
                     <div className="flex items-start justify-between gap-2 mb-2">
                       <div>
-                        <p className="font-medium text-gray-800 text-sm">
-                          <span className="inline-flex items-center gap-1">{review.student_name}{review.verification_status === 'verified' && <><BadgeCheck className="h-3.5 w-3.5 text-blue-600" /><span className="text-[10px] font-bold uppercase tracking-wide text-blue-700">Verified student</span></>}</span>
+                        <p className="font-bold font-nunito text-sn-ink text-sm">
+                          <span className="inline-flex items-center gap-1">{review.student_name}{review.verification_status === 'verified' && <Pill tone="verified">Verified student</Pill>}</span>
                         </p>
-                        {review.program && (
-                          <p className="text-xs text-gray-500">
-                            {review.program} {review.year && `• ${review.year}`}
-                          </p>
-                        )}
+                        {review.program && <p className="text-xs font-nunito text-sn-ink-muted">{review.program} {review.year && `• ${review.year}`}</p>}
                       </div>
                       <div className="flex items-center gap-0.5">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <Star
-                            key={star}
-                            className={`w-3.5 h-3.5 ${star <= review.rating ? "text-yellow-400 fill-yellow-400" : "text-gray-200 fill-gray-200"}`}
-                          />
-                        ))}
+                        {[1, 2, 3, 4, 5].map((star) => <Star key={star} className={`w-3.5 h-3.5 ${star <= review.rating ? "text-yellow-400 fill-yellow-400" : "text-sn-border-strong fill-sn-border-strong"}`} />)}
                       </div>
                     </div>
-                    <p className="text-sm text-gray-600">
-                      {review.review_text}
-                    </p>
-                    {(review as Review & { review_responses?: { id: string; response_text: string; status: string; created_at: string }[] }).review_responses?.filter(response => response.status === 'published').map(response => <div key={response.id} className="mt-3 rounded-xl border border-blue-100 bg-blue-50 p-3 text-sm text-blue-950"><p className="text-xs font-bold uppercase tracking-wide text-blue-700">Institution response</p><p className="mt-1 leading-6">{response.response_text}</p></div>)}
-                    {Object.entries({ Teaching: review.teaching_rating, Facilities: review.facilities_rating, Administration: review.administration_rating, Value: review.value_rating, Placement: review.placement_rating, Attendance: review.attendance_rating, Safety: review.safety_rating, Internships: review.internship_support_rating }).some(([, value]) => value != null) && <div className="mt-3 flex flex-wrap gap-2 text-[11px] text-gray-500">{Object.entries({ Teaching: review.teaching_rating, Facilities: review.facilities_rating, Administration: review.administration_rating, Value: review.value_rating, Placement: review.placement_rating, Attendance: review.attendance_rating, Safety: review.safety_rating, Internships: review.internship_support_rating }).filter(([, value]) => value != null).map(([label, value]) => <span key={label} className="rounded-full bg-gray-100 px-2 py-1">{label} {value}/5</span>)}{review.hidden_costs_reported && <span className="rounded-full bg-amber-50 px-2 py-1 text-amber-800">Student reported unclear costs</span>}</div>}
-                    {review.hostel_transport_note && <p className="mt-3 rounded-lg bg-gray-50 p-3 text-xs leading-5 text-gray-600"><strong>Student note:</strong> {review.hostel_transport_note}</p>}
+                    <p className="text-sm font-nunito text-sn-ink-soft">{review.review_text}</p>
+                    {(review as Review & { review_responses?: { id: string; response_text: string; status: string; created_at: string }[] }).review_responses?.filter(response => response.status === 'published').map(response => <div key={response.id} className="mt-3 rounded-sn-control border border-sn-primary/30 bg-sn-primary-bg p-3 text-sm text-sn-primary-hover"><p className="text-xs font-bold font-nunito uppercase tracking-wide">Institution response</p><p className="mt-1 leading-6 font-nunito">{response.response_text}</p></div>)}
+                    {Object.entries({ Teaching: review.teaching_rating, Facilities: review.facilities_rating, Administration: review.administration_rating, Value: review.value_rating, Placement: review.placement_rating, Attendance: review.attendance_rating, Safety: review.safety_rating, Internships: review.internship_support_rating }).some(([, value]) => value != null) && <div className="mt-3 flex flex-wrap gap-2 text-[11px] font-nunito text-sn-ink-muted">{Object.entries({ Teaching: review.teaching_rating, Facilities: review.facilities_rating, Administration: review.administration_rating, Value: review.value_rating, Placement: review.placement_rating, Attendance: review.attendance_rating, Safety: review.safety_rating, Internships: review.internship_support_rating }).filter(([, value]) => value != null).map(([label, value]) => <span key={label} className="rounded-sn-pill bg-sn-surface-alt px-2 py-1">{label} {value}/5</span>)}{review.hidden_costs_reported && <span className="rounded-sn-pill bg-sn-confirm-bg px-2 py-1 text-sn-confirm-ink">Student reported unclear costs</span>}</div>}
+                    {/* Placement rating above is a 1-5 student rating, not a placement-rate statistic — no numeric outcome claim is shown here, so no chip is needed. */}
+                    {review.hostel_transport_note && <p className="mt-3 rounded-sn-control bg-sn-surface-alt p-3 text-xs leading-5 font-nunito text-sn-ink-soft"><strong>Student note:</strong> {review.hostel_transport_note}</p>}
                     <ReviewResponseForm reviewId={review.id} />
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-sm text-gray-500">
-                No reviews yet. Be the first to review!
-              </p>
+              <p className="text-sm font-nunito text-sn-ink-muted">No reviews yet. Be the first to review!</p>
             )}
-          </div>
+          </Card>
 
           {/* Write a Review */}
-          <div className="bg-white rounded-xl border border-gray-200 p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-1">
-              Write a Review
-            </h2>
-            <p className="text-sm text-gray-500 mb-5">
-              Share your experience to help other students
-            </p>
+          <Card>
+            <h2 className="text-lg font-baloo font-bold text-sn-ink mb-1">Write a Review</h2>
+            <p className="text-sm font-nunito text-sn-ink-muted mb-5">Share your experience to help other students</p>
             <ReviewForm collegeId={college.id} collegeName={college.name} />
-          </div>
+          </Card>
         </div>
 
         {/* Sidebar */}
         <div className="space-y-5">
           {/* Quick Info */}
-          <div id="college-contact" className="bg-white rounded-xl border border-gray-200 p-5">
-            <h3 className="font-semibold text-gray-900 mb-4">Quick Info</h3>
+          <Card as="div" id="college-contact">
+            <h3 className="font-bold font-nunito text-sn-ink mb-4">Quick Info</h3>
             <dl className="space-y-3 text-sm">
               {displayAffiliation && (
-                <div className="flex justify-between">
-                  <dt className="text-gray-500">Affiliation</dt>
-                  <dd className="font-medium text-gray-800 text-right">
-                    {displayAffiliation}
-                  </dd>
-                </div>
+                <div className="flex justify-between"><dt className="font-nunito text-sn-ink-muted">Affiliation</dt><dd className="font-bold font-nunito text-sn-ink text-right">{displayAffiliation}</dd></div>
               )}
               {college.established_year && (
-                <div className="flex justify-between">
-                  <dt className="text-gray-500">Established</dt>
-                  <dd className="font-medium text-gray-800">
-                    {college.established_year}
-                  </dd>
-                </div>
+                <div className="flex justify-between"><dt className="font-nunito text-sn-ink-muted">Established</dt><dd className="font-bold font-nunito text-sn-ink">{college.established_year}</dd></div>
               )}
               {displayLocation && (
                 <div className="flex justify-between">
-                  <dt className="text-gray-500">Location</dt>
-                  <dd className="text-right font-medium text-gray-800">
-                    {college.district ? (
-                      <Link href={`/colleges/in/${routeSegment(college.district)}`} className="hover:text-blue-700 hover:underline">
-                        {displayLocation}
-                      </Link>
-                    ) : displayLocation}
+                  <dt className="font-nunito text-sn-ink-muted">Location</dt>
+                  <dd className="text-right font-bold font-nunito text-sn-ink">
+                    {college.district ? <Link href={`/colleges/in/${routeSegment(college.district)}`} className="hover:text-sn-primary hover:underline">{displayLocation}</Link> : displayLocation}
                   </dd>
                 </div>
               )}
-              <div className="flex justify-between">
-                <dt className="text-gray-500">Programs Offered</dt>
-                <dd className="font-medium text-gray-800">
-                  {programs.length || fallbackProgramNames.length}
-                </dd>
-              </div>
+              <div className="flex justify-between"><dt className="font-nunito text-sn-ink-muted">Programs Offered</dt><dd className="font-bold font-nunito text-sn-ink">{programs.length || fallbackProgramNames.length}</dd></div>
             </dl>
             {websiteUrl && (
-              <a
-                href={websiteUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-4 w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                Visit Official Website <ExternalLink className="w-4 h-4" />
+              <a href={websiteUrl} target="_blank" rel="noopener noreferrer" className="mt-4 w-full flex items-center justify-center gap-2 rounded-sn-control bg-sn-primary px-4 py-2.5 text-sm font-bold font-nunito text-white shadow-sn-button transition-colors hover:bg-sn-primary-hover">
+                Visit Official Website <ExternalLink className="w-4 h-4" aria-hidden="true" />
               </a>
             )}
-
-            {/* Apply Now CTA */}
-            <ApplyNowButton
-              collegeName={college.name}
-              collegeId={college.id}
-              isSponsored={isSponsored}
-              programs={enquiryPrograms}
-            />
-          </div>
+            <ApplyNowButton collegeName={college.name} collegeId={college.id} isSponsored={isSponsored} programs={enquiryPrograms} />
+          </Card>
 
           {/* Ad — below Quick Info */}
-          <AdUnit
-            slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR ?? ''}
-            format="rectangle"
-            className="flex justify-center"
-          />
+          <AdUnit slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_SIDEBAR ?? ''} format="rectangle" className="flex justify-center" />
 
           {/* Scholarships */}
           {scholarships.length > 0 && (
-            <div className="bg-white rounded-xl border border-gray-200 p-5">
-              <h3 className="font-semibold text-gray-900 mb-3">Scholarships</h3>
+            <Card>
+              <h3 className="font-bold font-nunito text-sn-ink mb-3">Scholarships</h3>
               <div className="space-y-3">
-                {scholarships.map(
-                  (s: {
-                    id: string;
-                    title: string;
-                    amount?: number | null;
-                    deadline?: string | null;
-                  }) => (
-                    <div
-                      key={s.id}
-                      className="p-3 bg-green-50 rounded-lg border border-green-100"
-                    >
-                      <p className="font-medium text-gray-800 text-sm">
-                        {s.title}
-                      </p>
-                      {s.amount && (
-                        <p className="text-xs text-green-700 mt-1">
-                          Up to NPR {s.amount.toLocaleString()}
-                        </p>
-                      )}
-                    </div>
-                  ),
-                )}
+                {scholarships.map((s: { id: string; title: string; amount?: number | null; deadline?: string | null }) => (
+                  <div key={s.id} className="rounded-sn-control border border-sn-verified/30 bg-sn-verified-bg p-3">
+                    <p className="font-bold font-nunito text-sn-ink text-sm">{s.title}</p>
+                    {s.amount && (
+                      <>
+                        <p className="text-xs font-bold font-nunito text-sn-verified-ink mt-1">Up to NPR {s.amount.toLocaleString()}</p>
+                        <div className="mt-2"><EvidenceChip state="confirm" label="Confirm amount with the college" /></div>
+                      </>
+                    )}
+                  </div>
+                ))}
               </div>
-            </div>
+            </Card>
           )}
 
           {/* Compare CTA */}
-          <div className="bg-blue-50 rounded-xl border border-blue-100 p-5">
-            <h3 className="font-semibold text-blue-900 mb-2">
-              Compare Colleges
-            </h3>
-            <p className="text-sm text-blue-700 mb-3">
-              Compare {college.name} with other colleges side-by-side.
-            </p>
-            <Link
-              href={`/compare?college1=${college.slug}`}
-              className="w-full flex items-center justify-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
-            >
+          <Card tone="alt">
+            <h3 className="font-bold font-nunito text-sn-primary-hover mb-2">Compare Colleges</h3>
+            <p className="text-sm font-nunito text-sn-ink-soft mb-3">Compare {college.name} with other colleges side-by-side.</p>
+            <Link href={`/compare?college1=${college.slug}`} className="w-full flex items-center justify-center rounded-sn-control bg-sn-primary px-4 py-2 text-sm font-bold font-nunito text-white shadow-sn-button transition-colors hover:bg-sn-primary-hover">
               Add to Compare
             </Link>
-          </div>
+          </Card>
         </div>
       </div>
     </div>

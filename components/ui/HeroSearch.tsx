@@ -30,11 +30,11 @@ export default function HeroSearch() {
     <div className="w-full">
       {/* ── Search bar ─────────────────────────────────── */}
       <form onSubmit={handleSubmit} role="search" aria-label="Search SikshyaNepal">
-        <div className="flex items-stretch border-2 border-gray-200 rounded-xl bg-white overflow-hidden
-                        shadow-card-md focus-within:border-blue-500 focus-within:shadow-card-lg
+        <div className="flex items-stretch rounded-sn-card border-2 border-sn-border-strong bg-sn-surface overflow-hidden
+                        shadow-sn-card focus-within:border-sn-primary focus-within:shadow-sn-float
                         transition-all duration-150">
           <div className="relative flex-1 flex items-center">
-            <Search className="absolute left-4 w-5 h-5 text-gray-400 pointer-events-none" />
+            <Search className="absolute left-4 w-5 h-5 text-sn-ink-muted pointer-events-none" aria-hidden="true" />
             <input
               type="text"
               value={query}
@@ -45,35 +45,34 @@ export default function HeroSearch() {
               autoComplete="off"
               enterKeyHint="search"
               inputMode="search"
-              className="h-14 w-full min-w-0 bg-transparent pl-11 pr-11 text-sm text-ink placeholder:text-gray-400 focus:outline-none sm:pl-12 sm:pr-12"
+              className="h-14 w-full min-w-0 bg-transparent pl-11 pr-11 text-sm font-nunito text-sn-ink placeholder:text-sn-ink-muted focus:outline-none sm:pl-12 sm:pr-12"
             />
-            {query && <button type="button" onClick={() => setQuery('')} aria-label="Clear search" className="absolute right-1 flex h-11 w-11 items-center justify-center rounded-lg text-gray-400 hover:bg-gray-100 hover:text-gray-700"><X className="h-4 w-4" /></button>}
+            {query && <button type="button" onClick={() => setQuery('')} aria-label="Clear search" className="absolute right-1 flex h-11 w-11 items-center justify-center rounded-sn-control text-sn-ink-muted hover:bg-sn-surface-alt hover:text-sn-ink"><X className="h-4 w-4" /></button>}
           </div>
           <button
             type="submit"
-            className="m-1.5 flex-shrink-0 bg-[#1847c4] px-4 text-sm font-semibold text-white sm:px-6
-                       rounded-lg hover:bg-[#1340b0] transition-colors duration-150 active:scale-[0.98]"
-            style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.1)' }}
+            className="m-1.5 flex-shrink-0 rounded-sn-control bg-sn-primary px-4 text-sm font-bold font-nunito text-white shadow-sn-button sm:px-6
+                       hover:bg-sn-primary-hover transition-colors duration-150 active:scale-[0.98]"
           >
             Search
           </button>
         </div>
       </form>
 
-      <p id="hero-search-help" className="mt-2 text-xs leading-5 text-gray-500">
+      <p id="hero-search-help" className="mt-2 text-xs leading-5 font-nunito text-sn-ink-muted">
         Search by college, programme, city, university, result or notice.
       </p>
 
       {/* ── Trending tags ──────────────────────────────── */}
       <div className="flex flex-wrap items-center gap-2 mt-3.5">
-        <span className="text-xs font-medium text-gray-400">Trending:</span>
+        <span className="text-xs font-nunito font-medium text-sn-ink-muted">Trending:</span>
         {TRENDING.map((tag) => (
           <Link
             key={tag.label}
             href={tag.href}
-            className="inline-flex min-h-11 items-center px-3 rounded-full text-xs font-medium text-gray-600
-                       border border-gray-200 bg-white
-                       hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700
+            className="inline-flex min-h-11 items-center px-3 rounded-sn-pill text-xs font-nunito font-medium text-sn-ink-soft
+                       border border-sn-border
+                       hover:border-sn-primary hover:bg-sn-primary-bg hover:text-sn-primary-hover
                        transition-all duration-150"
           >
             {tag.label}

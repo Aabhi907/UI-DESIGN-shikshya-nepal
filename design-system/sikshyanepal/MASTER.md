@@ -2,6 +2,16 @@
 
 This is the source of truth for public student-facing UI. The automated catalog did not return a suitable higher-education directory match, so this system retains SikshyaNepal's established identity and applies the skill's verified accessibility, responsive-layout, navigation, and interaction defaults.
 
+## Phase 1 redesign (in progress)
+
+A warmer, evidence-forward visual system is rolling out page by page under the "Public UI redesign" Build Brief (22 September 2026). As of Phase 1, only the home page and the college profile page (`app/(main)/colleges/[slug]`) use it; every other page still follows the rules below unchanged.
+
+- **Tokens**: new CSS custom properties in `app/globals.css` (`--ground`, `--surface`, `--ink`, `--primary` #E0663A, `--verified`, `--confirm`, `--limited`, tint colours), wired into Tailwind under an isolated `sn-` namespace (`bg-sn-primary`, `text-sn-ink`, etc.) so they never collide with the tokens above. Fonts: Baloo 2 (`font-baloo` — wordmark, headings, stat numbers) and Nunito (`font-nunito` — body/UI), added as new font keys alongside the existing ones.
+- **Components**: `components/design-system/` — `Button`, `Card`, `EvidenceChip`, `Pill`, `IconTile`, `SectionHeader`, `FormField`, `Nav`, `Footer`, `QuickNav`, `Mascot`.
+- **The evidence chip** (`EvidenceChip`) is the platform's identity mark: every factual value with provenance (fee, deadline, seat count, programme fact) renders as Verified (teal, source + checked-date), Confirm (amber, "Confirm with the college") or Limited data (neutral) — never a bare number. This supersedes the "evidence confidence... is admin-only" line below for converted pages: the founder's Build Brief makes verification state a public, first-class signal, not an internal-only one.
+- **Shell routing**: `components/layout/MainChrome.tsx` renders the new `Nav`/`Footer`/`QuickNav` only on converted routes; everywhere else keeps the original `Header`/`Footer`/`MobileQuickNav` untouched.
+- When converting a new page, extend this section rather than starting a second parallel system — check here first for the current token and component set before adding new ones.
+
 ## Product character
 
 - Trustworthy, calm, practical and distinctly editorial.

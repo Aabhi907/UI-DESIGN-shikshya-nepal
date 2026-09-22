@@ -13,8 +13,42 @@ const config: Config = {
         nepali:  ['var(--font-noto-devanagari)', 'system-ui', 'sans-serif'],
         sans:    ['var(--font-dm-sans)', 'var(--font-noto-devanagari)', 'system-ui', 'sans-serif'],
         mono:    ['var(--font-dm-mono)', 'Menlo', 'monospace'],
+        // ── Phase 1 design system — new, additive keys. Existing display/sans/mono
+        // above are untouched so unconverted pages render exactly as before.
+        baloo:   ['var(--font-baloo)', 'var(--font-noto-devanagari)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        nunito:  ['var(--font-nunito)', 'var(--font-noto-devanagari)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
       colors: {
+        // ── Phase 1 design system — isolated "sn" namespace (SikshyaNepal
+        // redesign). Deliberately not named `primary`/`ink`/etc. to avoid
+        // colliding with the tokens below, which the rest of the site still
+        // depends on until later phases convert those pages too.
+        sn: {
+          ground:      'var(--ground)',
+          surface:     'var(--surface)',
+          'surface-alt': 'var(--surface-alt)',
+          ink:         'var(--ink)',
+          'ink-soft':  'var(--ink-soft)',
+          'ink-muted': 'var(--ink-muted)',
+          primary:     'var(--primary)',
+          'primary-hover': 'var(--primary-hover)',
+          'primary-bg':    'var(--primary-bg)',
+          verified:        'var(--verified)',
+          'verified-ink':  'var(--verified-ink)',
+          'verified-bg':   'var(--verified-bg)',
+          confirm:         'var(--confirm)',
+          'confirm-ink':   'var(--confirm-ink)',
+          'confirm-bg':    'var(--confirm-bg)',
+          limited:         'var(--limited)',
+          'limited-ink':   'var(--limited-ink)',
+          'limited-bg':    'var(--limited-bg)',
+          border:          'var(--sn-border)',
+          'border-strong': 'var(--sn-border-strong)',
+          'tint-mint':   'var(--tint-mint)',
+          'tint-peach':  'var(--tint-peach)',
+          'tint-butter': 'var(--tint-butter)',
+          'tint-lilac':  'var(--tint-lilac)',
+        },
         // ── Primary — deep confident blue ─────────────
         primary: {
           DEFAULT: '#1e429f',
@@ -64,6 +98,15 @@ const config: Config = {
         'card-md': '0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.05)',
         'card-lg': '0 10px 15px -3px rgb(0 0 0 / 0.08), 0 4px 6px -4px rgb(0 0 0 / 0.04)',
         'card-xl': '0 20px 25px -5px rgb(0 0 0 / 0.10), 0 8px 10px -6px rgb(0 0 0 / 0.04)',
+        // Phase 1 design system
+        'sn-card':   'var(--sn-shadow-card)',
+        'sn-float':  'var(--sn-shadow-float)',
+        'sn-button': 'var(--sn-shadow-button)',
+      },
+      borderRadius: {
+        'sn-card':    '18px',
+        'sn-control': '13px',
+        'sn-pill':    '999px',
       },
       animation: {
         'fade-in':    'fadeIn 0.2s ease-out',

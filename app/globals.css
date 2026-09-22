@@ -19,6 +19,38 @@
   --shadow-rest: 0 1px 2px rgba(15, 22, 41, 0.035), 0 4px 12px rgba(15, 22, 41, 0.02);
   --shadow-hover: 0 6px 16px rgba(15, 22, 41, 0.06);
   --measure-reading: 68ch;
+
+  /* ── Phase 1 design system (new — see Build Brief "Public UI redesign") ──
+     Scoped to a new "sn-" Tailwind namespace (below) so it never touches the
+     tokens above. Pages not yet converted keep rendering with the old ones
+     unchanged; only components/pages that opt in with sn- classes use these. */
+  --ground:        #FFF7EC;
+  --surface:        #FFFFFF;
+  --surface-alt:    #FBEFE0;
+  --ink:            #2A211A;
+  --ink-soft:       #6B6053;
+  --ink-muted:      #A0937F;
+  --primary:        #E0663A;
+  --primary-hover:  #C94F27;
+  --primary-bg:     #FDE9DC;
+  --verified:       #1B9E77;
+  --verified-ink:   #177A5D;
+  --verified-bg:    #DBF1E8;
+  --confirm:        #C6871A;
+  --confirm-ink:    #8A5B08;
+  --confirm-bg:     #FCEECB;
+  --limited:        #A0937F;
+  --limited-ink:    #8A7C68;
+  --limited-bg:     #F0E9DD;
+  --sn-border:      #F0E6D6;
+  --sn-border-strong:#EAD9C6;
+  --tint-mint:      #DBF1E8;
+  --tint-peach:     #FCE4D2;
+  --tint-butter:    #FCEECB;
+  --tint-lilac:     #EDE6FA;
+  --sn-shadow-card:  0 6px 18px rgba(42, 33, 26, 0.06);
+  --sn-shadow-float: 0 10px 26px rgba(42, 33, 26, 0.12);
+  --sn-shadow-button: 0 8px 18px rgba(224, 102, 58, 0.26);
 }
 
 @layer base {
