@@ -6,6 +6,8 @@ import { BookOpen, Clock, ArrowLeft, Building2, BadgeCheck, BriefcaseBusiness, C
 import Badge from '@/components/ui/Badge'
 import type { Program, CollegeProgram, Admission, Scholarship } from '@/types'
 
+export const revalidate = 0
+
 async function getProgram(slug: string) {
   const supabase = createServerSupabaseClient()
   const { data: program } = await supabase.from('programs').select('*').eq('slug', slug).single()

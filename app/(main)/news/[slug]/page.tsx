@@ -8,6 +8,8 @@ import { formatDate } from '@/lib/utils'
 import type { News } from '@/types'
 import PdfViewer from '@/components/results/PdfViewer'
 
+export const revalidate = 0
+
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://sikshyanepal.vercel.app'
 
 async function getNews(slug: string) {
