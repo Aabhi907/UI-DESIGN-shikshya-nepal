@@ -18,8 +18,10 @@ import {
   Building2,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
-import Badge from '@/components/ui/Badge'
-import SearchBar from '@/components/ui/SearchBar'
+import Pill from '@/components/design-system/Pill'
+import SearchField from '@/components/design-system/SearchField'
+import ProgramFinderBanner from '@/components/design-system/ProgramFinderBanner'
+import Mascot from '@/components/design-system/Mascot'
 import { AlertCircle } from 'lucide-react'
 
 const FACULTY_ICONS: Record<string, LucideIcon> = {
@@ -98,23 +100,25 @@ export default async function ProgramsPage({ searchParams }: { searchParams: { f
   }, {} as Record<string, Program[]>)
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="mb-8 border-l-2 border-accent pl-4 sm:pl-5">
-        <p className="page-kicker mb-2">Choose a study route</p>
-        <div className="flex items-start gap-3">
-          <span className="w-10 h-10 rounded-xl bg-primary-50 flex items-center justify-center flex-shrink-0">
-            <BookOpen className="w-5 h-5 text-primary" />
+    <div className="mx-auto max-w-sn px-5 py-10 sm:px-8 lg:px-12 lg:py-14">
+      <div className="mb-8">
+        <p className="text-xs font-bold uppercase tracking-[0.08em] text-sn-primary-hover">Choose a study route</p>
+        <div className="mt-2 flex items-start gap-3">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-sn-control bg-sn-primary-bg">
+            <BookOpen className="h-5 w-5 text-sn-primary" />
           </span>
-          <h1 className="page-title">University programs</h1>
+          <h1 className="font-baloo text-3xl font-extrabold leading-tight text-sn-ink sm:text-4xl">University programs</h1>
         </div>
-        <p className="page-lede mt-3">Understand study routes, eligibility, fees and colleges from +2 through postgraduate level.</p>
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-sn-ink-soft sm:text-base">Understand study routes, eligibility, fees and colleges from +2 through postgraduate level.</p>
       </div>
 
-      <SearchBar placeholder="Search programs by name…" redirectTo="/programs" initialValue={searchParams.q} className="mb-5" />
+      <SearchField placeholder="Search programs by name…" redirectTo="/programs" initialValue={searchParams.q} className="mb-5" />
+
+      <ProgramFinderBanner className="mb-6" />
 
       {/* Faculty Filter */}
-      <div className="flex flex-wrap gap-2 mb-4">
-        <Link href={searchParams.q ? `/programs?q=${encodeURIComponent(searchParams.q)}` : '/programs'} className={`px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${!searchParams.faculty ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-gray-600 border-gray-200 hover:border-blue-300'}`}>
+      <div className="mb-4 flex flex-wrap gap-2">
+        <Link href={searchParams.q ? `/programs?q=${encodeURIComponent(searchParams.q)}` : '/programs'} className={`rounded-sn-pill border px-4 py-1.5 text-sm font-bold font-nunito transition-colors ${!searchParams.faculty ? 'border-sn-primary bg-sn-primary text-white' : 'border-sn-border bg-sn-surface text-sn-ink-soft hover:border-sn-primary/50'}`}>
           All Faculties
         </Link>
         {FACULTIES.map((f) => {
@@ -124,13 +128,13 @@ export default async function ProgramsPage({ searchParams }: { searchParams: { f
             <Link
               key={f.slug}
               href={filterUrl(searchParams, 'faculty', f.slug)}
-              className={`inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-medium border transition-colors ${
+              className={`inline-flex items-center gap-1.5 rounded-sn-pill border px-4 py-1.5 text-sm font-bold font-nunito transition-colors ${
                 active
-                  ? 'bg-primary text-white border-primary'
-                  : 'bg-white text-gray-600 border-gray-200 hover:border-primary hover:text-primary'
+                  ? 'border-sn-primary bg-sn-primary text-white'
+                  : 'border-sn-border bg-sn-surface text-sn-ink-soft hover:border-sn-primary hover:text-sn-primary'
               }`}
             >
-              <Icon className="w-3.5 h-3.5" />
+              <Icon className="h-3.5 w-3.5" />
               {f.name}
             </Link>
           )
@@ -138,15 +142,15 @@ export default async function ProgramsPage({ searchParams }: { searchParams: { f
       </div>
 
       {/* Degree Filter */}
-      <div className="flex flex-wrap gap-2 mb-6">
+      <div className="mb-6 flex flex-wrap gap-2">
         {DEGREE_LEVELS.map(({ label, value }) => (
           <Link
             key={value}
             href={filterUrl(searchParams, 'degree', value)}
-            className={`px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
+            className={`rounded-sn-pill border px-3 py-1 text-xs font-bold font-nunito transition-colors ${
               searchParams.degree === value
-                ? 'bg-gray-800 text-white border-gray-800'
-                : 'bg-white text-gray-600 border-gray-200 hover:border-gray-400'
+                ? 'border-sn-ink bg-sn-ink text-white'
+                : 'border-sn-border bg-sn-surface text-sn-ink-soft hover:border-sn-ink-muted'
             }`}
           >
             {label}
@@ -154,10 +158,21 @@ export default async function ProgramsPage({ searchParams }: { searchParams: { f
         ))}
       </div>
 
-      {(searchParams.faculty || searchParams.degree) && <div className="mb-6 flex flex-wrap items-center gap-2 text-xs"><span className="font-bold text-gray-500">Active filters:</span>{searchParams.faculty&&<Link href={filterUrl(searchParams,'faculty',searchParams.faculty)} className="rounded-full bg-blue-50 px-3 py-1 font-semibold text-blue-700">Faculty: {FACULTIES.find(item=>item.slug===searchParams.faculty)?.name||searchParams.faculty} ×</Link>}{searchParams.degree&&<Link href={filterUrl(searchParams,'degree',searchParams.degree)} className="rounded-full bg-gray-100 px-3 py-1 font-semibold text-gray-700">Level: {searchParams.degree === '+2' ? '+2' : searchParams.degree} ×</Link>}</div>}
+      {(searchParams.faculty || searchParams.degree) && (
+        <div className="mb-6 flex flex-wrap items-center gap-2 text-xs">
+          <span className="font-bold text-sn-ink-muted">Active filters:</span>
+          {searchParams.faculty && <Link href={filterUrl(searchParams, 'faculty', searchParams.faculty)} className="rounded-sn-pill bg-sn-primary-bg px-3 py-1 font-bold text-sn-primary-hover">Faculty: {FACULTIES.find(item => item.slug === searchParams.faculty)?.name || searchParams.faculty} ×</Link>}
+          {searchParams.degree && <Link href={filterUrl(searchParams, 'degree', searchParams.degree)} className="rounded-sn-pill bg-sn-surface-alt px-3 py-1 font-bold text-sn-ink-soft">Level: {searchParams.degree === '+2' ? '+2' : searchParams.degree} ×</Link>}
+        </div>
+      )}
 
       {loadError ? (
-        <div className="rounded-2xl border border-amber-200 bg-amber-50 py-14 text-center text-amber-950"><AlertCircle className="mx-auto h-10 w-10 text-amber-600"/><h2 className="mt-3 font-display text-xl font-bold">Programs could not load</h2><p className="mt-2 text-sm">This is a temporary connection problem. Please try again.</p><Link href="/programs" className="mt-4 inline-flex rounded-lg bg-amber-950 px-4 py-2 text-sm font-bold text-white">Reload programs</Link></div>
+        <div className="rounded-sn-card border border-sn-confirm/30 bg-sn-confirm-bg py-14 text-center text-sn-confirm-ink">
+          <AlertCircle className="mx-auto h-10 w-10" />
+          <h2 className="mt-3 font-baloo text-xl font-bold">Programs could not load</h2>
+          <p className="mt-2 text-sm">This is a temporary connection problem. Please try again.</p>
+          <Link href="/programs" className="mt-4 inline-flex rounded-sn-control bg-sn-ink px-4 py-2 text-sm font-bold text-white">Reload programs</Link>
+        </div>
       ) : Object.keys(grouped).length > 0 ? (
         <div className="space-y-8">
           {Object.entries(grouped).map(([faculty, progs]) => (
@@ -166,27 +181,27 @@ export default async function ProgramsPage({ searchParams }: { searchParams: { f
                 const matched = FACULTIES.find((f) => f.name.toLowerCase().includes(faculty.toLowerCase().split(' ')[0]))
                 const Icon = matched ? (FACULTY_ICONS[matched.slug] ?? BookOpen) : BookOpen
                 return (
-                  <h2 className="mb-4 flex items-center gap-2 text-xl font-semibold text-gray-900">
-                    <Icon className="h-5 w-5 flex-shrink-0 text-primary" />
+                  <h2 className="mb-4 flex items-center gap-2 font-baloo text-xl font-bold text-sn-ink">
+                    <Icon className="h-5 w-5 flex-shrink-0 text-sn-primary" />
                     {faculty}
-                    <Badge variant="gray">{progs.length}</Badge>
+                    <Pill tone="neutral">{progs.length}</Pill>
                   </h2>
                 )
               })()}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                 {progs.map((prog) => (
-                  <div key={prog.id} className="group rounded-lg border border-gray-200 bg-white p-4 transition-colors duration-150 hover:border-blue-300">
+                  <div key={prog.id} className="group rounded-sn-control border border-sn-border bg-sn-surface p-4 transition-colors duration-150 hover:border-sn-primary/40">
                     <div className="flex items-start justify-between gap-3">
-                      <Link href={`/programs/${prog.slug}`} className="flex-1 min-w-0">
-                        <h3 className="font-medium text-gray-900 text-sm group-hover:text-blue-600 transition-colors">{prog.name}</h3>
-                        <div className="flex items-center gap-2 mt-2">
-                          <Badge variant="blue" className="capitalize">{prog.degree_level}</Badge>
-                          <span className="text-xs text-gray-500">{prog.duration}</span>
+                      <Link href={`/programs/${prog.slug}`} className="min-w-0 flex-1">
+                        <h3 className="text-sm font-bold text-sn-ink transition-colors group-hover:text-sn-primary">{prog.name}</h3>
+                        <div className="mt-2 flex items-center gap-2">
+                          <Pill tone="primary" className="capitalize">{prog.degree_level}</Pill>
+                          <span className="text-xs text-sn-ink-muted">{prog.duration}</span>
                         </div>
                       </Link>
                       <Link
                         href={`/colleges/program/${prog.slug}`}
-                        className="text-xs text-blue-600 font-medium whitespace-nowrap hover:underline flex-shrink-0"
+                        className="flex-shrink-0 whitespace-nowrap text-xs font-bold text-sn-primary hover:underline"
                       >
                         Find Colleges
                       </Link>
@@ -198,11 +213,11 @@ export default async function ProgramsPage({ searchParams }: { searchParams: { f
           ))}
         </div>
       ) : (
-        <div className="text-center py-16 bg-white rounded-2xl border border-gray-200">
-          <BookOpen className="w-12 h-12 text-gray-300 mx-auto mb-3" />
-          <h3 className="font-medium text-gray-900 mb-1">No programs found</h3>
-          <p className="mt-2 text-sm text-gray-500">Try a shorter name or remove one filter.</p>
-          <Link href="/programs" className="mt-4 inline-flex rounded-lg bg-primary px-4 py-2 text-sm font-bold text-white">Clear search and filters</Link>
+        <div className="rounded-sn-card border border-sn-border bg-sn-surface py-16 text-center">
+          <Mascot pose="point" size={72} className="mx-auto mb-3" />
+          <h3 className="mb-1 font-baloo font-bold text-sn-ink">No programs found</h3>
+          <p className="mt-2 text-sm text-sn-ink-soft">Try a shorter name or remove one filter.</p>
+          <Link href="/programs" className="mt-4 inline-flex rounded-sn-control bg-sn-primary px-4 py-2 text-sm font-bold text-white hover:bg-sn-primary-hover">Clear search and filters</Link>
         </div>
       )}
     </div>

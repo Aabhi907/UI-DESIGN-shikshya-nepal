@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { Filter, X, SlidersHorizontal } from 'lucide-react'
+import { ChevronDown, SlidersHorizontal, X } from 'lucide-react'
 import { districtsForProvince, NEPAL_PROVINCES } from '@/lib/nepal-geography'
 
 const LOCATIONS = ['Kathmandu', 'Pokhara', 'Chitwan', 'Biratnagar', 'Butwal', 'Other']
@@ -92,6 +92,10 @@ interface Props {
 
 export default function CollegeFilters({ searchParams, filteredCount }: Props) {
   const [open, setOpen] = useState(false)
+  // "More filters" starts open whenever one of its own filters is already
+  // active, so a student who arrived via a link never loses sight of it.
+  const moreActive = Boolean(searchParams.district || searchParams.maxFee || searchParams.feePeriod || searchParams.faculty || searchParams.scholarship || searchParams.verified)
+  const [moreOpen, setMoreOpen] = useState(moreActive)
 
   const hasFilters  = !!(searchParams.location || searchParams.province || searchParams.district || searchParams.affiliation || searchParams.faculty || searchParams.level || searchParams.maxFee || searchParams.feePeriod || searchParams.scholarship || searchParams.verified || searchParams.program)
   const activeCount = [searchParams.location, searchParams.province, searchParams.district, searchParams.affiliation, searchParams.faculty, searchParams.level, searchParams.maxFee, searchParams.feePeriod, searchParams.scholarship, searchParams.verified, searchParams.program].filter(Boolean).length
@@ -110,71 +114,58 @@ export default function CollegeFilters({ searchParams, filteredCount }: Props) {
   }, [open])
 
   const pill = (isActive: boolean) =>
-    `px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
+    `min-h-9 px-3 py-1.5 rounded-sn-pill text-xs font-bold font-nunito border transition-colors ${
       isActive
-        ? 'bg-blue-600 text-white border-blue-600'
-        : 'bg-white text-gray-600 border-gray-200 hover:border-blue-300 hover:text-blue-600'
+        ? 'bg-sn-primary text-white border-sn-primary'
+        : 'bg-sn-surface text-sn-ink-soft border-sn-border hover:border-sn-primary/50 hover:text-sn-primary'
     }`
+
+  const group = (label: string, content: React.ReactNode) => (
+    <div>
+      <p className="mb-2.5 text-xs font-bold uppercase tracking-wider text-sn-ink-muted">{label}</p>
+      {content}
+    </div>
+  )
+
+  // The few filters a student decides on first: what stage, where, which
+  // university. Everything else sits behind "More filters" below.
+  function PrimaryFilters() {
+    return (
+      <div className="space-y-5">
+        {group('Degree level', <div className="flex flex-wrap gap-2">{LEVELS.map((lvl) => <Link key={lvl.value} href={buildUrl(searchParams, 'level', lvl.value)} onClick={() => setOpen(false)} className={pill(searchParams.level === lvl.value)}>{lvl.label}</Link>)}</div>)}
+        {group('Province', <div className="flex flex-wrap gap-2">{PROVINCES.map(value => <Link key={value} href={buildUrl(searchParams, 'province', value)} onClick={() => setOpen(false)} className={pill(searchParams.province === value)}>{value}</Link>)}</div>)}
+        {group('Affiliation', <div className="flex flex-wrap gap-2">{AFFILIATIONS.map((aff) => <Link key={aff.value} href={buildUrl(searchParams, 'affiliation', aff.value)} onClick={() => setOpen(false)} className={pill(searchParams.affiliation === aff.value)}>{aff.label}{aff.hint && <span className="ml-1 text-xs opacity-70">({aff.hint})</span>}</Link>)}</div>)}
+      </div>
+    )
+  }
+
+  function MoreFilters() {
+    return (
+      <div className="space-y-5">
+        {group('Location', <div className="flex flex-wrap gap-2">{LOCATIONS.map((loc) => <Link key={loc} href={buildUrl(searchParams, 'location', loc)} onClick={() => setOpen(false)} className={pill(searchParams.location === loc)}>{loc}</Link>)}</div>)}
+        {group('Faculty', <div className="flex flex-wrap gap-2">{FACULTIES.map((fac) => <Link key={fac} href={buildUrl(searchParams, 'faculty', fac)} onClick={() => setOpen(false)} className={pill(searchParams.faculty === fac)}>{fac}</Link>)}</div>)}
+        {group('Trust & support', <div className="flex flex-wrap gap-2"><Link href={buildUrl(searchParams,'scholarship','true')} onClick={() => setOpen(false)} className={pill(searchParams.scholarship==='true')}>Scholarship available</Link><Link href={buildUrl(searchParams,'verified','true')} onClick={() => setOpen(false)} className={pill(searchParams.verified==='true')}>Verified colleges</Link></div>)}
+        <form action="/colleges" className="grid gap-2 sm:grid-cols-3">
+          {Object.entries(searchParams).filter(([key, value]) => value && !['district', 'maxFee', 'feePeriod', 'page'].includes(key)).map(([key, value]) => <input key={key} type="hidden" name={key} value={value} />)}
+          <label><span className="sr-only">District</span><select name="district" aria-label="District" defaultValue={searchParams.district || ''} disabled={!searchParams.province} className="min-h-11 w-full rounded-sn-control border border-sn-border-strong bg-sn-surface px-3 py-2 text-sm text-sn-ink disabled:bg-sn-surface-alt disabled:text-sn-ink-muted"><option value="">{searchParams.province ? `All districts in ${searchParams.province}` : 'Choose province first'}</option>{districtsForProvince(searchParams.province || '').map(district=><option key={district}>{district}</option>)}</select></label>
+          <label><span className="sr-only">Fee period</span><select name="feePeriod" aria-label="Fee period" defaultValue={searchParams.feePeriod || ''} className="min-h-11 w-full rounded-sn-control border border-sn-border-strong bg-sn-surface px-3 py-2 text-sm text-sn-ink"><option value="">Choose fee period</option><option value="monthly">Monthly</option><option value="semester">Per semester</option><option value="annual">Per year</option><option value="total_program">Full programme</option><option value="one_time">One-time charge</option></select></label>
+          <label><span className="sr-only">Maximum published program fee</span><select name="maxFee" aria-label="Maximum published programme fee" defaultValue={searchParams.maxFee || ''} className="min-h-11 w-full rounded-sn-control border border-sn-border-strong bg-sn-surface px-3 py-2 text-sm text-sn-ink"><option value="">Any amount</option><option value="100000">Under NPR 1 lakh</option><option value="250000">Under NPR 2.5 lakh</option><option value="500000">Under NPR 5 lakh</option><option value="1000000">Under NPR 10 lakh</option></select></label>
+          <button className="min-h-11 rounded-sn-control bg-sn-ink px-3 py-2 text-sm font-bold font-nunito text-white sm:col-span-3">Apply location and fee</button>
+        </form>
+      </div>
+    )
+  }
 
   function FilterContent() {
     return (
       <div className="space-y-5">
-        <div><p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2.5">Province</p><div className="flex flex-wrap gap-2">{PROVINCES.map(value => <Link key={value} href={buildUrl(searchParams, 'province', value)} onClick={() => setOpen(false)} className={pill(searchParams.province === value)}>{value}</Link>)}</div></div>
-        <form action="/colleges" className="grid gap-2 sm:grid-cols-3">{Object.entries(searchParams).filter(([key, value]) => value && !['district', 'maxFee', 'feePeriod', 'page'].includes(key)).map(([key, value]) => <input key={key} type="hidden" name={key} value={value} />)}<label><span className="sr-only">District</span><select name="district" aria-label="District" defaultValue={searchParams.district || ''} disabled={!searchParams.province} className="min-h-11 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm disabled:bg-gray-50 disabled:text-gray-400"><option value="">{searchParams.province ? `All districts in ${searchParams.province}` : 'Choose province first'}</option>{districtsForProvince(searchParams.province || '').map(district=><option key={district}>{district}</option>)}</select></label><label><span className="sr-only">Fee period</span><select name="feePeriod" aria-label="Fee period" defaultValue={searchParams.feePeriod || ''} className="min-h-11 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm"><option value="">Choose fee period</option><option value="monthly">Monthly</option><option value="semester">Per semester</option><option value="annual">Per year</option><option value="total_program">Full programme</option><option value="one_time">One-time charge</option></select></label><label><span className="sr-only">Maximum published program fee</span><select name="maxFee" aria-label="Maximum published programme fee" defaultValue={searchParams.maxFee || ''} className="min-h-11 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm"><option value="">Any amount</option><option value="100000">Under NPR 1 lakh</option><option value="250000">Under NPR 2.5 lakh</option><option value="500000">Under NPR 5 lakh</option><option value="1000000">Under NPR 10 lakh</option></select></label><button className="min-h-11 rounded-lg bg-gray-900 px-3 py-2 text-sm font-semibold text-white sm:col-span-3">Apply location and fee</button></form>
-        <div><p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2.5">Trust & support</p><div className="flex flex-wrap gap-2"><Link href={buildUrl(searchParams,'scholarship','true')} className={pill(searchParams.scholarship==='true')}>Scholarship available</Link><Link href={buildUrl(searchParams,'verified','true')} className={pill(searchParams.verified==='true')}>Verified colleges</Link></div></div>
-        {/* Location */}
-        <div>
-          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2.5">Location</p>
-          <div className="flex flex-wrap gap-2">
-            {LOCATIONS.map((loc) => (
-              <Link key={loc} href={buildUrl(searchParams, 'location', loc)}
-                onClick={() => setOpen(false)} className={pill(searchParams.location === loc)}>
-                {loc}
-              </Link>
-            ))}
-          </div>
-        </div>
-
-        {/* Affiliation */}
-        <div>
-          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2.5">Affiliation</p>
-          <div className="flex flex-wrap gap-2">
-            {AFFILIATIONS.map((aff) => (
-              <Link key={aff.value} href={buildUrl(searchParams, 'affiliation', aff.value)}
-                onClick={() => setOpen(false)} className={pill(searchParams.affiliation === aff.value)}>
-                {aff.label}
-                {aff.hint && (
-                  <span className="text-xs ml-1 opacity-70">({aff.hint})</span>
-                )}
-              </Link>
-            ))}
-          </div>
-        </div>
-
-        {/* Faculty */}
-        <div>
-          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2.5">Faculty</p>
-          <div className="flex flex-wrap gap-2">
-            {FACULTIES.map((fac) => (
-              <Link key={fac} href={buildUrl(searchParams, 'faculty', fac)}
-                onClick={() => setOpen(false)} className={pill(searchParams.faculty === fac)}>
-                {fac}
-              </Link>
-            ))}
-          </div>
-        </div>
-
-        {/* Degree level */}
-        <div>
-          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2.5">Degree Level</p>
-          <div className="flex flex-wrap gap-2">
-            {LEVELS.map((lvl) => (
-              <Link key={lvl.value} href={buildUrl(searchParams, 'level', lvl.value)}
-                onClick={() => setOpen(false)} className={pill(searchParams.level === lvl.value)}>
-                {lvl.label}
-              </Link>
-            ))}
-          </div>
+        <PrimaryFilters />
+        <div className="border-t border-sn-border pt-4">
+          <button type="button" onClick={() => setMoreOpen(v => !v)} aria-expanded={moreOpen} className="flex min-h-11 w-full items-center justify-between text-sm font-bold text-sn-ink">
+            More filters{moreActive && !moreOpen ? ' (active)' : ''}
+            <ChevronDown className={`h-4 w-4 transition-transform ${moreOpen ? 'rotate-180' : ''}`} aria-hidden="true" />
+          </button>
+          {moreOpen && <div className="mt-4">{MoreFilters()}</div>}
         </div>
       </div>
     )
@@ -184,9 +175,9 @@ export default function CollegeFilters({ searchParams, filteredCount }: Props) {
     <>
       {hasFilters && (
         <div className="mb-4 flex flex-wrap items-center gap-2" aria-label="Active filters">
-          <span className="text-xs font-bold text-gray-500">Active:</span>
+          <span className="text-xs font-bold text-sn-ink-muted">Active:</span>
           {activeFilters.map(([key, value]) => (
-            <Link key={key} href={buildUrl(searchParams, key, value!)} className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-800 hover:bg-blue-100" aria-label={`Remove ${FILTER_LABELS[key] || key} filter`}>
+            <Link key={key} href={buildUrl(searchParams, key, value!)} className="inline-flex items-center gap-1 rounded-sn-pill bg-sn-primary-bg px-2.5 py-1 text-xs font-bold text-sn-primary-hover hover:opacity-80" aria-label={`Remove ${FILTER_LABELS[key] || key} filter`}>
               {FILTER_LABELS[key] || key}: {key === 'scholarship' || key === 'verified' ? 'Yes' : value}<X className="h-3 w-3" />
             </Link>
           ))}
@@ -197,63 +188,59 @@ export default function CollegeFilters({ searchParams, filteredCount }: Props) {
         <button
           onClick={() => setOpen(true)}
           aria-label={`Open college filters${activeCount > 0 ? `, ${activeCount} active` : ''}`}
-          className={`flex min-h-11 items-center gap-2 px-4 py-2 rounded-xl border text-sm font-medium transition-colors ${
+          className={`flex min-h-11 items-center gap-2 rounded-sn-control border px-4 py-2 text-sm font-bold font-nunito transition-colors ${
             hasFilters
-              ? 'bg-blue-600 text-white border-blue-600'
-              : 'bg-white text-gray-700 border-gray-200 hover:border-blue-300'
+              ? 'border-sn-primary bg-sn-primary text-white'
+              : 'border-sn-border-strong bg-sn-surface text-sn-ink hover:border-sn-primary/50'
           }`}
         >
-          <SlidersHorizontal className="w-4 h-4" />
+          <SlidersHorizontal className="h-4 w-4" />
           Filters{activeCount > 0 && ` (${activeCount})`}
         </button>
       </div>
 
       {/* ── Desktop filter panel ── */}
-      <div className="hidden lg:block bg-white rounded-2xl border border-gray-200 p-5 mb-5">
-        <div className="flex items-center justify-between mb-4">
+      <div className="mb-5 hidden rounded-sn-card border border-sn-border bg-sn-surface p-5 lg:block">
+        <div className="mb-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Filter className="w-4 h-4 text-gray-500" />
-            <span className="text-sm font-semibold text-gray-700">Filters</span>
+            <SlidersHorizontal className="h-4 w-4 text-sn-ink-muted" />
+            <span className="text-sm font-bold text-sn-ink">Filters</span>
           </div>
           {hasFilters && (
-            <Link href={clearUrl(searchParams)}
-              className="text-xs text-red-500 hover:text-red-600 font-medium flex items-center gap-1">
-              <X className="w-3.5 h-3.5" /> Clear all
+            <Link href={clearUrl(searchParams)} className="flex items-center gap-1 text-xs font-bold text-sn-confirm-ink hover:opacity-80">
+              <X className="h-3.5 w-3.5" /> Clear all
             </Link>
           )}
         </div>
         <FilterContent />
       </div>
 
-      {/* ── Mobile bottom drawer ── */}
+      {/* ── Mobile bottom sheet ── */}
       {open && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setOpen(false)} />
-          <div role="dialog" aria-modal="true" aria-labelledby="college-filter-title" className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl p-6 max-h-[85vh] overflow-y-auto">
-            <div className="flex items-center justify-between mb-5">
+          <div role="dialog" aria-modal="true" aria-labelledby="college-filter-title" className="absolute bottom-0 left-0 right-0 max-h-[85vh] overflow-y-auto rounded-t-sn-card bg-sn-surface p-6">
+            <div className="mb-5 flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <SlidersHorizontal className="w-5 h-5 text-gray-700" />
-                <h3 id="college-filter-title" className="text-lg font-semibold">Filter colleges</h3>
+                <SlidersHorizontal className="h-5 w-5 text-sn-ink" />
+                <h3 id="college-filter-title" className="text-lg font-bold text-sn-ink">Filter colleges</h3>
               </div>
               <div className="flex items-center gap-3">
                 {hasFilters && (
-                  <Link href={clearUrl(searchParams)} onClick={() => setOpen(false)}
-                    className="text-sm text-red-500 font-medium">
+                  <Link href={clearUrl(searchParams)} onClick={() => setOpen(false)} className="text-sm font-bold text-sn-confirm-ink">
                     Clear all
                   </Link>
                 )}
-                <button onClick={() => setOpen(false)} aria-label="Close filters"
-                  className="h-11 w-11 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200 transition-colors">
-                  <X className="w-4 h-4" />
+                <button onClick={() => setOpen(false)} aria-label="Close filters" className="flex h-11 w-11 items-center justify-center rounded-full bg-sn-surface-alt transition-colors hover:opacity-80">
+                  <X className="h-4 w-4" />
                 </button>
               </div>
             </div>
 
             <FilterContent />
 
-            <div className="pt-5 mt-4 border-t border-gray-100">
-              <button onClick={() => setOpen(false)}
-                className="min-h-11 w-full py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-colors">
+            <div className="mt-4 border-t border-sn-border pt-5">
+              <button onClick={() => setOpen(false)} className="min-h-11 w-full rounded-sn-control bg-sn-primary py-3 font-bold font-nunito text-white transition-colors hover:bg-sn-primary-hover">
                 Show {filteredCount} college{filteredCount !== 1 ? 's' : ''}
               </button>
             </div>

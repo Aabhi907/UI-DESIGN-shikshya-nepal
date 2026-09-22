@@ -12,16 +12,28 @@ import QuickNav from '@/components/design-system/QuickNav'
 
 const AUTH_PAGES = ['/account/login', '/account/register', '/account/signup']
 
-// Phase 1 design-system rollout: only the home page and college profile
-// pages use the new shell so far. Every other route keeps the existing
-// Header/Footer/MobileQuickNav untouched until its own phase converts it —
-// see the "Public UI redesign" Build Brief. SiteAnnouncement and
-// GlobalSearch are unrelated to that brief's nav/footer scope and are left
-// exactly as they are on every route, converted or not.
+// Phased design-system rollout: converted routes use the new shell; every
+// other route keeps the existing Header/Footer/MobileQuickNav untouched
+// until its own phase converts it — see the "Public UI redesign" Build
+// Briefs (Phase 1: home + college profile; Phase 2: colleges/schools/
+// programs listing families + the program-finder flow). School profile
+// pages (/schools/[slug]), /schools/compare, /compare, /programs/[slug],
+// /search and admin are deliberately not in this set yet. SiteAnnouncement
+// and GlobalSearch are unrelated to these briefs' nav/footer scope and are
+// left exactly as they are on every route, converted or not.
+const CONVERTED_EXACT = new Set([
+  '/', '/colleges', '/colleges/nearby', '/schools', '/schools/nearby', '/programs', '/tools/program-finder',
+])
+const CONVERTED_PREFIXES = [
+  '/colleges/in/', '/colleges/program/', '/colleges/province/',
+  '/schools/in/', '/schools/municipality/', '/schools/province/',
+]
+
 function isConvertedRoute(pathname: string) {
-  if (pathname === '/') return true
-  const collegeProfile = /^\/colleges\/[^/]+$/.test(pathname)
-  return collegeProfile && !['/colleges/nearby'].includes(pathname)
+  if (CONVERTED_EXACT.has(pathname)) return true
+  if (CONVERTED_PREFIXES.some(prefix => pathname.startsWith(prefix))) return true
+  // College profile pages: a single dynamic segment not already claimed above.
+  return /^\/colleges\/[^/]+$/.test(pathname)
 }
 
 export default function MainChrome({ children }: { children: React.ReactNode }) {

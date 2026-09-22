@@ -3,7 +3,9 @@ import Image from 'next/image'
 import { MapPin, Star, ArrowRight, Banknote, CheckCircle2 } from 'lucide-react'
 import type { College } from '@/types'
 import VerificationBadge from '@/components/institutions/VerificationBadge'
-import { collegeDisplayLocation, collegeDisplayPrograms, hasActiveCollegeSponsorship } from '@/lib/college-display'
+import { collegeDisplayLocation, collegeDisplayPrograms, hasActiveCollegeSponsorship, safeExternalUrl } from '@/lib/college-display'
+import EvidenceChip from '@/components/design-system/EvidenceChip'
+import Pill from '@/components/design-system/Pill'
 import ApplyNowButton from './ApplyNowButton'
 
 // Affiliation short name
@@ -23,6 +25,11 @@ function formatFee(n: number): string {
   return `${n}`
 }
 
+function sourceLabel(url: string | null): string {
+  if (!url) return 'Official source'
+  try { return new URL(url).hostname.replace(/^www\./, '') } catch { return 'Official source' }
+}
+
 interface CollegeCardProps {
   college: College & {
     avg_rating?:   number
@@ -31,6 +38,8 @@ interface CollegeCardProps {
     fee_max?:      number
     fee_period?:   string
     has_published_fees?: boolean
+    fee_source_url?: string | null
+    fee_last_verified_at?: string | null
   }
   matchReasons?: string[]
 }
@@ -55,19 +64,21 @@ export default function CollegeCard({ college, matchReasons = [] }: CollegeCardP
       : `Rs. ${formatFee(college.fee_min!)} – ${formatFee(college.fee_max!)}`
     : null
   const feePeriodLabels: Record<string, string> = { monthly: 'per month', semester: 'per semester', annual: 'per year', total_program: 'full programme', one_time: 'one-time' }
+  // A single, unambiguous fee value with a documented source and check date
+  // earns Verified; an aggregated range or missing provenance gets Confirm —
+  // never presented as sourced when it isn't.
+  const feeSource = safeExternalUrl(college.fee_source_url)
+  const feeIsVerifiable = college.fee_min != null && college.fee_min === college.fee_max && Boolean(feeSource) && Boolean(college.fee_last_verified_at)
 
   return (
-    <article className="group h-full rounded-2xl">
+    <article className="group h-full">
       <div
-        className={`editorial-card editorial-card-interactive flex h-full flex-col overflow-hidden
-                    ${isSponsored ? '!border-amber-300' : college.is_featured ? '!border-blue-300' : ''}`}
+        className={`flex h-full flex-col overflow-hidden rounded-sn-card border bg-sn-surface shadow-sn-card transition-shadow hover:shadow-sn-float
+                    ${isSponsored ? 'border-sn-confirm/40' : college.is_featured ? 'border-sn-primary/30' : 'border-sn-border'}`}
       >
         <Link href={`/colleges/${college.slug}`} aria-label={`View ${college.name} college profile`} className="block">
         {/* ── Cover ─────────────────────────────────────── */}
-        <div
-          className="relative flex-shrink-0 overflow-hidden bg-[#e9edf3]"
-          style={{ height: '140px' }}
-        >
+        <div className="relative h-32 flex-shrink-0 overflow-hidden bg-sn-surface-alt">
           {college.cover_url ? (
             <Image
               src={college.cover_url}
@@ -76,51 +87,48 @@ export default function CollegeCard({ college, matchReasons = [] }: CollegeCardP
               className="object-cover"
             />
           ) : (
-            <div className="absolute inset-0 border-b border-gray-200" />
+            <div className="flex h-full items-center justify-center">
+              <span className="font-baloo text-2xl font-bold text-sn-primary/40">{college.name.charAt(0)}</span>
+            </div>
           )}
 
-          {/* University badge — top left */}
           {affiliShort && (
-            <div className="absolute top-3 left-3">
-              <span className="inline-flex items-center border border-gray-300 bg-white px-2.5 py-1 text-xs font-bold text-gray-800">
-                {affiliShort}
-              </span>
+            <div className="absolute left-3 top-3">
+              <Pill tone="neutral">{affiliShort}</Pill>
             </div>
           )}
 
           {isSponsored && (
-            <div className="absolute top-3 right-3">
-              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-400 text-white shadow-sm">
-                {college.sponsor_label || 'Sponsored'}
-              </span>
+            <div className="absolute right-3 top-3">
+              <Pill tone="confirm">{college.sponsor_label || 'Sponsored'}</Pill>
             </div>
           )}
           {college.is_featured && !isSponsored && (
-            <div className="absolute top-3 right-3">
-              <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-blue-50 text-[11px] font-bold text-blue-800 shadow-sm">Featured</span>
+            <div className="absolute right-3 top-3">
+              <Pill tone="primary">Featured</Pill>
             </div>
           )}
         </div>
 
         {/* ── Body ──────────────────────────────────────── */}
-        <div className="p-4 flex flex-col flex-1">
+        <div className="flex flex-1 flex-col p-4">
           {/* Logo + Name */}
-          <div className="flex items-start gap-3 mb-2">
-            <div className="relative z-10 -mt-8 flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl border border-gray-200 bg-white shadow-sm">
+          <div className="mb-2 flex items-start gap-3">
+            <div className="relative z-10 -mt-8 flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-sn-control border border-sn-border bg-sn-surface shadow-sn-card">
               {college.logo_url ? (
                 <Image
                   src={college.logo_url}
                   alt={`${college.name} logo`}
                   width={44}
                   height={44}
-                  className="rounded-lg object-contain"
+                  className="rounded-sn-control object-contain"
                 />
               ) : (
-                <span className="text-base font-bold text-[#1847c4]">{college.name.charAt(0)}</span>
+                <span className="text-base font-bold text-sn-primary">{college.name.charAt(0)}</span>
               )}
             </div>
-            <div className="pt-1 min-w-0">
-              <h3 className="editorial-card-title line-clamp-2 text-[1.05rem] leading-6 transition-colors group-hover:text-primary">
+            <div className="min-w-0 pt-1">
+              <h3 className="line-clamp-2 font-baloo text-base font-bold leading-6 text-sn-ink transition-colors group-hover:text-sn-primary">
                 {college.name}
               </h3>
             </div>
@@ -128,16 +136,10 @@ export default function CollegeCard({ college, matchReasons = [] }: CollegeCardP
 
           {/* Location */}
           {displayLocation && (
-            <div className="editorial-meta mb-2 mt-0.5 flex items-center gap-1.5">
-              <MapPin className="h-3.5 w-3.5 flex-shrink-0 text-slate-500" aria-hidden="true" />
+            <div className="mb-2 mt-0.5 flex items-center gap-1.5 text-xs text-sn-ink-muted">
+              <MapPin className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
               <span className="truncate">{displayLocation}</span>
             </div>
-          )}
-
-          {affiliShort && (
-            <p className="mb-2 text-xs font-medium text-slate-600">
-              Affiliation: <span className="font-semibold text-slate-800">{affiliShort}</span>
-            </p>
           )}
 
           <div className="mb-2">
@@ -146,33 +148,42 @@ export default function CollegeCard({ college, matchReasons = [] }: CollegeCardP
 
           {/* Programs — plain text, no pills */}
           {topPrograms.length > 0 && (
-            <p className="text-xs text-gray-500 mt-1 mb-2 line-clamp-1">
-              {topPrograms.join(' • ')}
+            <p className="mb-2 mt-1 line-clamp-1 text-xs text-sn-ink-soft">
+              {topPrograms.join(' · ')}
             </p>
           )}
           {college.education_levels && college.education_levels.length > 0 && (
-            <p className="mb-2 text-xs font-semibold text-blue-700">{college.education_levels.map(level => levelLabels[level]).filter(Boolean).join(' · ')}</p>
+            <p className="mb-2 text-xs font-bold text-sn-primary-hover">{college.education_levels.map(level => levelLabels[level]).filter(Boolean).join(' · ')}</p>
           )}
 
           {matchReasons.length > 0 && (
-            <div className="mb-3 border-l-2 border-emerald-500 bg-emerald-50/60 py-2 pl-3" aria-label="Why this college matches">
-              <p className="text-xs font-semibold text-emerald-900">Why it matches</p>
-              <ul className="mt-1.5 space-y-1">{matchReasons.slice(0,3).map(reason=><li key={reason} className="flex items-start gap-1.5 text-xs leading-4 text-emerald-900"><CheckCircle2 className="mt-0.5 h-3 w-3 shrink-0" aria-hidden="true"/>{reason}</li>)}</ul>
+            <div className="mb-3 rounded-sn-control border-l-2 border-sn-verified bg-sn-verified-bg/60 py-2 pl-3" aria-label="Why this college matches">
+              <p className="text-xs font-bold text-sn-verified-ink">Why it matches</p>
+              <ul className="mt-1.5 space-y-1">{matchReasons.slice(0,3).map(reason=><li key={reason} className="flex items-start gap-1.5 text-xs leading-4 text-sn-verified-ink"><CheckCircle2 className="mt-0.5 h-3 w-3 shrink-0" aria-hidden="true"/>{reason}</li>)}</ul>
             </div>
           )}
 
           {isSponsored && (
-            <p className="mb-2 rounded-lg bg-amber-50 px-2.5 py-2 text-[11px] leading-4 text-amber-900">
+            <p className="mb-2 rounded-sn-control bg-sn-confirm-bg px-2.5 py-2 text-[11px] leading-4 text-sn-confirm-ink">
               {college.sponsor_disclosure || 'Paid placement. Sponsorship does not change verification status or student reviews.'}
             </p>
           )}
 
-          {/* Fee */}
+          {/* Fee, with evidence chip */}
           {feeLabel && (
-            <div className="flex items-center gap-1.5 text-sm font-bold text-gray-900 mb-2" title="Published fee amount; confirm whether it is annual, semester-based or total with the college">
-              <Banknote className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
-              <span>{feeLabel}</span>
-              <span className="text-xs font-normal text-gray-500">{college.fee_period ? feePeriodLabels[college.fee_period] || college.fee_period : ''}</span>
+            <div className="mb-2">
+              <div className="flex items-center gap-1.5 text-sm font-bold text-sn-ink">
+                <Banknote className="h-3.5 w-3.5 flex-shrink-0 text-sn-ink-muted" aria-hidden="true" />
+                <span>{feeLabel}</span>
+                <span className="text-xs font-normal text-sn-ink-muted">{college.fee_period ? feePeriodLabels[college.fee_period] || college.fee_period : ''}</span>
+              </div>
+              <div className="mt-1.5">
+                {feeIsVerifiable ? (
+                  <EvidenceChip state="verified" source={sourceLabel(feeSource)} checkedDate={college.fee_last_verified_at!} />
+                ) : (
+                  <EvidenceChip state="confirm" label="Confirm current fee with the college" />
+                )}
+              </div>
             </div>
           )}
 
@@ -180,21 +191,21 @@ export default function CollegeCard({ college, matchReasons = [] }: CollegeCardP
           {college.avg_rating != null && college.avg_rating > 0 && (
             <div className="mb-2 flex items-center gap-1.5 text-xs">
               <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" aria-hidden="true" />
-              <span className="font-semibold text-gray-700">{college.avg_rating.toFixed(1)}</span>
-              <span className="text-gray-500">from {college.review_count} approved review{college.review_count === 1 ? '' : 's'}</span>
-              {(college.review_count ?? 0) < 5 && <span className="text-amber-700">· small sample</span>}
+              <span className="font-bold text-sn-ink-soft">{college.avg_rating.toFixed(1)}</span>
+              <span className="text-sn-ink-muted">from {college.review_count} approved review{college.review_count === 1 ? '' : 's'}</span>
+              {(college.review_count ?? 0) < 5 && <span className="text-sn-confirm-ink">· small sample</span>}
             </div>
           )}
 
           {/* Profile link */}
-          <div className="flex items-center justify-end pt-3 border-t border-gray-100 mt-auto">
-            <span className="flex items-center gap-1 text-xs font-semibold text-primary">
+          <div className="mt-auto flex items-center justify-end border-t border-sn-border pt-3">
+            <span className="flex items-center gap-1 text-xs font-bold text-sn-primary">
               View profile <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 motion-reduce:transform-none" aria-hidden="true" />
             </span>
           </div>
         </div>
         </Link>
-        <div className="border-t border-gray-100 px-4 py-3">
+        <div className="border-t border-sn-border px-4 py-3">
           <ApplyNowButton
             collegeName={college.name}
             collegeId={college.id}

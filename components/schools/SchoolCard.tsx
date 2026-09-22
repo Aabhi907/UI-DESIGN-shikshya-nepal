@@ -29,48 +29,46 @@ export default function SchoolCard({ school }: { school: School }) {
   const grades = gradeLabel(school)
   const place = Array.from(new Set([school.local_level || school.location, school.district].filter(Boolean))).join(', ')
   return (
-    <Link href={`/schools/${school.slug}`} aria-label={`View ${school.name} school profile`} className="group block h-full rounded-2xl">
-      <article className="editorial-card editorial-card-interactive flex h-full flex-col overflow-hidden">
-        <div className="relative h-28 overflow-hidden bg-[#e9edf3]">
-          {school.cover_url ? (
-            <Image src={school.cover_url} alt={`${school.name} campus or school building`} fill className="object-cover" />
-          ) : (
-            <div className="absolute inset-0 flex items-center justify-center border-b border-[#d8dde6]"><SchoolIcon className="h-8 w-8 text-slate-400" aria-hidden="true" /></div>
-          )}
-          <div className="absolute left-3 top-3">
-            <VerificationBadge status={school.verification_status} compact />
+    <Link href={`/schools/${school.slug}`} aria-label={`View ${school.name} school profile`} className="group flex h-full flex-col overflow-hidden rounded-sn-card border border-sn-border bg-sn-surface shadow-sn-card transition-shadow hover:shadow-sn-float">
+      <div className="relative h-28 flex-shrink-0 overflow-hidden bg-sn-surface-alt">
+        {school.cover_url ? (
+          <Image src={school.cover_url} alt={`${school.name} campus or school building`} fill className="object-cover" />
+        ) : (
+          <div className="flex h-full items-center justify-center"><SchoolIcon className="h-8 w-8 text-sn-ink-muted" aria-hidden="true" /></div>
+        )}
+        <div className="absolute left-3 top-3">
+          <VerificationBadge status={school.verification_status} compact />
+        </div>
+      </div>
+
+      <div className="flex flex-1 flex-col p-4">
+        <div className="mb-3 flex items-start gap-3">
+          <div className="relative z-10 -mt-9 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-sn-control border border-sn-border bg-sn-surface shadow-sn-card">
+            {school.logo_url ? (
+              <Image src={school.logo_url} alt={`${school.name} logo`} width={44} height={44} className="rounded-sn-control object-contain" />
+            ) : (
+              <SchoolIcon className="h-5 w-5 text-sn-primary" />
+            )}
+          </div>
+          <div className="min-w-0 pt-0.5">
+            <h2 className="line-clamp-2 font-baloo text-base font-bold leading-6 text-sn-ink transition-colors group-hover:text-sn-primary">
+              {school.name}
+            </h2>
+            {school.iemis_code && <p className="mt-1 font-mono text-[10px] text-sn-ink-muted">IEMIS {school.iemis_code}</p>}
           </div>
         </div>
 
-        <div className="flex flex-1 flex-col p-4">
-          <div className="mb-3 flex items-start gap-3">
-            <div className="relative z-10 -mt-9 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl border border-gray-200 bg-white shadow-sm">
-              {school.logo_url ? (
-                <Image src={school.logo_url} alt={`${school.name} logo`} width={44} height={44} className="rounded-lg object-contain" />
-              ) : (
-                <SchoolIcon className="h-5 w-5 text-primary" />
-              )}
-            </div>
-            <div className="min-w-0 pt-0.5">
-              <h2 className="editorial-card-title line-clamp-2 text-[1.05rem] leading-6 transition-colors group-hover:text-primary">
-                {school.name}
-              </h2>
-              {school.iemis_code && <p className="mt-1 font-mono text-[10px] text-gray-400">IEMIS {school.iemis_code}</p>}
-            </div>
-          </div>
-
-          <div className="editorial-meta space-y-2">
-            <p className="flex items-start gap-1.5"><MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-slate-500" aria-hidden="true" /><span className="line-clamp-2">{place || school.province || 'Location not listed'}</span></p>
-            {grades && <p className="flex items-center gap-1.5"><BookOpen className="h-3.5 w-3.5 text-slate-500" aria-hidden="true" />{grades}</p>}
-            {school.student_count != null && <p className="flex items-center gap-1.5"><Users className="h-3.5 w-3.5 text-slate-500" aria-hidden="true" />{school.student_count.toLocaleString()} students</p>}
-          </div>
-
-          <div className="mt-4 flex items-center justify-between border-t border-gray-100 pt-3">
-            <span className="text-xs font-medium text-gray-500">{ownershipLabel(school.ownership_type)}</span>
-            <span className="flex items-center gap-1 text-xs font-semibold text-primary">View profile <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 motion-reduce:transform-none" aria-hidden="true" /></span>
-          </div>
+        <div className="space-y-2 text-xs text-sn-ink-soft">
+          <p className="flex items-start gap-1.5"><MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-sn-ink-muted" aria-hidden="true" /><span className="line-clamp-2">{place || school.province || 'Location not listed'}</span></p>
+          {grades && <p className="flex items-center gap-1.5"><BookOpen className="h-3.5 w-3.5 text-sn-ink-muted" aria-hidden="true" />{grades}</p>}
+          {school.student_count != null && <p className="flex items-center gap-1.5"><Users className="h-3.5 w-3.5 text-sn-ink-muted" aria-hidden="true" />{school.student_count.toLocaleString()} students</p>}
         </div>
-      </article>
+
+        <div className="mt-4 flex items-center justify-between border-t border-sn-border pt-3">
+          <span className="text-xs font-bold text-sn-ink-muted">{ownershipLabel(school.ownership_type)}</span>
+          <span className="flex items-center gap-1 text-xs font-bold text-sn-primary">View profile <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 motion-reduce:transform-none" aria-hidden="true" /></span>
+        </div>
+      </div>
     </Link>
   )
 }

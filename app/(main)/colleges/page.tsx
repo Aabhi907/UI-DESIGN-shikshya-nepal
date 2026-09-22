@@ -4,7 +4,9 @@ import { createServerSupabaseClient } from '@/lib/supabase'
 import CollegeCard from '@/components/colleges/CollegeCard'
 import CollegeFilters from '@/components/colleges/CollegeFilters'
 import CollegeSort from '@/components/colleges/CollegeSort'
-import SearchBar from '@/components/ui/SearchBar'
+import SearchField from '@/components/design-system/SearchField'
+import ProgramFinderBanner from '@/components/design-system/ProgramFinderBanner'
+import Mascot from '@/components/design-system/Mascot'
 import type { College, CollegeProgram, Review } from '@/types'
 import { AlertCircle, Building2 } from 'lucide-react'
 import AdUnit from '@/components/ads/AdUnit'
@@ -28,6 +30,8 @@ type RichCollege = College & {
   fee_max?:      number
   fee_period?:   string
   has_published_fees?: boolean
+  fee_source_url?: string | null
+  fee_last_verified_at?: string | null
 }
 
 const directoryAnswers = [
@@ -175,6 +179,17 @@ function matchReasons(college: RichCollege, sp: { faculty?:string;level?:string;
   return reasons
 }
 
+// One program's fee backs the displayed min/max unambiguously only when it's
+// the sole comparable value; that's the only case an evidence chip can point
+// to a single source and check date without overstating what's known.
+function feeProvenance(programs: CollegeProgram[] | undefined, feePeriod: string | undefined, feeMin: number | undefined) {
+  if (feeMin == null) return { fee_source_url: null, fee_last_verified_at: null }
+  const comparable = (programs ?? []).filter(cp => cp.fee != null && (!feePeriod || cp.fee_period === feePeriod))
+  const matching = comparable.filter(cp => cp.fee === feeMin)
+  if (matching.length !== 1) return { fee_source_url: null, fee_last_verified_at: null }
+  return { fee_source_url: matching[0].fee_source_url ?? null, fee_last_verified_at: matching[0].fee_last_verified_at ?? null }
+}
+
 async function getColleges(sp: {
   q?:           string
   location?:    string
@@ -204,6 +219,9 @@ async function getColleges(sp: {
         *,
         programs:college_programs(
           fee,
+          fee_period,
+          fee_source_url,
+          fee_last_verified_at,
           scholarship_available,
           program:programs(id, name, slug, faculty, degree_level)
         ),
@@ -247,14 +265,19 @@ async function getColleges(sp: {
     const hasUnknownPeriod = comparableFees.some(cp => !cp.fee_period || cp.fee_period === 'unknown')
     const canCompare = Boolean(sp.feePeriod) || (periods.size === 1 && !hasUnknownPeriod)
     const fees = canCompare ? comparableFees.map(cp => cp.fee).filter((fee): fee is number => fee != null) : []
+    const fee_min = fees.length > 0 ? Math.min(...fees) : undefined
+    const fee_period = canCompare ? (sp.feePeriod || Array.from(periods)[0]) : undefined
+    const provenance = feeProvenance(c.programs, fee_period, fee_min)
     return {
       ...c,
       avg_rating,
       review_count: approved.length > 0 ? approved.length : undefined,
-      fee_min: fees.length > 0 ? Math.min(...fees) : undefined,
+      fee_min,
       fee_max: fees.length > 0 ? Math.max(...fees) : undefined,
-      fee_period: canCompare ? (sp.feePeriod || Array.from(periods)[0]) : undefined,
+      fee_period,
       has_published_fees: publishedFees.length > 0,
+      fee_source_url: provenance.fee_source_url,
+      fee_last_verified_at: provenance.fee_last_verified_at,
     }
   })
 
@@ -347,25 +370,27 @@ export default async function CollegesPage({
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="mx-auto max-w-sn px-5 py-10 sm:px-8 lg:px-12 lg:py-14">
       {!loadError && <JsonLd data={jsonLd} />}
       {/* Header */}
-      <div className="mb-7 border-l-2 border-accent pl-4 sm:pl-5">
-        <p className="page-kicker mb-2">Post-SEE study in Nepal</p>
-        <div className="flex items-start gap-3">
-          <Building2 aria-hidden="true" className="mt-1.5 h-6 w-6 shrink-0 text-primary" />
-          <h1 className="page-title">Colleges in Nepal</h1>
+      <div className="mb-7">
+        <p className="text-xs font-bold uppercase tracking-[0.08em] text-sn-primary-hover">Post-SEE study in Nepal</p>
+        <div className="mt-2 flex items-start gap-3">
+          <Building2 aria-hidden="true" className="mt-1.5 h-6 w-6 shrink-0 text-sn-primary" />
+          <h1 className="font-baloo text-3xl font-extrabold leading-tight text-sn-ink sm:text-4xl">Colleges in Nepal</h1>
         </div>
-        <p className="page-lede mt-3">
+        <p className="mt-3 max-w-2xl text-sm leading-6 text-sn-ink-soft sm:text-base">
           Search by programme, location, affiliation and study level. Verification badges show which profiles have documented source checks; always confirm current fees, seats and deadlines before applying.
         </p>
       </div>
 
       {/* Search */}
       <div className="mb-5">
-        <SearchBar placeholder="Search by college, program, place or affiliation…" redirectTo="/colleges" initialValue={searchParams.q} />
+        <SearchField placeholder="Search by college, program, place or affiliation…" redirectTo="/colleges" initialValue={searchParams.q} />
       </div>
-      <div className="mb-5 flex flex-wrap gap-2 text-xs"><span className="font-semibold text-gray-500">Popular:</span>{['Kathmandu','Pokhara','Chitwan','Lalitpur','Bhaktapur'].map(place=><Link key={place} href={`/colleges/in/${place.toLowerCase()}`} className="font-semibold text-blue-700 hover:underline">Colleges in {place}</Link>)}</div>
+      <div className="mb-5 flex flex-wrap gap-2 text-xs"><span className="font-bold text-sn-ink-muted">Popular:</span>{['Kathmandu','Pokhara','Chitwan','Lalitpur','Bhaktapur'].map(place=><Link key={place} href={`/colleges/in/${place.toLowerCase()}`} className="font-bold text-sn-primary hover:underline">Colleges in {place}</Link>)}</div>
+
+      <ProgramFinderBanner className="mb-6" />
 
       {/* Filters — handles mobile drawer + desktop inline panel + result counts */}
       <CollegeFilters
@@ -377,15 +402,15 @@ export default async function CollegesPage({
 
       {/* Grid */}
       {loadError ? (
-        <div className="rounded-2xl border border-amber-200 bg-amber-50 px-6 py-12 text-center text-amber-950">
-          <AlertCircle className="mx-auto h-10 w-10 text-amber-600" />
-          <h2 className="mt-4 font-display text-xl font-bold">College listings could not load</h2>
+        <div className="rounded-sn-card border border-sn-confirm/30 bg-sn-confirm-bg px-6 py-12 text-center text-sn-confirm-ink">
+          <AlertCircle className="mx-auto h-10 w-10" />
+          <h2 className="mt-4 font-baloo text-xl font-bold">College listings could not load</h2>
           <p className="mx-auto mt-2 max-w-md text-sm leading-6">This is a temporary connection problem—not an empty result. Please reload the page in a moment.</p>
-          <Link href="/colleges" className="mt-5 inline-flex rounded-xl bg-amber-950 px-5 py-2.5 text-sm font-bold text-white">Try again</Link>
+          <Link href="/colleges" className="mt-5 inline-flex rounded-sn-control bg-sn-ink px-5 py-2.5 text-sm font-bold text-white">Try again</Link>
         </div>
       ) : filtered.length > 0 ? (
         <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {visibleColleges.slice(0, 6).map((college) => (
               <CollegeCard key={college.id} college={college} matchReasons={matchReasons(college,searchParams)} />
             ))}
@@ -394,11 +419,11 @@ export default async function CollegesPage({
             <AdUnit
               slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_COLLEGES ?? ''}
               format="horizontal"
-              className="my-5 rounded-xl border border-gray-200 bg-white min-h-[90px]"
+              className="my-5 min-h-[90px] rounded-sn-card border border-sn-border bg-sn-surface"
             />
           )}
           {visibleColleges.length > 6 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {visibleColleges.slice(6).map((college) => (
                 <CollegeCard key={college.id} college={college} matchReasons={matchReasons(college,searchParams)} />
               ))}
@@ -406,44 +431,49 @@ export default async function CollegesPage({
           )}
           {totalPages > 1 && (
             <nav aria-label="College directory pages" className="mt-8 flex flex-wrap items-center justify-center gap-2">
-              {currentPage > 1 && <Link href={buildCollegePageUrl(searchParams, currentPage - 1)} className="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-semibold text-gray-700 hover:border-primary hover:text-primary">Previous</Link>}
-              <span className="px-3 py-2 text-sm text-gray-600">Page <strong className="text-gray-950">{currentPage}</strong> of {totalPages}</span>
-              {currentPage < totalPages && <Link href={buildCollegePageUrl(searchParams, currentPage + 1)} className="rounded-lg border border-primary bg-primary px-4 py-2 text-sm font-semibold text-white hover:bg-blue-800">Next</Link>}
+              {currentPage > 1 && <Link href={buildCollegePageUrl(searchParams, currentPage - 1)} className="rounded-sn-control border border-sn-border-strong bg-sn-surface px-4 py-2 text-sm font-bold text-sn-ink-soft hover:border-sn-primary hover:text-sn-primary">Previous</Link>}
+              <span className="px-3 py-2 text-sm text-sn-ink-soft">Page <strong className="text-sn-ink">{currentPage}</strong> of {totalPages}</span>
+              {currentPage < totalPages && <Link href={buildCollegePageUrl(searchParams, currentPage + 1)} className="rounded-sn-control border border-sn-primary bg-sn-primary px-4 py-2 text-sm font-bold text-white hover:bg-sn-primary-hover">Next</Link>}
             </nav>
           )}
         </>
       ) : (
-        <div className="text-center py-20 bg-white rounded-2xl border border-gray-200">
-          <Building2 className="w-14 h-14 text-gray-200 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">{hasSearch ? 'No college matches that search' : 'No colleges match these filters'}</h3>
-          <p className="text-sm text-gray-500 mb-5 max-w-xs mx-auto">
+        <div className="rounded-sn-card border border-sn-border bg-sn-surface px-6 py-16 text-center">
+          <Mascot pose="point" size={72} className="mx-auto mb-4" />
+          <h3 className="mb-2 font-baloo text-lg font-bold text-sn-ink">{hasSearch ? 'No college matches that search' : 'No colleges match these filters'}</h3>
+          <p className="mx-auto mb-5 max-w-xs text-sm leading-6 text-sn-ink-soft">
             {hasSearch ? 'Try a shorter name, programme, district or affiliation. You can also browse the full directory.' : 'No listing matches every selected option. Remove one filter or browse the full directory.'}
           </p>
-          <Link
-            href={hasDirectoryFilters ? (hasSearch ? `/colleges?q=${encodeURIComponent(searchParams.q || '')}` : '/colleges') : '/colleges'}
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-xl hover:bg-blue-700 transition-colors"
-          >
-            {hasDirectoryFilters ? 'Remove filters' : 'Browse all colleges'}
-          </Link>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <Link
+              href={hasDirectoryFilters ? (hasSearch ? `/colleges?q=${encodeURIComponent(searchParams.q || '')}` : '/colleges') : '/colleges'}
+              className="inline-flex min-h-11 items-center gap-2 rounded-sn-control bg-sn-primary px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-sn-primary-hover"
+            >
+              {hasDirectoryFilters ? 'Remove filters' : 'Browse all colleges'}
+            </Link>
+            <Link href="/tools/program-finder" className="inline-flex min-h-11 items-center gap-2 rounded-sn-control border border-sn-border-strong bg-sn-surface px-5 py-2.5 text-sm font-bold text-sn-ink hover:border-sn-primary hover:text-sn-primary">
+              Not sure what to study? Take the quiz
+            </Link>
+          </div>
         </div>
       )}
 
-      <section className="mt-10 rounded-2xl border border-gray-200 bg-white p-6 sm:p-8" aria-labelledby="college-directory-questions">
-        <h2 id="college-directory-questions" className="font-display text-2xl font-bold text-gray-950">How to use the college directory</h2>
-        <div className="mt-5 divide-y divide-gray-100">
+      <section className="mt-10 rounded-sn-card border border-sn-border bg-sn-surface p-6 sm:p-8" aria-labelledby="college-directory-questions">
+        <h2 id="college-directory-questions" className="font-baloo text-2xl font-bold text-sn-ink">How to use the college directory</h2>
+        <div className="mt-5 divide-y divide-sn-border">
           {directoryAnswers.map(item => (
             <details key={item.question} className="group py-4 first:pt-0 last:pb-0">
-              <summary className="cursor-pointer list-none pr-8 text-sm font-semibold text-gray-900 marker:hidden">
-                {item.question}<span className="float-right text-blue-600 group-open:rotate-45">+</span>
+              <summary className="cursor-pointer list-none pr-8 text-sm font-bold text-sn-ink marker:hidden">
+                {item.question}<span className="float-right text-sn-primary group-open:rotate-45">+</span>
               </summary>
-              <p className="mt-3 max-w-3xl text-sm leading-6 text-gray-600">{item.answer}</p>
+              <p className="mt-3 max-w-2xl text-sm leading-6 text-sn-ink-soft">{item.answer}</p>
             </details>
           ))}
         </div>
-        <div className="mt-6 flex flex-wrap gap-3 border-t border-gray-100 pt-5 text-sm font-semibold">
-          <Link href="/compare" className="text-blue-700 hover:underline">Compare shortlisted colleges</Link>
-          <Link href="/colleges" className="text-blue-700 hover:underline">Use the college finder</Link>
-          <Link href="/about/editorial-policy" className="text-blue-700 hover:underline">Read our verification policy</Link>
+        <div className="mt-6 flex flex-wrap gap-3 border-t border-sn-border pt-5 text-sm font-bold">
+          <Link href="/compare" className="text-sn-primary hover:underline">Compare shortlisted colleges</Link>
+          <Link href="/colleges" className="text-sn-primary hover:underline">Use the college finder</Link>
+          <Link href="/about/editorial-policy" className="text-sn-primary hover:underline">Read our verification policy</Link>
         </div>
       </section>
     </div>
