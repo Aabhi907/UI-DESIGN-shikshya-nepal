@@ -24,7 +24,7 @@ import ReviewResponseForm from "@/components/colleges/ReviewResponseForm";
 import ApplyNowButton from "@/components/colleges/ApplyNowButton";
 import SaveCollegeButton from "@/components/colleges/SaveCollegeButton";
 import AdUnit from "@/components/ads/AdUnit";
-import type { College, CollegeProgram, Review, News } from "@/types";
+import type { College, CollegeProgram, Review, News, UniversityProgramOffering, University } from "@/types";
 import VerificationBadge from "@/components/institutions/VerificationBadge";
 import ReportCorrectionForm from "@/components/institutions/ReportCorrectionForm";
 import AdmissionCard from "@/components/admissions/AdmissionCard";
@@ -103,10 +103,17 @@ const getCollege = cache(async function getCollege(slug: string) {
   const averageRating = reviewCount === approvedRatings.length && approvedRatings.length > 0
     ? approvedRatings.reduce((sum, rating) => sum + rating, 0) / approvedRatings.length
     : null;
+  const rawPrograms = (programsRes.data || []) as CollegeProgram[];
+  const offeringIds = rawPrograms.map(item => item.university_program_offering_id).filter((id): id is string => Boolean(id));
+  const { data: offeringRows } = offeringIds.length
+    ? await supabase.from('university_program_offerings').select('*, university:universities(id,name,slug,short_name,website,created_at)').in('id', offeringIds).eq('status', 'published')
+    : { data: [] };
+  const offeringMap = new Map(((offeringRows || []) as (UniversityProgramOffering & { university?: University | null })[]).map(item => [item.id, item]));
+  const programs = rawPrograms.map(item => ({ ...item, offering: item.university_program_offering_id ? offeringMap.get(item.university_program_offering_id) || null : null }));
 
   return {
     college: college as College,
-    programs: (programsRes.data || []) as CollegeProgram[],
+    programs,
     reviews: (reviewsRes.data || []) as Review[],
     reviewStats: { averageRating, reviewCount },
     scholarships: scholarshipsRes.data || [],
@@ -443,9 +450,8 @@ export default async function CollegeProfilePage({
                               ? <Badge variant="blue">+2</Badge>
                               : <Badge variant="gray">{cp.program?.faculty}</Badge>
                             }
-                            <span className="text-xs text-gray-500">
-                              {isPlus2 ? '2 Years (+2)' : cp.program?.duration}
-                            </span>
+                            <span className="text-xs text-gray-500">{cp.offering?.duration || (isPlus2 ? '2 Years (+2)' : cp.program?.duration)}</span>
+                            {cp.offering?.university && <Badge variant="blue">{cp.offering.university.short_name}</Badge>}
                             {cp.scholarship_available && (
                               <Badge variant="green">Scholarship Available</Badge>
                             )}

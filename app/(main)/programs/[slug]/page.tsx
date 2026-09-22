@@ -38,7 +38,11 @@ const getProgram = cache(async function getProgram(slug: string) {
     supabase.from('university_program_offerings').select('*, university:universities(id,name,slug,short_name,website,created_at)').eq('program_id', program.id).eq('status', 'published').order('updated_at', { ascending: false }),
   ])
 
-  const visibleColleges = ((colleges || []) as CollegeProgram[]).filter(item => item.college && (item.college.status === 'active' || item.college.status == null))
+  const offerings = (offeringRows || []) as (UniversityProgramOffering & { university?: University | null })[]
+  const offeringMap = new Map(offerings.map(item => [item.id, item]))
+  const visibleColleges = ((colleges || []) as CollegeProgram[])
+    .filter(item => item.college && (item.college.status === 'active' || item.college.status == null))
+    .map(item => ({ ...item, offering: item.university_program_offering_id ? offeringMap.get(item.university_program_offering_id) || null : null }))
   const collegeIds = visibleColleges.map(item => item.college_id)
   const today = new Date().toISOString()
   const [{ data: admissions }, { data: scholarships }] = await Promise.all([
@@ -49,7 +53,7 @@ const getProgram = cache(async function getProgram(slug: string) {
   return {
     program: program as Program,
     colleges: visibleColleges,
-    offerings: (offeringRows || []) as (UniversityProgramOffering & { university?: University | null })[],
+    offerings,
     admissions: (admissions || []) as Admission[],
     scholarships: (scholarships || []) as Scholarship[],
   }
@@ -161,6 +165,7 @@ export default async function ProgramDetailPage({ params }: { params: { slug: st
                       {cp.college?.affiliation && (
                         <Badge variant="gray">{collegeDisplayAffiliation(cp.college.affiliation)}</Badge>
                       )}
+                      {cp.offering?.university && <Badge variant="blue">{cp.offering.university.short_name}</Badge>}
                       {cp.scholarship_available && <Badge variant="green">Scholarship</Badge>}
                     </div>
                   </div>

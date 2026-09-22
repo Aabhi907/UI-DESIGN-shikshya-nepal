@@ -9,9 +9,15 @@ const noStore={'Cache-Control':'private, no-store, max-age=0'}
 export async function GET(_:Request,{params}:{params:{id:string}}){
   if(!(await isStaff()))return NextResponse.json({error:'Unauthorized'},{status:401,headers:noStore})
   if(!UUID.test(params.id))return NextResponse.json({error:'Invalid college ID.'},{status:400,headers:noStore})
-  const{data,error}=await createAdminSupabaseClient().from('college_programs').select('id,fee,fee_period,fee_academic_year,fee_source_url,fee_last_verified_at,program:programs(name,degree_level)').eq('college_id',params.id).order('id')
-  if(error)return NextResponse.json({error:error.code==='42703'?'Run migration 20261011 before editing fee evidence.':'Programme fees could not be loaded.'},{status:500,headers:noStore})
-  return NextResponse.json(data||[],{headers:noStore})
+  const db=createAdminSupabaseClient()
+  const{data,error}=await db.from('college_programs').select('id,program_id,university_program_offering_id,fee,fee_period,fee_academic_year,fee_source_url,fee_last_verified_at,program:programs(name,degree_level)').eq('college_id',params.id).order('id')
+  if(error)return NextResponse.json({error:error.code==='42703'?'Run migrations 20261011 and 20261022 before editing programme evidence.':'Programme evidence could not be loaded.'},{status:500,headers:noStore})
+  const programIds=Array.from(new Set((data||[]).map(item=>item.program_id).filter(Boolean)))
+  const{data:offerings,error:offeringError}=programIds.length
+    ?await db.from('university_program_offerings').select('id,program_id,duration,status,university:universities(id,name,short_name)').in('program_id',programIds).neq('status','archived').order('status').order('updated_at',{ascending:false})
+    :{data:[],error:null}
+  if(offeringError)return NextResponse.json({error:'University variants could not be loaded. Run migration 20261022.'},{status:500,headers:noStore})
+  return NextResponse.json({items:data||[],offerings:offerings||[]},{headers:noStore})
 }
 
 export async function PATCH(request:Request,{params}:{params:{id:string}}){
@@ -27,9 +33,17 @@ export async function PATCH(request:Request,{params}:{params:{id:string}}){
   if(source&&!/^https:\/\//i.test(source))return NextResponse.json({error:'Fee source must be an HTTPS URL.'},{status:400,headers:noStore})
   const checked=String(body.fee_last_verified_at||'').trim()
   if(checked&&Number.isNaN(new Date(checked).getTime()))return NextResponse.json({error:'Enter a valid checked date.'},{status:400,headers:noStore})
-  const row={fee,fee_period:period,fee_academic_year:String(body.fee_academic_year||'').trim().slice(0,30)||null,fee_source_url:source||null,fee_last_verified_at:checked?new Date(checked).toISOString():null}
-  const{data,error}=await createAdminSupabaseClient().from('college_programs').update(row).eq('id',String(body.id)).eq('college_id',params.id).select('id').single()
+  const offeringId=String(body.university_program_offering_id||'').trim()||null
+  if(offeringId&&!UUID.test(offeringId))return NextResponse.json({error:'Choose a valid university programme variant.'},{status:400,headers:noStore})
+  const db=createAdminSupabaseClient()
+  if(offeringId){
+    const{data:link}=await db.from('college_programs').select('program_id').eq('id',String(body.id)).eq('college_id',params.id).single()
+    const{data:offering}=await db.from('university_program_offerings').select('id,program_id,status').eq('id',offeringId).neq('status','archived').single()
+    if(!link||!offering||link.program_id!==offering.program_id)return NextResponse.json({error:'That university variant does not belong to this programme.'},{status:400,headers:noStore})
+  }
+  const row={university_program_offering_id:offeringId,fee,fee_period:period,fee_academic_year:String(body.fee_academic_year||'').trim().slice(0,30)||null,fee_source_url:source||null,fee_last_verified_at:checked?new Date(checked).toISOString():null}
+  const{data,error}=await db.from('college_programs').update(row).eq('id',String(body.id)).eq('college_id',params.id).select('id').single()
   if(error||!data)return NextResponse.json({error:'Fee evidence could not be saved.'},{status:500,headers:noStore})
-  await writeAudit('college_program.fee_update','college',params.id,{college_program_id:body.id,fee_period:period,has_source:Boolean(source),checked_at:row.fee_last_verified_at})
+  await writeAudit('college_program.evidence_update','college',params.id,{college_program_id:body.id,university_program_offering_id:offeringId,fee_period:period,has_source:Boolean(source),checked_at:row.fee_last_verified_at})
   return NextResponse.json({success:true},{headers:noStore})
 }

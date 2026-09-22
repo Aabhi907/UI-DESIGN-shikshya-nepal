@@ -10,15 +10,16 @@ export async function GET() {
   const db = createAdminSupabaseClient()
   const [{ data: colleges, error: collegeError }, { data: links, error: linkError }] = await Promise.all([
     db.from('colleges').select('id,name,slug,province,district,location,phone,email,website,source_name,source_url,last_verified_at,verification_status,status,average_fee_min,average_fee_max,fee_source_url,fee_last_verified_at').order('name'),
-    db.from('college_programs').select('college_id,fee,fee_period,fee_academic_year,fee_source_url,fee_last_verified_at'),
+    db.from('college_programs').select('college_id,university_program_offering_id,fee,fee_period,fee_academic_year,fee_source_url,fee_last_verified_at'),
   ])
   if (collegeError) return NextResponse.json({ error: 'College records could not be loaded.' }, { status: 500, headers })
   if (linkError) return NextResponse.json({ error: 'Programme links could not be loaded.' }, { status: 500, headers })
   const now = Date.now()
-  const byCollege = new Map<string, { count: number; fees: number; feeWithoutPeriod: number; feeWithoutYear: number; feeWithoutSource: number; staleFeeEvidence: number }>()
+  const byCollege = new Map<string, { count: number; unmatchedOfferings: number; fees: number; feeWithoutPeriod: number; feeWithoutYear: number; feeWithoutSource: number; staleFeeEvidence: number }>()
   for (const row of links || []) {
-    const current = byCollege.get(row.college_id) || { count: 0, fees: 0, feeWithoutPeriod: 0, feeWithoutYear: 0, feeWithoutSource: 0, staleFeeEvidence: 0 }
+    const current = byCollege.get(row.college_id) || { count: 0, unmatchedOfferings: 0, fees: 0, feeWithoutPeriod: 0, feeWithoutYear: 0, feeWithoutSource: 0, staleFeeEvidence: 0 }
     current.count += 1
+    if (!row.university_program_offering_id) current.unmatchedOfferings += 1
     if (row.fee != null) {
       current.fees += 1
       if (!row.fee_period || row.fee_period === 'unknown') current.feeWithoutPeriod += 1
@@ -30,7 +31,7 @@ export async function GET() {
     byCollege.set(row.college_id, current)
   }
   const rows = (colleges || []).filter((c) => c.status !== 'inactive').map((c) => {
-    const related = byCollege.get(c.id) || { count: 0, fees: 0, feeWithoutPeriod: 0, feeWithoutYear: 0, feeWithoutSource: 0, staleFeeEvidence: 0 }
+    const related = byCollege.get(c.id) || { count: 0, unmatchedOfferings: 0, fees: 0, feeWithoutPeriod: 0, feeWithoutYear: 0, feeWithoutSource: 0, staleFeeEvidence: 0 }
     const checkedAt = c.last_verified_at ? new Date(c.last_verified_at).getTime() : Number.NaN
     const stale = Number.isNaN(checkedAt) || now - checkedAt > 180 * 86400000
     const hasCollegeFee = c.average_fee_min != null || c.average_fee_max != null
@@ -38,6 +39,7 @@ export async function GET() {
     const collegeFeeStale = hasCollegeFee && (Number.isNaN(collegeFeeCheckedAt) || now - collegeFeeCheckedAt > 90 * 86400000)
     const gaps: string[] = []
     if (!related.count) gaps.push('No programmes')
+    else if (related.unmatchedOfferings) gaps.push('University variant missing')
     if (!c.website) gaps.push('Missing website')
     if (!c.phone && !c.email) gaps.push('Missing contact')
     if (!c.source_url) gaps.push('Missing source')
