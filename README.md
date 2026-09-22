@@ -120,7 +120,7 @@ git diff --check
 app/                 Routes, pages, API handlers and global styles
 components/          Reusable interface and feature components
 lib/                 Supabase, auth, safety, editorial and domain helpers
-supabase/            Base schema, seed data and ordered SQL migrations
+supabase/            Base schema and ordered SQL migrations
 scrapers/            Python collectors and school/research import utilities
 scripts/             Local validation and data-import scripts
 docs/                Product, editorial, SEO, UX and safety documentation
