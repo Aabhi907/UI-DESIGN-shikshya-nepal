@@ -1,8 +1,9 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { MapPin, Star, ArrowRight, Banknote } from 'lucide-react'
+import { MapPin, Star, ArrowRight, Banknote, CheckCircle2 } from 'lucide-react'
 import type { College } from '@/types'
 import VerificationBadge from '@/components/institutions/VerificationBadge'
+import { collegeDisplayLocation, collegeDisplayPrograms, hasActiveCollegeSponsorship } from '@/lib/college-display'
 
 // Affiliation short name
 function affiliationShort(full: string | null): string | null {
@@ -13,14 +14,6 @@ function affiliationShort(full: string | null): string | null {
   if (full.includes('Purbanchal')) return 'PurU'
   if (full.toLowerCase().includes('private')) return 'Private'
   return full.slice(0, 6)
-}
-
-// Clean gradient per affiliation (no watermark)
-const AFFIL_GRADIENT: Record<string, string> = {
-  'Tribhuvan University':  'from-blue-600  to-blue-800',
-  'Kathmandu University':  'from-emerald-600 to-emerald-800',
-  'Pokhara University':    'from-amber-500 to-orange-700',
-  'Purbanchal University': 'from-purple-600 to-purple-800',
 }
 
 function formatFee(n: number): string {
@@ -35,24 +28,24 @@ interface CollegeCardProps {
     review_count?: number
     fee_min?:      number
     fee_max?:      number
+    fee_period?:   string
+    has_published_fees?: boolean
   }
+  matchReasons?: string[]
 }
 
-export default function CollegeCard({ college }: CollegeCardProps) {
+export default function CollegeCard({ college, matchReasons = [] }: CollegeCardProps) {
   const affiliShort   = affiliationShort(college.affiliation)
-  const coverGradient = AFFIL_GRADIENT[college.affiliation ?? ''] ?? 'from-gray-600 to-gray-800'
 
   const linkedPrograms = (college.programs ?? [])
     .slice(0, 4)
     .map((cp) => cp.program?.name)
     .filter(Boolean) as string[]
-  const researchedPrograms = (college.programs_offered ?? '')
-    .split(';')
-    .map((program) => program.trim())
-    .filter(Boolean)
-    .slice(0, 4)
+  const researchedPrograms = collegeDisplayPrograms(college.programs_offered).slice(0, 4)
+  const displayLocation = collegeDisplayLocation(college)
   const topPrograms = linkedPrograms.length > 0 ? linkedPrograms : researchedPrograms
   const levelLabels: Record<string, string> = { plus_two: '+2', bachelor: 'Bachelor', master: 'Master', mphil: 'MPhil', phd: 'PhD', diploma: 'Diploma', certificate: 'Certificate' }
+  const isSponsored = hasActiveCollegeSponsorship(college)
 
   const hasFees  = college.fee_min != null && college.fee_max != null
   const feeLabel = hasFees
@@ -60,59 +53,49 @@ export default function CollegeCard({ college }: CollegeCardProps) {
       ? `Rs. ${formatFee(college.fee_min!)}`
       : `Rs. ${formatFee(college.fee_min!)} – ${formatFee(college.fee_max!)}`
     : null
+  const feePeriodLabels: Record<string, string> = { monthly: 'per month', semester: 'per semester', annual: 'per year', total_program: 'full programme', one_time: 'one-time' }
 
   return (
-    <Link href={`/colleges/${college.slug}`} className="block group">
+    <Link href={`/colleges/${college.slug}`} aria-label={`View ${college.name} college profile`} className="group block h-full rounded-2xl">
       <div
-        className={`bg-white rounded-2xl border overflow-hidden flex flex-col h-full
-                    transition-all duration-200 hover:shadow-lg hover:-translate-y-1
-                    ${college.is_featured ? 'border-orange-300' : 'border-gray-200 hover:border-[#1847c4]'}`}
+        className={`editorial-card editorial-card-interactive flex h-full flex-col overflow-hidden
+                    ${isSponsored ? '!border-amber-300' : college.is_featured ? '!border-blue-300' : ''}`}
       >
         {/* ── Cover ─────────────────────────────────────── */}
         <div
-          className={`relative bg-gradient-to-br ${coverGradient} flex-shrink-0 overflow-hidden`}
+          className="relative flex-shrink-0 overflow-hidden bg-[#e9edf3]"
           style={{ height: '140px' }}
         >
           {college.cover_url ? (
             <Image
               src={college.cover_url}
-              alt={college.name}
+              alt={`${college.name} campus or college building`}
               fill
-              className="object-cover group-hover:scale-105 transition-transform duration-500"
+              className="object-cover"
             />
           ) : (
-            <div
-              className="absolute inset-0 opacity-15"
-              style={{
-                backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)',
-                backgroundSize: '18px 18px',
-              }}
-            />
+            <div className="absolute inset-0 border-b border-gray-200" />
           )}
-
-          {/* Bottom gradient fade */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
 
           {/* University badge — top left */}
           {affiliShort && (
             <div className="absolute top-3 left-3">
-              <span className="inline-flex items-center px-3 py-1 bg-white shadow-sm rounded-full text-xs font-bold text-gray-800">
+              <span className="inline-flex items-center border border-gray-300 bg-white px-2.5 py-1 text-xs font-bold text-gray-800">
                 {affiliShort}
               </span>
             </div>
           )}
 
-          {/* Featured badge — top right */}
-          {college.is_featured && (
+          {isSponsored && (
             <div className="absolute top-3 right-3">
               <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-400 text-white shadow-sm">
-                Featured
+                {college.sponsor_label || 'Sponsored'}
               </span>
             </div>
           )}
-          {college.verification_status && !college.is_featured && (
+          {college.is_featured && !isSponsored && (
             <div className="absolute top-3 right-3">
-              <VerificationBadge status={college.verification_status} compact />
+              <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-blue-50 text-[11px] font-bold text-blue-800 shadow-sm">Featured</span>
             </div>
           )}
         </div>
@@ -121,55 +104,43 @@ export default function CollegeCard({ college }: CollegeCardProps) {
         <div className="p-4 flex flex-col flex-1">
           {/* Logo + Name */}
           <div className="flex items-start gap-3 mb-2">
-            <div className="w-11 h-11 bg-white rounded-xl border border-gray-200 flex items-center justify-center shadow-sm flex-shrink-0 -mt-8 relative z-10">
+            <div className="relative z-10 -mt-8 flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl border border-gray-200 bg-white shadow-sm">
               {college.logo_url ? (
                 <Image
                   src={college.logo_url}
                   alt={`${college.name} logo`}
                   width={44}
                   height={44}
-                  className="rounded-xl object-contain"
+                  className="rounded-lg object-contain"
                 />
               ) : (
                 <span className="text-base font-bold text-[#1847c4]">{college.name.charAt(0)}</span>
               )}
             </div>
             <div className="pt-1 min-w-0">
-              <h3 className="text-base font-bold text-gray-900 leading-snug line-clamp-2 group-hover:text-[#1847c4] transition-colors duration-200">
+              <h3 className="editorial-card-title line-clamp-2 text-[1.05rem] leading-6 transition-colors group-hover:text-primary">
                 {college.name}
               </h3>
             </div>
           </div>
 
           {/* Location */}
-          {college.location && (
-            <div className="flex items-center gap-1 text-xs text-gray-400 mt-0.5 mb-2">
-              <MapPin className="w-3 h-3 flex-shrink-0" />
-              <span className="truncate">{college.location}</span>
+          {displayLocation && (
+            <div className="editorial-meta mb-2 mt-0.5 flex items-center gap-1.5">
+              <MapPin className="h-3.5 w-3.5 flex-shrink-0 text-slate-500" aria-hidden="true" />
+              <span className="truncate">{displayLocation}</span>
             </div>
           )}
 
-          {/* Rating */}
-          {college.avg_rating != null && college.avg_rating > 0 && (
-            <div className="flex items-center gap-1.5 mb-2">
-              <div className="flex items-center gap-0.5">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <Star
-                    key={star}
-                    className={`w-3 h-3 ${
-                      star <= Math.round(college.avg_rating!)
-                        ? 'text-amber-400 fill-amber-400'
-                        : 'text-gray-200 fill-gray-200'
-                    }`}
-                  />
-                ))}
-              </div>
-              <span className="text-xs font-semibold text-gray-600">{college.avg_rating.toFixed(1)}</span>
-              {college.review_count != null && college.review_count > 0 && (
-                <span className="text-xs text-gray-400">({college.review_count})</span>
-              )}
-            </div>
+          {affiliShort && (
+            <p className="mb-2 text-xs font-medium text-slate-600">
+              Affiliation: <span className="font-semibold text-slate-800">{affiliShort}</span>
+            </p>
           )}
+
+          <div className="mb-2">
+            <VerificationBadge status={college.verification_status} compact />
+          </div>
 
           {/* Programs — plain text, no pills */}
           {topPrograms.length > 0 && (
@@ -181,22 +152,42 @@ export default function CollegeCard({ college }: CollegeCardProps) {
             <p className="mb-2 text-xs font-semibold text-blue-700">{college.education_levels.map(level => levelLabels[level]).filter(Boolean).join(' · ')}</p>
           )}
 
+          {matchReasons.length > 0 && (
+            <div className="mb-3 border-l-2 border-emerald-500 bg-emerald-50/60 py-2 pl-3" aria-label="Why this college matches">
+              <p className="text-xs font-semibold text-emerald-900">Why it matches</p>
+              <ul className="mt-1.5 space-y-1">{matchReasons.slice(0,3).map(reason=><li key={reason} className="flex items-start gap-1.5 text-xs leading-4 text-emerald-900"><CheckCircle2 className="mt-0.5 h-3 w-3 shrink-0" aria-hidden="true"/>{reason}</li>)}</ul>
+            </div>
+          )}
+
+          {isSponsored && (
+            <p className="mb-2 rounded-lg bg-amber-50 px-2.5 py-2 text-[11px] leading-4 text-amber-900">
+              {college.sponsor_disclosure || 'Paid placement. Sponsorship does not change verification status or student reviews.'}
+            </p>
+          )}
+
           {/* Fee */}
           {feeLabel && (
-            <div className="flex items-center gap-1.5 text-sm font-bold text-gray-900 mb-2">
+            <div className="flex items-center gap-1.5 text-sm font-bold text-gray-900 mb-2" title="Published fee amount; confirm whether it is annual, semester-based or total with the college">
               <Banknote className="w-3.5 h-3.5 text-gray-400 flex-shrink-0" />
               <span>{feeLabel}</span>
-              <span className="text-xs font-normal text-gray-400">/ year</span>
+              <span className="text-xs font-normal text-gray-500">{college.fee_period ? feePeriodLabels[college.fee_period] || college.fee_period : ''}</span>
+            </div>
+          )}
+
+          {/* Rating is supporting evidence, not the first decision factor. */}
+          {college.avg_rating != null && college.avg_rating > 0 && (
+            <div className="mb-2 flex items-center gap-1.5 text-xs">
+              <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" aria-hidden="true" />
+              <span className="font-semibold text-gray-700">{college.avg_rating.toFixed(1)}</span>
+              <span className="text-gray-500">from {college.review_count} approved review{college.review_count === 1 ? '' : 's'}</span>
+              {(college.review_count ?? 0) < 5 && <span className="text-amber-700">· small sample</span>}
             </div>
           )}
 
           {/* Bottom row */}
-          <div className="flex items-center justify-between pt-3 border-t border-gray-100 mt-auto">
-            {college.established_year && (
-              <span className="text-xs font-mono text-gray-400">Est. {college.established_year}</span>
-            )}
-            <span className="text-xs text-[#1847c4] font-semibold flex items-center gap-1 ml-auto group-hover:gap-1.5 transition-all duration-200">
-              View <ArrowRight className="w-3 h-3" />
+          <div className="flex items-center justify-end pt-3 border-t border-gray-100 mt-auto">
+            <span className="flex items-center gap-1 text-xs font-semibold text-primary">
+              View profile <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 motion-reduce:transform-none" aria-hidden="true" />
             </span>
           </div>
         </div>

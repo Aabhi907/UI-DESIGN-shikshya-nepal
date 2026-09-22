@@ -7,64 +7,59 @@ import { formatDateShort } from '@/lib/utils'
 import type { News } from '@/types'
 import { Calendar, Newspaper, ArrowRight } from 'lucide-react'
 import AdUnit from '@/components/ads/AdUnit'
+import { COLLEGE_NEWS_TOPICS } from '@/lib/college-news'
 
 export const dynamic   = 'force-dynamic'
 export const revalidate = 0
 
 export const metadata: Metadata = {
-  title: 'Education News Nepal | SikshyaNepal',
-  description: 'Latest education news from Nepal. Stay updated with policy changes, exam announcements, and more.',
+  title: 'Nepal College News & Student Guides',
+  description: 'College news, source summaries and student guides for +2 and Bachelor admissions, entrance results, scholarships, achievements and campus life in Nepal.',
+  alternates: { canonical: '/news', types: { 'application/rss+xml': '/news/feed.xml' } },
 }
 
-const CARD_GRADIENTS = [
-  { from: 'from-blue-600',    to: 'to-indigo-700' },
-  { from: 'from-violet-600',  to: 'to-purple-700' },
-  { from: 'from-emerald-600', to: 'to-teal-700' },
-  { from: 'from-orange-500',  to: 'to-rose-600' },
-  { from: 'from-sky-600',     to: 'to-cyan-700' },
-  { from: 'from-rose-600',    to: 'to-pink-700' },
-]
+const CARD_COLORS = ['bg-[#183b78]', 'bg-[#31558f]', 'bg-[#496a9e]']
 
-async function getNews(searchParams: { q?: string }) {
+async function getNews(searchParams: { q?: string; topic?: string }) {
   const supabase = createServerSupabaseClient()
-  let query = supabase.from('news').select('*').order('published_date', { ascending: false })
+  let query = supabase.from('news').select('*').eq('status', 'published').order('published_date', { ascending: false })
   if (searchParams.q) query = query.ilike('title', `%${searchParams.q}%`)
+  if (searchParams.topic) query = query.eq('content_category', searchParams.topic)
   const { data } = await query.limit(30)
   return (data || []) as News[]
 }
 
-function GradientCover({ idx }: { idx: number }) {
-  const grad = CARD_GRADIENTS[idx % CARD_GRADIENTS.length]
+function PlaceholderCover({ idx }: { idx: number }) {
   return (
-    <div className={`w-full h-full bg-gradient-to-br ${grad.from} ${grad.to} relative overflow-hidden`}>
-      <div
-        className="absolute inset-0 opacity-10"
-        style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '20px 20px' }}
-      />
+    <div className={`flex h-full w-full items-end p-5 ${CARD_COLORS[idx % CARD_COLORS.length]}`}>
+      <Newspaper className="h-7 w-7 text-white/70" aria-hidden="true" />
     </div>
   )
 }
 
-export default async function NewsPage({ searchParams }: { searchParams: { q?: string } }) {
+export default async function NewsPage({ searchParams }: { searchParams: { q?: string; topic?: string } }) {
   const newsList = await getNews(searchParams)
   const featured = newsList[0]
   const rest     = newsList.slice(1)
 
   return (
-    <div className="bg-[#f0f4ff] min-h-screen">
+    <div className="bg-[#f8f7f3] min-h-screen">
 
       {/* ── Page header ─────────────────────────────────────── */}
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-8">
-          <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">Education News</p>
           <h1 className="font-display font-bold text-ink text-3xl sm:text-4xl mb-2"
               style={{ letterSpacing: '-0.025em' }}>
-            Latest Updates
+            College news, admissions and student guides
           </h1>
           <p className="text-gray-500 text-sm mb-6">
-            Policy changes, exam announcements, and education news from Nepal
+            College updates, source summaries and practical guides for +2 and Bachelor students.
           </p>
           <SearchBar placeholder="Search news..." redirectTo="/news" />
+          <nav aria-label="College news topics" className="mt-5 flex gap-2 overflow-x-auto pb-1 text-sm">
+            <Link href="/news" className={`whitespace-nowrap rounded-full border px-3 py-1.5 font-medium ${!searchParams.topic ? 'border-primary bg-primary text-white' : 'border-gray-200 bg-white text-gray-600 hover:border-primary'}`}>All</Link>
+            {Object.entries(COLLEGE_NEWS_TOPICS).map(([slug, topic]) => <Link key={slug} href={`/news/topic/${slug}`} className="whitespace-nowrap rounded-full border border-gray-200 bg-white px-3 py-1.5 font-medium text-gray-600 hover:border-primary">{topic.label}</Link>)}
+          </nav>
         </div>
       </div>
 
@@ -83,17 +78,17 @@ export default async function NewsPage({ searchParams }: { searchParams: { q?: s
             {/* ── Featured article — magazine 2-col ─────────── */}
             {featured && !searchParams.q && (
               <Link href={`/news/${featured.slug}`} className="group block mb-8">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 bg-white rounded-2xl border border-gray-200 overflow-hidden hover:border-[#1847c4] hover:shadow-lg transition-all duration-300">
+                <div className="grid grid-cols-1 overflow-hidden rounded-lg border border-gray-200 bg-white transition-colors duration-150 hover:border-[#1847c4] lg:grid-cols-2">
                   <div className="relative h-60 lg:h-auto lg:min-h-[300px] overflow-hidden">
                     {featured.image_url ? (
                       <Image
                         src={featured.image_url}
                         alt={featured.title}
                         fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-700"
+                        className="object-cover"
                       />
                     ) : (
-                      <GradientCover idx={0} />
+                      <PlaceholderCover idx={0} />
                     )}
                     <div className="absolute top-4 left-4">
                       <span className="px-3 py-1 rounded-full text-[11px] font-semibold bg-[#1847c4] text-white">
@@ -102,7 +97,7 @@ export default async function NewsPage({ searchParams }: { searchParams: { q?: s
                     </div>
                   </div>
                   <div className="p-7 lg:p-9 flex flex-col justify-center">
-                    <div className="flex items-center gap-1.5 text-xs font-mono text-gray-400 mb-4">
+                    <div className="mb-4 flex items-center gap-1.5 text-xs tabular-nums text-gray-500">
                       <Calendar className="w-3.5 h-3.5" />
                       <span>{formatDateShort(featured.published_date)}</span>
                     </div>
@@ -118,8 +113,8 @@ export default async function NewsPage({ searchParams }: { searchParams: { q?: s
                         {featured.content}
                       </p>
                     )}
-                    <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#1847c4] group-hover:gap-2.5 transition-all">
-                      Read Full Story <ArrowRight className="w-4 h-4" />
+                    <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#1847c4]">
+                      Read full story <ArrowRight className="w-4 h-4" />
                     </span>
                   </div>
                 </div>
@@ -135,18 +130,17 @@ export default async function NewsPage({ searchParams }: { searchParams: { q?: s
               function NewsCard({ news, idx }: { news: typeof articles[0]; idx: number }) {
                 return (
                   <Link key={news.id} href={`/news/${news.slug}`} className="group block">
-                    <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden
-                                    hover:border-[#1847c4] hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
+                    <div className="overflow-hidden rounded-lg border border-gray-200 bg-white transition-colors duration-150 hover:border-[#1847c4]">
                       <div className="relative h-44 overflow-hidden">
                         {news.image_url ? (
                           <Image src={news.image_url} alt={news.title} fill
-                            className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                            className="object-cover" />
                         ) : (
-                          <GradientCover idx={idx + 1} />
+                          <PlaceholderCover idx={idx + 1} />
                         )}
                       </div>
                       <div className="p-4">
-                        <div className="flex items-center gap-1.5 text-[10px] font-mono text-gray-400 mb-2">
+                        <div className="mb-2 flex items-center gap-1.5 text-xs tabular-nums text-gray-500">
                           <Calendar className="w-3 h-3" />
                           <span>{formatDateShort(news.published_date)}</span>
                         </div>
@@ -166,12 +160,7 @@ export default async function NewsPage({ searchParams }: { searchParams: { q?: s
               return (
                 <>
                   {!searchParams.q && (
-                    <div className="flex items-center gap-3 mb-6">
-                      <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider whitespace-nowrap">
-                        More Stories
-                      </span>
-                      <div className="flex-1 h-px bg-gray-200" />
-                    </div>
+                    <h2 className="mb-6 text-xl font-semibold text-ink">More stories</h2>
                   )}
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                     {before.map((news, idx) => <NewsCard key={news.id} news={news} idx={idx} />)}

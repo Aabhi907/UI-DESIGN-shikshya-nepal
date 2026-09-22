@@ -9,39 +9,33 @@ interface SearchResults {
   admissions: { id: string; title: string; slug: string; institution_name: string; application_deadline: string | null }[]
   schools: { id: string; name: string; slug: string; district: string; province: string; verification_status: string }[]
   colleges: { id: string; name: string; slug: string; location: string; affiliation: string | null }[]
-  programs: { id: string; name: string; faculty: string; duration: string }[]
+  programs: { id: string; name: string; slug: string; faculty: string; duration: string }[]
   news: { id: string; title: string; slug: string; published_date: string | null }[]
   notices: { id: string; title: string; slug: string; published_date: string | null }[]
   results: { id: string; title: string; slug: string; published_date: string | null }[]
   scholarships: { id: string; title: string; amount: string | null; deadline: string | null }[]
+  unavailable?: string[]
 }
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-
-const headers = { apikey: ANON_KEY, Authorization: `Bearer ${ANON_KEY}` }
+function dedupeByTitle<T extends { title: string }>(items: T[]): T[] {
+  const seen = new Set<string>()
+  return items.filter(item => {
+    const key = item.title.toLowerCase().replace(/[^a-z0-9\u0900-\u097f]+/g, ' ').trim()
+    if (!key || seen.has(key)) return false
+    seen.add(key)
+    return true
+  })
+}
 
 async function fetchAll(q: string): Promise<SearchResults> {
-  const enc = encodeURIComponent(q)
-  const [admissions, schools, colleges, programs, news, notices, results, scholarships] = await Promise.all([
-    fetch(`${SUPABASE_URL}/rest/v1/admissions?or=(title.ilike.*${enc}*,institution_name.ilike.*${enc}*)&status=eq.published&select=id,title,slug,institution_name,application_deadline&limit=8`, { headers }).then(r => r.json()),
-    fetch(`${SUPABASE_URL}/rest/v1/schools?name=ilike.*${enc}*&status=eq.active&select=id,name,slug,district,province,verification_status&limit=8`, { headers }).then(r => r.json()),
-    fetch(`${SUPABASE_URL}/rest/v1/colleges?name=ilike.*${enc}*&select=id,name,slug,location,affiliation&limit=8`, { headers }).then(r => r.json()),
-    fetch(`${SUPABASE_URL}/rest/v1/programs?name=ilike.*${enc}*&select=id,name,faculty,duration&limit=6`, { headers }).then(r => r.json()),
-    fetch(`${SUPABASE_URL}/rest/v1/news?title=ilike.*${enc}*&select=id,title,slug,published_date&order=published_date.desc&limit=6`, { headers }).then(r => r.json()),
-    fetch(`${SUPABASE_URL}/rest/v1/notices?title=ilike.*${enc}*&select=id,title,slug,published_date&order=published_date.desc&limit=6`, { headers }).then(r => r.json()),
-    fetch(`${SUPABASE_URL}/rest/v1/results?title=ilike.*${enc}*&select=id,title,slug,published_date&order=published_date.desc&limit=6`, { headers }).then(r => r.json()),
-    fetch(`${SUPABASE_URL}/rest/v1/scholarships?title=ilike.*${enc}*&select=id,title,amount,deadline&limit=6`, { headers }).then(r => r.json()),
-  ])
+  const response = await fetch(`/api/search?q=${encodeURIComponent(q)}`, { cache: 'no-store' })
+  const result = await response.json().catch(() => null)
+  if (!response.ok || !result) throw new Error(result?.error || 'Search is temporarily unavailable.')
   return {
-    admissions: Array.isArray(admissions) ? admissions : [],
-    schools: Array.isArray(schools) ? schools : [],
-    colleges: Array.isArray(colleges) ? colleges : [],
-    programs: Array.isArray(programs) ? programs : [],
-    news: Array.isArray(news) ? news : [],
-    notices: Array.isArray(notices) ? notices : [],
-    results: Array.isArray(results) ? results : [],
-    scholarships: Array.isArray(scholarships) ? scholarships : [],
+    ...result,
+    news: dedupeByTitle(result.news || []).slice(0, 6),
+    notices: dedupeByTitle(result.notices || []).slice(0, 6),
+    results: dedupeByTitle(result.results || []).slice(0, 6),
   }
 }
 
@@ -70,15 +64,29 @@ function SearchPageInner() {
   const [inputVal, setInputVal] = useState(initialQ)
   const [data, setData] = useState<SearchResults | null>(null)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
   const tracked = useRef('')
+  const requestSequence = useRef(0)
   const smart = useMemo(() => smartCollegeSearch(query), [query])
 
   const runSearch = useCallback(async (q: string) => {
-    if (!q.trim()) { setData(null); return }
+    const trimmed = q.trim()
+    if (!trimmed) { setData(null); setError(''); return }
+    if (trimmed.length < 2) { setData(null); setError('Enter at least two characters to search.'); return }
+    const sequence = ++requestSequence.current
     setLoading(true)
-    const res = await fetchAll(q.trim())
-    setData(res)
-    setLoading(false)
+    setError('')
+    try {
+      const result = await fetchAll(trimmed)
+      if (sequence === requestSequence.current) setData(result)
+    } catch (reason) {
+      if (sequence === requestSequence.current) {
+        setData(null)
+        setError(reason instanceof Error ? reason.message : 'Search is temporarily unavailable. Please try again.')
+      }
+    } finally {
+      if (sequence === requestSequence.current) setLoading(false)
+    }
   }, [])
 
   useEffect(() => {
@@ -103,7 +111,8 @@ function SearchPageInner() {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       {/* Search Bar */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900 mb-5">Search SikshyaNepal</h1>
+        <p className="page-kicker mb-2">Find education information</p>
+        <h1 className="page-title mb-5">Search SikshyaNepal</h1>
         <form onSubmit={handleSubmit} className="relative">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
           <input
@@ -123,6 +132,10 @@ function SearchPageInner() {
       </div>
 
       {smart && <Link href={smart.href} className="mb-8 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-blue-200 bg-blue-50 p-4 transition hover:border-primary"><div><p className="text-sm font-bold text-blue-950">Use smart college filters</p><p className="mt-1 text-sm text-blue-800">Recognised: {smart.matched.join(' · ')}. Open the directory with these filters applied.</p></div><span className="rounded-lg bg-primary px-3 py-2 text-sm font-bold text-white">Explore colleges</span></Link>}
+
+      {error && <div role="alert" className="mb-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950"><p className="font-semibold">Search could not finish</p><p className="mt-1">{error}</p></div>}
+
+      {!loading && data?.unavailable && data.unavailable.length > 0 && <div role="status" className="mb-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950">Some sections could not be checked: {data.unavailable.join(', ')}. The results below are still available; try again for a complete search.</div>}
 
       {/* Status */}
       {loading && (
@@ -219,7 +232,7 @@ function SearchPageInner() {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {data.programs.map(p => (
-                  <Link key={p.id} href={`/programs`}
+                  <Link key={p.id} href={`/programs/${p.slug}`}
                     className="flex items-start gap-3 p-4 bg-white rounded-xl border border-gray-200 hover:border-purple-300 hover:shadow-sm transition-all">
                     <div className="w-9 h-9 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
                       <GraduationCap className="w-4 h-4 text-purple-600" />

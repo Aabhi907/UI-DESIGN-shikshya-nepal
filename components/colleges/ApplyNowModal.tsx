@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, useEffect, FormEvent } from 'react'
+import { useState, useEffect, useRef, FormEvent } from 'react'
 import { X, Send, CheckCircle, Star, Loader2 } from 'lucide-react'
+import Link from 'next/link'
 
 interface Program {
   name: string
@@ -10,14 +11,14 @@ interface Program {
 interface Props {
   collegeName: string
   collegeId:   string
-  isFeatured:  boolean
+  isSponsored: boolean
   programs:    Program[]
   onClose:     () => void
   onSuccess?:  () => void
 }
 
 export default function ApplyNowModal({
-  collegeName, collegeId, isFeatured, programs, onClose, onSuccess,
+  collegeName, collegeId, isSponsored, programs, onClose, onSuccess,
 }: Props) {
   const [form, setForm] = useState({
     name:    '',
@@ -25,11 +26,15 @@ export default function ApplyNowModal({
     email:   '',
     program: '',
     message: '',
+    website: '',
   })
   const [loading,  setLoading]  = useState(false)
   const [success,  setSuccess]  = useState(false)
+  const [reference,setReference]=useState('')
   const [apiError, setApiError] = useState<string | null>(null)
   const [errors,   setErrors]   = useState<Record<string, string>>({})
+  const [consent, setConsent] = useState(false)
+  const formRef = useRef<HTMLFormElement>(null)
 
   // Close on Escape
   useEffect(() => {
@@ -53,24 +58,30 @@ export default function ApplyNowModal({
     if (!form.phone.trim())   errs.phone   = 'Phone number is required'
     else if (!/^[9][6-9]\d{8}$|^\d{2}-\d{6,7}$/.test(form.phone.replace(/\s/g, '')))
       errs.phone = 'Enter a valid Nepali phone number'
+    if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errs.email = 'Enter a valid email address'
     if (!form.program)        errs.program = 'Please select a program'
+    if (!consent) errs.consent = 'Please confirm that we may use these details for this enquiry'
     setErrors(errs)
     return Object.keys(errs).length === 0
   }
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
-    if (!validate()) return
+    if (!validate()) {
+      requestAnimationFrame(() => formRef.current?.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus())
+      return
+    }
     setLoading(true)
     setApiError(null)
     try {
       const res = await fetch('/api/apply', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ ...form, college_id: collegeId, college_name: collegeName }),
+        body:    JSON.stringify({ ...form, consent, college_id: collegeId, college_name: collegeName }),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Submission failed')
+      setReference(typeof data.reference==='string'?data.reference:'')
       setSuccess(true)
       onSuccess?.()  // notify parent to persist localStorage
     } catch (err: unknown) {
@@ -81,14 +92,15 @@ export default function ApplyNowModal({
   }
 
   const inputClass = (field: string) =>
-    `w-full px-3.5 py-2.5 rounded-xl border text-sm text-ink placeholder-gray-400
+    `min-h-11 w-full px-3.5 py-2.5 rounded-xl border text-sm text-ink placeholder-gray-400
      focus:outline-none focus:ring-2 focus:ring-[#1847c4]/20 focus:border-[#1847c4] transition-colors
      ${errors[field] ? 'border-red-400 bg-red-50' : 'border-gray-200'}`
 
   return (
-    <div className="fixed inset-0 z-[70] flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div className="fixed inset-0 z-[70] flex items-end justify-center p-0 sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-labelledby="admission-enquiry-title">
       {/* Backdrop */}
       <div
+        aria-hidden="true"
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={onClose}
       />
@@ -100,28 +112,29 @@ export default function ApplyNowModal({
         {/* Header */}
         <div className="sticky top-0 bg-white border-b border-gray-100 px-6 py-4 flex items-start justify-between z-10 rounded-t-2xl">
           <div>
-            <h2 className="font-display font-bold text-ink text-lg leading-tight"
+            <h2 id="admission-enquiry-title" className="font-display font-bold text-ink text-lg leading-tight"
                 style={{ letterSpacing: '-0.02em' }}>
-              Apply to {collegeName}
+              Ask {collegeName} about admission
             </h2>
             <p className="text-xs text-gray-400 mt-0.5">
-              Fill your details — the college will contact you within 48 hours. Free.
+              Send an enquiry through SikshyaNepal. This is not an official application or seat confirmation.
             </p>
           </div>
           <button
             onClick={onClose}
-            className="ml-3 flex-shrink-0 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
+            aria-label="Close admission enquiry"
+            className="ml-3 flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
           >
             <X className="w-4 h-4 text-gray-600" />
           </button>
         </div>
 
         <div className="px-6 py-5">
-          {/* Featured badge */}
-          {isFeatured && (
+          {/* Commercial placement disclosure; verification and review scores remain independent. */}
+          {isSponsored && (
             <div className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 border border-amber-200 rounded-lg mb-5 w-fit">
               <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
-              <span className="text-xs font-semibold text-amber-700">Featured Partner College</span>
+              <span className="text-xs font-semibold text-amber-800">Sponsored placement</span>
             </div>
           )}
 
@@ -133,18 +146,14 @@ export default function ApplyNowModal({
               </div>
               <h3 className="font-display font-bold text-ink text-xl mb-2"
                   style={{ letterSpacing: '-0.02em' }}>
-                Application Sent!
+                Enquiry received
               </h3>
               <p className="text-sm text-gray-500 leading-relaxed mb-1">
-                <span className="font-semibold text-ink">{collegeName}</span> will contact
-                you within 48 hours on{' '}
+                Your request for <span className="font-semibold text-ink">{collegeName}</span> has been recorded with the phone number{' '}
                 <span className="font-semibold text-[#1847c4]">{form.phone}</span>.
               </p>
-              {form.email && (
-                <p className="text-xs text-gray-400 mt-1">
-                  Confirmation sent to {form.email}
-                </p>
-              )}
+              <p className="mt-2 text-xs leading-5 text-gray-400">Response times vary. For an urgent deadline, use the official phone, email or website shown on the college profile.</p>
+              {reference&&<p className="mt-3 rounded-lg bg-gray-50 px-3 py-2 text-xs text-gray-600">Enquiry reference: <strong className="text-ink">{reference}</strong></p>}
               <button
                 onClick={onClose}
                 className="mt-6 w-full py-2.5 rounded-xl bg-gray-100 text-gray-700 text-sm font-semibold hover:bg-gray-200 transition-colors"
@@ -154,62 +163,93 @@ export default function ApplyNowModal({
             </div>
           ) : (
             /* ── Form ─────────────────────────────────────── */
-            <form onSubmit={handleSubmit} noValidate className="space-y-4">
+            <form ref={formRef} onSubmit={handleSubmit} noValidate className="space-y-4">
+              <section aria-label="What happens next" className="border-l-2 border-primary bg-blue-50/60 px-3 py-3">
+                <p className="text-xs font-bold uppercase tracking-[0.11em] text-primary">What happens next</p>
+                <ol className="mt-2 space-y-1 text-xs leading-5 text-slate-700">
+                  <li><span className="font-semibold text-slate-900">1. Send your enquiry.</span> SikshyaNepal records it and shares it with {collegeName}.</li>
+                  <li><span className="font-semibold text-slate-900">2. Confirm independently.</span> Check the official notice before sending documents or payment.</li>
+                  <li><span className="font-semibold text-slate-900">3. Keep control.</span> Use the official college contact details for urgent deadlines.</li>
+                </ol>
+              </section>
+              <div className="hidden" aria-hidden="true">
+                <label htmlFor="admission-website">Leave this field empty</label>
+                <input id="admission-website" name="website" type="text" value={form.website} onChange={event => set('website', event.target.value)} tabIndex={-1} autoComplete="off" />
+              </div>
 
               {/* Full Name */}
               <div>
-                <label className="block text-sm font-semibold text-ink mb-1.5">
+                <label htmlFor="admission-name" className="block text-sm font-semibold text-ink mb-1.5">
                   Full Name <span className="text-red-500">*</span>
                 </label>
                 <input
+                  id="admission-name"
                   type="text"
+                  autoComplete="name"
+                  maxLength={100}
                   value={form.name}
                   onChange={e => set('name', e.target.value)}
                   placeholder="e.g. Ram Sharma"
                   className={inputClass('name')}
+                  aria-invalid={Boolean(errors.name)}
+                  aria-describedby={errors.name ? 'admission-name-error' : undefined}
                 />
-                {errors.name && <p className="text-xs text-red-500 mt-1">{errors.name}</p>}
+                {errors.name && <p id="admission-name-error" role="alert" className="text-xs text-red-600 mt-1">{errors.name}</p>}
               </div>
 
               {/* Phone */}
               <div>
-                <label className="block text-sm font-semibold text-ink mb-1.5">
+                <label htmlFor="admission-phone" className="block text-sm font-semibold text-ink mb-1.5">
                   Phone Number <span className="text-red-500">*</span>
                 </label>
                 <input
+                  id="admission-phone"
                   type="tel"
+                  autoComplete="tel"
+                  maxLength={30}
                   value={form.phone}
                   onChange={e => set('phone', e.target.value)}
                   placeholder="98XXXXXXXX"
                   className={inputClass('phone')}
+                  aria-invalid={Boolean(errors.phone)}
+                  aria-describedby={errors.phone ? 'admission-phone-error' : 'admission-phone-help'}
                 />
-                <p className="text-xs text-gray-400 mt-1">College will call you on this number</p>
-                {errors.phone && <p className="text-xs text-red-500 mt-0.5">{errors.phone}</p>}
+                <p id="admission-phone-help" className="text-xs text-gray-500 mt-1">Used only to respond to this admission enquiry</p>
+                {errors.phone && <p id="admission-phone-error" role="alert" className="text-xs text-red-600 mt-0.5">{errors.phone}</p>}
               </div>
 
               {/* Email */}
               <div>
-                <label className="block text-sm font-semibold text-ink mb-1.5">
+                <label htmlFor="admission-email" className="block text-sm font-semibold text-ink mb-1.5">
                   Email Address <span className="text-gray-400 font-normal">(optional)</span>
                 </label>
                 <input
+                  id="admission-email"
                   type="email"
+                  autoComplete="email"
+                  maxLength={160}
                   value={form.email}
                   onChange={e => set('email', e.target.value)}
                   placeholder="youremail@example.com"
                   className={inputClass('email')}
+                  aria-invalid={Boolean(errors.email)}
+                  aria-describedby={errors.email ? 'admission-email-error' : undefined}
                 />
+                {errors.email && <p id="admission-email-error" role="alert" className="mt-1 text-xs text-red-600">{errors.email}</p>}
               </div>
 
               {/* Program */}
               <div>
-                <label className="block text-sm font-semibold text-ink mb-1.5">
+                <label htmlFor="admission-program" className="block text-sm font-semibold text-ink mb-1.5">
                   Program Interested In <span className="text-red-500">*</span>
                 </label>
                 <select
+                  id="admission-program"
                   value={form.program}
                   onChange={e => set('program', e.target.value)}
                   className={inputClass('program')}
+                  aria-invalid={Boolean(errors.program)}
+                  aria-describedby={errors.program ? 'admission-program-error' : undefined}
                 >
                   <option value="">Select a program…</option>
                   {programs.map(p => (
@@ -217,15 +257,16 @@ export default function ApplyNowModal({
                   ))}
                   <option value="Not sure yet">Not sure yet</option>
                 </select>
-                {errors.program && <p className="text-xs text-red-500 mt-1">{errors.program}</p>}
+                {errors.program && <p id="admission-program-error" role="alert" className="text-xs text-red-600 mt-1">{errors.program}</p>}
               </div>
 
               {/* Message */}
               <div>
-                <label className="block text-sm font-semibold text-ink mb-1.5">
+                <label htmlFor="admission-message" className="block text-sm font-semibold text-ink mb-1.5">
                   Your Message <span className="text-gray-400 font-normal">(optional)</span>
                 </label>
                 <textarea
+                  id="admission-message"
                   value={form.message}
                   onChange={e => set('message', e.target.value.slice(0, 300))}
                   rows={3}
@@ -236,10 +277,25 @@ export default function ApplyNowModal({
               </div>
 
               {apiError && (
-                <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-600">
+                <div role="alert" className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700">
                   {apiError}
                 </div>
               )}
+
+              <div>
+                <label className="flex items-start gap-3 rounded-xl border border-gray-200 bg-gray-50 p-3 text-xs leading-5 text-gray-600">
+                  <input
+                    type="checkbox"
+                    checked={consent}
+                    onChange={event => { setConsent(event.target.checked); setErrors(current => ({ ...current, consent: '' })) }}
+                    className="mt-1 h-4 w-4 shrink-0 accent-[#1847c4]"
+                    aria-invalid={Boolean(errors.consent)}
+                    aria-describedby={errors.consent ? 'admission-consent-error' : undefined}
+                  />
+                  <span>I agree that SikshyaNepal may store these details and share them with {collegeName} only so the institution can respond to this enquiry. I have read the <Link href="/privacy" target="_blank" rel="noopener noreferrer" className="font-semibold text-blue-700 underline">Privacy Policy</Link>.</span>
+                </label>
+                {errors.consent && <p id="admission-consent-error" role="alert" className="mt-1 text-xs text-red-600">{errors.consent}</p>}
+              </div>
 
               <button
                 type="submit"
@@ -250,13 +306,12 @@ export default function ApplyNowModal({
               >
                 {loading
                   ? <><Loader2 className="w-4 h-4 animate-spin" /> Sending…</>
-                  : <><Send className="w-4 h-4" /> Send Application</>
+                  : <><Send className="w-4 h-4" /> Send admission enquiry</>
                 }
               </button>
 
-              <p className="text-center text-xs text-gray-400">
-                By applying you agree to be contacted by the college. We never share
-                your details with third parties.
+              <p className="text-center text-xs text-gray-500">
+                Do not include citizenship numbers, marksheets, passwords or payment details.
               </p>
             </form>
           )}

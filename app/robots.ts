@@ -6,12 +6,19 @@ export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
       {
+        // Search/indexing and user-requested retrieval for answer engines.
+        userAgent: ['OAI-SearchBot', 'ChatGPT-User'],
+        allow: '/',
+        disallow: ['/admin/', '/api/', '/account/', '/search'],
+      },
+      {
         // Good bots — full access except protected paths
         userAgent: '*',
         allow:    '/',
         disallow: [
           '/admin/',
           '/api/',
+          '/account/',
           '/search',
         ],
       },
@@ -19,7 +26,6 @@ export default function robots(): MetadataRoute.Robots {
         // Block known bad scrapers / AI training bots
         userAgent: [
           'GPTBot',
-          'ChatGPT-User',
           'CCBot',
           'anthropic-ai',
           'Claude-Web',

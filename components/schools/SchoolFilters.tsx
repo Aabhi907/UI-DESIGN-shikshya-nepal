@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { Filter, Search, X } from 'lucide-react'
 import { useState } from 'react'
+import { districtsForProvince, NEPAL_PROVINCES } from '@/lib/nepal-geography'
 
 export type SchoolSearchParams = {
   q?: string
@@ -13,28 +14,29 @@ export type SchoolSearchParams = {
   medium?: string
   grade?: string
   verified?: string
+  page?: string
 }
-
-const PROVINCES = ['Koshi', 'Madhesh', 'Bagmati', 'Gandaki', 'Lumbini', 'Karnali', 'Sudurpashchim']
 
 export default function SchoolFilters({
   searchParams,
-  districts,
   resultCount,
 }: {
   searchParams: SchoolSearchParams
-  districts: string[]
   resultCount: number
 }) {
   const [mobileOpen, setMobileOpen] = useState(false)
-  const hasFilters = Object.values(searchParams).some(Boolean)
-  const field = 'h-11 w-full rounded-xl border border-gray-200 bg-white px-3 text-sm text-ink outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10'
+  const [province, setProvince] = useState(searchParams.province || '')
+  const [district, setDistrict] = useState(searchParams.district || '')
+  const provinceDistricts = province ? districtsForProvince(province) : []
+  const activeFilterCount = Object.entries(searchParams).filter(([key, value]) => key !== 'page' && Boolean(value)).length
+  const hasFilters = activeFilterCount > 0
+  const field = 'h-11 w-full rounded-xl border border-gray-200 bg-white px-3 text-sm text-ink outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-400'
 
   return (
-    <aside className="rounded-2xl border border-gray-200 bg-white p-5 lg:sticky lg:top-24">
+    <aside className="rounded-2xl border border-gray-200 bg-white p-5 lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto">
       <div className="flex items-center justify-between lg:mb-5">
         <div className="flex items-center gap-2"><Filter className="h-4 w-4 text-primary" /><h2 className="text-sm font-bold text-ink">Find a school</h2></div>
-        <div className="flex items-center gap-3">{hasFilters && <Link href="/schools" className="flex items-center gap-1 text-xs font-semibold text-red-500"><X className="h-3 w-3" />Clear</Link>}<button type="button" onClick={() => setMobileOpen(value => !value)} className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-bold text-primary lg:hidden">{mobileOpen ? 'Hide filters' : 'Filters'}</button></div>
+        <div className="flex items-center gap-3">{hasFilters && <Link href="/schools" className="flex items-center gap-1 text-xs font-semibold text-red-600"><X className="h-3 w-3" />Clear</Link>}<button type="button" onClick={() => setMobileOpen(value => !value)} aria-expanded={mobileOpen} className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-bold text-primary lg:hidden">{mobileOpen ? 'Hide filters' : `Filters${activeFilterCount ? ` (${activeFilterCount})` : ''}`}</button></div>
       </div>
       <form action="/schools" method="get" className={`mt-5 space-y-4 ${mobileOpen ? 'block' : 'hidden'} lg:block lg:mt-0`}>
         <label className="block">
@@ -46,16 +48,16 @@ export default function SchoolFilters({
         </label>
         <label className="block">
           <span className="mb-1.5 block text-xs font-semibold text-gray-500">Province</span>
-          <select name="province" defaultValue={searchParams.province || ''} className={field}>
+          <select name="province" value={province} onChange={(event) => { setProvince(event.target.value); setDistrict('') }} className={field}>
             <option value="">All provinces</option>
-            {PROVINCES.map((p) => <option key={p}>{p}</option>)}
+            {NEPAL_PROVINCES.map((p) => <option key={p}>{p}</option>)}
           </select>
         </label>
         <label className="block">
           <span className="mb-1.5 block text-xs font-semibold text-gray-500">District</span>
-          <select name="district" defaultValue={searchParams.district || ''} className={field}>
-            <option value="">All districts</option>
-            {districts.map((d) => <option key={d}>{d}</option>)}
+          <select name="district" value={district} onChange={(event) => setDistrict(event.target.value)} className={field} disabled={!province}>
+            <option value="">{province ? `All districts in ${province}` : 'Choose a province first'}</option>
+            {provinceDistricts.map((d) => <option key={d}>{d}</option>)}
           </select>
         </label>
         <label className="block">
@@ -100,8 +102,9 @@ export default function SchoolFilters({
           Verified information only
         </label>
         <button className="w-full rounded-xl bg-primary px-4 py-3 text-sm font-bold text-white transition hover:bg-primary-600">
-          Show {resultCount.toLocaleString()} school{resultCount === 1 ? '' : 's'}
+          Apply filters
         </button>
+        <p className="text-center text-xs text-gray-400">Currently showing {resultCount.toLocaleString()} matching school{resultCount === 1 ? '' : 's'}</p>
       </form>
     </aside>
   )

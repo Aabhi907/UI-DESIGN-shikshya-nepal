@@ -1,10 +1,10 @@
 export const dynamic = 'force-dynamic'
 
 import { Metadata } from "next";
+import { cache } from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import Script from "next/script";
 import { createServerSupabaseClient } from "@/lib/supabase";
 import {
   MapPin,
@@ -14,6 +14,7 @@ import {
   Star,
   Calendar,
   GraduationCap,
+  GitCompare,
   ExternalLink,
   BadgeCheck,
 } from "lucide-react";
@@ -23,62 +24,49 @@ import ReviewResponseForm from "@/components/colleges/ReviewResponseForm";
 import ApplyNowButton from "@/components/colleges/ApplyNowButton";
 import SaveCollegeButton from "@/components/colleges/SaveCollegeButton";
 import AdUnit from "@/components/ads/AdUnit";
-import type { College, CollegeProgram, Review } from "@/types";
+import type { College, CollegeProgram, Review, News } from "@/types";
 import VerificationBadge from "@/components/institutions/VerificationBadge";
 import ReportCorrectionForm from "@/components/institutions/ReportCorrectionForm";
 import AdmissionCard from "@/components/admissions/AdmissionCard";
 import ShareButton from "@/components/ui/ShareButton";
 import type { Admission } from "@/types";
+import JsonLd from "@/components/seo/JsonLd";
+import { absoluteUrl, breadcrumbSchema, SITE_URL } from "@/lib/seo";
+import { collegeDisplayAffiliation, collegeDisplayLocation, collegeDisplayPrograms, hasActiveCollegeSponsorship, safeCollegeAddress, safeEmailAddress, safeExternalUrl, safePhoneHref } from "@/lib/college-display";
+import CollegeDecisionCheck from "@/components/colleges/CollegeDecisionCheck";
+import CollegeEvidenceLedger, { type CollegeEvidence } from "@/components/colleges/CollegeEvidenceLedger";
 
-// Affiliation → gradient config
-const AFFIL_COVER: Record<string, { gradient: string; pattern: string }> = {
-  "Tribhuvan University": {
-    gradient: "from-blue-700 via-blue-600 to-indigo-700",
-    pattern: "bg-blue-500/10",
-  },
-  "Kathmandu University": {
-    gradient: "from-emerald-700 via-emerald-600 to-teal-700",
-    pattern: "bg-emerald-500/10",
-  },
-  "Pokhara University": {
-    gradient: "from-orange-600 via-amber-500 to-yellow-600",
-    pattern: "bg-orange-500/10",
-  },
-  "Purbanchal University": {
-    gradient: "from-purple-700 via-purple-600 to-violet-700",
-    pattern: "bg-purple-500/10",
-  },
-};
-const DEFAULT_COVER = {
-  gradient: "from-slate-700 via-slate-600 to-slate-800",
-  pattern: "bg-slate-500/10",
-};
+const BASE_URL = SITE_URL;
 
-function getCoverStyle(affiliation: string | null | undefined) {
-  if (!affiliation) return DEFAULT_COVER;
-  for (const [key, val] of Object.entries(AFFIL_COVER)) {
-    if (affiliation.includes(key.split(" ")[0])) return val; // match by first word e.g. "Tribhuvan"
-  }
-  return DEFAULT_COVER;
+function metadataDescription(college: College) {
+  const location = collegeDisplayLocation(college)
+  const affiliation = collegeDisplayAffiliation(college.affiliation)
+  const programs = collegeDisplayPrograms(college.programs_offered)
+  const facts = [
+    location ? `${college.name} is listed in ${location}` : college.name,
+    affiliation ? `affiliated with ${affiliation}` : null,
+    programs.length ? `with ${programs.slice(0, 3).join(', ')} listed` : null,
+  ].filter(Boolean)
+  const text = `${facts.join('. ')}. Check official sources for current admissions, fees and availability.`.replace(/\s+/g, " ").trim()
+  return text.length > 157 ? `${text.slice(0, 154).trimEnd()}...` : text;
 }
 
-const BASE_URL = "https://sikshyanepal.vercel.app";
+function routeSegment(value: string) {
+  return value.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
 
-async function getCollege(slug: string) {
+const getCollege = cache(async function getCollege(slug: string) {
   const supabase = createServerSupabaseClient();
   const { data: college } = await supabase
     .from("colleges")
     .select("*")
     .eq("slug", slug)
+    .or("status.eq.active,status.is.null")
     .single();
 
   if (!college) return null;
 
-  // Start of this month
-  const now = new Date()
-  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
-
-  const [programsRes, reviewsRes, scholarshipsRes, leadsRes, admissionsRes] = await Promise.all([
+  const [programsRes, reviewsRes, reviewStatsRes, scholarshipsRes, admissionsRes, newsRes, evidenceRes] = await Promise.all([
     supabase
       .from("college_programs")
       .select("*, program:programs(*)")
@@ -90,30 +78,43 @@ async function getCollege(slug: string) {
       .eq("is_approved", true)
       .order("created_at", { ascending: false })
       .limit(10),
-    supabase.from("scholarships").select("*").eq("college_id", college.id),
     supabase
-      .from("leads")
-      .select("id", { count: "exact", head: true })
+      .from("reviews")
+      .select("rating", { count: "exact" })
       .eq("college_id", college.id)
-      .gte("created_at", monthStart),
+      .eq("is_approved", true)
+      .range(0, 4999),
+    supabase.from("scholarships").select("*").eq("college_id", college.id).eq("is_active", true),
     supabase
       .from("admissions")
       .select("*, college:colleges(id,name,slug,location)")
       .eq("college_id", college.id)
       .eq("status", "published")
+      .or(`application_deadline.is.null,application_deadline.gte.${new Date().toISOString()}`)
       .order("application_deadline", { ascending: true })
       .limit(4),
+    supabase.from("news").select("id,title,slug,published_date,content_category").eq("college_id", college.id).eq("status", "published").order("published_date", { ascending: false }).limit(5),
+    supabase.from("college_evidence").select("id,field_key,claim_summary,source_name,source_url,checked_at,confidence_score,verification_status").eq("college_id",college.id).in("verification_status",["source_verified","editor_verified"]).is("superseded_at",null).order("checked_at",{ascending:false}).limit(12),
   ]);
+
+  const ratingRows = reviewStatsRes.error ? (reviewsRes.data || []) : (reviewStatsRes.data || []);
+  const approvedRatings = ratingRows.map(item => Number(item.rating)).filter(Number.isFinite);
+  const reviewCount = reviewStatsRes.error ? approvedRatings.length : (reviewStatsRes.count ?? approvedRatings.length);
+  const averageRating = reviewCount === approvedRatings.length && approvedRatings.length > 0
+    ? approvedRatings.reduce((sum, rating) => sum + rating, 0) / approvedRatings.length
+    : null;
 
   return {
     college: college as College,
     programs: (programsRes.data || []) as CollegeProgram[],
     reviews: (reviewsRes.data || []) as Review[],
+    reviewStats: { averageRating, reviewCount },
     scholarships: scholarshipsRes.data || [],
-    leadsCount: leadsRes.count || 0,
     admissions: (admissionsRes.data || []) as Admission[],
+    news: (newsRes.data || []) as News[],
+    evidence: (evidenceRes.data || []) as CollegeEvidence[],
   };
-}
+})
 
 export async function generateMetadata({
   params,
@@ -123,20 +124,25 @@ export async function generateMetadata({
   const data = await getCollege(params.slug);
   if (!data) return { title: "College Not Found" };
   const { college } = data;
+  const description = metadataDescription(college);
   return {
-    title: `${college.name} | SikshyaNepal`,
-    description:
-      college.description ||
-      `Learn about ${college.name} - programs, fees, reviews, scholarships and more.`,
+    title: `${college.name}: Programs, Admissions and Verified Details`,
+    description,
     openGraph: {
-      title: `${college.name} | SikshyaNepal`,
-      description:
-        college.description ||
-        `Learn about ${college.name} - programs, fees, reviews and more.`,
+      title: college.name,
+      description,
       url: `${BASE_URL}/colleges/${college.slug}`,
+      type: "website",
       images: college.cover_url ? [{ url: college.cover_url }] : [],
     },
+    twitter: {
+      card: college.cover_url ? "summary_large_image" : "summary",
+      title: `${college.name} | SikshyaNepal`,
+      description,
+      images: college.cover_url ? [college.cover_url] : undefined,
+    },
     alternates: { canonical: `${BASE_URL}/colleges/${college.slug}` },
+    robots: { index: college.status !== 'pending_review', follow: true, googleBot: { index: college.status !== 'pending_review', follow: true, 'max-image-preview': 'large', 'max-snippet': -1, 'max-video-preview': -1 } },
   };
 }
 
@@ -148,66 +154,90 @@ export default async function CollegeProfilePage({
   const data = await getCollege(params.slug);
   if (!data) notFound();
 
-  const { college, programs, reviews, scholarships, leadsCount, admissions } = data;
-  const avgRating =
-    reviews.length > 0
-      ? reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length
-      : null;
+  const { college, programs, reviews, reviewStats, scholarships, admissions, news, evidence } = data;
+  const avgRating = reviewStats.averageRating;
+  const verifiedReviewCount = reviews.filter(review => review.verification_status === 'verified').length;
+  const linkedProgramNames = programs.map(item => item.program?.name).filter((name): name is string => Boolean(name));
+  const fallbackProgramNames = collegeDisplayPrograms(college.programs_offered);
+  const programNames = linkedProgramNames.length ? linkedProgramNames : fallbackProgramNames;
+  const displayLocation = collegeDisplayLocation(college);
+  const displayAffiliation = collegeDisplayAffiliation(college.affiliation);
+  const levelNames = (college.education_levels || []).map(level => ({ plus_two: '+2', bachelor: 'Bachelor', master: 'Master', mphil: 'MPhil', phd: 'PhD', diploma: 'Diploma', certificate: 'Certificate' }[level] || level));
+  const place = [college.local_level, college.district, college.province].filter(Boolean).join(', ') || displayLocation;
+  const websiteUrl = safeExternalUrl(college.website, true);
+  const sourceUrl = safeExternalUrl(college.source_url);
+  const emailAddress = safeEmailAddress(college.email);
+  const phoneHref = safePhoneHref(college.phone);
+  const isSponsored = hasActiveCollegeSponsorship(college);
+  const directionsQuery = [college.name, safeCollegeAddress(college.address), place, 'Nepal'].filter(Boolean).join(', ');
+  const directionsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(directionsQuery)}`;
+  const verifiedDate = college.last_verified_at
+    ? new Date(college.last_verified_at).toLocaleDateString('en-NP', { day: 'numeric', month: 'long', year: 'numeric' })
+    : null;
+  const hasPublishedFee = programs.some(program => program.fee != null);
+  const profileHighlights = [
+    programNames.length ? `${programNames.length} programme${programNames.length === 1 ? '' : 's'} listed` : null,
+    hasPublishedFee ? 'fee information listed' : null,
+    admissions.length ? `${admissions.length} current admission notice${admissions.length === 1 ? '' : 's'}` : null,
+  ].filter((highlight): highlight is string => Boolean(highlight));
+  const enquiryPrograms = Array.from(new Set(programs
+    .map(cp => cp.program?.name)
+    .filter((name): name is string => Boolean(name))
+    .concat(linkedProgramNames.length ? [] : fallbackProgramNames)))
+    .map(name => ({ name }));
+  const answerSummary = [
+    `${college.name}${place ? ` is listed in ${place}` : ' is listed in Nepal'}.`,
+    displayAffiliation ? `Its profile lists affiliation with ${displayAffiliation}.` : null,
+    programNames.length
+      ? `The profile lists ${programNames.slice(0, 4).join(', ')}${programNames.length > 4 ? ` and ${programNames.length - 4} further programme${programNames.length === 5 ? '' : 's'}` : ''}.`
+      : levelNames.length ? `The listed study levels are ${levelNames.join(', ')}.` : null,
+  ].filter(Boolean).join(' ');
+  const facts = [
+    place ? { question: `Where is ${college.name} located?`, answer: `${college.name} is listed in ${place}, Nepal. Check the official contact page before travelling to the campus.` } : null,
+    displayAffiliation ? { question: `Which university is ${college.name} affiliated with?`, answer: `${college.name} is listed as affiliated with ${displayAffiliation}. Students should confirm the affiliation for their specific programme and intake.` } : null,
+    levelNames.length ? { question: `What study levels does ${college.name} offer?`, answer: `The profile currently lists ${levelNames.join(', ')} study options. Programme availability can change between admission cycles.` } : null,
+    programNames.length ? { question: `What can I study at ${college.name}?`, answer: `Listed programmes include ${programNames.slice(0, 6).join(', ')}${programNames.length > 6 ? ` and ${programNames.length - 6} more` : ''}. Open the programme section and verify the current intake with the college.` } : null,
+    { question: `How can I verify information about ${college.name}?`, answer: college.source_name ? `This profile was checked against ${college.source_name}. Use the visible source link and last-verified date, then confirm changing details such as fees, seats and deadlines with the college.` : `Use the college's official website and contact details to confirm programmes, fees, seats and deadlines before applying.` },
+  ].filter((fact): fact is { question: string; answer: string } => Boolean(fact));
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "CollegeOrUniversity",
-    name: college.name,
-    description: college.description,
-    url: college.website || `${BASE_URL}/colleges/${college.slug}`,
-    logo: college.logo_url,
-    image: college.cover_url,
-    address: {
-      "@type": "PostalAddress",
-      addressLocality: college.location,
-      addressCountry: "NP",
+  const pageUrl = absoluteUrl(`/colleges/${college.slug}`)
+  const jsonLd = { "@context": "https://schema.org", "@graph": [
+    {
+      "@type": "CollegeOrUniversity", "@id": `${pageUrl}#college`, name: college.name,
+      description: college.description || undefined, url: pageUrl, logo: college.logo_url || undefined,
+      image: college.cover_url || undefined,
+      address: { "@type": "PostalAddress", streetAddress: safeCollegeAddress(college.address) || undefined, addressLocality: college.local_level || displayLocation || undefined, addressRegion: college.province || undefined, addressCountry: "NP" },
+      telephone: phoneHref ? college.phone || undefined : undefined, email: emailAddress || undefined,
+      foundingDate: college.established_year?.toString(), sameAs: websiteUrl ? [websiteUrl] : undefined,
+      hasOfferCatalog: programNames.length ? { '@type': 'OfferCatalog', name: `Programs at ${college.name}`, itemListElement: programNames.slice(0, 20).map(name => ({ '@type': 'Offer', itemOffered: { '@type': 'Course', name, provider: { '@id': `${pageUrl}#college` } } })) } : undefined,
+      ...(avgRating && reviewStats.reviewCount > 0 && { aggregateRating: { "@type": "AggregateRating", ratingValue: avgRating.toFixed(1), reviewCount: reviewStats.reviewCount, bestRating: "5", worstRating: "1" } }),
     },
-    telephone: college.phone,
-    email: college.email,
-    foundingDate: college.established_year?.toString(),
-    ...(avgRating && {
-      aggregateRating: {
-        "@type": "AggregateRating",
-        ratingValue: avgRating.toFixed(1),
-        reviewCount: reviews.length,
-        bestRating: "5",
-        worstRating: "1",
-      },
-    }),
-  };
+    { "@type": "WebPage", "@id": `${pageUrl}#webpage`, url: pageUrl, name: `${college.name} college profile`, mainEntity: { "@id": `${pageUrl}#college` }, datePublished: college.created_at, dateModified: college.updated_at || college.last_verified_at || college.created_at, citation: sourceUrl || undefined, isPartOf: { "@id": `${absoluteUrl('/')}#website` } },
+    breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Colleges', path: '/colleges' }, { name: college.name, path: `/colleges/${college.slug}` }]),
+    { '@type': 'FAQPage', '@id': `${pageUrl}#questions`, mainEntity: facts.map(fact => ({ '@type': 'Question', name: fact.question, acceptedAnswer: { '@type': 'Answer', text: fact.answer } })) },
+  ] };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <Script
-        id="college-jsonld"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <JsonLd data={jsonLd} />
       {/* Breadcrumb */}
-      <nav className="flex items-center gap-2 text-sm text-gray-500 mb-6">
+      <nav aria-label="Breadcrumb" className="mb-6 flex min-w-0 items-center gap-2 text-sm text-gray-500">
         <Link href="/" className="hover:text-blue-600">
           Home
         </Link>
-        <span>/</span>
+        <span aria-hidden="true">/</span>
         <Link href="/colleges" className="hover:text-blue-600">
           Colleges
         </Link>
-        <span>/</span>
-        <span className="text-gray-900 font-medium">{college.name}</span>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page" className="min-w-0 truncate font-medium text-gray-900">{college.name}</span>
       </nav>
 
       {/* Hero */}
-      <div className="bg-card rounded-2xl border border-border overflow-hidden mb-6 shadow-card">
-        {/* Cover — real image if available, else a beautiful gradient */}
-        <div
-          className={`h-[200px] relative overflow-hidden mb-12 bg-gradient-to-br ${getCoverStyle(college.affiliation).gradient}`}
-        >
-          {college.cover_url ? (
+      <div className="mb-8 overflow-hidden border-b border-l-2 border-border border-l-accent bg-card">
+        {/* A missing photo is left missing; a decorative placeholder would imply content we do not have. */}
+        {college.cover_url && (
+          <div className="relative h-[200px] overflow-hidden bg-[#26344f]">
             <Image
               src={college.cover_url}
               alt={`${college.name} cover`}
@@ -215,49 +245,20 @@ export default async function CollegeProfilePage({
               className="object-cover"
               priority
             />
-          ) : (
-            <>
-              {/* Dot-grid texture overlay */}
-              <div
-                className="absolute inset-0 opacity-10"
-                style={{
-                  backgroundImage:
-                    "radial-gradient(circle at 1px 1px, rgba(255,255,255,0.6) 1px, transparent 0)",
-                  backgroundSize: "28px 28px",
-                }}
-              />
-              {/* Affiliation label top-left — no name duplication */}
-              <div className="absolute top-5 left-5">
-                <span className="inline-flex items-center px-3 py-1 rounded-full bg-white/15 border border-white/20 text-white/90 text-xs font-semibold tracking-wide backdrop-blur-sm">
-                  {college.affiliation ?? "College"}
-                </span>
-              </div>
-            </>
-          )}
-
-          {college.is_featured && (
+          {isSponsored && (
             <div className="absolute top-4 right-4">
               <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-400 text-white shadow-sm">
-                ★ Featured College
+                {college.sponsor_label || 'Sponsored'}
               </span>
             </div>
           )}
-        </div>
-        <div className="px-6 pb-6">
+          </div>
+        )}
+        <div className="px-1 pb-6 pt-5 sm:px-2">
           {/* Logo — circle avatar floating over cover */}
           {(() => {
-            const aff = college.affiliation ?? ''
-            const avatarGradient = aff.includes('Tribhuvan')
-              ? 'from-blue-500 to-blue-700'
-              : aff.includes('Kathmandu')
-              ? 'from-emerald-500 to-emerald-700'
-              : aff.includes('Pokhara')
-              ? 'from-amber-400 to-orange-600'
-              : aff.includes('Purbanchal')
-              ? 'from-purple-500 to-purple-700'
-              : 'from-[#1847c4] to-blue-800'
             return (
-              <div className="w-16 h-16 -mt-8 ml-6 mb-4 rounded-full ring-4 ring-white shadow-md flex-shrink-0 overflow-hidden relative">
+              <div className={`mb-4 flex h-16 w-16 flex-shrink-0 items-center justify-center overflow-hidden rounded-xl border border-gray-200 bg-white ${college.cover_url ? '-mt-12 ml-5 shadow-sm' : ''}`}>
                 {college.logo_url ? (
                   <Image
                     src={college.logo_url}
@@ -267,7 +268,7 @@ export default async function CollegeProfilePage({
                     className="object-contain w-full h-full bg-white"
                   />
                 ) : (
-                  <div className={`w-full h-full bg-gradient-to-br ${avatarGradient} flex items-center justify-center`}>
+                  <div className="flex h-full w-full items-center justify-center bg-primary">
                     <span className="text-white font-bold text-2xl">{college.name.charAt(0)}</span>
                   </div>
                 )}
@@ -277,91 +278,109 @@ export default async function CollegeProfilePage({
 
           {/* Name + meta — sits fully inside the white card, no overlap */}
           <div className="mb-4">
-            <h1 className="text-2xl font-bold text-ink leading-tight">
+            <h1 className="max-w-4xl font-display text-[clamp(1.85rem,5vw,2.6rem)] font-[750] leading-[1.08] tracking-[-0.035em] text-ink">
               {college.name}
             </h1>
-            <div className="mt-3 flex flex-wrap gap-2"><SaveCollegeButton collegeId={college.id} /><ShareButton title={`${college.name} | SikshyaNepal`} /></div>
-            <div className="flex flex-wrap items-center gap-3 mt-2">
+            <div className="mt-3 flex flex-wrap gap-2"><SaveCollegeButton collegeId={college.id} /><Link href={`/compare?college1=${encodeURIComponent(college.slug)}`} className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 transition-colors hover:border-blue-300 hover:bg-blue-50"><GitCompare className="h-4 w-4" aria-hidden="true" />Compare</Link><ShareButton title={`${college.name} | SikshyaNepal`} /></div>
+            <div className="mt-3 flex flex-wrap items-center gap-2.5">
               <VerificationBadge status={college.verification_status} />
-              {college.affiliation && (
-                <Badge variant="blue">{college.affiliation}</Badge>
+              {displayAffiliation && (
+                <Badge variant="blue">{displayAffiliation}</Badge>
               )}
               {college.established_year && (
-                <span className="flex items-center gap-1 text-xs text-ink-secondary">
-                  <Calendar className="w-3.5 h-3.5" /> Est.{" "}
+                <span className="flex items-center gap-1 text-xs font-medium text-ink-secondary">
+                  <Calendar aria-hidden="true" className="h-3.5 w-3.5" /> Est.{" "}
                   {college.established_year}
                 </span>
               )}
               {avgRating && (
                 <span className="flex items-center gap-1 text-xs text-ink-secondary font-medium">
-                  <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
-                  {avgRating.toFixed(1)} ({reviews.length} reviews)
+                  <Star aria-hidden="true" className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+                  {avgRating.toFixed(1)} ({reviewStats.reviewCount} reviews)
                 </span>
               )}
             </div>
+            {displayLocation && <p className="mt-3 flex items-start gap-1.5 text-sm font-medium text-gray-700"><MapPin aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-primary" />{displayLocation}</p>}
+            {profileHighlights.length > 0 && <p className="mt-4 border-t border-border pt-3 text-sm leading-6 text-gray-600"><strong className="font-semibold text-ink">At a glance:</strong>{' '}{profileHighlights.join(' · ')}</p>}
           </div>
 
-          {/* Contact Info */}
-          <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
-            {college.location && (
-              <span className="flex items-center gap-1.5">
-                <MapPin className="w-4 h-4 text-gray-400" /> {college.location}
-              </span>
-            )}
-            {college.phone && (
-              <a
-                href={`tel:${college.phone}`}
-                className="flex items-center gap-1.5 hover:text-blue-600"
-              >
-                <Phone className="w-4 h-4 text-gray-400" /> {college.phone}
+          {/* Official contact actions */}
+          <div className="grid grid-cols-2 gap-2 text-sm sm:flex sm:flex-wrap">
+            {displayLocation && (
+              <a href={directionsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg border border-border bg-white px-3 font-semibold text-primary hover:border-primary" aria-label={`Get directions to ${college.name}`}>
+                <MapPin aria-hidden="true" className="h-4 w-4" /> Directions<ExternalLink aria-hidden="true" className="h-3 w-3" />
               </a>
             )}
-            {college.email && (
+            {phoneHref && (
               <a
-                href={`mailto:${college.email}`}
-                className="flex items-center gap-1.5 hover:text-blue-600"
+                href={phoneHref}
+                className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg border border-border bg-white px-3 font-semibold text-gray-700 hover:border-primary hover:text-primary"
               >
-                <Mail className="w-4 h-4 text-gray-400" /> {college.email}
+                <Phone aria-hidden="true" className="h-4 w-4 text-primary" /> Call college
               </a>
             )}
-            {college.website && (
+            {emailAddress && (
               <a
-                href={college.website}
+                href={`mailto:${emailAddress}`}
+                className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg border border-border bg-white px-3 font-semibold text-gray-700 hover:border-primary hover:text-primary"
+              >
+                <Mail aria-hidden="true" className="h-4 w-4 text-primary" /> Email college
+              </a>
+            )}
+            {websiteUrl && (
+              <a
+                href={websiteUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1.5 hover:text-blue-600"
+                className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-lg border border-border bg-white px-3 font-semibold text-gray-700 hover:border-primary hover:text-primary"
               >
-                <Globe className="w-4 h-4 text-gray-400" /> Official Website{" "}
-                <ExternalLink className="w-3 h-3" />
+                <Globe aria-hidden="true" className="h-4 w-4 text-primary" /> Official website
+                <ExternalLink aria-hidden="true" className="h-3 w-3" />
               </a>
             )}
           </div>
         </div>
       </div>
 
+      {isSponsored && (
+        <p className="mb-6 border-l-2 border-amber-500 bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-950">
+          <strong>{college.sponsor_label || 'Sponsored'}:</strong> {college.sponsor_disclosure || 'This college paid for placement. Payment does not change its verification status or student reviews.'}
+        </p>
+      )}
+
+      <section className="mb-6 rounded-2xl border border-blue-200 bg-white p-5 shadow-sm lg:hidden" aria-label="Admission actions">
+        <div className="flex items-start justify-between gap-3">
+          <div><h2 className="text-xl font-semibold text-gray-950">Admissions enquiry</h2><p className="mt-1 text-sm leading-6 text-gray-600">Ask about the current intake, eligibility and fees. This sends an enquiry, not an application.</p></div>
+          {admissions.length > 0 && <span className="shrink-0 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700">{admissions.length} open</span>}
+        </div>
+        <ApplyNowButton collegeName={college.name} collegeId={college.id} isSponsored={isSponsored} programs={enquiryPrograms} />
+        <Link href={`/admissions/planner?college=${encodeURIComponent(college.name)}`} className="mt-3 flex min-h-11 items-center justify-center rounded-xl border border-blue-200 bg-blue-50 text-sm font-semibold text-blue-800">Add to admission plan</Link>
+        {phoneHref && <a href={phoneHref} className="mt-3 flex min-h-11 items-center justify-center gap-2 rounded-xl border border-gray-300 text-sm font-semibold text-gray-700"><Phone className="h-4 w-4" />Call official number</a>}
+      </section>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Description */}
-          {college.description && (
-            <div className="bg-white rounded-xl border border-gray-200 p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-3">
-                About
-              </h2>
-              <p className="whitespace-pre-line text-gray-600 leading-relaxed">
-                {college.description}
-              </p>
-            </div>
-          )}
+          <section className="border-b border-gray-200 pb-6" aria-labelledby="college-at-a-glance">
+            <h2 id="college-at-a-glance" className="text-xl font-semibold text-gray-950">What students should know</h2>
+            <p className="mt-3 text-sm leading-6 text-gray-700">{answerSummary}</p>
+            <p className="mt-3 text-xs leading-5 text-gray-500">
+              {verifiedDate && college.source_name
+                ? `Source checked against ${college.source_name} on ${verifiedDate}. Fees, seats and deadlines can change; confirm them before applying.`
+                : 'Use the college’s official website or contact details to confirm changing information before applying.'}
+            </p>
+          </section>
+
+          <CollegeDecisionCheck collegeSlug={college.slug} sourceUrl={sourceUrl} website={websiteUrl} />
+
+          <CollegeEvidenceLedger items={evidence} />
 
           <div className="bg-white rounded-xl border border-gray-200 p-6">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
                 <h2 className="text-lg font-semibold text-gray-900">Source and verification</h2>
                 <p className="mt-1 text-sm text-gray-500">
-                  {college.source_name
-                    ? `Checked against ${college.source_name}.`
-                    : 'A primary source has not yet been documented for this profile.'}
+                  {college.source_name ? `Information checked against ${college.source_name}.` : 'Use the official college contact details to confirm current information.'}
                 </p>
               </div>
               <VerificationBadge status={college.verification_status} />
@@ -372,8 +391,8 @@ export default async function CollegeProfilePage({
                   Last verified {new Date(college.last_verified_at).toLocaleDateString('en-NP', { day: 'numeric', month: 'long', year: 'numeric' })}
                 </span>
               )}
-              {college.source_url && (
-                <a href={college.source_url} target="_blank" rel="noopener noreferrer nofollow" className="inline-flex items-center gap-1 font-semibold text-blue-600">
+              {sourceUrl && (
+                <a href={sourceUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-semibold text-blue-600">
                   Open source <ExternalLink className="h-3.5 w-3.5" />
                 </a>
               )}
@@ -390,6 +409,7 @@ export default async function CollegeProfilePage({
               </h2>
             </div>
             {programs.length > 0 ? (
+              <>
               <div className="space-y-3">
                 {[...programs]
                   // +2 programs float to the top
@@ -402,15 +422,21 @@ export default async function CollegeProfilePage({
                   })
                   .map((cp) => {
                     const isPlus2 = cp.program?.degree_level === '+2'
+                    const feePeriods:Record<string,string>={monthly:'per month',semester:'per semester',annual:'per year',total_program:'total programme',one_time:'one-time'}
+                    const feePeriod=cp.fee_period ? feePeriods[cp.fee_period] : null
                     return (
                       <div
                         key={cp.program_id}
-                        className="flex items-center justify-between p-3 rounded-lg bg-gray-50 border border-gray-100"
+                        className="flex flex-col gap-3 rounded-lg border border-gray-100 bg-gray-50 p-3 sm:flex-row sm:items-center sm:justify-between"
                       >
                         <div>
-                          <p className="font-medium text-gray-800 text-sm">
-                            {cp.program?.name}
-                          </p>
+                          {cp.program?.slug ? (
+                            <Link href={`/programs/${cp.program.slug}`} className="text-sm font-semibold text-gray-800 hover:text-blue-700 hover:underline">
+                              {cp.program.name}
+                            </Link>
+                          ) : (
+                            <p className="font-medium text-gray-800 text-sm">{cp.program?.name}</p>
+                          )}
                           <div className="flex items-center gap-2 mt-1">
                             {/* Show +2 badge for intermediate programs, faculty badge otherwise */}
                             {isPlus2
@@ -425,22 +451,25 @@ export default async function CollegeProfilePage({
                             )}
                           </div>
                         </div>
-                        {cp.fee && (
-                          <div className="text-right">
+                        {cp.fee != null && (
+                          <div className="border-t border-gray-200 pt-3 sm:min-w-44 sm:border-l sm:border-t-0 sm:pl-4 sm:pt-0 sm:text-right">
                             <p className="text-sm font-semibold text-gray-900">
                               NPR {cp.fee.toLocaleString()}
                             </p>
-                            <p className="text-xs text-gray-500">per year</p>
+                            {feePeriod && <p className="mt-0.5 text-xs font-semibold text-primary">{feePeriod}</p>}
+                            {cp.fee_academic_year && <p className="mt-1 text-xs text-gray-500">Academic year {cp.fee_academic_year}</p>}
+                            {safeExternalUrl(cp.fee_source_url) && <a href={safeExternalUrl(cp.fee_source_url)!} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex min-h-11 items-center gap-1 text-xs font-bold text-primary hover:underline">Fee source <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" /></a>}
                           </div>
                         )}
                       </div>
                     )
                   })}
               </div>
-            ) : college.programs_offered ? (
+              </>
+            ) : fallbackProgramNames.length ? (
               <div>
                 <div className="grid gap-2 sm:grid-cols-2">
-                  {college.programs_offered.split(';').map((program) => program.trim()).filter(Boolean).map((program) => (
+                  {fallbackProgramNames.map((program) => (
                     <div key={program} className="rounded-lg border border-gray-100 bg-gray-50 px-3 py-2.5 text-sm font-medium text-gray-700">
                       {program}
                     </div>
@@ -450,8 +479,12 @@ export default async function CollegeProfilePage({
                   Program list is from the college research pack. Confirm current intakes and eligibility on the official website before applying.
                 </p>
               </div>
-            ) : (
-              <p className="text-sm text-gray-500">No programs listed yet.</p>
+          ) : (
+              <div className="rounded-lg border border-[#e6e4df] bg-[#fcfbf8] p-4">
+                <p className="text-sm font-semibold text-ink">Contact the college for current programme details.</p>
+                <p className="mt-1 text-sm leading-6 text-ink-secondary">Programme offerings can change by intake. Use the official website or admissions office for the current list.</p>
+                {websiteUrl && <a href={websiteUrl} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex min-h-11 items-center gap-1 text-sm font-bold text-primary hover:text-primary-700">Check official website <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" /></a>}
+              </div>
             )}
           </div>
 
@@ -465,11 +498,22 @@ export default async function CollegeProfilePage({
             </div>
           )}
 
+          {news.length > 0 && (
+            <section className="rounded-xl border border-gray-200 bg-white p-6" aria-labelledby="college-news-heading">
+              <div className="mb-4 flex items-end justify-between gap-4"><div><h2 id="college-news-heading" className="text-lg font-semibold text-gray-900">Latest updates from {college.name}</h2><p className="mt-1 text-sm text-gray-500">Admissions, results, achievements and campus events with original sources.</p></div><Link href={`/news?q=${encodeURIComponent(college.name)}`} className="whitespace-nowrap text-sm font-semibold text-blue-600">All updates</Link></div>
+              <div className="divide-y divide-gray-100">{news.map(article => <Link key={article.id} href={`/news/${article.slug}`} className="group flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0"><div><p className="text-xs font-semibold uppercase tracking-wide text-blue-600">{article.content_category?.replaceAll('_', ' ') || 'College news'}</p><h3 className="mt-1 text-sm font-semibold text-gray-800 group-hover:text-blue-700">{article.title}</h3></div><span className="text-xs text-gray-400">{new Date(article.published_date).toLocaleDateString('en-NP', { day: 'numeric', month: 'short', year: 'numeric' })}</span></Link>)}</div>
+            </section>
+          )}
+
+          <section className="bg-white px-1 py-2" aria-labelledby="student-questions-heading">
+            <h2 id="student-questions-heading" className="text-lg font-semibold text-gray-900">Questions students ask about {college.name}</h2>
+            <div className="mt-5 divide-y divide-gray-100">{facts.map(fact => <details key={fact.question} className="group py-4 first:pt-0 last:pb-0"><summary className="cursor-pointer list-none pr-6 text-sm font-semibold text-gray-900 marker:hidden">{fact.question}<span className="float-right text-blue-600 group-open:rotate-45">+</span></summary><p className="mt-3 max-w-3xl text-sm leading-6 text-gray-600">{fact.answer}</p></details>)}</div>
+          </section>
+
           {/* Reviews */}
           <div className="bg-white rounded-xl border border-gray-200 p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">
-              Student Reviews
-            </h2>
+            <div className="mb-4 flex flex-wrap items-end justify-between gap-3"><div><h2 className="text-lg font-semibold text-gray-900">Student Reviews</h2><p className="mt-1 text-xs text-gray-500">Moderated experiences—not an official college ranking.</p></div>{reviews.length > 0 && <div className="flex gap-2 text-xs"><span className="rounded-full bg-gray-100 px-2.5 py-1 font-semibold text-gray-700">Showing {reviews.length} of {reviewStats.reviewCount}</span><span className="rounded-full bg-blue-50 px-2.5 py-1 font-semibold text-blue-700">{verifiedReviewCount} verified shown</span></div>}</div>
+            {reviewStats.reviewCount > 0 && reviewStats.reviewCount < 5 && <div className="mb-5 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2.5 text-xs leading-5 text-amber-900"><strong>Limited sample:</strong> {reviewStats.reviewCount === 1 ? 'This is one student experience.' : `These are ${reviewStats.reviewCount} student experiences.`} Do not treat the rating as representative of every programme, teacher or intake.</div>}
             {reviews.length > 0 ? (
               <div className="space-y-4">
                 {reviews.map((review) => (
@@ -529,14 +573,14 @@ export default async function CollegeProfilePage({
         {/* Sidebar */}
         <div className="space-y-5">
           {/* Quick Info */}
-          <div className="bg-white rounded-xl border border-gray-200 p-5">
+          <div id="college-contact" className="bg-white rounded-xl border border-gray-200 p-5">
             <h3 className="font-semibold text-gray-900 mb-4">Quick Info</h3>
             <dl className="space-y-3 text-sm">
-              {college.affiliation && (
+              {displayAffiliation && (
                 <div className="flex justify-between">
                   <dt className="text-gray-500">Affiliation</dt>
                   <dd className="font-medium text-gray-800 text-right">
-                    {college.affiliation}
+                    {displayAffiliation}
                   </dd>
                 </div>
               )}
@@ -548,24 +592,28 @@ export default async function CollegeProfilePage({
                   </dd>
                 </div>
               )}
-              {college.location && (
+              {displayLocation && (
                 <div className="flex justify-between">
                   <dt className="text-gray-500">Location</dt>
-                  <dd className="font-medium text-gray-800">
-                    {college.location}
+                  <dd className="text-right font-medium text-gray-800">
+                    {college.district ? (
+                      <Link href={`/colleges/in/${routeSegment(college.district)}`} className="hover:text-blue-700 hover:underline">
+                        {displayLocation}
+                      </Link>
+                    ) : displayLocation}
                   </dd>
                 </div>
               )}
               <div className="flex justify-between">
                 <dt className="text-gray-500">Programs Offered</dt>
                 <dd className="font-medium text-gray-800">
-                  {programs.length || (college.programs_offered ? college.programs_offered.split(';').filter(Boolean).length : 0)}
+                  {programs.length || fallbackProgramNames.length}
                 </dd>
               </div>
             </dl>
-            {college.website && (
+            {websiteUrl && (
               <a
-                href={college.website}
+                href={websiteUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-4 w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
@@ -578,12 +626,8 @@ export default async function CollegeProfilePage({
             <ApplyNowButton
               collegeName={college.name}
               collegeId={college.id}
-              isFeatured={college.is_featured}
-              programs={programs
-                .map(cp => cp.program?.name)
-                .filter((n): n is string => !!n)
-                .map(name => ({ name }))}
-              leadsCount={leadsCount}
+              isSponsored={isSponsored}
+              programs={enquiryPrograms}
             />
           </div>
 

@@ -3,18 +3,20 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import Image from 'next/image'
 import { createServerSupabaseClient } from '@/lib/supabase'
-import { ArrowLeft, Calendar, User, Download } from 'lucide-react'
+import { ArrowLeft, Calendar, User, Download, ExternalLink, ShieldCheck, Building2 } from 'lucide-react'
 import { formatDate } from '@/lib/utils'
 import type { News } from '@/types'
 import PdfViewer from '@/components/results/PdfViewer'
+import JsonLd from '@/components/seo/JsonLd'
+import { absoluteUrl, breadcrumbSchema, SITE_URL } from '@/lib/seo'
 
 export const revalidate = 0
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://sikshyanepal.vercel.app'
+const BASE_URL = SITE_URL
 
 async function getNews(slug: string) {
   const supabase = createServerSupabaseClient()
-  const { data } = await supabase.from('news').select('*').eq('slug', slug).single()
+  const { data } = await supabase.from('news').select('*').eq('slug', slug).eq('status', 'published').single()
   return data as News | null
 }
 
@@ -22,7 +24,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   const news = await getNews(params.slug)
   if (!news) return { title: 'News Not Found' }
   return {
-    title:       `${news.title} | SikshyaNepal`,
+    title:       news.title,
     description: news.content?.slice(0, 160),
     openGraph:   { images: news.image_url ? [news.image_url] : [] },
     alternates: { canonical: `/news/${news.slug}` },
@@ -34,11 +36,16 @@ export default async function NewsDetailPage({ params }: { params: { slug: strin
   if (!news) notFound()
 
   const hasPdf = news.content_type === 'pdf' && !!news.news_pdf_url
-  const jsonLd = { '@context': 'https://schema.org', '@type': 'NewsArticle', headline: news.title, description: news.content?.slice(0, 300) || undefined, datePublished: news.published_date || undefined, dateModified: news.published_date || undefined, mainEntityOfPage: `${BASE_URL}/news/${news.slug}`, image: news.image_url ? [news.image_url] : undefined, author: { '@type': 'Organization', name: 'SikshyaNepal Editorial' }, publisher: { '@type': 'Organization', name: 'SikshyaNepal', logo: { '@type': 'ImageObject', url: `${BASE_URL}/og-image.png` } } }
+  const pageUrl = absoluteUrl(`/news/${news.slug}`)
+  const jsonLd = { '@context': 'https://schema.org', '@graph': [
+    { '@type': 'NewsArticle', '@id': `${pageUrl}#article`, headline: news.title, articleSection: news.content_category?.replaceAll('_', ' ') || 'College news', keywords: news.education_levels?.join(', '), description: news.content?.slice(0, 300) || undefined, datePublished: news.published_date || undefined, dateModified: news.updated_at || news.created_at || news.published_date || undefined, mainEntityOfPage: { '@id': `${pageUrl}#webpage` }, image: news.image_url ? [news.image_url] : undefined, author: { '@type': 'Organization', '@id': `${BASE_URL}/#organization`, name: news.author_name || 'SikshyaNepal Editorial' }, publisher: { '@type': 'Organization', '@id': `${BASE_URL}/#organization`, name: 'SikshyaNepal', logo: { '@type': 'ImageObject', url: `${BASE_URL}/og-image.png` } }, citation: news.source_url || undefined },
+    { '@type': 'WebPage', '@id': `${pageUrl}#webpage`, url: pageUrl, name: news.title, mainEntity: { '@id': `${pageUrl}#article` }, isPartOf: { '@id': `${BASE_URL}/#website` } },
+    breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Education news', path: '/news' }, { name: news.title, path: `/news/${news.slug}` }]),
+  ] }
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }} />
+      <JsonLd data={jsonLd} />
       <Link
         href="/news"
         className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-blue-600 mb-6 transition-colors"
@@ -57,13 +64,13 @@ export default async function NewsDetailPage({ params }: { params: { slug: strin
             {news.title}
           </h1>
           <div className="flex items-center gap-4 text-sm text-gray-500 mb-6 pb-6 border-b border-gray-100">
+            {news.published_date && <span className="flex items-center gap-1.5">
+              <Calendar className="w-4 h-4" aria-hidden="true" />
+              <time dateTime={news.published_date}>{formatDate(news.published_date)}</time>
+            </span>}
             <span className="flex items-center gap-1.5">
-              <Calendar className="w-4 h-4" />
-              {formatDate(news.published_date)}
-            </span>
-            <span className="flex items-center gap-1.5">
-              <User className="w-4 h-4" />
-              SikshyaNepal Editorial
+              <User className="w-4 h-4" aria-hidden="true" />
+              {news.author_name || 'SikshyaNepal'}
             </span>
             {hasPdf && (
               <a
@@ -83,6 +90,9 @@ export default async function NewsDetailPage({ params }: { params: { slug: strin
               </p>
             </div>
           )}
+          {news.college_id && <p className="mt-6 flex items-center gap-2 text-sm text-gray-600"><Building2 className="h-4 w-4 text-primary" />This update is linked to a college profile in the SikshyaNepal directory.</p>}
+          {news.disclosure && <p className="mt-4 border-l-2 border-gray-300 pl-3 text-xs leading-5 text-gray-600">{news.disclosure}</p>}
+          {(news.source_url || news.last_verified_at) && <section className="mt-7 border-t border-gray-200 pt-5 text-sm" aria-label="Source information"><p className="flex items-center gap-2 font-semibold text-ink"><ShieldCheck className="h-4 w-4 text-primary" aria-hidden="true" />{news.source_url ? 'Source summary' : 'Publication information'}</p>{news.source_url && <p className="mt-2 max-w-2xl text-gray-600">Summary based on the linked official announcement. Check the source for final details.</p>}{news.last_verified_at && <p className="mt-2 text-gray-600">Checked <time dateTime={news.last_verified_at}>{formatDate(news.last_verified_at)}</time></p>}{news.source_url && <a href={news.source_url} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex min-h-11 items-center gap-1.5 font-semibold text-primary">{news.source_name || 'Open official source'} <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" /></a>}</section>}
         </div>
       </article>
 

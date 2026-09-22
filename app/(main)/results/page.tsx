@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import { Fragment } from 'react'
 import Link from 'next/link'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import ResultCard from '@/components/results/ResultCard'
@@ -11,8 +12,8 @@ export const dynamic   = 'force-dynamic'
 export const revalidate = 0
 
 export const metadata: Metadata = {
-  title: 'University Exam Results Nepal | TU, KU, NEB Results | SikshyaNepal',
-  description: 'Check latest exam results from TU, KU, PU, NEB, and CTEVT. Get instant result notifications.',
+  title: 'University Exam Results Nepal | TU, KU, NEB Results',
+  description: 'Find published exam-result notices from TU, KU, PU, NEB and CTEVT, with links to the recorded source.',
 }
 
 const UNIVERSITIES = ['TU', 'KU', 'PU', 'PurU', 'NEB', 'CTEVT']
@@ -66,17 +67,14 @@ export default async function ResultsPage({
   }
 
   return (
-    <div className="bg-[#f0f4ff] min-h-screen">
+    <div className="bg-[#f8f7f3] min-h-screen">
 
       {/* ── Page header ─────────────────────────────────────── */}
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-8">
-          <p className="text-xs font-semibold uppercase tracking-widest text-gray-400 mb-3">Exam Results</p>
-          <h1 className="font-display font-bold text-ink text-3xl sm:text-4xl mb-2"
-              style={{ letterSpacing: '-0.025em' }}>
-            University Results
-          </h1>
-          <p className="text-gray-500 text-sm mb-6">
+          <p className="page-kicker mb-3">Exam results</p>
+          <h1 className="page-title">University results</h1>
+          <p className="page-lede mb-6 mt-3">
             Latest exam results from universities and boards in Nepal
           </p>
           <SearchBar placeholder="Search results by title or program..." redirectTo="/results" />
@@ -119,8 +117,8 @@ export default async function ResultsPage({
         {results.length > 0 ? (
           <div className="space-y-2.5">
             {results.map((result, idx) => (
-              <>
-                <ResultCard key={result.id} result={result} />
+              <Fragment key={result.id}>
+                <ResultCard result={result} />
                 {idx === 4 && (
                   <AdUnit
                     key="ad-results"
@@ -129,7 +127,7 @@ export default async function ResultsPage({
                     className="my-1 rounded-xl border border-gray-200 bg-white min-h-[90px]"
                   />
                 )}
-              </>
+              </Fragment>
             ))}
           </div>
         ) : (

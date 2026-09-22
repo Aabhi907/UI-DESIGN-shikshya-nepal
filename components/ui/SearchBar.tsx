@@ -1,14 +1,15 @@
 'use client'
 
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Search } from 'lucide-react'
+import { Search, X } from 'lucide-react'
 
 interface SearchBarProps {
   placeholder?: string
   redirectTo?: string
   className?: string
   size?: 'sm' | 'md' | 'lg'
+  initialValue?: string
 }
 
 export default function SearchBar({
@@ -16,37 +17,47 @@ export default function SearchBar({
   redirectTo = '/colleges',
   className = '',
   size = 'md',
+  initialValue = '',
 }: SearchBarProps) {
-  const [query, setQuery] = useState('')
+  const [query, setQuery] = useState(initialValue)
   const router = useRouter()
+  const inputId = useId()
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (query.trim()) {
-      router.push(`${redirectTo}?q=${encodeURIComponent(query.trim())}`)
-    }
+    router.push(query.trim() ? `${redirectTo}?q=${encodeURIComponent(query.trim())}` : redirectTo)
   }
 
   const sizeClasses = {
-    sm: 'h-10 text-sm',
+    sm: 'h-11 text-sm',
     md: 'h-12 text-sm',
     lg: 'h-14 text-base',
   }
 
   return (
-    <form onSubmit={handleSubmit} className={`relative ${className}`}>
+    <form onSubmit={handleSubmit} role="search" className={`relative ${className}`}>
       <div className="relative">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 pointer-events-none" />
+        <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-500" aria-hidden="true" />
+        <label htmlFor={inputId} className="sr-only">Search</label>
         <input
+          id={inputId}
+          name="q"
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={placeholder}
-          className={`w-full pl-12 pr-32 ${sizeClasses[size]} border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white shadow-sm`}
+          aria-label="Search"
+          className={`w-full rounded-xl border border-[#d4d1ca] bg-white pl-12 pr-32 text-ink shadow-[0_1px_2px_rgba(15,22,41,0.04)] placeholder:text-slate-500 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 ${sizeClasses[size]}`}
         />
+        {query && (
+          <button type="button" onClick={() => setQuery('')} aria-label="Clear search" className="absolute right-[5.75rem] top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-lg text-slate-500 hover:bg-[#f3f1eb] hover:text-ink">
+            <X className="h-4 w-4" aria-hidden="true" />
+          </button>
+        )}
         <button
           type="submit"
-          className="absolute right-2 top-1/2 -translate-y-1/2 px-5 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
+          aria-label="Submit search"
+          className="absolute right-2 top-1/2 min-h-11 -translate-y-1/2 rounded-lg bg-primary px-5 py-2 text-sm font-bold text-white hover:bg-primary-600"
         >
           Search
         </button>

@@ -13,6 +13,12 @@ export interface College {
   affiliation: string | null
   established_year: number | null
   is_featured: boolean
+  is_sponsored?: boolean
+  sponsor_label?: string | null
+  sponsor_starts_at?: string | null
+  sponsor_ends_at?: string | null
+  sponsor_position?: number | null
+  sponsor_disclosure?: string | null
   /** 'active' (default / null means active) | 'pending_review' */
   status: string | null
   /** 'manual' | 'scraped' | 'public_submission' */
@@ -32,6 +38,7 @@ export interface College {
   verified_by?: string | null
   education_levels?: ('plus_two' | 'bachelor' | 'master' | 'mphil' | 'phd' | 'diploma' | 'certificate')[]
   created_at: string
+  updated_at?: string | null
   programs?: CollegeProgram[]
   reviews?: Review[]
   scholarships?: Scholarship[]
@@ -144,6 +151,10 @@ export interface CollegeProgram {
   college_id: string
   program_id: string
   fee: number | null
+  fee_period?: 'monthly' | 'semester' | 'annual' | 'total_program' | 'one_time' | 'unknown'
+  fee_academic_year?: string | null
+  fee_source_url?: string | null
+  fee_last_verified_at?: string | null
   seats: number | null
   scholarship_available: boolean
   program?: Program
@@ -157,6 +168,30 @@ export interface University {
   short_name: string
   website: string | null
   created_at: string
+}
+
+export interface EntranceExam {
+  id: string
+  title: string
+  slug: string
+  university_id: string | null
+  program: string | null
+  exam_body: string | null
+  education_level: string | null
+  exam_date: string | null
+  application_deadline: string | null
+  fee: number | null
+  description: string | null
+  eligibility: string | null
+  exam_url: string | null
+  syllabus_url: string | null
+  source_name: string | null
+  source_url: string | null
+  last_verified_at: string | null
+  status: 'draft' | 'published' | 'closed'
+  created_at: string
+  updated_at: string
+  university?: University | null
 }
 
 export interface Result {
@@ -199,6 +234,17 @@ export interface News {
   content_type: 'pdf' | 'image' | 'link' | null
   published_date: string
   created_at: string
+  author_name?: string
+  source_name?: string | null
+  source_url?: string | null
+  last_verified_at?: string | null
+  updated_at?: string
+  status?: 'draft' | 'published' | 'archived'
+  content_category?: 'college_news' | 'admission' | 'achievement' | 'entrance_result' | 'event' | 'award' | 'scholarship' | 'ranking_methodology' | 'policy'
+  education_levels?: string[]
+  college_id?: string | null
+  automation_mode?: 'manual' | 'auto_published' | 'editor_approved'
+  disclosure?: string | null
 }
 
 export interface Review {
@@ -232,6 +278,17 @@ export interface Scholarship {
   description: string | null
   amount: number | null
   deadline: string | null
+  eligibility: string | null
+  application_url: string | null
+  is_active: boolean
+  provider_name?: string | null
+  scholarship_type?: string | null
+  education_levels?: string[]
+  target_groups?: string[]
+  coverage?: string | null
+  source_name?: string | null
+  source_url?: string | null
+  last_verified_at?: string | null
   created_at: string
   college?: College
 }
@@ -243,6 +300,9 @@ export interface Syllabus {
   semester: string | null
   title: string
   file_url: string | null
+  source_url?: string | null
+  last_verified_at?: string | null
+  is_published?: boolean
   created_at: string
   program?: Program
   university?: University
@@ -256,6 +316,9 @@ export interface OldQuestion {
   year: number | null
   subject: string
   file_url: string | null
+  source_url?: string | null
+  last_verified_at?: string | null
+  is_published?: boolean
   created_at: string
   program?: Program
   university?: University

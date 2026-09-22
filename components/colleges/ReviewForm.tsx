@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import { Star, Send, CheckCircle } from 'lucide-react'
+import Link from 'next/link'
+import { supabase } from '@/lib/supabase'
 
 interface ReviewFormProps {
   collegeId:   string
@@ -35,6 +37,10 @@ export default function ReviewForm({ collegeId, collegeName }: ReviewFormProps) 
   const [submitting,  setSubmitting]  = useState(false)
   const [submitted,   setSubmitted]   = useState(false)
   const [error,       setError]       = useState('')
+  const [signedIn, setSignedIn] = useState<boolean | null>(null)
+  const [consent, setConsent] = useState(false)
+
+  useEffect(() => { void supabase.auth.getUser().then(({ data }) => setSignedIn(Boolean(data.user))) }, [])
 
   // Restore submitted state from localStorage (persists across refreshes)
   useEffect(() => {
@@ -53,7 +59,7 @@ export default function ReviewForm({ collegeId, collegeName }: ReviewFormProps) 
     }
   }, [collegeId])
 
-  const set = (field: string, value: string | number) =>
+  const set = (field: string, value: string | number | boolean) =>
     setForm((prev) => ({ ...prev, [field]: value }))
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -61,6 +67,7 @@ export default function ReviewForm({ collegeId, collegeName }: ReviewFormProps) 
     if (form.rating === 0)           { setError('Please select a rating'); return }
     if (!form.student_name.trim())   { setError('Please enter your name'); return }
     if (form.review_text.length < 20) { setError('Review must be at least 20 characters'); return }
+    if (!consent) { setError('Confirm that this is your honest experience and does not identify private individuals.'); return }
 
     setSubmitting(true)
     setError('')
@@ -95,6 +102,8 @@ export default function ReviewForm({ collegeId, collegeName }: ReviewFormProps) 
     }
   }
 
+  if (signedIn === false) return <div className="rounded-xl border border-blue-200 bg-blue-50 p-6"><h3 className="font-bold text-ink">Sign in to write a review</h3><p className="mt-2 text-sm leading-6 text-gray-600">Anyone can read reviews. Sign-in reduces fake submissions and permits safety follow-up; your account email is not displayed publicly.</p><Link href="/account/login" className="mt-4 inline-flex rounded-lg bg-primary px-4 py-2.5 text-sm font-bold text-white">Sign in to continue</Link></div>
+
   // ── Submitted state (shown across refreshes until 7-day expiry) ──────────
   if (submitted) {
     return (
@@ -110,15 +119,7 @@ export default function ReviewForm({ collegeId, collegeName }: ReviewFormProps) 
             <p className="text-sm text-green-700 leading-relaxed mb-3">
               Your review of <strong>{collegeName}</strong> has been submitted. If not yet visible above, it may still be pending approval.
             </p>
-            <button
-              onClick={() => {
-                try { localStorage.removeItem(LS_KEY(collegeId)) } catch {}
-                setSubmitted(false)
-              }}
-              className="mt-1 text-xs text-green-700 hover:text-green-900 underline underline-offset-2"
-            >
-              Submit a different review
-            </button>
+            <p className="mt-1 text-xs text-green-700">To protect review integrity, one review per college is accepted from an account within 30 days.</p>
           </div>
         </div>
       </div>
@@ -176,7 +177,7 @@ export default function ReviewForm({ collegeId, collegeName }: ReviewFormProps) 
         <div className="mt-3 grid gap-3 sm:grid-cols-3">{[
           ['attendance_rating', 'Attendance support'], ['safety_rating', 'Campus safety'], ['internship_support_rating', 'Internship support'],
         ].map(([field, label]) => <label key={field} className="text-xs font-medium text-gray-600">{label}<select value={form[field as keyof typeof form] as number} onChange={(event) => set(field, Number(event.target.value))} className="mt-1 w-full rounded-lg border border-gray-300 px-2 py-2 text-sm"><option value="0">Not sure</option>{[1,2,3,4,5].map(value => <option key={value} value={value}>{value}/5</option>)}</select></label>)}</div>
-        <label className="mt-3 flex items-start gap-2 text-xs leading-5 text-gray-600"><input type="checkbox" checked={form.hidden_costs_reported} onChange={(event) => set('hidden_costs_reported', event.target.checked ? 1 : 0)} className="mt-1"/>I experienced costs that were not clear before joining.</label>
+        <label className="mt-3 flex items-start gap-2 text-xs leading-5 text-gray-600"><input type="checkbox" checked={form.hidden_costs_reported} onChange={(event) => set('hidden_costs_reported', event.target.checked)} className="mt-1"/>I experienced costs that were not clear before joining.</label>
         <textarea value={form.hostel_transport_note} onChange={(event) => set('hostel_transport_note', event.target.value)} rows={2} maxLength={300} placeholder="Optional: share a practical hostel, transport or accessibility note. Do not name private individuals." className="mt-3 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm" />
       </div>
 
@@ -190,13 +191,15 @@ export default function ReviewForm({ collegeId, collegeName }: ReviewFormProps) 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1.5">
-            Your Name <span className="text-red-500">*</span>
+            Public display name <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
             value={form.student_name}
             onChange={(e) => set('student_name', e.target.value)}
-            placeholder="e.g. Ram Sharma"
+            minLength={3}
+            maxLength={60}
+            placeholder="e.g. BCA Student 2025"
             className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
@@ -208,6 +211,7 @@ export default function ReviewForm({ collegeId, collegeName }: ReviewFormProps) 
             type="text"
             value={form.program}
             onChange={(e) => set('program', e.target.value)}
+            maxLength={100}
             placeholder="e.g. BCA, BBA, +2 Science"
             className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
@@ -225,9 +229,10 @@ export default function ReviewForm({ collegeId, collegeName }: ReviewFormProps) 
           onChange={(e) => set('year', e.target.value)}
           placeholder="e.g. 2081, 2023"
           min="1990"
-          max={new Date().getFullYear() + 1}
+          max="2100"
           className="w-full sm:w-40 px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
+        <p className="mt-1 text-xs text-gray-400">Use either AD (for example 2025) or BS (for example 2082).</p>
       </div>
 
       {/* Review Text */}
@@ -239,6 +244,8 @@ export default function ReviewForm({ collegeId, collegeName }: ReviewFormProps) 
           value={form.review_text}
           onChange={(e) => set('review_text', e.target.value)}
           rows={5}
+          minLength={20}
+          maxLength={3000}
           placeholder="Share your experience — teaching quality, facilities, campus life, hostel, canteen, value for money..."
           className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
         />
@@ -254,10 +261,12 @@ export default function ReviewForm({ collegeId, collegeName }: ReviewFormProps) 
         </div>
       )}
 
+      <label className="flex items-start gap-2 rounded-lg border border-gray-200 bg-gray-50 p-3 text-xs leading-5 text-gray-600"><input type="checkbox" checked={consent} onChange={event => setConsent(event.target.checked)} className="mt-1" required/><span>I confirm this is my honest experience, I have not been paid to manipulate the rating, and I have not included private information or unsupported accusations. I accept the <Link href="/terms" className="font-bold text-primary underline">terms</Link> and <Link href="/privacy" className="font-bold text-primary underline">privacy policy</Link>.</span></label>
+
       <div className="flex items-center gap-3">
         <button
           type="submit"
-          disabled={submitting}
+          disabled={submitting || signedIn !== true}
           className="flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
         >
           <Send className="w-4 h-4" />

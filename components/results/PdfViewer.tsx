@@ -85,7 +85,7 @@ export default function PdfViewer({ pdfUrl, title }: PdfViewerProps) {
         {loading && !errored && (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-gray-400 z-10 bg-gray-100">
             <Loader2 className="w-8 h-8 animate-spin" />
-            <p className="text-sm">Loading PDF…</p>
+            <p className="text-sm">Preparing document preview</p>
           </div>
         )}
 
@@ -123,6 +123,8 @@ export default function PdfViewer({ pdfUrl, title }: PdfViewerProps) {
             key={iframeSrc}            // remount on src change
             src={iframeSrc}
             title={title}
+            loading="lazy"
+            referrerPolicy="no-referrer"
             className="w-full h-full border-0"
             onLoad={handleLoad}
             onError={handleError}
