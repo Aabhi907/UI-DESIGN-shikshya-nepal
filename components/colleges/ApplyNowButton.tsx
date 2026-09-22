@@ -13,16 +13,18 @@ interface Props {
   collegeId:   string
   isSponsored: boolean
   programs:    Program[]
+  variant?:    'profile' | 'card'
 }
 
 const LS_KEY    = (id: string) => `applied_${id}`
 const EXPIRY_MS = 30 * 24 * 60 * 60 * 1000  // 30 days
 
 export default function ApplyNowButton({
-  collegeName, collegeId, isSponsored, programs,
+  collegeName, collegeId, isSponsored, programs, variant = 'profile',
 }: Props) {
   const [open,    setOpen]    = useState(false)
   const [applied, setApplied] = useState(false)
+  const [submitted, setSubmitted] = useState(false)
 
   // Restore applied state from localStorage on mount
   useEffect(() => {
@@ -48,21 +50,25 @@ export default function ApplyNowButton({
     } catch {
       // ignore
     }
-    setApplied(true)
+    // Keep the confirmation visible in the modal. The completed state is
+    // reflected on the card only after the student closes that confirmation.
+    setSubmitted(true)
+  }
+
+  const closeModal = () => {
+    if (submitted) setApplied(true)
     setOpen(false)
   }
 
   // ── Already applied state ────────────────────────────────────────────────
   if (applied) {
     return (
-      <div className="mt-4">
-        <div className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-green-50 border border-green-200 text-green-700 text-sm font-semibold rounded-xl">
+      <div className={variant === 'card' ? '' : 'mt-4'}>
+        <div className={`flex items-center justify-center gap-2 border border-green-200 bg-green-50 text-sm font-semibold text-green-700 ${variant === 'card' ? 'min-h-11 rounded-lg px-3' : 'w-full rounded-xl px-4 py-3'}`}>
           <CheckCircle className="w-4 h-4" />
-          Admission request sent
+          Enquiry sent
         </div>
-        <p className="mt-1.5 text-center text-xs text-gray-400">
-          Saved in SikshyaNepal. Response time depends on the college.
-        </p>
+        {variant !== 'card' && <p className="mt-1.5 text-center text-xs text-gray-400">Saved in SikshyaNepal. Response time depends on the college.</p>}
       </div>
     )
   }
@@ -72,10 +78,12 @@ export default function ApplyNowButton({
     <>
       <button
         onClick={() => setOpen(true)}
-        className="mt-4 w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#1847c4] text-white text-sm font-semibold rounded-xl hover:bg-[#1340b0] transition-colors shadow-sm"
+        className={variant === 'card'
+          ? 'inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-primary px-3 text-sm font-semibold text-primary transition-colors hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-primary/25'
+          : 'mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-[#1847c4] px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#1340b0]'}
       >
         <Send className="w-4 h-4" />
-        Request admission information
+        {variant === 'card' ? 'Apply now' : 'Request admission information'}
       </button>
 
       {open && (
@@ -84,7 +92,7 @@ export default function ApplyNowButton({
           collegeId={collegeId}
           isSponsored={isSponsored}
           programs={programs}
-          onClose={() => setOpen(false)}
+          onClose={closeModal}
           onSuccess={handleSuccess}
         />
       )}

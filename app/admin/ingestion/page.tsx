@@ -16,6 +16,7 @@ export default function IngestionPage() {
   const [error, setError] = useState('')
   const [bulkPublishing, setBulkPublishing] = useState(false)
   const [bulkMessage, setBulkMessage] = useState('')
+  const [bulkSkipped, setBulkSkipped] = useState<Array<{ id: string; title: string; reason: string }>>([])
 
   const load = () => fetch(`/api/admin/ingestion?status=${status}`, { cache: 'no-store' }).then(async response => {
     const data = await response.json()
@@ -53,14 +54,16 @@ export default function IngestionPage() {
     setBulkPublishing(true)
     setError('')
     setBulkMessage('')
+    setBulkSkipped([])
     let published = 0
-    const skipped: string[] = []
+    const skipped: Array<{ id: string; title: string; reason: string }> = []
     for (const item of pending) {
       const result = await decide(item, 'approved', { confirm: false, quiet: true })
       if (result.ok) published += 1
-      else if (!result.cancelled) skipped.push(item.title)
+      else if (!result.cancelled) skipped.push({ id: item.id, title: item.title, reason: result.error || 'This item needs more information before it can be published.' })
     }
     setBulkPublishing(false)
+    setBulkSkipped(skipped)
     setBulkMessage(skipped.length
       ? `Published ${published}. Kept ${skipped.length} incomplete item${skipped.length === 1 ? '' : 's'} in the queue for correction.`
       : `Published all ${published} pending item${published === 1 ? '' : 's'}.`)
@@ -73,6 +76,7 @@ export default function IngestionPage() {
     </div>
     {error && <p className="mt-5 rounded-lg bg-red-950/50 p-3 text-red-300">{error}</p>}
     {bulkMessage && <p role="status" className="mt-5 rounded-lg border border-emerald-800 bg-emerald-950/40 p-3 text-emerald-200">{bulkMessage}</p>}
+    {bulkSkipped.length > 0 && <section className="mt-4 rounded-lg border border-amber-800 bg-amber-950/30 p-4" aria-labelledby="bulk-skipped-heading"><h2 id="bulk-skipped-heading" className="text-sm font-bold text-amber-200">Items kept for correction</h2><p className="mt-1 text-xs leading-5 text-amber-100/80">These records were not published. Fix the listed issue, then use the individual publish control.</p><ul className="mt-3 space-y-2 text-sm">{bulkSkipped.slice(0, 12).map(item=><li key={item.id} className="rounded-md border border-amber-900/70 bg-gray-950/20 px-3 py-2"><p className="font-semibold text-amber-100">{item.title}</p><p className="mt-1 text-xs leading-5 text-amber-100/75">{item.reason}</p></li>)}{bulkSkipped.length > 12 && <li className="text-xs text-amber-100/75">{bulkSkipped.length - 12} more item{bulkSkipped.length - 12 === 1 ? '' : 's'} remain in the queue.</li>}</ul></section>}
     <div className="mt-6 grid gap-4 xl:grid-cols-2">{items.map(item => <article key={item.id} className="rounded-xl border border-gray-700 bg-gray-800 p-5">
       <div className="flex items-start justify-between gap-3"><div><div className="flex flex-wrap gap-2"><span className="rounded bg-gray-700 px-2 py-1 text-[10px] font-bold uppercase text-cyan-300">{item.content_category || item.target_type}</span><span className={`rounded px-2 py-1 text-[10px] font-bold uppercase ${item.claim_risk === 'high' ? 'bg-red-950/70 text-red-300' : item.claim_risk === 'low' ? 'bg-emerald-950/60 text-emerald-300' : 'bg-amber-950/60 text-amber-300'}`}>{item.claim_risk || 'medium'} claim risk</span><span className={`rounded px-2 py-1 text-[10px] font-bold uppercase ${Number(item.confidence_score || 0) >= 90 ? 'bg-emerald-950/60 text-emerald-300' : Number(item.confidence_score || 0) >= 70 ? 'bg-amber-950/60 text-amber-300' : 'bg-red-950/60 text-red-300'}`}>Confidence {item.confidence_score ?? 0}/100</span></div><h2 className="mt-2 font-semibold text-white">{item.title}</h2><p className="mt-1 text-xs text-gray-500">{item.scraper_name} · {new Date(item.fetched_at).toLocaleString()}</p></div><a href={item.source_url} target="_blank" rel="noopener noreferrer" className="rounded p-2 text-blue-400" title="Open original source"><ExternalLink className="h-4 w-4" /></a></div>
       {item.quality_flags?.length > 0 && <div className="mt-3 flex flex-wrap gap-2">{item.quality_flags.map(flag => <span key={flag} className={`rounded px-2 py-1 text-xs ${flag === 'source_changed' ? 'bg-blue-950/70 font-semibold text-blue-300' : 'bg-amber-950/60 text-amber-300'}`}>{flag.replaceAll('_', ' ')}</span>)}</div>}

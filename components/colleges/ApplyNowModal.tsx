@@ -167,7 +167,7 @@ export default function ApplyNowModal({
               <section aria-label="What happens next" className="border-l-2 border-primary bg-blue-50/60 px-3 py-3">
                 <p className="text-xs font-bold uppercase tracking-[0.11em] text-primary">What happens next</p>
                 <ol className="mt-2 space-y-1 text-xs leading-5 text-slate-700">
-                  <li><span className="font-semibold text-slate-900">1. Send your enquiry.</span> SikshyaNepal records it and shares it with {collegeName}.</li>
+                  <li><span className="font-semibold text-slate-900">1. Send your enquiry.</span> SikshyaNepal records it for {collegeName}&apos;s admissions team.</li>
                   <li><span className="font-semibold text-slate-900">2. Confirm independently.</span> Check the official notice before sending documents or payment.</li>
                   <li><span className="font-semibold text-slate-900">3. Keep control.</span> Use the official college contact details for urgent deadlines.</li>
                 </ol>

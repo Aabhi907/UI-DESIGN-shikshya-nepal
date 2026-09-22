@@ -3,6 +3,7 @@ import { createAdminSupabaseClient } from '@/lib/supabase'
 import { Resend } from 'resend'
 import { collegeDisplayPrograms } from '@/lib/college-display'
 import { SITE_URL } from '@/lib/seo'
+import { checkPublicFormRateLimit } from '@/lib/public-form-security'
 
 const resend      = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
 const FROM        = 'SikshyaNepal <onboarding@resend.dev>'
@@ -35,6 +36,9 @@ export async function POST(request: Request) {
     if (!consent) return NextResponse.json({ error: 'Consent is required before sending an enquiry' }, { status: 400 })
 
     const supabase = createAdminSupabaseClient()
+    const rate = await checkPublicFormRateLimit(supabase, request, 'admission_enquiry', 3)
+    if (rate === 'unavailable') return NextResponse.json({ error: 'Enquiries are temporarily unavailable. Please contact the college directly.' }, { status: 503 })
+    if (rate === 'limited') return NextResponse.json({ error: 'Too many enquiries were sent from this connection. Please try again later.' }, { status: 429, headers: { 'Retry-After': '3600' } })
 
     const { data: college, error: collegeError } = await supabase
       .from('colleges')
@@ -75,6 +79,8 @@ export async function POST(request: Request) {
         program_interest: program,
         message: message || null,
         status:        'new',
+        consent_at: new Date().toISOString(),
+        consent_purpose: 'admission_enquiry_v1',
       })
       .select('id')
       .single()

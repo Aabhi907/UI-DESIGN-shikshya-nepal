@@ -4,6 +4,7 @@ import { MapPin, Star, ArrowRight, Banknote, CheckCircle2 } from 'lucide-react'
 import type { College } from '@/types'
 import VerificationBadge from '@/components/institutions/VerificationBadge'
 import { collegeDisplayLocation, collegeDisplayPrograms, hasActiveCollegeSponsorship } from '@/lib/college-display'
+import ApplyNowButton from './ApplyNowButton'
 
 // Affiliation short name
 function affiliationShort(full: string | null): string | null {
@@ -56,11 +57,12 @@ export default function CollegeCard({ college, matchReasons = [] }: CollegeCardP
   const feePeriodLabels: Record<string, string> = { monthly: 'per month', semester: 'per semester', annual: 'per year', total_program: 'full programme', one_time: 'one-time' }
 
   return (
-    <Link href={`/colleges/${college.slug}`} aria-label={`View ${college.name} college profile`} className="group block h-full rounded-2xl">
+    <article className="group h-full rounded-2xl">
       <div
         className={`editorial-card editorial-card-interactive flex h-full flex-col overflow-hidden
                     ${isSponsored ? '!border-amber-300' : college.is_featured ? '!border-blue-300' : ''}`}
       >
+        <Link href={`/colleges/${college.slug}`} aria-label={`View ${college.name} college profile`} className="block">
         {/* ── Cover ─────────────────────────────────────── */}
         <div
           className="relative flex-shrink-0 overflow-hidden bg-[#e9edf3]"
@@ -184,14 +186,24 @@ export default function CollegeCard({ college, matchReasons = [] }: CollegeCardP
             </div>
           )}
 
-          {/* Bottom row */}
+          {/* Profile link */}
           <div className="flex items-center justify-end pt-3 border-t border-gray-100 mt-auto">
             <span className="flex items-center gap-1 text-xs font-semibold text-primary">
               View profile <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 motion-reduce:transform-none" aria-hidden="true" />
             </span>
           </div>
         </div>
+        </Link>
+        <div className="border-t border-gray-100 px-4 py-3">
+          <ApplyNowButton
+            collegeName={college.name}
+            collegeId={college.id}
+            isSponsored={isSponsored}
+            programs={topPrograms.map((name) => ({ name }))}
+            variant="card"
+          />
+        </div>
       </div>
-    </Link>
+    </article>
   )
 }
