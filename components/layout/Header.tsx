@@ -28,6 +28,7 @@ const navLinks: NavigationLink[] = [
     href: '/programs',
     sub: [
       { label: 'All Programs', href: '/programs' },
+      { label: 'Universities', href: '/universities' },
       { label: 'IT & Computing', href: '/programs?faculty=it' },
       { label: 'Engineering', href: '/programs?faculty=engineering' },
       { label: 'Management', href: '/programs?faculty=management' },

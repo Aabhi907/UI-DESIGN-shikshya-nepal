@@ -7,7 +7,7 @@ import { SITE_URL as BASE_URL } from '@/lib/seo'
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const supabase = createServerSupabaseClient()
 
-  const [admissions, schoolCount, colleges, results, notices, news, programs] = await Promise.all([
+  const [admissions, schoolCount, colleges, results, notices, news, programs, universities] = await Promise.all([
     supabase
       .from('admissions')
       .select('slug, updated_at')
@@ -42,6 +42,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     supabase
       .from('programs')
       .select('slug, created_at, updated_at'),
+    supabase
+      .from('universities')
+      .select('slug, created_at'),
   ])
 
   // Supabase projects commonly cap one REST response at 1,000 rows. Fetch every
@@ -112,6 +115,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     {
       url:             `${BASE_URL}/programs`,
+      changeFrequency: 'weekly',
+      priority:        0.8,
+    },
+    {
+      url:             `${BASE_URL}/universities`,
       changeFrequency: 'weekly',
       priority:        0.8,
     },
@@ -203,6 +211,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority:        0.6,
   }))
 
+  const universityRoutes: MetadataRoute.Sitemap = (universities.data ?? []).map((university) => ({
+    url: `${BASE_URL}/universities/${university.slug}`,
+    lastModified: new Date(university.created_at),
+    changeFrequency: 'weekly' as const,
+    priority: 0.75,
+  }))
+
   const careerRoutes: MetadataRoute.Sitemap = careers.map((career) => ({
     url: `${BASE_URL}/careers/${career.slug}`,
     changeFrequency: 'monthly' as const,
@@ -225,6 +240,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...noticeRoutes,
     ...newsRoutes,
     ...programRoutes,
+    ...universityRoutes,
     ...careerRoutes,
     ...programCollegeRoutes,
     ...locationRoutes,

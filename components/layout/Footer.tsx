@@ -22,6 +22,7 @@ const institutionLinks = [
 ]
 
 const universityLinks = [
+  { label: 'All Universities', href: '/universities' },
   { label: 'TU Results',     href: '/results?university=TU' },
   { label: 'KU Results',     href: '/results?university=KU' },
   { label: 'NEB Results',    href: '/results?university=NEB' },
