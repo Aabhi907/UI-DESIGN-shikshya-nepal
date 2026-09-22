@@ -8,6 +8,8 @@ import { formatDate } from '@/lib/utils'
 import type { Notice } from '@/types'
 import PdfViewer from '@/components/results/PdfViewer'
 
+export const revalidate = 0
+
 const BASE_URL = 'https://sikshyanepal.vercel.app'
 
 const UNIVERSITY_HOMEPAGES: Record<string, string> = {

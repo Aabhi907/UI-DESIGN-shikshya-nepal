@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import SchoolCard from '@/components/schools/SchoolCard'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import type { School } from '@/types'
+export const revalidate = 0
 const titleCase = (value: string) => value.split('-').map(part => part.charAt(0).toUpperCase() + part.slice(1)).join(' ')
 async function load(municipality: string) { const safe = decodeURIComponent(municipality).replace(/[^a-z0-9-]/gi, ''); const name = titleCase(safe); const { data } = await createServerSupabaseClient().from('schools').select('*').eq('status', 'active').ilike('local_level', `%${name}%`).order('verification_status', { ascending: false }).order('name').limit(200); return { name, schools: (data || []) as School[] } }
 export async function generateMetadata({ params }: { params: { municipality: string } }): Promise<Metadata> { const name = titleCase(params.municipality); return { title: `Schools in ${name}, Nepal – ECD to Grade 10`, description: `Find verified ECD through Grade 10 schools in ${name}, Nepal. Check school profiles, ownership, facilities and official sources.`, alternates: { canonical: `/schools/municipality/${params.municipality}` } } }
