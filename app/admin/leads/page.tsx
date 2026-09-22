@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState, useCallback } from 'react'
-import { Phone, Mail, GraduationCap, MessageSquare, Trash2, RefreshCw, Building2, TrendingUp } from 'lucide-react'
+import { Phone, Mail, GraduationCap, MessageSquare, Trash2, RefreshCw, Building2, TrendingUp, Download } from 'lucide-react'
 import ConfirmDialog, { ConfirmState, CONFIRM_CLOSED } from '@/components/ui/ConfirmDialog'
 import { ToastList, useToast } from '@/components/ui/Toast'
 
@@ -39,27 +39,34 @@ export default function AdminLeadsPage() {
   const [total,    setTotal]    = useState(0)
   const [loading,  setLoading]  = useState(true)
   const [filter,   setFilter]   = useState<string>('all')
+  const [collegeFilter, setCollegeFilter] = useState('all')
+  const [collegeOptions, setCollegeOptions] = useState<Array<{ id: string; name: string }>>([])
   const [updating, setUpdating] = useState<string | null>(null)
   const [dialog,   setDialog]   = useState<ConfirmState>(CONFIRM_CLOSED)
   const { toasts, toast, dismiss } = useToast()
 
   const fetchLeads = useCallback(async () => {
     setLoading(true)
-    const url = filter === 'all'
-      ? `/api/admin/leads?limit=200&t=${Date.now()}`
-      : `/api/admin/leads?status=${filter}&limit=200&t=${Date.now()}`
+    const params = new URLSearchParams({ limit: '200', t: String(Date.now()) })
+    if (filter !== 'all') params.set('status', filter)
+    if (collegeFilter !== 'all') params.set('college_id', collegeFilter)
     try {
-      const res  = await fetch(url, { cache: 'no-store' })
+      const res  = await fetch(`/api/admin/leads?${params.toString()}`, { cache: 'no-store' })
       const data = await res.json()
       setLeads(data.leads || [])
       setTotal(data.total || 0)
+      setCollegeOptions((current) => {
+        const byId = new Map(current.map((college) => [college.id, college]))
+        for (const lead of data.leads || []) byId.set(lead.college_id, { id: lead.college_id, name: lead.college_name })
+        return Array.from(byId.values()).sort((a, b) => a.name.localeCompare(b.name))
+      })
     } catch {
-      toast.error('Failed to load applications')
+      toast.error('Failed to load enquiries')
     } finally {
       setLoading(false)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filter])
+  }, [filter, collegeFilter])
 
   useEffect(() => { fetchLeads() }, [fetchLeads])
 
@@ -88,8 +95,8 @@ export default function AdminLeadsPage() {
   function confirmDelete(id: string, name: string) {
     setDialog({
       isOpen: true,
-      title: 'Delete Application',
-      message: `Delete ${name}'s application? This cannot be undone.`,
+      title: 'Delete enquiry',
+      message: `Delete ${name}'s enquiry? This cannot be undone.`,
       confirmLabel: 'Delete',
       variant: 'danger',
       onConfirm: async () => {
@@ -103,7 +110,7 @@ export default function AdminLeadsPage() {
           }
           setLeads((l) => l.filter((x) => x.id !== id))
           setTotal((t) => t - 1)
-          toast.success('Application deleted')
+          toast.success('Enquiry deleted')
         } catch {
           toast.error('Network error — lead not deleted')
         }
@@ -114,6 +121,27 @@ export default function AdminLeadsPage() {
   const counts: Record<string, number> = { new: 0, contacted: 0, enrolled: 0, rejected: 0 }
   leads.forEach((l) => { counts[l.status] = (counts[l.status] || 0) + 1 })
 
+  function exportCsv() {
+    const safeCell = (value: string | null | undefined) => {
+      const text = value ?? ''
+      const protectedText = /^[=+\-@]/.test(text) ? `'${text}` : text
+      return `"${protectedText.replaceAll('"', '""')}"`
+    }
+    const rows = [
+      ['College', 'Student name', 'Email', 'Phone', 'Programme', 'Message', 'Status', 'Received'],
+      ...leads.map((lead) => [lead.college_name, lead.student_name, lead.student_email, lead.student_phone, lead.program_interest, lead.message, lead.status, formatDate(lead.created_at)]),
+    ]
+    const csv = rows.map((row) => row.map((value) => safeCell(value)).join(',')).join('\n')
+    const blob = new Blob([`\ufeff${csv}`], { type: 'text/csv;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const anchor = document.createElement('a')
+    const selected = collegeFilter === 'all' ? 'all-colleges' : (collegeOptions.find((college) => college.id === collegeFilter)?.name || 'college')
+    anchor.href = url
+    anchor.download = `sikshyanepal-enquiries-${selected.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'export'}.csv`
+    anchor.click()
+    URL.revokeObjectURL(url)
+  }
+
   return (
     <div className="p-6 lg:p-8 text-gray-100 min-h-screen">
       <div className="mb-6 flex items-start justify-between gap-4">
@@ -123,12 +151,14 @@ export default function AdminLeadsPage() {
             Student requests for college admission information — {total} total
           </p>
         </div>
-        <button
-          onClick={fetchLeads}
-          className="flex items-center gap-1.5 px-3 py-2 bg-gray-700 hover:bg-gray-600 text-gray-300 text-sm rounded-lg transition-colors"
-        >
-          <RefreshCw className="w-3.5 h-3.5" /> Refresh
-        </button>
+        <div className="flex flex-wrap justify-end gap-2">
+          <button onClick={exportCsv} disabled={leads.length === 0} className="flex min-h-10 items-center gap-1.5 rounded-lg bg-gray-700 px-3 py-2 text-sm text-gray-200 transition-colors hover:bg-gray-600 disabled:cursor-not-allowed disabled:opacity-50">
+            <Download className="h-3.5 w-3.5" /> Export CSV
+          </button>
+          <button onClick={fetchLeads} className="flex min-h-10 items-center gap-1.5 rounded-lg bg-gray-700 px-3 py-2 text-sm text-gray-300 transition-colors hover:bg-gray-600">
+            <RefreshCw className="h-3.5 w-3.5" /> Refresh
+          </button>
+        </div>
       </div>
 
       {/* Stats strip */}
@@ -156,7 +186,7 @@ export default function AdminLeadsPage() {
             <strong className="text-green-200">
               {Math.round(((counts.enrolled || 0) / total) * 100)}%
             </strong>{' '}
-            ({counts.enrolled || 0} enrolled out of {total} applications)
+            ({counts.enrolled || 0} enrolled out of {total} enquiries)
           </span>
         </div>
       )}
@@ -184,13 +214,27 @@ export default function AdminLeadsPage() {
         ))}
       </div>
 
+      <div className="mb-6 max-w-md">
+        <label htmlFor="lead-college-filter" className="mb-1.5 block text-sm font-medium text-gray-300">College</label>
+        <select
+          id="lead-college-filter"
+          value={collegeFilter}
+          onChange={(event) => setCollegeFilter(event.target.value)}
+          className="min-h-11 w-full rounded-lg border border-gray-600 bg-gray-800 px-3 text-sm text-white outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+        >
+          <option value="all">All colleges</option>
+          {collegeOptions.map((college) => <option key={college.id} value={college.id}>{college.name}</option>)}
+        </select>
+        <p className="mt-1.5 text-xs leading-5 text-gray-500">Filter a college, then export its CSV for a separate Excel sheet. Contact details remain visible only to staff.</p>
+      </div>
+
       {/* Leads list */}
       {loading ? (
-        <div className="text-center py-16 text-gray-400">Loading leads…</div>
+        <div className="text-center py-16 text-gray-400">Loading enquiries…</div>
       ) : leads.length === 0 ? (
         <div className="text-center py-16 bg-gray-800 rounded-xl border border-gray-700">
           <Building2 className="w-10 h-10 text-gray-600 mx-auto mb-3" />
-          <p className="text-gray-400">No leads found</p>
+          <p className="text-gray-400">No enquiries found</p>
           <p className="text-sm text-gray-600 mt-1">Enquiries appear here after students request college information</p>
         </div>
       ) : (
