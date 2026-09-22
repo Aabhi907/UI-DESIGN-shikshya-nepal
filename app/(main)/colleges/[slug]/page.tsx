@@ -226,7 +226,7 @@ export default async function CollegeProfilePage({
   ] };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="mx-auto max-w-sn px-5 py-10 sm:px-8 lg:px-12 lg:py-14">
       <JsonLd data={jsonLd} />
       {/* Breadcrumb */}
       <nav aria-label="Breadcrumb" className="mb-6 flex min-w-0 items-center gap-2 text-sm font-nunito text-sn-ink-muted">
@@ -330,15 +330,15 @@ export default async function CollegeProfilePage({
         </Card>
       </section>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3 lg:gap-10">
         {/* Main Content */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-2 space-y-8 lg:space-y-10">
           <section aria-labelledby="college-at-a-glance">
             <div className="mb-3 flex items-start gap-3">
               <Mascot pose="read" size={40} />
               <div>
                 <h2 id="college-at-a-glance" className="text-xl font-baloo font-bold text-sn-ink">What students should know</h2>
-                <p className="mt-2 text-sm leading-6 font-nunito text-sn-ink-soft">{answerSummary}</p>
+                <p className="mt-2 max-w-2xl text-sm leading-6 font-nunito text-sn-ink-soft">{answerSummary}</p>
               </div>
             </div>
             <div className="mt-2">
@@ -401,7 +401,7 @@ export default async function CollegeProfilePage({
                     const feePeriod=cp.fee_period ? feePeriods[cp.fee_period] : null
                     const feeSource = safeExternalUrl(cp.fee_source_url)
                     return (
-                      <div key={cp.program_id} className="flex flex-col gap-3 rounded-sn-control border border-sn-border bg-sn-surface-alt p-3.5 sm:flex-row sm:items-center sm:justify-between">
+                      <div key={cp.program_id} className="flex flex-col gap-3 rounded-sn-control border border-sn-border bg-sn-surface-alt p-4 sm:flex-row sm:items-center sm:justify-between">
                         <div>
                           {cp.program?.slug ? (
                             <Link href={`/programs/${cp.program.slug}`} className="text-sm font-bold font-nunito text-sn-ink hover:text-sn-primary hover:underline">
@@ -459,7 +459,7 @@ export default async function CollegeProfilePage({
                 <div><h2 className="text-lg font-baloo font-bold text-sn-ink">Admissions open</h2><p className="mt-1 text-sm font-nunito text-sn-ink-muted">Verified opportunities and deadlines from this college.</p></div>
                 <Link href={`/admissions?q=${encodeURIComponent(college.name)}`} className="text-sm font-bold font-nunito text-sn-primary">View all</Link>
               </div>
-              <div className="grid gap-4 sm:grid-cols-2">{admissions.map((admission) => <AdmissionCard key={admission.id} admission={admission} />)}</div>
+              <div className="grid gap-4 sm:grid-cols-2 lg:gap-6">{admissions.map((admission) => <AdmissionCard key={admission.id} admission={admission} />)}</div>
             </Card>
           )}
 
@@ -472,7 +472,7 @@ export default async function CollegeProfilePage({
 
           <section aria-labelledby="student-questions-heading">
             <h2 id="student-questions-heading" className="text-lg font-baloo font-bold text-sn-ink">Questions students ask about {college.name}</h2>
-            <div className="mt-5 divide-y divide-sn-border">{facts.map(fact => <details key={fact.question} className="group py-4 first:pt-0 last:pb-0"><summary className="cursor-pointer list-none pr-6 text-sm font-bold font-nunito text-sn-ink marker:hidden">{fact.question}<span className="float-right text-sn-primary group-open:rotate-45">+</span></summary><p className="mt-3 max-w-3xl text-sm leading-6 font-nunito text-sn-ink-soft">{fact.answer}</p></details>)}</div>
+            <div className="mt-5 divide-y divide-sn-border">{facts.map(fact => <details key={fact.question} className="group py-4 first:pt-0 last:pb-0"><summary className="cursor-pointer list-none pr-6 text-sm font-bold font-nunito text-sn-ink marker:hidden">{fact.question}<span className="float-right text-sn-primary group-open:rotate-45">+</span></summary><p className="mt-3 max-w-2xl text-sm leading-6 font-nunito text-sn-ink-soft">{fact.answer}</p></details>)}</div>
           </section>
 
           {/* Reviews */}
@@ -517,7 +517,7 @@ export default async function CollegeProfilePage({
         </div>
 
         {/* Sidebar */}
-        <div className="space-y-5">
+        <div className="space-y-6 lg:space-y-8">
           {/* Quick Info */}
           <Card as="div" id="college-contact">
             <h3 className="font-bold font-nunito text-sn-ink mb-4">Quick Info</h3>

@@ -6,7 +6,6 @@ import { FACULTIES } from '@/lib/utils'
 import HeroSearch from '@/components/ui/HeroSearch'
 import ResultCard from '@/components/results/ResultCard'
 import NoticeCard from '@/components/notices/NoticeCard'
-import CollegeCard from '@/components/colleges/CollegeCard'
 import EmailSubscribe from '@/components/notifications/EmailSubscribe'
 import type { Result, Notice, College } from '@/types'
 import type { Admission } from '@/types'
@@ -16,6 +15,7 @@ import Card from '@/components/design-system/Card'
 import IconTile from '@/components/design-system/IconTile'
 import SectionHeader from '@/components/design-system/SectionHeader'
 import Button from '@/components/design-system/Button'
+import FeaturedCollegeCard from '@/components/design-system/FeaturedCollegeCard'
 import {
   Building2,
   School,
@@ -23,7 +23,6 @@ import {
   Bell,
   CalendarCheck2,
   CalendarClock,
-  Newspaper,
   Award,
   ArrowRight,
   Monitor,
@@ -73,6 +72,12 @@ const UNIVERSITY_SHOWCASE = [
   { short: 'PU',   label: 'Pokhara University',    affiliation: 'Pokhara University' },
   { short: 'PurU', label: 'Purbanchal University', affiliation: 'Purbanchal University' },
 ]
+
+// Consistent container + gutter + section rhythm, used on every major section
+// on this page: 20/32/48px side gutters, ~1200px content width, 64px→96px
+// vertical beat. See design-system/sikshyanepal/MASTER.md.
+const CONTAINER = 'mx-auto max-w-sn px-5 sm:px-8 lg:px-12'
+const SECTION_PAD = 'py-16 lg:py-24'
 
 async function getHomeData() {
   const supabase = createServerSupabaseClient()
@@ -198,15 +203,16 @@ export default async function HomePage() {
   const latestResult  = results[0]
   const latestNotice  = notices[0]
   const featuredCollege = featuredColleges[0] ?? null
+  const hasProofContent = admissions.length > 0 || results.length > 0 || notices.length > 0 || featuredColleges.length > 0
 
   return (
     <div>
       {/* ════════════════════════════════════════════════════════
-          HERO
+          1. HERO
       ════════════════════════════════════════════════════════ */}
-      <section className="border-b border-sn-border bg-sn-ground">
-        <div className="max-w-7xl mx-auto px-4 pb-16 pt-14 sm:px-6 md:pb-20 md:pt-20 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16 items-center">
+      <section className={`border-b border-sn-border bg-sn-ground ${SECTION_PAD}`}>
+        <div className={CONTAINER}>
+          <div className="grid grid-cols-1 gap-12 lg:grid-cols-5 lg:gap-16 items-center">
             <div className="lg:col-span-3">
               <div className="mb-5 flex items-center gap-3">
                 <Mascot pose="wave" size={52} />
@@ -219,19 +225,19 @@ export default async function HomePage() {
                 Decide what to study after +2 — and where.
               </h1>
 
-              <p className="mb-8 max-w-xl text-lg leading-8 font-nunito text-sn-ink-soft md:text-xl">
+              <p className="mb-8 max-w-2xl text-lg leading-8 font-nunito text-sn-ink-soft md:text-xl">
                 Verified colleges, courses and career pathways for +2 and university in Nepal. Every fact sourced and dated. No fake reviews, no guesswork.
               </p>
 
               <HeroSearch />
 
-              <div className="mt-6 flex flex-wrap gap-3">
+              <div className="mt-8 flex flex-wrap gap-3">
                 <Button.Link href="/tools/college-finder" variant="primary">Start your pathway<ArrowRight className="h-4 w-4" aria-hidden="true" /></Button.Link>
                 <Button.Link href="/colleges" variant="secondary">Browse colleges</Button.Link>
               </div>
 
-              <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                <Link href="/schools" className="group rounded-sn-card border border-sn-border bg-sn-surface p-4 shadow-sn-card transition hover:shadow-sn-float">
+              <div className="mt-8 grid gap-4 sm:grid-cols-2">
+                <Link href="/schools" className="group rounded-sn-card border border-sn-border bg-sn-surface p-5 shadow-sn-card transition hover:shadow-sn-float">
                   <div className="flex items-start gap-3">
                     <IconTile icon={School} tint="mint" />
                     <div>
@@ -241,7 +247,7 @@ export default async function HomePage() {
                     </div>
                   </div>
                 </Link>
-                <Link href="/colleges" className="group rounded-sn-card border border-sn-border bg-sn-surface p-4 shadow-sn-card transition hover:shadow-sn-float">
+                <Link href="/colleges" className="group rounded-sn-card border border-sn-border bg-sn-surface p-5 shadow-sn-card transition hover:shadow-sn-float">
                   <div className="flex items-start gap-3">
                     <IconTile icon={GraduationCap} tint="peach" />
                     <div>
@@ -254,7 +260,7 @@ export default async function HomePage() {
               </div>
             </div>
 
-            <div className="hidden lg:block lg:col-span-2 lg:pt-10">
+            <div className="hidden lg:block lg:col-span-2">
               <HeroCard result={latestResult ?? null} notice={latestNotice ?? null} college={featuredCollege} />
             </div>
           </div>
@@ -262,50 +268,13 @@ export default async function HomePage() {
       </section>
 
       {/* ════════════════════════════════════════════════════════
-          QUICK LINKS
+          2. TRUST STRIP — a thin accent band, not a full section;
+          the platform's own real counts, not a third-party claim.
       ════════════════════════════════════════════════════════ */}
-      <section className="border-b border-sn-border bg-sn-surface-alt">
-        <div className="mx-auto max-w-7xl px-4 py-7 sm:px-6 lg:px-8">
-          <SectionHeader
-            title="What do you need today?"
-            action={<Link href="/search" className="text-sm font-bold font-nunito text-sn-primary hover:text-sn-primary-hover">Search everything →</Link>}
-            className="mb-4"
-          />
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
-            {[
-              { href: '/results', label: 'Check results', text: 'TU, KU, NEB & more', Icon: FileText, tint: 'peach' as const },
-              { href: '/admissions?deadline=open', label: 'Admissions', text: 'Open & upcoming', Icon: CalendarCheck2, tint: 'mint' as const },
-              { href: '/schools', label: 'Find a school', text: 'ECD to Grade 10', Icon: School, tint: 'butter' as const },
-              { href: '/colleges', label: 'Find a college', text: '+2 and higher', Icon: GraduationCap, tint: 'lilac' as const },
-              { href: '/scholarships', label: 'Scholarships', text: 'Funding options', Icon: Award, tint: 'peach' as const },
-              { href: '/entrance-exams', label: 'Entrance exams', text: 'Dates & eligibility', Icon: CalendarClock, tint: 'mint' as const },
-              { href: '/study-resources', label: 'Study resources', text: 'Syllabus & questions', Icon: BookOpen, tint: 'butter' as const },
-              { href: '/notices', label: 'Latest notices', text: 'Official updates', Icon: Bell, tint: 'lilac' as const },
-            ].map(({ href, label, text, Icon, tint }) => (
-              <Link key={href} href={href} className="group rounded-sn-card border border-sn-border bg-sn-surface p-4 shadow-sn-card transition hover:shadow-sn-float">
-                <IconTile icon={Icon} tint={tint} size={36} />
-                <p className="mt-3 text-sm font-bold font-nunito text-sn-ink">{label}</p>
-                <p className="mt-1 text-xs font-nunito text-sn-ink-muted">{text}</p>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {admissions.length > 0 && (
-        <section className="border-b border-sn-border bg-sn-ground">
-          <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-            <SectionHeader title="Admissions open now" action={<Link href="/admissions" className="text-sm font-bold font-nunito text-sn-primary">All admissions →</Link>} className="mb-7" />
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{admissions.map((admission) => <AdmissionCard key={admission.id} admission={admission} />)}</div>
-          </div>
-        </section>
-      )}
-
-      {/* Platform's own counts — not third-party claims, so shown plainly rather than with an evidence chip. */}
       {heroStats.length > 0 && (
-        <section className="bg-sn-ink py-8">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-wrap justify-center sm:justify-between gap-0 divide-x divide-white/15">
+        <section className="bg-sn-ink py-10 lg:py-12">
+          <div className={CONTAINER}>
+            <div className="flex flex-wrap justify-center gap-0 divide-x divide-white/15 sm:justify-between">
               {heroStats.map((stat) => (
                 <div key={stat.label} className="px-8 py-2 text-center">
                   <p className="font-baloo text-2xl leading-none text-white tabular-nums" style={{ letterSpacing: '-0.01em' }}>
@@ -320,144 +289,29 @@ export default async function HomePage() {
       )}
 
       {/* ════════════════════════════════════════════════════════
-          EMAIL SUBSCRIBE BAR
+          3. WHAT DO YOU NEED TODAY — primary path-in
       ════════════════════════════════════════════════════════ */}
-      <section className="bg-sn-primary border-b border-sn-primary-hover">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex flex-col sm:flex-row items-center gap-4">
-            <div className="text-white flex-shrink-0 text-center sm:text-left">
-              <p className="font-bold font-nunito text-sm flex items-center gap-2 justify-center sm:justify-start"><Bell className="w-4 h-4" aria-hidden="true" />Get result alerts in your inbox</p>
-              <p className="text-white/75 text-xs font-nunito mt-0.5">Email updates when a new result or notice is published</p>
-            </div>
-            <div className="w-full sm:flex-1 max-w-sm sm:max-w-none">
-              <EmailSubscribe />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════════════════════
-          LATEST RESULTS & NOTICES
-      ════════════════════════════════════════════════════════ */}
-      <section className="bg-sn-ground border-b border-sn-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <SectionHeader title="Results & Notices" className="mb-8" />
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <Card className="!p-5">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <IconTile icon={FileText} tint="peach" size={28} />
-                  <span className="text-sm font-bold font-nunito text-sn-ink">Latest Results</span>
-                </div>
-                <Link href="/results" className="text-sm font-bold font-nunito text-sn-primary hover:text-sn-primary-hover">View all</Link>
-              </div>
-              {results.length > 0 ? (
-                <div>{results.slice(0, 5).map((r) => <ResultCard key={r.id} result={r} compact />)}</div>
-              ) : (
-                <p className="text-sm font-nunito text-sn-ink-muted py-6 text-center">No results yet</p>
-              )}
-            </Card>
-
-            <Card className="!p-5">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  <IconTile icon={Bell} tint="butter" size={28} />
-                  <span className="text-sm font-bold font-nunito text-sn-ink">University Notices</span>
-                </div>
-                <Link href="/notices" className="text-sm font-bold font-nunito text-sn-primary hover:text-sn-primary-hover">View all</Link>
-              </div>
-              {notices.length > 0 ? (
-                <div>{notices.slice(0, 5).map((n) => <NoticeCard key={n.id} notice={n} compact />)}</div>
-              ) : (
-                <p className="text-sm font-nunito text-sn-ink-muted py-6 text-center">No notices yet</p>
-              )}
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════════════════════
-          FEATURED COLLEGES
-          Note: CollegeCard is shared with un-converted listing pages and is
-          intentionally not restyled here — see the Build Report.
-      ════════════════════════════════════════════════════════ */}
-      {featuredColleges.length > 0 && (
-        <section className="bg-sn-surface border-b border-sn-border">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-            <SectionHeader title="Featured colleges" action={<Link href="/colleges" className="hidden sm:block text-sm font-bold font-nunito text-sn-primary hover:text-sn-primary-hover">View all</Link>} className="mb-8" />
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {featuredColleges.map((college) => <CollegeCard key={college.id} college={college} />)}
-            </div>
-            <div className="mt-7 sm:hidden text-center">
-              <Button.Link href="/colleges" variant="primary"><Building2 className="w-4 h-4" aria-hidden="true" />Explore All Colleges</Button.Link>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ════════════════════════════════════════════════════════
-          BROWSE BY PROGRAM
-      ════════════════════════════════════════════════════════ */}
-      <section className="bg-sn-ground border-b border-sn-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <SectionHeader title="Browse by Program" action={<Link href="/programs" className="hidden sm:block text-sm font-bold font-nunito text-sn-primary hover:text-sn-primary-hover">All programs</Link>} className="mb-8" />
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
-            {FACULTIES.map((faculty, index) => {
-              const Icon = FACULTY_ICONS[faculty.slug] ?? Monitor
-              const href = faculty.slug === 'plus-two' ? '/colleges?level=%2B2' : `/programs?faculty=${faculty.slug}`
-              return (
-                <Link key={faculty.slug} href={href} className="group flex flex-col items-center gap-3 rounded-sn-card border border-sn-border bg-sn-surface p-5 text-center shadow-sn-card transition hover:shadow-sn-float">
-                  <IconTile icon={Icon} tint={FACULTY_TINTS[index % FACULTY_TINTS.length]} />
-                  <span className="text-sm font-bold font-nunito leading-tight text-sn-ink group-hover:text-sn-primary">{faculty.name}</span>
-                </Link>
-              )
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════════════════════
-          BROWSE BY UNIVERSITY
-      ════════════════════════════════════════════════════════ */}
-      <section className="bg-sn-surface border-b border-sn-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <SectionHeader title="Browse by University" action={<Link href="/colleges" className="hidden sm:block text-sm font-bold font-nunito text-sn-primary hover:text-sn-primary-hover">All colleges</Link>} className="mb-8" />
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            {UNIVERSITY_SHOWCASE.map((u, index) => {
-              const count = universityCounts[u.short] ?? 0
-              return (
-                <Link key={u.short} href={`/colleges?affiliation=${encodeURIComponent(u.affiliation)}`} className="group flex flex-col gap-3 rounded-sn-card border border-sn-border bg-sn-surface p-5 shadow-sn-card transition hover:shadow-sn-float">
-                  <span className={`flex h-11 w-11 items-center justify-center rounded-sn-control font-baloo text-lg font-bold text-sn-ink ${['bg-sn-tint-peach', 'bg-sn-tint-mint', 'bg-sn-tint-butter', 'bg-sn-tint-lilac'][index % 4]}`}>{u.short}</span>
-                  <div>
-                    <p className="text-sm font-bold font-nunito leading-tight text-sn-ink">{u.label}</p>
-                    {count > 0 && <p className="text-xs font-nunito text-sn-ink-muted mt-1">{count} college{count !== 1 ? 's' : ''}</p>}
-                  </div>
-                  <span className="text-xs font-bold font-nunito text-sn-primary">Browse colleges</span>
-                </Link>
-              )
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════════════════════
-          PROMO CARDS
-      ════════════════════════════════════════════════════════ */}
-      <section className="bg-sn-ground border-b border-sn-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <section className={`border-b border-sn-border bg-sn-surface-alt ${SECTION_PAD}`}>
+        <div className={CONTAINER}>
+          <SectionHeader
+            title="What do you need today?"
+            action={<Link href="/search" className="text-sm font-bold font-nunito text-sn-primary hover:text-sn-primary-hover">Search everything →</Link>}
+          />
+          <div className="mt-8 lg:mt-10 grid grid-cols-2 gap-4 sm:grid-cols-4 lg:gap-6">
             {[
-              { href: '/news', title: 'Education News', text: "Latest from Nepal's education sector", Icon: Newspaper, tint: 'peach' as const },
-              { href: '/scholarships', title: 'Scholarships', text: 'Find funding for your education', Icon: Award, tint: 'mint' as const },
-              { href: '/compare', title: 'Compare Colleges', text: 'Side-by-side college comparison', Icon: Building2, tint: 'lilac' as const },
-            ].map(({ href, title, text, Icon, tint }) => (
-              <Link key={href} href={href} className="group flex items-center gap-4 rounded-sn-card border border-sn-border bg-sn-surface p-5 shadow-sn-card transition hover:shadow-sn-float">
-                <IconTile icon={Icon} tint={tint} />
-                <div className="min-w-0 flex-1">
-                  <h3 className="font-bold font-nunito text-sn-ink text-sm">{title}</h3>
-                  <p className="text-xs font-nunito text-sn-ink-muted mt-0.5 line-clamp-1">{text}</p>
-                </div>
-                <ArrowRight className="h-4 w-4 flex-shrink-0 text-sn-ink-muted transition-colors group-hover:text-sn-primary" aria-hidden="true" />
+              { href: '/results', label: 'Check results', text: 'TU, KU, NEB & more', Icon: FileText, tint: 'peach' as const },
+              { href: '/admissions?deadline=open', label: 'Admissions', text: 'Open & upcoming', Icon: CalendarCheck2, tint: 'mint' as const },
+              { href: '/schools', label: 'Find a school', text: 'ECD to Grade 10', Icon: School, tint: 'butter' as const },
+              { href: '/colleges', label: 'Find a college', text: '+2 and higher', Icon: GraduationCap, tint: 'lilac' as const },
+              { href: '/scholarships', label: 'Scholarships', text: 'Funding options', Icon: Award, tint: 'peach' as const },
+              { href: '/entrance-exams', label: 'Entrance exams', text: 'Dates & eligibility', Icon: CalendarClock, tint: 'mint' as const },
+              { href: '/study-resources', label: 'Study resources', text: 'Syllabus & questions', Icon: BookOpen, tint: 'butter' as const },
+              { href: '/notices', label: 'Latest notices', text: 'Official updates', Icon: Bell, tint: 'lilac' as const },
+            ].map(({ href, label, text, Icon, tint }) => (
+              <Link key={href} href={href} className="group rounded-sn-card border border-sn-border bg-sn-surface p-5 shadow-sn-card transition hover:shadow-sn-float">
+                <IconTile icon={Icon} tint={tint} size={36} />
+                <p className="mt-3 text-sm font-bold font-nunito text-sn-ink">{label}</p>
+                <p className="mt-1 text-xs font-nunito text-sn-ink-muted">{text}</p>
               </Link>
             ))}
           </div>
@@ -465,15 +319,144 @@ export default async function HomePage() {
       </section>
 
       {/* ════════════════════════════════════════════════════════
-          APPLICATION CHECK
+          4. BROWSE — program and university entry points, merged
+          into one section with two sub-groups (24-32px apart)
+          instead of two full-rhythm sections.
       ════════════════════════════════════════════════════════ */}
-      <section className="bg-sn-ink py-20 text-center">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="font-baloo font-extrabold text-white text-3xl sm:text-4xl mb-2" style={{ letterSpacing: '-0.02em' }}>Check the current notice before you pay.</p>
-          <p className="text-white/60 font-nunito text-sm mb-8">Fees, seats and deadlines can change. Each college profile shows its source and last-checked date when available.</p>
+      <section className={`border-b border-sn-border bg-sn-ground ${SECTION_PAD}`}>
+        <div className={CONTAINER}>
+          <SectionHeader title="Browse by program or university" />
+
+          <div className="mt-8 lg:mt-10">
+            <div className="flex items-end justify-between gap-4">
+              <h3 className="font-baloo text-lg font-bold text-sn-ink">By program</h3>
+              <Link href="/programs" className="text-sm font-bold font-nunito text-sn-primary hover:text-sn-primary-hover">All programs</Link>
+            </div>
+            <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-8 lg:gap-6">
+              {FACULTIES.map((faculty, index) => {
+                const Icon = FACULTY_ICONS[faculty.slug] ?? Monitor
+                const href = faculty.slug === 'plus-two' ? '/colleges?level=%2B2' : `/programs?faculty=${faculty.slug}`
+                return (
+                  <Link key={faculty.slug} href={href} className="group flex flex-col items-center gap-3 rounded-sn-card border border-sn-border bg-sn-surface p-5 text-center shadow-sn-card transition hover:shadow-sn-float">
+                    <IconTile icon={Icon} tint={FACULTY_TINTS[index % FACULTY_TINTS.length]} />
+                    <span className="text-sm font-bold font-nunito leading-tight text-sn-ink group-hover:text-sn-primary">{faculty.name}</span>
+                  </Link>
+                )
+              })}
+            </div>
+          </div>
+
+          <div className="mt-8 lg:mt-10">
+            <div className="flex items-end justify-between gap-4">
+              <h3 className="font-baloo text-lg font-bold text-sn-ink">By university</h3>
+              <Link href="/colleges" className="text-sm font-bold font-nunito text-sn-primary hover:text-sn-primary-hover">All colleges</Link>
+            </div>
+            <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4 lg:gap-6">
+              {UNIVERSITY_SHOWCASE.map((u, index) => {
+                const count = universityCounts[u.short] ?? 0
+                return (
+                  <Link key={u.short} href={`/colleges?affiliation=${encodeURIComponent(u.affiliation)}`} className="group flex flex-col gap-3 rounded-sn-card border border-sn-border bg-sn-surface p-5 shadow-sn-card transition hover:shadow-sn-float">
+                    <span className={`flex h-11 w-11 items-center justify-center rounded-sn-control font-baloo text-lg font-bold text-sn-ink ${['bg-sn-tint-peach', 'bg-sn-tint-mint', 'bg-sn-tint-butter', 'bg-sn-tint-lilac'][index % 4]}`}>{u.short}</span>
+                    <div>
+                      <p className="text-sm font-bold font-nunito leading-tight text-sn-ink">{u.label}</p>
+                      {count > 0 && <p className="text-xs font-nunito text-sn-ink-muted mt-1">{count} college{count !== 1 ? 's' : ''}</p>}
+                    </div>
+                  </Link>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════
+          5. SEE IT IN ACTION — proof: open admissions, live results
+          and notices, featured colleges. Sub-groups only render when
+          they have real content.
+      ════════════════════════════════════════════════════════ */}
+      {hasProofContent && (
+        <section className={`border-b border-sn-border bg-sn-surface ${SECTION_PAD}`}>
+          <div className={CONTAINER}>
+            <SectionHeader title="See it in action" description="A sample of what's live on the platform right now — sourced and dated, not a static list." />
+
+            {admissions.length > 0 && (
+              <div className="mt-8 lg:mt-10">
+                <div className="flex items-end justify-between gap-4">
+                  <h3 className="font-baloo text-lg font-bold text-sn-ink">Admissions open now</h3>
+                  <Link href="/admissions" className="text-sm font-bold font-nunito text-sn-primary hover:text-sn-primary-hover">All admissions</Link>
+                </div>
+                <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">{admissions.map((admission) => <AdmissionCard key={admission.id} admission={admission} />)}</div>
+              </div>
+            )}
+
+            {(results.length > 0 || notices.length > 0) && (
+              <div className="mt-8 lg:mt-10">
+                <h3 className="font-baloo text-lg font-bold text-sn-ink">Latest results &amp; notices</h3>
+                <div className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2 lg:gap-6">
+                  <Card className="!p-5">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-2">
+                        <IconTile icon={FileText} tint="peach" size={28} />
+                        <span className="text-sm font-bold font-nunito text-sn-ink">Latest Results</span>
+                      </div>
+                      <Link href="/results" className="text-sm font-bold font-nunito text-sn-primary hover:text-sn-primary-hover">View all</Link>
+                    </div>
+                    {results.length > 0 ? (
+                      <div>{results.slice(0, 4).map((r) => <ResultCard key={r.id} result={r} compact />)}</div>
+                    ) : (
+                      <p className="text-sm font-nunito text-sn-ink-muted py-6 text-center">No results yet</p>
+                    )}
+                  </Card>
+
+                  <Card className="!p-5">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-2">
+                        <IconTile icon={Bell} tint="butter" size={28} />
+                        <span className="text-sm font-bold font-nunito text-sn-ink">University Notices</span>
+                      </div>
+                      <Link href="/notices" className="text-sm font-bold font-nunito text-sn-primary hover:text-sn-primary-hover">View all</Link>
+                    </div>
+                    {notices.length > 0 ? (
+                      <div>{notices.slice(0, 4).map((n) => <NoticeCard key={n.id} notice={n} compact />)}</div>
+                    ) : (
+                      <p className="text-sm font-nunito text-sn-ink-muted py-6 text-center">No notices yet</p>
+                    )}
+                  </Card>
+                </div>
+              </div>
+            )}
+
+            {featuredColleges.length > 0 && (
+              <div className="mt-8 lg:mt-10">
+                <div className="flex items-end justify-between gap-4">
+                  <h3 className="font-baloo text-lg font-bold text-sn-ink">Featured colleges</h3>
+                  <Link href="/colleges" className="text-sm font-bold font-nunito text-sn-primary hover:text-sn-primary-hover">View all</Link>
+                </div>
+                <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+                  {featuredColleges.slice(0, 6).map((college) => <FeaturedCollegeCard key={college.id} college={college} />)}
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* ════════════════════════════════════════════════════════
+          6. GET STARTED — final CTA + email capture, one section
+      ════════════════════════════════════════════════════════ */}
+      <section className={`bg-sn-ink text-center ${SECTION_PAD}`}>
+        <div className={CONTAINER}>
+          <p className="font-baloo font-extrabold text-white text-3xl sm:text-4xl mb-3" style={{ letterSpacing: '-0.02em' }}>Check the current notice before you pay.</p>
+          <p className="mx-auto mb-8 max-w-2xl text-white/60 font-nunito text-sm">Fees, seats and deadlines can change. Each college profile shows its source and last-checked date when available.</p>
           <div className="flex flex-wrap justify-center gap-3">
             <Button.Link href="/colleges" variant="primary">Browse colleges</Button.Link>
             <Link href="/results" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-sn-control border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-bold font-nunito text-white transition-colors hover:bg-white/15">Check Results</Link>
+          </div>
+
+          <div className="mx-auto mt-12 max-w-md border-t border-white/10 pt-10 lg:mt-16 lg:pt-12">
+            <p className="font-bold font-nunito text-sm text-white flex items-center gap-2 justify-center"><Bell className="w-4 h-4" aria-hidden="true" />Get result alerts in your inbox</p>
+            <p className="text-white/60 text-xs font-nunito mt-1 mb-5">Email updates when a new result or notice is published</p>
+            <EmailSubscribe />
           </div>
         </div>
       </section>

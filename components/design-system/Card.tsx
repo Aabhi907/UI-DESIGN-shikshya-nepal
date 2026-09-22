@@ -19,7 +19,7 @@ export default function Card({
   return (
     <Tag
       className={cn(
-        'rounded-sn-card border border-sn-border p-5 shadow-sn-card',
+        'rounded-sn-card border border-sn-border p-5 shadow-sn-card lg:p-6',
         tone === 'alt' ? 'bg-sn-surface-alt' : 'bg-sn-surface',
         interactive && 'transition-shadow duration-150 hover:shadow-sn-float',
         className,

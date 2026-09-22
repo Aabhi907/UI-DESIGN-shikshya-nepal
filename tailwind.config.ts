@@ -108,6 +108,16 @@ const config: Config = {
         'sn-control': '13px',
         'sn-pill':    '999px',
       },
+      spacing: {
+        // The brief's 4px-scale (4,8,12,16,20,24,32,40,48,64,80,96) already
+        // matches Tailwind's native keys 1,2,3,4,5,6,8,10,12,16,20,24 — this
+        // is the one value outside that default scale.
+        '30': '120px',
+      },
+      maxWidth: {
+        // ~1200px page container, per the spacing-system brief.
+        'sn': '1200px',
+      },
       animation: {
         'fade-in':    'fadeIn 0.2s ease-out',
         'slide-down': 'slideDown 0.2s ease-out',
