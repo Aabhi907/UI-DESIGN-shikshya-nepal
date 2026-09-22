@@ -1,5 +1,6 @@
 import { Resend } from 'resend'
 import { createAdminSupabaseClient } from '@/lib/supabase'
+import { SITE_URL as BASE_URL } from '@/lib/seo'
 
 export type ResultNotification = {
   title: string
@@ -8,7 +9,6 @@ export type ResultNotification = {
 }
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://sikshyanepal.vercel.app'
 const FROM_EMAIL = 'SikshyaNepal <onboarding@resend.dev>'
 
 function escapeHtml(value: string) {

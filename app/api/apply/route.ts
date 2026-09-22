@@ -2,11 +2,11 @@ import { NextResponse } from 'next/server'
 import { createAdminSupabaseClient } from '@/lib/supabase'
 import { Resend } from 'resend'
 import { collegeDisplayPrograms } from '@/lib/college-display'
+import { SITE_URL } from '@/lib/seo'
 
 const resend      = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
 const FROM        = 'SikshyaNepal <onboarding@resend.dev>'
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL?.trim() || null
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://sikshyanepal.vercel.app'
 
 const clean = (value: unknown, max: number) => typeof value === 'string' ? value.trim().slice(0, max) : ''
 const escapeHtml = (value: string) => value.replace(/[&<>'"]/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[character]!)
