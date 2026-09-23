@@ -9,6 +9,7 @@
     "lint": "next lint",
     "check:links": "node scripts/check-links.mjs",
     "check:slop": "node scripts/check-ai-slop.mjs",
+    "test:ingestion-atomicity": "tsx scripts/test-ingestion-approval-atomicity.ts",
     "schools:extract": "node scripts/extract-cehrd-schools.mjs",
     "schools:import": "node scripts/import-cehrd-schools.mjs"
   },
@@ -30,6 +31,7 @@
     "eslint-config-next": "14.2.35",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
+    "tsx": "^4.23.15",
     "typescript": "^5"
   }
 }
