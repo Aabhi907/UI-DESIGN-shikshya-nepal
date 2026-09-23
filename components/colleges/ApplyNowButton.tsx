@@ -64,11 +64,11 @@ export default function ApplyNowButton({
   if (applied) {
     return (
       <div className={variant === 'card' ? '' : 'mt-4'}>
-        <div className={`flex items-center justify-center gap-2 border border-green-200 bg-green-50 text-sm font-semibold text-green-700 ${variant === 'card' ? 'min-h-11 rounded-lg px-3' : 'w-full rounded-xl px-4 py-3'}`}>
+        <div className={`flex items-center justify-center gap-2 border border-sn-verified/40 bg-sn-verified-bg text-sm font-bold font-nunito text-sn-verified-ink ${variant === 'card' ? 'min-h-11 rounded-sn-control px-3' : 'w-full rounded-sn-control px-4 py-3'}`}>
           <CheckCircle className="w-4 h-4" />
           Enquiry sent
         </div>
-        {variant !== 'card' && <p className="mt-1.5 text-center text-xs text-gray-400">Saved in SikshyaNepal. Response time depends on the college.</p>}
+        {variant !== 'card' && <p className="mt-1.5 text-center text-xs font-nunito text-sn-ink-muted">Saved in SikshyaNepal. Response time depends on the college.</p>}
       </div>
     )
   }
@@ -79,8 +79,8 @@ export default function ApplyNowButton({
       <button
         onClick={() => setOpen(true)}
         className={variant === 'card'
-          ? 'inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-primary px-3 text-sm font-semibold text-primary transition-colors hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-primary/25'
-          : 'mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-[#1847c4] px-4 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#1340b0]'}
+          ? 'inline-flex min-h-11 items-center justify-center gap-2 rounded-sn-control border border-sn-primary px-3 text-sm font-bold font-nunito text-sn-primary transition-colors hover:bg-sn-primary-bg focus:outline-none focus:ring-2 focus:ring-sn-primary/25'
+          : 'mt-4 flex w-full items-center justify-center gap-2 rounded-sn-control bg-sn-primary px-4 py-3 text-sm font-bold font-nunito text-white shadow-sn-button transition-colors hover:bg-sn-primary-hover'}
       >
         <Send className="w-4 h-4" />
         {variant === 'card' ? 'Apply now' : 'Request admission information'}
