@@ -7,6 +7,9 @@ import { ArrowLeft, Calendar, User, Download, ExternalLink, ShieldCheck, Buildin
 import { formatDate } from '@/lib/utils'
 import type { News } from '@/types'
 import PdfViewer from '@/components/results/PdfViewer'
+import Card from '@/components/design-system/Card'
+import SectionHeader from '@/components/design-system/SectionHeader'
+import EvidenceChip from '@/components/design-system/EvidenceChip'
 import JsonLd from '@/components/seo/JsonLd'
 import { absoluteUrl, breadcrumbSchema, SITE_URL } from '@/lib/seo'
 
@@ -44,26 +47,24 @@ export default async function NewsDetailPage({ params }: { params: { slug: strin
   ] }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main className="mx-auto max-w-4xl px-5 py-10 font-nunito sm:px-8 lg:py-16">
       <JsonLd data={jsonLd} />
       <Link
         href="/news"
-        className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-blue-600 mb-6 transition-colors"
+        className="inline-flex min-h-11 items-center gap-2 text-sm text-sn-ink-soft hover:text-sn-primary-hover mb-6 transition-colors"
       >
         <ArrowLeft className="w-4 h-4" /> Back to News
       </Link>
 
-      <article className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm mb-6">
+      <Card as="article" className="mb-6 overflow-hidden p-0 lg:p-0">
         {news.image_url && (
           <div className="relative h-64 sm:h-80">
             <Image src={news.image_url} alt={news.title} fill className="object-cover" />
           </div>
         )}
         <div className="p-6 sm:p-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 leading-tight">
-            {news.title}
-          </h1>
-          <div className="flex items-center gap-4 text-sm text-gray-500 mb-6 pb-6 border-b border-gray-100">
+          <SectionHeader as="h1" title={news.title} className="mb-4" />
+          <div className="flex items-center gap-4 text-sm text-sn-ink-soft mb-6 pb-6 border-b border-sn-border">
             {news.published_date && <span className="flex items-center gap-1.5">
               <Calendar className="w-4 h-4" aria-hidden="true" />
               <time dateTime={news.published_date}>{formatDate(news.published_date)}</time>
@@ -76,7 +77,7 @@ export default async function NewsDetailPage({ params }: { params: { slug: strin
               <a
                 href={news.news_pdf_url!}
                 download
-                className="ml-auto inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-600 text-white text-xs font-medium rounded-lg hover:bg-green-700 transition-colors"
+                className="ml-auto inline-flex min-h-11 items-center gap-1.5 px-3 py-1.5 bg-sn-primary-hover text-white text-xs font-medium rounded-sn-control hover:bg-sn-primary-hover transition-colors"
               >
                 <Download className="w-3.5 h-3.5" />
                 Download PDF
@@ -85,24 +86,29 @@ export default async function NewsDetailPage({ params }: { params: { slug: strin
           </div>
           {news.content && (
             <div className="prose prose-gray max-w-none">
-              <p className="text-gray-600 leading-relaxed whitespace-pre-line text-base">
+              <p className="text-sn-ink-soft leading-relaxed whitespace-pre-line text-base">
                 {news.content}
               </p>
             </div>
           )}
-          {news.college_id && <p className="mt-6 flex items-center gap-2 text-sm text-gray-600"><Building2 className="h-4 w-4 text-primary" />This update is linked to a college profile in the SikshyaNepal directory.</p>}
-          {news.disclosure && <p className="mt-4 border-l-2 border-gray-300 pl-3 text-xs leading-5 text-gray-600">{news.disclosure}</p>}
-          {(news.source_url || news.last_verified_at) && <section className="mt-7 border-t border-gray-200 pt-5 text-sm" aria-label="Source information"><p className="flex items-center gap-2 font-semibold text-ink"><ShieldCheck className="h-4 w-4 text-primary" aria-hidden="true" />{news.source_url ? 'Source summary' : 'Publication information'}</p>{news.source_url && <p className="mt-2 max-w-2xl text-gray-600">Summary based on the linked official announcement. Check the source for final details.</p>}{news.last_verified_at && <p className="mt-2 text-gray-600">Checked <time dateTime={news.last_verified_at}>{formatDate(news.last_verified_at)}</time></p>}{news.source_url && <a href={news.source_url} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex min-h-11 items-center gap-1.5 font-semibold text-primary">{news.source_name || 'Open official source'} <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" /></a>}</section>}
+          {news.college_id && <p className="mt-6 flex items-center gap-2 text-sm text-sn-ink-soft"><Building2 className="h-4 w-4 text-sn-primary-hover" />This update is linked to a college profile in the SikshyaNepal directory.</p>}
+          {news.disclosure && <p className="mt-4 border-l-2 border-sn-border-strong pl-3 text-xs leading-5 text-sn-ink-soft">{news.disclosure}</p>}
+          {(news.source_url || news.last_verified_at) && <section className="mt-7 border-t border-sn-border pt-5 text-sm" aria-label="Source information"><p className="flex items-center gap-2 font-semibold text-sn-ink"><ShieldCheck className="h-4 w-4 text-sn-primary-hover" aria-hidden="true" />{news.source_url ? 'Source summary' : 'Publication information'}</p>{news.source_url && <p className="mt-2 max-w-2xl text-sn-ink-soft">Summary based on the linked official announcement. Check the source for final details.</p>}{news.last_verified_at && <p className="mt-2 text-sn-ink-soft">Checked <time dateTime={news.last_verified_at}>{formatDate(news.last_verified_at)}</time></p>}{news.source_url && <a href={news.source_url} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex min-h-11 items-center gap-1.5 font-semibold text-sn-primary-hover">{news.source_name || 'Open official source'} <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" /></a>}</section>}
+          {news.source_url && <div className="mt-4">
+            {news.last_verified_at
+              ? <EvidenceChip state="verified" className="!text-sn-ink-soft" source={news.source_name || 'Linked source'} checkedDate={news.last_verified_at} />
+              : <EvidenceChip state="confirm" label="Confirm details with linked source" />}
+          </div>}
         </div>
-      </article>
+      </Card>
 
       {/* ── Embedded PDF (official circular attached to news) ─────────── */}
       {hasPdf && (
         <div className="mb-6">
-          <h2 className="text-base font-semibold text-gray-900 mb-3">Attached Document</h2>
+          <h2 className="text-base font-semibold text-sn-ink mb-3">Attached Document</h2>
           <PdfViewer pdfUrl={news.news_pdf_url!} title={news.title} />
         </div>
       )}
-    </div>
+    </main>
   )
 }
