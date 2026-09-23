@@ -7,6 +7,10 @@ import { Bell, Calendar, ExternalLink, ArrowLeft, Globe, Download, ZoomIn } from
 import { formatDate } from '@/lib/utils'
 import type { Notice } from '@/types'
 import PdfViewer from '@/components/results/PdfViewer'
+import Card from '@/components/design-system/Card'
+import Pill from '@/components/design-system/Pill'
+import IconTile from '@/components/design-system/IconTile'
+import EvidenceChip from '@/components/design-system/EvidenceChip'
 
 export const revalidate = 0
 
@@ -51,34 +55,28 @@ export default async function NoticeDetailPage({ params }: { params: { slug: str
   const uniSlug     = notice.university?.short_name
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main className="mx-auto max-w-4xl px-5 py-10 font-nunito sm:px-8 lg:py-16">
       <Link
         href="/notices"
-        className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-blue-600 mb-6 transition-colors"
+        className="inline-flex min-h-11 items-center gap-2 text-sm text-sn-ink-soft hover:text-sn-primary-hover mb-6 transition-colors"
       >
         <ArrowLeft className="w-4 h-4" /> Back to Notices
       </Link>
 
       {/* ── Header card ───────────────────────────────────────────────── */}
-      <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm mb-6">
-        <div className="bg-[#9a302c] p-8 text-white">
+      <Card className="mb-6 overflow-hidden p-0 lg:p-0">
+        <div className="border-b border-sn-border bg-sn-surface-alt p-6 sm:p-8">
           <div className="flex items-start gap-4">
-            <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
-              <Bell className="w-6 h-6 text-white" />
-            </div>
+            <IconTile icon={Bell} tint="peach" size={48} />
             <div className="min-w-0">
-              <p className="text-sm text-orange-100 mb-1">{notice.university?.name}</p>
-              <h1 className="text-xl font-bold mb-2">{notice.title}</h1>
+              <p className="mb-1 text-sm text-sn-ink-soft">{notice.university?.name}</p>
+              <h1 className="mb-2 font-baloo text-2xl font-extrabold leading-tight text-sn-ink sm:text-3xl">{notice.title}</h1>
               <div className="flex flex-wrap items-center gap-2">
                 {hasPdf && (
-                  <span className="bg-green-500/80 text-white text-xs px-3 py-1 rounded-full font-semibold">
-                    PDF Available
-                  </span>
+                  <Pill tone="neutral">PDF available</Pill>
                 )}
                 {hasImage && (
-                  <span className="bg-blue-400/80 text-white text-xs px-3 py-1 rounded-full font-semibold">
-                    Image Available
-                  </span>
+                  <Pill tone="neutral">Image available</Pill>
                 )}
               </div>
             </div>
@@ -86,14 +84,15 @@ export default async function NoticeDetailPage({ params }: { params: { slug: str
         </div>
 
         <div className="p-6">
-          {notice.published_date && <div className="flex items-center gap-2 text-sm text-gray-500 mb-6">
+          {notice.published_date && <div className="flex items-center gap-2 text-sm text-sn-ink-soft mb-6">
             <Calendar className="w-4 h-4" aria-hidden="true" />
             <time dateTime={notice.published_date}>Published {formatDate(notice.published_date)}</time>
           </div>}
+          <div className="mb-6">{notice.notice_url ? <EvidenceChip state="confirm" label="Confirm notice details on official source" /> : <EvidenceChip state="limited" className="!text-sn-ink-soft" label="Official source not recorded" />}</div>
 
           {notice.content && (
             <div className="prose prose-gray max-w-none mb-6">
-              <p className="text-gray-600 leading-relaxed whitespace-pre-line">{notice.content}</p>
+              <p className="text-sn-ink-soft leading-relaxed whitespace-pre-line">{notice.content}</p>
             </div>
           )}
 
@@ -104,7 +103,7 @@ export default async function NoticeDetailPage({ params }: { params: { slug: str
                 <a
                   href={notice.notice_pdf_url!}
                   download
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white font-medium rounded-xl hover:bg-green-700 transition-colors"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-sn-primary-hover text-white font-medium rounded-sn-card hover:bg-sn-primary-hover transition-colors"
                 >
                   <Download className="w-5 h-5" />
                   Download PDF
@@ -115,7 +114,7 @@ export default async function NoticeDetailPage({ params }: { params: { slug: str
                   href={notice.notice_pdf_url!}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition-colors"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-sn-primary-hover text-white font-medium rounded-sn-card hover:bg-sn-primary-hover transition-colors"
                 >
                   <ZoomIn className="w-5 h-5" />
                   View Full Size
@@ -126,10 +125,10 @@ export default async function NoticeDetailPage({ params }: { params: { slug: str
                   href={notice.notice_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`inline-flex items-center gap-2 px-6 py-3 font-medium rounded-xl transition-colors ${
+                  className={`inline-flex items-center gap-2 px-6 py-3 font-medium rounded-sn-card transition-colors ${
                     hasPdf || hasImage
-                      ? 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-50'
-                      : 'bg-orange-500 text-white hover:bg-orange-600'
+                      ? 'bg-sn-surface border border-sn-border-strong text-sn-ink-soft hover:bg-sn-surface-alt'
+                      : 'bg-sn-primary-hover text-white hover:bg-sn-primary-hover'
                   }`}
                 >
                   <ExternalLink className="w-5 h-5" />
@@ -141,7 +140,7 @@ export default async function NoticeDetailPage({ params }: { params: { slug: str
                   href={UNIVERSITY_HOMEPAGES[uniSlug]}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-white border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-50 transition-colors"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-sn-surface border border-sn-border-strong text-sn-ink-soft font-medium rounded-sn-card hover:bg-sn-surface-alt transition-colors"
                 >
                   <Globe className="w-5 h-5" />
                   {uniSlug} Official Site
@@ -149,18 +148,18 @@ export default async function NoticeDetailPage({ params }: { params: { slug: str
               )}
             </div>
             {(notice.notice_url || hasPdf || hasImage) && (
-              <p className="text-xs text-gray-400">
+              <p className="text-xs text-sn-ink-soft">
                 External links may occasionally be unavailable. Use the official site link if needed.
               </p>
             )}
           </div>
         </div>
-      </div>
+      </Card>
 
       {/* ── Embedded PDF viewer ───────────────────────────────────────── */}
       {hasPdf && (
         <div className="mb-6">
-          <h2 className="text-base font-semibold text-gray-900 mb-3">Notice PDF</h2>
+          <h2 className="text-base font-semibold text-sn-ink mb-3">Notice PDF</h2>
           <PdfViewer pdfUrl={notice.notice_pdf_url!} title={notice.title} />
         </div>
       )}
@@ -168,8 +167,8 @@ export default async function NoticeDetailPage({ params }: { params: { slug: str
       {/* ── Inline image viewer ───────────────────────────────────────── */}
       {hasImage && (
         <div className="mb-6">
-          <h2 className="text-base font-semibold text-gray-900 mb-3">Notice Image</h2>
-          <div className="rounded-xl border border-gray-200 overflow-hidden bg-gray-50">
+          <h2 className="text-base font-semibold text-sn-ink mb-3">Notice Image</h2>
+          <div className="rounded-sn-card border border-sn-border overflow-hidden bg-sn-surface-alt">
             <div className="relative w-full" style={{ minHeight: '400px' }}>
               <NextImage
                 src={notice.notice_pdf_url!}
@@ -180,11 +179,11 @@ export default async function NoticeDetailPage({ params }: { params: { slug: str
                 unoptimized
               />
             </div>
-            <div className="flex justify-end gap-2 px-4 py-3 bg-gray-50 border-t border-gray-200">
+            <div className="flex justify-end gap-2 px-4 py-3 bg-sn-surface-alt border-t border-sn-border">
               <a
                 href={notice.notice_pdf_url!}
                 download
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-200 text-xs font-medium text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-sn-surface border border-sn-border text-xs font-medium text-sn-ink-soft rounded-sn-control hover:bg-sn-surface-alt transition-colors"
               >
                 <Download className="w-3.5 h-3.5" />
                 Download
@@ -193,7 +192,7 @@ export default async function NoticeDetailPage({ params }: { params: { slug: str
                 href={notice.notice_pdf_url!}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-200 text-xs font-medium text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-sn-surface border border-sn-border text-xs font-medium text-sn-ink-soft rounded-sn-control hover:bg-sn-surface-alt transition-colors"
               >
                 <ZoomIn className="w-3.5 h-3.5" />
                 Full size
@@ -202,6 +201,6 @@ export default async function NoticeDetailPage({ params }: { params: { slug: str
           </div>
         </div>
       )}
-    </div>
+    </main>
   )
 }

@@ -25,9 +25,12 @@ const AUTH_PAGES = ['/account/login', '/account/register', '/account/signup']
 // route, converted or not.
 const CONVERTED_EXACT = new Set([
   '/', '/colleges', '/colleges/nearby', '/programs', '/tools/program-finder',
+  '/scholarships', '/opportunities', '/news', '/notices', '/results',
+  '/deadlines', '/entrance-exams', '/study-resources',
 ])
 const CONVERTED_PREFIXES = [
   '/colleges/in/', '/colleges/program/', '/colleges/province/',
+  '/news/', '/notices/', '/results/',
 ]
 
 function isConvertedRoute(pathname: string) {

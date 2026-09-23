@@ -2,9 +2,13 @@ import { Metadata } from 'next'
 import { Fragment } from 'react'
 import Link from 'next/link'
 import { createServerSupabaseClient } from '@/lib/supabase'
-import ResultCard from '@/components/results/ResultCard'
-import SearchBar from '@/components/ui/SearchBar'
+import SearchField from '@/components/design-system/SearchField'
+import Card from '@/components/design-system/Card'
+import Pill from '@/components/design-system/Pill'
+import SectionHeader from '@/components/design-system/SectionHeader'
+import Button from '@/components/design-system/Button'
 import type { Result } from '@/types'
+import { formatDateShort } from '@/lib/utils'
 import { FileText, RefreshCcw } from 'lucide-react'
 import AdUnit from '@/components/ads/AdUnit'
 
@@ -69,27 +73,23 @@ export default async function ResultsPage({
   }
 
   return (
-    <div className="bg-[#f8f7f3] min-h-screen">
+    <div className="bg-sn-ground min-h-screen">
 
       {/* ── Page header ─────────────────────────────────────── */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-8">
-          <p className="page-kicker mb-3">Exam results</p>
-          <h1 className="page-title">University results</h1>
-          <p className="page-lede mb-6 mt-3">
-            Latest exam results from universities and boards in Nepal
-          </p>
-          <SearchBar placeholder="Search results by title or program..." redirectTo="/results" />
+      <div className="bg-sn-surface border-b border-sn-border">
+        <div className="max-w-sn mx-auto px-5 sm:px-8 lg:px-12 pt-10 pb-8">
+          <SectionHeader as="h1" eyebrow="Exam results" title="University results" description="Latest exam results from universities and boards in Nepal" className="mb-6" />
+          <SearchField className="[&_button[type=submit]]:!bg-sn-primary-hover" placeholder="Search results by title or program..." redirectTo="/results" initialValue={searchParams.q} />
         </div>
 
         {/* University chips */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-5">
+        <div className="max-w-sn mx-auto px-5 sm:px-8 lg:px-12 pb-5">
           <div className="flex flex-wrap gap-2">
-            <Link href={filterUrl('university', '')} className={!searchParams.university ? 'chip-active' : 'chip-inactive'}>
+            <Link href={filterUrl('university', '')} className={!searchParams.university ? 'inline-flex min-h-11 items-center rounded-sn-pill border border-sn-ink bg-sn-ink px-4 py-2 text-sm font-bold text-white focus-visible:outline-sn-primary' : 'inline-flex min-h-11 items-center rounded-sn-pill border border-sn-border bg-sn-surface px-4 py-2 text-sm font-bold text-sn-ink-soft hover:border-sn-primary hover:text-sn-primary-hover focus-visible:outline-sn-primary'}>
               All
             </Link>
             {UNIVERSITIES.map((u) => (
-              <Link key={u} href={filterUrl('university', u)} className={searchParams.university === u ? 'chip-active' : 'chip-inactive'}>
+              <Link key={u} href={filterUrl('university', u)} className={searchParams.university === u ? 'inline-flex min-h-11 items-center rounded-sn-pill border border-sn-ink bg-sn-ink px-4 py-2 text-sm font-bold text-white focus-visible:outline-sn-primary' : 'inline-flex min-h-11 items-center rounded-sn-pill border border-sn-border bg-sn-surface px-4 py-2 text-sm font-bold text-sn-ink-soft hover:border-sn-primary hover:text-sn-primary-hover focus-visible:outline-sn-primary'}>
                 {u}
               </Link>
             ))}
@@ -98,58 +98,71 @@ export default async function ResultsPage({
       </div>
 
       {/* ── Program chips + list ─────────────────────────────── */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="max-w-sn mx-auto px-5 sm:px-8 lg:px-12 py-6">
 
         {/* Program filter */}
         <div className="flex flex-wrap gap-2 mb-5">
           {PROGRAMS.map((prog) => (
-            <Link key={prog} href={filterUrl('program', prog)} className={searchParams.program === prog ? 'chip-active' : 'chip-inactive'}>
+            <Link key={prog} href={filterUrl('program', prog)} className={searchParams.program === prog ? 'inline-flex min-h-11 items-center rounded-sn-pill border border-sn-ink bg-sn-ink px-4 py-2 text-sm font-bold text-white focus-visible:outline-sn-primary' : 'inline-flex min-h-11 items-center rounded-sn-pill border border-sn-border bg-sn-surface px-4 py-2 text-sm font-bold text-sn-ink-soft hover:border-sn-primary hover:text-sn-primary-hover focus-visible:outline-sn-primary'}>
               {prog}
             </Link>
           ))}
         </div>
 
         {/* Count */}
-        <p className="text-sm text-gray-500 mb-4 font-mono">
-          <span className="font-bold text-ink">{results.length}</span>{' '}
+        <p className="text-sm text-sn-ink-soft mb-4 font-mono">
+          <span className="font-bold text-sn-ink">{results.length}</span>{' '}
           result{results.length !== 1 ? 's' : ''} found
           {searchParams.q && <> for &ldquo;{searchParams.q}&rdquo;</>}
         </p>
 
         {results.length > 0 ? (
-          <div className="space-y-2.5">
+          <div className="space-y-3">
             {results.map((result, idx) => (
               <Fragment key={result.id}>
-                <ResultCard result={result} />
+                <Card as="article" interactive className="p-0 lg:p-0">
+                  <Link href={`/results/${result.slug}`} className="block min-h-11 rounded-sn-card p-5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sn-primary">
+                    <h2 className="font-baloo text-lg font-bold leading-snug text-sn-ink">{result.title}</h2>
+                    <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-sn-ink-soft">
+                      {result.university?.short_name && <Pill tone="primary" className="!text-sn-ink-soft">{result.university.short_name}</Pill>}
+                      {result.program && <Pill tone="neutral">{result.program}</Pill>}
+                      {result.semester && <Pill tone="neutral">{result.semester}</Pill>}
+                      {result.content_type === 'pdf' && <Pill tone="neutral">PDF</Pill>}
+                      {result.content_type === 'image' && <Pill tone="neutral">Image</Pill>}
+                      {result.published_date && Date.now() - new Date(result.published_date).getTime() < 86400000 && <Pill tone="primary" className="!text-sn-ink-soft">New</Pill>}
+                      <time dateTime={result.published_date} className="ml-auto text-sn-ink-soft">{formatDateShort(result.published_date)}</time>
+                    </div>
+                  </Link>
+                </Card>
                 {idx === 4 && (
                   <AdUnit
                     key="ad-results"
                     slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_RESULTS ?? ''}
                     format="auto"
-                    className="my-1 rounded-xl border border-gray-200 bg-white min-h-[90px]"
+                    className="my-1 rounded-sn-card border border-sn-border bg-sn-surface min-h-[90px]"
                   />
                 )}
               </Fragment>
             ))}
           </div>
         ) : (
-          <div className="text-center py-20 bg-white rounded-2xl border border-gray-200">
-            <div className="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <FileText className="w-7 h-7 text-gray-300" />
+          <Card className="py-16 text-center lg:py-16">
+            <div className="w-14 h-14 bg-sn-surface-alt rounded-sn-card flex items-center justify-center mx-auto mb-4">
+              <FileText className="w-7 h-7 text-sn-ink-soft" />
             </div>
-            <h3 className="text-base font-semibold text-ink mb-2">No results found</h3>
-            <p className="text-sm text-gray-400 mb-6 max-w-xs mx-auto">
+            <h3 className="text-base font-semibold text-sn-ink mb-2">No results found</h3>
+            <p className="text-sm text-sn-ink-soft mb-6 max-w-xs mx-auto">
               {hasFilter
                 ? 'Try removing some filters or searching with different keywords.'
                 : 'New exam results will appear here as soon as they are published.'}
             </p>
             {hasFilter && (
-              <Link href="/results" className="btn-primary text-sm inline-flex">
+              <Button.Link href="/results">
                 <RefreshCcw className="w-4 h-4" />
                 Clear all filters
-              </Link>
+              </Button.Link>
             )}
-          </div>
+          </Card>
         )}
       </div>
     </div>

@@ -2,7 +2,10 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import { createServerSupabaseClient } from '@/lib/supabase'
-import SearchBar from '@/components/ui/SearchBar'
+import SearchField from '@/components/design-system/SearchField'
+import Card from '@/components/design-system/Card'
+import Pill from '@/components/design-system/Pill'
+import SectionHeader from '@/components/design-system/SectionHeader'
 import { formatDateShort } from '@/lib/utils'
 import type { News } from '@/types'
 import { Calendar, Newspaper, ArrowRight } from 'lucide-react'
@@ -18,7 +21,7 @@ export const metadata: Metadata = {
   alternates: { canonical: '/news', types: { 'application/rss+xml': '/news/feed.xml' } },
 }
 
-const CARD_COLORS = ['bg-[#183b78]', 'bg-[#31558f]', 'bg-[#496a9e]']
+const CARD_COLORS = ['bg-sn-tint-peach', 'bg-sn-tint-mint', 'bg-sn-tint-lilac']
 
 async function getNews(searchParams: { q?: string; topic?: string }) {
   const supabase = createServerSupabaseClient()
@@ -32,7 +35,7 @@ async function getNews(searchParams: { q?: string; topic?: string }) {
 function PlaceholderCover({ idx }: { idx: number }) {
   return (
     <div className={`flex h-full w-full items-end p-5 ${CARD_COLORS[idx % CARD_COLORS.length]}`}>
-      <Newspaper className="h-7 w-7 text-white/70" aria-hidden="true" />
+      <Newspaper className="h-7 w-7 text-sn-primary-hover" aria-hidden="true" />
     </div>
   )
 }
@@ -43,42 +46,36 @@ export default async function NewsPage({ searchParams }: { searchParams: { q?: s
   const rest     = newsList.slice(1)
 
   return (
-    <div className="bg-[#f8f7f3] min-h-screen">
+    <div className="bg-sn-ground min-h-screen">
 
       {/* ── Page header ─────────────────────────────────────── */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-8">
-          <h1 className="font-display font-bold text-ink text-3xl sm:text-4xl mb-2"
-              style={{ letterSpacing: '-0.025em' }}>
-            College news, admissions and student guides
-          </h1>
-          <p className="text-gray-500 text-sm mb-6">
-            College updates, source summaries and practical guides for +2 and Bachelor students.
-          </p>
-          <SearchBar placeholder="Search news..." redirectTo="/news" />
+      <div className="bg-sn-surface border-b border-sn-border">
+        <div className="max-w-sn mx-auto px-5 sm:px-8 lg:px-12 pt-10 pb-8">
+          <SectionHeader as="h1" title="College news, admissions and student guides" description="College updates, source summaries and practical guides for +2 and Bachelor students." className="mb-6" />
+          <SearchField className="[&_button[type=submit]]:!bg-sn-primary-hover" placeholder="Search news..." redirectTo="/news" initialValue={searchParams.q} />
           <nav aria-label="College news topics" className="mt-5 flex gap-2 overflow-x-auto pb-1 text-sm">
-            <Link href="/news" className={`whitespace-nowrap rounded-full border px-3 py-1.5 font-medium ${!searchParams.topic ? 'border-primary bg-primary text-white' : 'border-gray-200 bg-white text-gray-600 hover:border-primary'}`}>All</Link>
-            {Object.entries(COLLEGE_NEWS_TOPICS).map(([slug, topic]) => <Link key={slug} href={`/news/topic/${slug}`} className="whitespace-nowrap rounded-full border border-gray-200 bg-white px-3 py-1.5 font-medium text-gray-600 hover:border-primary">{topic.label}</Link>)}
+            <Link href="/news" className={`inline-flex min-h-11 items-center whitespace-nowrap rounded-sn-pill border px-4 py-2 font-medium ${!searchParams.topic ? 'border-sn-primary bg-sn-primary-hover text-white' : 'border-sn-border bg-sn-surface text-sn-ink-soft hover:border-sn-primary'}`}>All</Link>
+            {Object.entries(COLLEGE_NEWS_TOPICS).map(([slug, topic]) => <Link key={slug} href={`/news/topic/${slug}`} className="inline-flex min-h-11 items-center whitespace-nowrap rounded-sn-pill border border-sn-border bg-sn-surface px-4 py-2 font-medium text-sn-ink-soft hover:border-sn-primary">{topic.label}</Link>)}
           </nav>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div className="max-w-sn mx-auto px-5 sm:px-8 lg:px-12 py-10">
 
         {newsList.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-2xl border border-gray-200">
-            <div className="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
-              <Newspaper className="w-7 h-7 text-gray-300" />
+          <Card className="py-16 text-center lg:py-16">
+            <div className="w-14 h-14 bg-sn-surface-alt rounded-sn-card flex items-center justify-center mx-auto mb-4">
+              <Newspaper className="w-7 h-7 text-sn-ink-soft" />
             </div>
-            <h3 className="text-base font-semibold text-ink mb-1">No news found</h3>
-            <p className="text-sm text-gray-400">Check back later for the latest updates</p>
-          </div>
+            <h3 className="text-base font-semibold text-sn-ink mb-1">No news found</h3>
+            <p className="text-sm text-sn-ink-soft">Check back later for the latest updates</p>
+          </Card>
         ) : (
           <>
             {/* ── Featured article — magazine 2-col ─────────── */}
             {featured && !searchParams.q && (
               <Link href={`/news/${featured.slug}`} className="group block mb-8">
-                <div className="grid grid-cols-1 overflow-hidden rounded-lg border border-gray-200 bg-white transition-colors duration-150 hover:border-[#1847c4] lg:grid-cols-2">
+                <Card interactive className="grid grid-cols-1 overflow-hidden p-0 lg:grid-cols-2 lg:p-0">
                   <div className="relative h-60 lg:h-auto lg:min-h-[300px] overflow-hidden">
                     {featured.image_url ? (
                       <Image
@@ -91,33 +88,31 @@ export default async function NewsPage({ searchParams }: { searchParams: { q?: s
                       <PlaceholderCover idx={0} />
                     )}
                     <div className="absolute top-4 left-4">
-                      <span className="px-3 py-1 rounded-full text-[11px] font-semibold bg-[#1847c4] text-white">
-                        Featured
-                      </span>
+                      <Pill tone="primary" className="!text-sn-ink-soft">Featured</Pill>
                     </div>
                   </div>
                   <div className="p-7 lg:p-9 flex flex-col justify-center">
-                    <div className="mb-4 flex items-center gap-1.5 text-xs tabular-nums text-gray-500">
+                    <div className="mb-4 flex items-center gap-1.5 text-xs tabular-nums text-sn-ink-soft">
                       <Calendar className="w-3.5 h-3.5" />
                       <span>{formatDateShort(featured.published_date)}</span>
                     </div>
                     <h2
-                      className="font-display font-bold text-ink text-2xl lg:text-3xl leading-tight mb-4
-                                 group-hover:text-[#1847c4] transition-colors"
+                      className="font-baloo font-bold text-sn-ink text-2xl lg:text-3xl leading-tight mb-4
+                                 group-hover:text-sn-primary-hover transition-colors"
                       style={{ letterSpacing: '-0.02em' }}
                     >
                       {featured.title}
                     </h2>
                     {featured.content && (
-                      <p className="text-sm text-gray-500 leading-relaxed line-clamp-3 mb-5">
+                      <p className="text-sm text-sn-ink-soft leading-relaxed line-clamp-3 mb-5">
                         {featured.content}
                       </p>
                     )}
-                    <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#1847c4]">
+                    <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-sn-primary-hover">
                       Read full story <ArrowRight className="w-4 h-4" />
                     </span>
                   </div>
-                </div>
+                </Card>
               </Link>
             )}
 
@@ -130,7 +125,7 @@ export default async function NewsPage({ searchParams }: { searchParams: { q?: s
               function NewsCard({ news, idx }: { news: typeof articles[0]; idx: number }) {
                 return (
                   <Link key={news.id} href={`/news/${news.slug}`} className="group block">
-                    <div className="overflow-hidden rounded-lg border border-gray-200 bg-white transition-colors duration-150 hover:border-[#1847c4]">
+                    <Card interactive className="overflow-hidden p-0 lg:p-0">
                       <div className="relative h-44 overflow-hidden">
                         {news.image_url ? (
                           <Image src={news.image_url} alt={news.title} fill
@@ -140,19 +135,19 @@ export default async function NewsPage({ searchParams }: { searchParams: { q?: s
                         )}
                       </div>
                       <div className="p-4">
-                        <div className="mb-2 flex items-center gap-1.5 text-xs tabular-nums text-gray-500">
+                        <div className="mb-2 flex items-center gap-1.5 text-xs tabular-nums text-sn-ink-soft">
                           <Calendar className="w-3 h-3" />
                           <span>{formatDateShort(news.published_date)}</span>
                         </div>
-                        <h2 className="font-semibold text-ink text-sm leading-snug line-clamp-2 mb-1
-                                       group-hover:text-[#1847c4] transition-colors">
+                        <h2 className="font-semibold text-sn-ink text-sm leading-snug line-clamp-2 mb-1
+                                       group-hover:text-sn-primary-hover transition-colors">
                           {news.title}
                         </h2>
                         {news.content && (
-                          <p className="text-xs text-gray-400 line-clamp-2 leading-relaxed">{news.content}</p>
+                          <p className="text-xs text-sn-ink-soft line-clamp-2 leading-relaxed">{news.content}</p>
                         )}
                       </div>
-                    </div>
+                    </Card>
                   </Link>
                 )
               }
@@ -160,7 +155,7 @@ export default async function NewsPage({ searchParams }: { searchParams: { q?: s
               return (
                 <>
                   {!searchParams.q && (
-                    <h2 className="mb-6 text-xl font-semibold text-ink">More stories</h2>
+                    <h2 className="mb-6 text-xl font-semibold text-sn-ink">More stories</h2>
                   )}
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                     {before.map((news, idx) => <NewsCard key={news.id} news={news} idx={idx} />)}
@@ -169,7 +164,7 @@ export default async function NewsPage({ searchParams }: { searchParams: { q?: s
                     <AdUnit
                       slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_RESULTS ?? ''}
                       format="horizontal"
-                      className="my-6 rounded-xl border border-gray-200 bg-white min-h-[90px]"
+                      className="my-6 rounded-sn-card border border-sn-border bg-sn-surface min-h-[90px]"
                     />
                   )}
                   {after.length > 0 && (
