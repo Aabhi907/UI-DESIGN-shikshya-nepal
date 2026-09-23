@@ -3,12 +3,15 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import { BookOpen, Clock, ArrowLeft, Building2, BadgeCheck, BriefcaseBusiness, CircleDollarSign, ExternalLink, GraduationCap } from 'lucide-react'
-import Badge from '@/components/ui/Badge'
+import Pill from '@/components/design-system/Pill'
+import Card from '@/components/design-system/Card'
+import IconTile from '@/components/design-system/IconTile'
+import EvidenceChip from '@/components/design-system/EvidenceChip'
 import type { Program, CollegeProgram, Admission, Scholarship } from '@/types'
 import JsonLd from '@/components/seo/JsonLd'
 import { absoluteUrl, breadcrumbSchema } from '@/lib/seo'
 import { cache } from 'react'
-import { collegeDisplayAffiliation, collegeDisplayLocation } from '@/lib/college-display'
+import { collegeDisplayAffiliation, collegeDisplayLocation, safeExternalUrl } from '@/lib/college-display'
 
 export const revalidate = 0
 
@@ -26,6 +29,11 @@ function conciseAnswer(value: string, limit = 420) {
   if (sentenceEnd > limit * 0.55) return shortened.slice(0, sentenceEnd + 1)
   const wordEnd = shortened.lastIndexOf(' ')
   return `${shortened.slice(0, wordEnd > 0 ? wordEnd : limit).trimEnd()}...`
+}
+
+function sourceLabel(url: string | null): string {
+  if (!url) return 'Official source'
+  try { return new URL(url).hostname.replace(/^www\./, '') } catch { return 'Official source' }
 }
 
 const getProgram = cache(async function getProgram(slug: string) {
@@ -91,97 +99,190 @@ export default async function ProgramDetailPage({ params }: { params: { slug: st
   ] }
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="mx-auto max-w-sn px-5 py-10 sm:px-8 lg:px-12 lg:py-14">
       <JsonLd data={jsonLd} />
-      <Link href="/programs" className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-blue-600 mb-6 transition-colors">
+      <Link href="/programs" className="mb-6 inline-flex items-center gap-2 text-sm font-bold font-nunito text-sn-ink-muted hover:text-sn-primary transition-colors">
         <ArrowLeft className="w-4 h-4" /> Back to Programs
       </Link>
 
-      <div className="bg-white rounded-2xl border border-gray-200 p-6 mb-6 shadow-sm">
+      <Card className="mb-6">
         <div className="flex items-start gap-4">
-          <div className="w-14 h-14 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
-            <BookOpen className="w-7 h-7 text-blue-600" />
-          </div>
+          <IconTile icon={BookOpen} tint="peach" size={56} />
           <div>
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">{program.name}</h1>
+            <h1 className="font-baloo text-2xl font-bold text-sn-ink mb-2">{program.name}</h1>
             <div className="flex flex-wrap items-center gap-2">
-              <Badge variant="blue" className="capitalize">{program.degree_level}</Badge>
-              <Badge variant="gray">{program.faculty}</Badge>
-              <span className="flex items-center gap-1 text-sm text-gray-500">
+              <Pill tone="primary" className="capitalize">{program.degree_level}</Pill>
+              <Pill tone="neutral">{program.faculty}</Pill>
+              <span className="flex items-center gap-1 text-sm font-nunito text-sn-ink-muted">
                 <Clock className="w-3.5 h-3.5" /> {durationLabel}
               </span>
             </div>
           </div>
         </div>
-      </div>
+      </Card>
 
-      <section className="mb-6 rounded-2xl border border-blue-100 bg-blue-50/60 p-6" aria-labelledby="program-quick-answer">
-        <p className="text-xs font-bold uppercase tracking-widest text-blue-700">Quick answer</p>
-        <h2 id="program-quick-answer" className="mt-2 text-lg font-bold text-gray-950">What should I know about {program.name}?</h2>
-        <p className="mt-3 text-sm leading-6 text-gray-700">
+      <Card tone="alt" className="mb-6" aria-labelledby="program-quick-answer">
+        <p className="text-xs font-bold uppercase tracking-[0.08em] text-sn-primary-hover">Quick answer</p>
+        <h2 id="program-quick-answer" className="mt-2 font-baloo text-lg font-bold text-sn-ink">What should I know about {program.name}?</h2>
+        <p className="mt-3 text-sm leading-6 font-nunito text-sn-ink-soft">
           {sourceBacked ? `${program.name} is a ${program.degree_level} programme in ${program.faculty}, with a source-backed duration of ${program.duration}.` : `The programme name, level and linked colleges are listed here, but its duration and entry rules are awaiting an original university or regulator source.`} {colleges.length ? `${colleges.length} active college profile${colleges.length === 1 ? ' is' : 's are'} currently linked below.` : 'No active college profile is linked yet.'}
         </p>
-        <p className="mt-3 text-xs leading-5 text-gray-500">Eligibility, fees and intakes can change. Use the source and freshness section and confirm the latest notice before applying.</p>
-      </section>
+        <div className="mt-3">
+          {sourceBacked ? (
+            <EvidenceChip state="verified" source={sourceLabel(safeExternalUrl(program.source_url))} checkedDate={program.last_verified_at!} />
+          ) : (
+            <EvidenceChip state="limited" label="Confirm changing details with the university or college" />
+          )}
+        </div>
+      </Card>
 
       <div className="mb-6 grid gap-4 md:grid-cols-3">
-        <div className="rounded-2xl border bg-white p-5"><GraduationCap className="h-5 w-5 text-blue-600"/><h2 className="mt-3 font-bold">Eligibility</h2><p className="mt-2 text-sm leading-6 text-gray-600">{program.eligibility || 'Confirm current eligibility with the awarding university or college.'}</p></div>
-        <div className="rounded-2xl border bg-white p-5"><CircleDollarSign className="h-5 w-5 text-emerald-600"/><h2 className="mt-3 font-bold">Published fee range</h2><p className="mt-2 text-sm text-gray-600">{feeMin != null ? `NPR ${feeMin.toLocaleString()}${feeMax && feeMax !== feeMin ? ` – ${feeMax.toLocaleString()}` : ''}` : 'Fees vary by college.'}</p><p className="mt-2 text-xs leading-5 text-gray-400">Confirm whether each amount is annual, semester-based or total.</p></div>
-        <div className="rounded-2xl border bg-white p-5"><BadgeCheck className="h-5 w-5 text-violet-600"/><h2 className="mt-3 font-bold">Entrance</h2><p className="mt-2 text-sm leading-6 text-gray-600">{program.entrance_requirements || 'Check the latest university admission notice.'}</p></div>
+        <Card>
+          <GraduationCap className="h-5 w-5 text-sn-primary" />
+          <h2 className="mt-3 font-baloo font-bold text-sn-ink">Eligibility</h2>
+          <p className="mt-2 text-sm leading-6 font-nunito text-sn-ink-soft">{program.eligibility || 'Confirm current eligibility with the awarding university or college.'}</p>
+        </Card>
+        <Card>
+          <CircleDollarSign className="h-5 w-5 text-sn-verified" />
+          <h2 className="mt-3 font-baloo font-bold text-sn-ink">Published fee range</h2>
+          <p className="mt-2 text-sm font-nunito text-sn-ink-soft">{feeMin != null ? `NPR ${feeMin.toLocaleString()}${feeMax && feeMax !== feeMin ? ` – ${feeMax.toLocaleString()}` : ''}` : 'Fees vary by college.'}</p>
+          {feeMin != null && (
+            <div className="mt-2">
+              {sourceBacked && program.average_fee_min != null ? (
+                <EvidenceChip state="verified" source={sourceLabel(safeExternalUrl(program.source_url))} checkedDate={program.last_verified_at!} />
+              ) : (
+                <EvidenceChip state="confirm" label="Confirm whether annual, semester or total" />
+              )}
+            </div>
+          )}
+        </Card>
+        <Card>
+          <BadgeCheck className="h-5 w-5 text-sn-primary" />
+          <h2 className="mt-3 font-baloo font-bold text-sn-ink">Entrance</h2>
+          <p className="mt-2 text-sm leading-6 font-nunito text-sn-ink-soft">{program.entrance_requirements || 'Check the latest university admission notice.'}</p>
+        </Card>
       </div>
-      {program.overview && <section className="mb-6 rounded-2xl border bg-white p-6"><h2 className="text-xl font-bold">About {program.name}</h2><p className="mt-3 whitespace-pre-line leading-7 text-gray-600">{program.overview}</p></section>}
-      {(program.curriculum_highlights?.length || program.career_paths?.length) ? <div className="mb-6 grid gap-6 md:grid-cols-2">{program.curriculum_highlights?.length ? <section className="rounded-2xl border bg-white p-6"><h2 className="flex items-center gap-2 text-lg font-bold"><BookOpen className="h-5 w-5 text-blue-600"/>Curriculum highlights</h2><ul className="mt-4 space-y-2 text-sm text-gray-600">{program.curriculum_highlights.map(item=><li key={item}>• {item}</li>)}</ul></section>:null}{program.career_paths?.length?<section className="rounded-2xl border bg-white p-6"><h2 className="flex items-center gap-2 text-lg font-bold"><BriefcaseBusiness className="h-5 w-5 text-emerald-600"/>Career paths</h2><ul className="mt-4 space-y-2 text-sm text-gray-600">{program.career_paths.map(item=><li key={item}>• {item}</li>)}</ul></section>:null}</div>:null}
+      {program.overview && (
+        <Card className="mb-6">
+          <h2 className="font-baloo text-xl font-bold text-sn-ink">About {program.name}</h2>
+          <p className="mt-3 whitespace-pre-line leading-7 font-nunito text-sn-ink-soft">{program.overview}</p>
+        </Card>
+      )}
+      {(program.curriculum_highlights?.length || program.career_paths?.length) ? (
+        <div className="mb-6 grid gap-6 md:grid-cols-2">
+          {program.curriculum_highlights?.length ? (
+            <Card>
+              <h2 className="flex items-center gap-2 font-baloo text-lg font-bold text-sn-ink"><BookOpen className="h-5 w-5 text-sn-primary" />Curriculum highlights</h2>
+              <ul className="mt-4 space-y-2 text-sm font-nunito text-sn-ink-soft">{program.curriculum_highlights.map(item => <li key={item}>• {item}</li>)}</ul>
+            </Card>
+          ) : null}
+          {program.career_paths?.length ? (
+            <Card>
+              <h2 className="flex items-center gap-2 font-baloo text-lg font-bold text-sn-ink"><BriefcaseBusiness className="h-5 w-5 text-sn-verified" />Career paths</h2>
+              <ul className="mt-4 space-y-2 text-sm font-nunito text-sn-ink-soft">{program.career_paths.map(item => <li key={item}>• {item}</li>)}</ul>
+            </Card>
+          ) : null}
+        </div>
+      ) : null}
 
-      <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+      <Card>
         <div className="flex items-center gap-2 mb-5">
-          <Building2 className="w-5 h-5 text-blue-600" />
-          <h2 className="text-lg font-semibold text-gray-900">
+          <Building2 className="w-5 h-5 text-sn-primary" />
+          <h2 className="text-lg font-baloo font-bold text-sn-ink">
             Colleges offering {program.name}
           </h2>
-          <Badge variant="gray">{colleges.length}</Badge>
+          <Pill tone="neutral">{colleges.length}</Pill>
         </div>
 
         {colleges.length > 0 ? (
           <div className="space-y-3">
-            {colleges.filter(cp => cp.college).map((cp) => (
-              <Link key={cp.college_id} href={`/colleges/${cp.college?.slug}`} className="group block">
-                <div className="flex items-center justify-between p-4 rounded-xl border border-gray-100 hover:border-blue-200 hover:shadow-sm transition-all bg-gray-50 hover:bg-white">
-                  <div>
-                    <p className="font-medium text-gray-900 text-sm group-hover:text-blue-600 transition-colors">
-                      {cp.college?.name}
-                    </p>
-                    <div className="flex items-center gap-3 mt-1">
-                      <span className="text-xs text-gray-500">{collegeDisplayLocation(cp.college!) || 'Location not listed'}</span>
-                      {cp.college?.affiliation && (
-                        <Badge variant="gray">{collegeDisplayAffiliation(cp.college.affiliation)}</Badge>
-                      )}
-                      {cp.scholarship_available && <Badge variant="green">Scholarship</Badge>}
+            {colleges.filter(cp => cp.college).map((cp) => {
+              const feeSource = safeExternalUrl(cp.fee_source_url)
+              const feeIsVerifiable = Boolean(feeSource) && Boolean(cp.fee_last_verified_at)
+              return (
+                <Link key={cp.college_id} href={`/colleges/${cp.college?.slug}`} className="group block">
+                  <div className="flex flex-col gap-3 rounded-sn-control border border-sn-border bg-sn-surface-alt p-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <p className="text-sm font-bold font-nunito text-sn-ink group-hover:text-sn-primary transition-colors">
+                        {cp.college?.name}
+                      </p>
+                      <div className="flex flex-wrap items-center gap-2 mt-1.5">
+                        <span className="text-xs font-nunito text-sn-ink-muted">{collegeDisplayLocation(cp.college!) || 'Location not listed'}</span>
+                        {cp.college?.affiliation && (
+                          <Pill tone="neutral">{collegeDisplayAffiliation(cp.college.affiliation)}</Pill>
+                        )}
+                        {cp.scholarship_available && <Pill tone="verified">Scholarship</Pill>}
+                      </div>
                     </div>
-                  </div>
-                  <div className="text-right flex-shrink-0">
-                    {cp.fee && (
-                      <p className="font-semibold text-gray-900 text-sm">NPR {cp.fee.toLocaleString()}</p>
+                    {cp.fee != null && (
+                      <div className="sm:text-right">
+                        <p className="font-bold font-nunito text-sn-ink text-sm">NPR {cp.fee.toLocaleString()}</p>
+                        {cp.seats != null && <p className="text-xs font-nunito text-sn-ink-muted">{cp.seats} seats</p>}
+                        <div className="mt-1.5 sm:flex sm:justify-end">
+                          {feeIsVerifiable ? (
+                            <EvidenceChip state="verified" source={sourceLabel(feeSource)} checkedDate={cp.fee_last_verified_at!} />
+                          ) : (
+                            <EvidenceChip state="confirm" label="Confirm fee with the college" />
+                          )}
+                        </div>
+                      </div>
                     )}
-                    {cp.seats && (
-                      <p className="text-xs text-gray-500">{cp.seats} seats</p>
-                    )}
                   </div>
-                </div>
-              </Link>
-            ))}
+                </Link>
+              )
+            })}
           </div>
         ) : (
-          <div className="rounded-xl bg-gray-50 p-5 text-sm text-gray-600"><p>No active college profile is linked to this program yet.</p><Link href={`/colleges?program=${program.slug}`} className="mt-3 inline-flex font-bold text-primary">Search the college directory →</Link></div>
+          <div className="rounded-sn-control bg-sn-surface-alt p-5 text-sm font-nunito text-sn-ink-soft">
+            <p>No active college profile is linked to this program yet.</p>
+            <Link href={`/colleges?program=${program.slug}`} className="mt-3 inline-flex font-bold font-nunito text-sn-primary">Search the college directory →</Link>
+          </div>
         )}
-      </div>
-      {admissions.length > 0 && <section className="mt-6 rounded-2xl border bg-white p-6"><h2 className="text-lg font-bold">Current admissions</h2><div className="mt-4 space-y-3">{admissions.map(item=><Link key={item.id} href={`/admissions/${item.slug}`} className="flex justify-between rounded-xl bg-blue-50 p-4 text-sm"><span><strong>{item.title}</strong><span className="block text-gray-500">{item.institution_name}</span></span><span className="text-blue-700">View →</span></Link>)}</div></section>}
-      {scholarships.length > 0 && <section className="mt-6 rounded-2xl border bg-white p-6"><h2 className="text-lg font-bold">Related scholarships</h2><div className="mt-4 grid gap-3 md:grid-cols-2">{scholarships.map(item=><div key={item.id} className="rounded-xl border p-4"><p className="font-semibold">{item.title}</p><p className="mt-1 text-xs text-gray-500">{item.college?.name}</p></div>)}</div></section>}
-      <section className="mt-6 rounded-2xl border bg-white p-6" aria-labelledby="program-questions">
-        <p className="text-xs font-bold uppercase tracking-widest text-blue-700">Student questions</p>
-        <h2 id="program-questions" className="mt-2 text-lg font-bold text-gray-950">Questions about {program.name}</h2>
-        <div className="mt-5 divide-y divide-gray-100">{programAnswers.map(item => <details key={item.question} className="group py-4 first:pt-0 last:pb-0"><summary className="cursor-pointer list-none pr-8 text-sm font-semibold text-gray-900 marker:hidden">{item.question}<span className="float-right text-blue-600 group-open:rotate-45">+</span></summary><p className="mt-3 max-w-3xl text-sm leading-6 text-gray-600">{item.answer}</p></details>)}</div>
-      </section>
-      <div className="mt-6 rounded-xl border border-blue-100 bg-blue-50 p-4 text-sm"><p className="font-semibold text-ink">Source and freshness</p><p className="mt-1 text-gray-600">{program.last_verified_at ? `Last checked ${new Date(program.last_verified_at).toLocaleDateString('en-NP', { day: 'numeric', month: 'long', year: 'numeric' })}.` : 'A last-checked date has not been recorded yet.'} {program.source_url ? 'Confirm changing requirements on the linked original source.' : 'A primary source link has not been recorded; confirm all requirements with the university or college.'}</p>{program.source_url && <a href={program.source_url} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex items-center gap-2 font-semibold text-blue-700">Official program source <ExternalLink className="h-4 w-4"/></a>}</div>
+      </Card>
+      {admissions.length > 0 && (
+        <Card className="mt-6">
+          <h2 className="font-baloo text-lg font-bold text-sn-ink">Current admissions</h2>
+          <div className="mt-4 space-y-3">{admissions.map(item => (
+            <Link key={item.id} href={`/admissions/${item.slug}`} className="flex justify-between rounded-sn-control bg-sn-primary-bg p-4 text-sm font-nunito">
+              <span><strong className="text-sn-ink">{item.title}</strong><span className="block text-sn-ink-muted">{item.institution_name}</span></span>
+              <span className="font-bold text-sn-primary-hover">View →</span>
+            </Link>
+          ))}</div>
+        </Card>
+      )}
+      {scholarships.length > 0 && (
+        <Card className="mt-6">
+          <h2 className="font-baloo text-lg font-bold text-sn-ink">Related scholarships</h2>
+          <div className="mt-4 grid gap-3 md:grid-cols-2">{scholarships.map(item => (
+            <div key={item.id} className="rounded-sn-control border border-sn-border p-4">
+              <p className="font-bold font-nunito text-sn-ink">{item.title}</p>
+              <p className="mt-1 text-xs font-nunito text-sn-ink-muted">{item.college?.name}</p>
+            </div>
+          ))}</div>
+        </Card>
+      )}
+      <Card className="mt-6" aria-labelledby="program-questions">
+        <p className="text-xs font-bold uppercase tracking-[0.08em] text-sn-primary-hover">Student questions</p>
+        <h2 id="program-questions" className="mt-2 font-baloo text-lg font-bold text-sn-ink">Questions about {program.name}</h2>
+        <div className="mt-5 divide-y divide-sn-border">{programAnswers.map(item => (
+          <details key={item.question} className="group py-4 first:pt-0 last:pb-0">
+            <summary className="cursor-pointer list-none pr-8 text-sm font-bold font-nunito text-sn-ink marker:hidden">{item.question}<span className="float-right text-sn-primary group-open:rotate-45">+</span></summary>
+            <p className="mt-3 max-w-2xl text-sm leading-6 font-nunito text-sn-ink-soft">{item.answer}</p>
+          </details>
+        ))}</div>
+      </Card>
+      <Card className="mt-6">
+        <p className="font-bold font-nunito text-sn-ink">Source and freshness</p>
+        <div className="mt-2">
+          {sourceBacked ? (
+            <EvidenceChip state="verified" source={sourceLabel(safeExternalUrl(program.source_url))} checkedDate={program.last_verified_at!} />
+          ) : (
+            <EvidenceChip state="limited" label="A last-checked date has not been recorded yet" />
+          )}
+        </div>
+        <p className="mt-3 text-sm font-nunito text-sn-ink-soft">{program.source_url ? 'Confirm changing requirements on the linked original source.' : 'A primary source link has not been recorded; confirm all requirements with the university or college.'}</p>
+        {program.source_url && <a href={program.source_url} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex items-center gap-2 font-bold font-nunito text-sn-primary hover:text-sn-primary-hover">Official program source <ExternalLink className="h-4 w-4" /></a>}
+      </Card>
     </div>
   )
 }

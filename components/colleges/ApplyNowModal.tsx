@@ -92,71 +92,69 @@ export default function ApplyNowModal({
   }
 
   const inputClass = (field: string) =>
-    `min-h-11 w-full px-3.5 py-2.5 rounded-xl border text-sm text-ink placeholder-gray-400
-     focus:outline-none focus:ring-2 focus:ring-[#1847c4]/20 focus:border-[#1847c4] transition-colors
-     ${errors[field] ? 'border-red-400 bg-red-50' : 'border-gray-200'}`
+    `min-h-11 w-full rounded-sn-control border px-3.5 py-2.5 text-sm font-nunito text-sn-ink placeholder:text-sn-ink-muted
+     focus:outline-none focus:ring-2 focus:ring-sn-primary/20 focus:border-sn-primary transition-colors
+     ${errors[field] ? 'border-sn-confirm bg-sn-confirm-bg' : 'border-sn-border-strong bg-sn-surface'}`
 
   return (
     <div className="fixed inset-0 z-[70] flex items-end justify-center p-0 sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-labelledby="admission-enquiry-title">
       {/* Backdrop */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        className="absolute inset-0 bg-sn-ink/50 backdrop-blur-sm"
         onClick={onClose}
       />
 
       {/* Panel */}
-      <div className="relative w-full sm:max-w-md bg-white sm:rounded-2xl rounded-t-2xl shadow-2xl
+      <div className="relative w-full sm:max-w-md bg-sn-surface sm:rounded-sn-card rounded-t-sn-card shadow-sn-float
                       max-h-[95vh] overflow-y-auto">
 
         {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-gray-100 px-6 py-4 flex items-start justify-between z-10 rounded-t-2xl">
+        <div className="sticky top-0 bg-sn-surface border-b border-sn-border px-6 py-4 flex items-start justify-between z-10 sm:rounded-t-sn-card rounded-t-sn-card">
           <div>
-            <h2 id="admission-enquiry-title" className="font-display font-bold text-ink text-lg leading-tight"
-                style={{ letterSpacing: '-0.02em' }}>
+            <h2 id="admission-enquiry-title" className="font-baloo font-bold text-sn-ink text-lg leading-tight">
               Ask {collegeName} about admission
             </h2>
-            <p className="text-xs text-gray-400 mt-0.5">
+            <p className="text-xs font-nunito text-sn-ink-muted mt-0.5">
               Send an enquiry through SikshyaNepal. This is not an official application or seat confirmation.
             </p>
           </div>
           <button
             onClick={onClose}
             aria-label="Close admission enquiry"
-            className="ml-3 flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+            className="ml-3 flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-sn-surface-alt hover:opacity-80 transition-opacity"
           >
-            <X className="w-4 h-4 text-gray-600" />
+            <X className="w-4 h-4 text-sn-ink-soft" />
           </button>
         </div>
 
         <div className="px-6 py-5">
           {/* Commercial placement disclosure; verification and review scores remain independent. */}
           {isSponsored && (
-            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 border border-amber-200 rounded-lg mb-5 w-fit">
-              <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
-              <span className="text-xs font-semibold text-amber-800">Sponsored placement</span>
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-sn-confirm-bg border border-sn-confirm/40 rounded-sn-control mb-5 w-fit">
+              <Star className="w-3.5 h-3.5 text-sn-confirm fill-sn-confirm" />
+              <span className="text-xs font-bold font-nunito text-sn-confirm-ink">Sponsored placement</span>
             </div>
           )}
 
           {success ? (
             /* ── Success state ─────────────────────────────── */
             <div className="text-center py-4">
-              <div className="w-16 h-16 bg-green-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <CheckCircle className="w-8 h-8 text-green-600" />
+              <div className="w-16 h-16 bg-sn-verified-bg rounded-sn-card flex items-center justify-center mx-auto mb-4">
+                <CheckCircle className="w-8 h-8 text-sn-verified" />
               </div>
-              <h3 className="font-display font-bold text-ink text-xl mb-2"
-                  style={{ letterSpacing: '-0.02em' }}>
+              <h3 className="font-baloo font-bold text-sn-ink text-xl mb-2">
                 Enquiry received
               </h3>
-              <p className="text-sm text-gray-500 leading-relaxed mb-1">
-                Your request for <span className="font-semibold text-ink">{collegeName}</span> has been recorded with the phone number{' '}
-                <span className="font-semibold text-[#1847c4]">{form.phone}</span>.
+              <p className="text-sm font-nunito text-sn-ink-soft leading-relaxed mb-1">
+                Your request for <span className="font-bold text-sn-ink">{collegeName}</span> has been recorded with the phone number{' '}
+                <span className="font-bold text-sn-primary">{form.phone}</span>.
               </p>
-              <p className="mt-2 text-xs leading-5 text-gray-400">Response times vary. For an urgent deadline, use the official phone, email or website shown on the college profile.</p>
-              {reference&&<p className="mt-3 rounded-lg bg-gray-50 px-3 py-2 text-xs text-gray-600">Enquiry reference: <strong className="text-ink">{reference}</strong></p>}
+              <p className="mt-2 text-xs leading-5 font-nunito text-sn-ink-muted">Response times vary. For an urgent deadline, use the official phone, email or website shown on the college profile.</p>
+              {reference&&<p className="mt-3 rounded-sn-control bg-sn-surface-alt px-3 py-2 text-xs font-nunito text-sn-ink-soft">Enquiry reference: <strong className="text-sn-ink">{reference}</strong></p>}
               <button
                 onClick={onClose}
-                className="mt-6 w-full py-2.5 rounded-xl bg-gray-100 text-gray-700 text-sm font-semibold hover:bg-gray-200 transition-colors"
+                className="mt-6 w-full py-2.5 rounded-sn-control bg-sn-surface-alt text-sn-ink text-sm font-bold font-nunito hover:opacity-80 transition-opacity"
               >
                 Close
               </button>
@@ -164,12 +162,12 @@ export default function ApplyNowModal({
           ) : (
             /* ── Form ─────────────────────────────────────── */
             <form ref={formRef} onSubmit={handleSubmit} noValidate className="space-y-4">
-              <section aria-label="What happens next" className="border-l-2 border-primary bg-blue-50/60 px-3 py-3">
-                <p className="text-xs font-bold uppercase tracking-[0.11em] text-primary">What happens next</p>
-                <ol className="mt-2 space-y-1 text-xs leading-5 text-slate-700">
-                  <li><span className="font-semibold text-slate-900">1. Send your enquiry.</span> SikshyaNepal records it for {collegeName}&apos;s admissions team.</li>
-                  <li><span className="font-semibold text-slate-900">2. Confirm independently.</span> Check the official notice before sending documents or payment.</li>
-                  <li><span className="font-semibold text-slate-900">3. Keep control.</span> Use the official college contact details for urgent deadlines.</li>
+              <section aria-label="What happens next" className="border-l-2 border-sn-primary bg-sn-primary-bg px-3 py-3">
+                <p className="text-xs font-bold font-nunito uppercase tracking-[0.11em] text-sn-primary-hover">What happens next</p>
+                <ol className="mt-2 space-y-1 text-xs leading-5 font-nunito text-sn-ink-soft">
+                  <li><span className="font-bold text-sn-ink">1. Send your enquiry.</span> SikshyaNepal records it for {collegeName}&apos;s admissions team.</li>
+                  <li><span className="font-bold text-sn-ink">2. Confirm independently.</span> Check the official notice before sending documents or payment.</li>
+                  <li><span className="font-bold text-sn-ink">3. Keep control.</span> Use the official college contact details for urgent deadlines.</li>
                 </ol>
               </section>
               <div className="hidden" aria-hidden="true">
@@ -179,8 +177,8 @@ export default function ApplyNowModal({
 
               {/* Full Name */}
               <div>
-                <label htmlFor="admission-name" className="block text-sm font-semibold text-ink mb-1.5">
-                  Full Name <span className="text-red-500">*</span>
+                <label htmlFor="admission-name" className="block text-sm font-bold font-nunito text-sn-ink mb-1.5">
+                  Full Name <span className="text-sn-confirm-ink">*</span>
                 </label>
                 <input
                   id="admission-name"
@@ -194,13 +192,13 @@ export default function ApplyNowModal({
                   aria-invalid={Boolean(errors.name)}
                   aria-describedby={errors.name ? 'admission-name-error' : undefined}
                 />
-                {errors.name && <p id="admission-name-error" role="alert" className="text-xs text-red-600 mt-1">{errors.name}</p>}
+                {errors.name && <p id="admission-name-error" role="alert" className="text-xs font-nunito text-sn-confirm-ink mt-1">{errors.name}</p>}
               </div>
 
               {/* Phone */}
               <div>
-                <label htmlFor="admission-phone" className="block text-sm font-semibold text-ink mb-1.5">
-                  Phone Number <span className="text-red-500">*</span>
+                <label htmlFor="admission-phone" className="block text-sm font-bold font-nunito text-sn-ink mb-1.5">
+                  Phone Number <span className="text-sn-confirm-ink">*</span>
                 </label>
                 <input
                   id="admission-phone"
@@ -214,14 +212,14 @@ export default function ApplyNowModal({
                   aria-invalid={Boolean(errors.phone)}
                   aria-describedby={errors.phone ? 'admission-phone-error' : 'admission-phone-help'}
                 />
-                <p id="admission-phone-help" className="text-xs text-gray-500 mt-1">Used only to respond to this admission enquiry</p>
-                {errors.phone && <p id="admission-phone-error" role="alert" className="text-xs text-red-600 mt-0.5">{errors.phone}</p>}
+                <p id="admission-phone-help" className="text-xs font-nunito text-sn-ink-muted mt-1">Used only to respond to this admission enquiry</p>
+                {errors.phone && <p id="admission-phone-error" role="alert" className="text-xs font-nunito text-sn-confirm-ink mt-0.5">{errors.phone}</p>}
               </div>
 
               {/* Email */}
               <div>
-                <label htmlFor="admission-email" className="block text-sm font-semibold text-ink mb-1.5">
-                  Email Address <span className="text-gray-400 font-normal">(optional)</span>
+                <label htmlFor="admission-email" className="block text-sm font-bold font-nunito text-sn-ink mb-1.5">
+                  Email Address <span className="text-sn-ink-muted font-normal">(optional)</span>
                 </label>
                 <input
                   id="admission-email"
@@ -235,13 +233,13 @@ export default function ApplyNowModal({
                   aria-invalid={Boolean(errors.email)}
                   aria-describedby={errors.email ? 'admission-email-error' : undefined}
                 />
-                {errors.email && <p id="admission-email-error" role="alert" className="mt-1 text-xs text-red-600">{errors.email}</p>}
+                {errors.email && <p id="admission-email-error" role="alert" className="mt-1 text-xs font-nunito text-sn-confirm-ink">{errors.email}</p>}
               </div>
 
               {/* Program */}
               <div>
-                <label htmlFor="admission-program" className="block text-sm font-semibold text-ink mb-1.5">
-                  Program Interested In <span className="text-red-500">*</span>
+                <label htmlFor="admission-program" className="block text-sm font-bold font-nunito text-sn-ink mb-1.5">
+                  Program Interested In <span className="text-sn-confirm-ink">*</span>
                 </label>
                 <select
                   id="admission-program"
@@ -257,13 +255,13 @@ export default function ApplyNowModal({
                   ))}
                   <option value="Not sure yet">Not sure yet</option>
                 </select>
-                {errors.program && <p id="admission-program-error" role="alert" className="text-xs text-red-600 mt-1">{errors.program}</p>}
+                {errors.program && <p id="admission-program-error" role="alert" className="text-xs font-nunito text-sn-confirm-ink mt-1">{errors.program}</p>}
               </div>
 
               {/* Message */}
               <div>
-                <label htmlFor="admission-message" className="block text-sm font-semibold text-ink mb-1.5">
-                  Your Message <span className="text-gray-400 font-normal">(optional)</span>
+                <label htmlFor="admission-message" className="block text-sm font-bold font-nunito text-sn-ink mb-1.5">
+                  Your Message <span className="text-sn-ink-muted font-normal">(optional)</span>
                 </label>
                 <textarea
                   id="admission-message"
@@ -273,35 +271,35 @@ export default function ApplyNowModal({
                   placeholder="Any questions or specific requirements?"
                   className={inputClass('message') + ' resize-none'}
                 />
-                <p className="text-xs text-gray-400 mt-0.5 text-right">{form.message.length}/300</p>
+                <p className="text-xs font-nunito text-sn-ink-muted mt-0.5 text-right">{form.message.length}/300</p>
               </div>
 
               {apiError && (
-                <div role="alert" className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700">
+                <div role="alert" className="bg-sn-confirm-bg border border-sn-confirm/40 rounded-sn-control px-4 py-3 text-sm font-nunito text-sn-confirm-ink">
                   {apiError}
                 </div>
               )}
 
               <div>
-                <label className="flex items-start gap-3 rounded-xl border border-gray-200 bg-gray-50 p-3 text-xs leading-5 text-gray-600">
+                <label className="flex items-start gap-3 rounded-sn-control border border-sn-border-strong bg-sn-surface-alt p-3 text-xs leading-5 font-nunito text-sn-ink-soft">
                   <input
                     type="checkbox"
                     checked={consent}
                     onChange={event => { setConsent(event.target.checked); setErrors(current => ({ ...current, consent: '' })) }}
-                    className="mt-1 h-4 w-4 shrink-0 accent-[#1847c4]"
+                    className="mt-1 h-4 w-4 shrink-0 accent-sn-primary"
                     aria-invalid={Boolean(errors.consent)}
                     aria-describedby={errors.consent ? 'admission-consent-error' : undefined}
                   />
-                  <span>I agree that SikshyaNepal may store these details and share them with {collegeName} only so the institution can respond to this enquiry. I have read the <Link href="/privacy" target="_blank" rel="noopener noreferrer" className="font-semibold text-blue-700 underline">Privacy Policy</Link>.</span>
+                  <span>I agree that SikshyaNepal may store these details and share them with {collegeName} only so the institution can respond to this enquiry. I have read the <Link href="/privacy" target="_blank" rel="noopener noreferrer" className="font-bold text-sn-primary underline">Privacy Policy</Link>.</span>
                 </label>
-                {errors.consent && <p id="admission-consent-error" role="alert" className="mt-1 text-xs text-red-600">{errors.consent}</p>}
+                {errors.consent && <p id="admission-consent-error" role="alert" className="mt-1 text-xs font-nunito text-sn-confirm-ink">{errors.consent}</p>}
               </div>
 
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex items-center justify-center gap-2 py-3 bg-[#1847c4]
-                           text-white font-semibold rounded-xl hover:bg-[#1340b0]
+                className="w-full flex items-center justify-center gap-2 py-3 bg-sn-primary
+                           text-white font-bold font-nunito rounded-sn-control shadow-sn-button hover:bg-sn-primary-hover
                            disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
               >
                 {loading
@@ -310,7 +308,7 @@ export default function ApplyNowModal({
                 }
               </button>
 
-              <p className="text-center text-xs text-gray-500">
+              <p className="text-center text-xs font-nunito text-sn-ink-muted">
                 Do not include citizenship numbers, marksheets, passwords or payment details.
               </p>
             </form>

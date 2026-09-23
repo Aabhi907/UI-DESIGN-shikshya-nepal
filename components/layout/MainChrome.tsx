@@ -17,17 +17,19 @@ const AUTH_PAGES = ['/account/login', '/account/register', '/account/signup']
 // converted routes get the new Footer/QuickNav, everything else keeps the
 // original Footer/MobileQuickNav until its own phase converts it — see the
 // "Public UI redesign" Build Briefs (Phase 1: home + college profile;
-// Phase 2: colleges/programs listing families + program-finder). The K-10
+// Phase 2: colleges/programs listing families + program-finder; detail-
+// pages track: programs/[slug], careers, admissions + Apply seam). The K-10
 // directory offering (and its routes) was removed entirely per its own
-// Build Brief. /compare, /programs/[slug], /search and admin are
-// deliberately not in this set yet. SiteAnnouncement and GlobalSearch are
-// unrelated to this rollout and are left exactly as they are on every
-// route, converted or not.
+// Build Brief. /compare, /search, /my-path and admin are deliberately not
+// in this set yet. SiteAnnouncement and GlobalSearch are unrelated to this
+// rollout and are left exactly as they are on every route, converted or not.
 const CONVERTED_EXACT = new Set([
   '/', '/colleges', '/colleges/nearby', '/programs', '/tools/program-finder',
+  '/careers', '/admissions',
 ])
 const CONVERTED_PREFIXES = [
   '/colleges/in/', '/colleges/program/', '/colleges/province/',
+  '/programs/', '/careers/', '/admissions/',
 ]
 
 function isConvertedRoute(pathname: string) {

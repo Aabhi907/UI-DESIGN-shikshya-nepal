@@ -1,9 +1,10 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { CalendarCheck2, CheckCircle2, Clock3, GraduationCap } from 'lucide-react'
+import { CalendarCheck2, CheckCircle2, Clock3 } from 'lucide-react'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import AdmissionCard from '@/components/admissions/AdmissionCard'
 import AdmissionFilters, { type AdmissionSearchParams } from '@/components/admissions/AdmissionFilters'
+import Mascot from '@/components/design-system/Mascot'
 import { deadlineState } from '@/lib/admissions'
 import type { Admission } from '@/types'
 
@@ -38,10 +39,48 @@ export default async function AdmissionsPage({ searchParams }: { searchParams: A
   const open = admissions.filter((item) => deadlineState(item.application_deadline) !== 'closed').length
   const soon = admissions.filter((item) => deadlineState(item.application_deadline) === 'closing_soon').length
   const verified = admissions.filter((item) => item.verification_status !== 'unverified').length
-  return <div className="min-h-screen bg-[#f8f7f3]">
-    <section className="border-b border-gray-200 bg-white"><div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8"><p className="page-kicker mb-3">Admission calendar</p><h1 className="page-title">Never miss an admission deadline.</h1><p className="page-lede mt-4">Verified openings for colleges and universities—with eligibility, entrance dates and original sources in one place.</p></div></section>
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8"><nav aria-label="Admission status" className="mb-6 flex gap-2 overflow-x-auto pb-1"><Link href="/admissions" aria-current={!searchParams.deadline ? 'page' : undefined} className={`min-h-11 whitespace-nowrap rounded-xl border px-4 py-3 text-sm font-bold ${!searchParams.deadline ? 'border-primary bg-primary text-white' : 'border-gray-200 bg-white text-gray-600'}`}>All admissions</Link><Link href="/admissions?deadline=open" aria-current={searchParams.deadline === 'open' ? 'page' : undefined} className={`min-h-11 whitespace-nowrap rounded-xl border px-4 py-3 text-sm font-bold ${searchParams.deadline === 'open' ? 'border-primary bg-primary text-white' : 'border-gray-200 bg-white text-gray-600'}`}>Open now</Link><Link href="/admissions?deadline=7" aria-current={searchParams.deadline === '7' ? 'page' : undefined} className={`min-h-11 whitespace-nowrap rounded-xl border px-4 py-3 text-sm font-bold ${searchParams.deadline === '7' ? 'border-primary bg-primary text-white' : 'border-gray-200 bg-white text-gray-600'}`}>Closing in 7 days</Link><Link href="/admissions/planner" className="min-h-11 whitespace-nowrap rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-bold text-gray-600">My planner</Link></nav><div className="mb-6 grid grid-cols-3 gap-3">{[{ Icon: CalendarCheck2, value: open, label: 'Open' }, { Icon: Clock3, value: soon, label: 'Closing soon' }, { Icon: CheckCircle2, value: verified, label: 'Verified' }].map(({ Icon, value, label }) => <div key={label} className="rounded-2xl border border-gray-200 bg-white p-4"><Icon className="mb-2 h-5 w-5 text-primary" /><p className="font-mono text-2xl font-extrabold text-ink">{value}</p><p className="text-xs text-gray-500">{label}</p></div>)}</div>
-      <div className="grid gap-6 lg:grid-cols-[280px_1fr]"><AdmissionFilters searchParams={searchParams} count={admissions.length} /><main>{admissions.length ? <div className="grid gap-5 md:grid-cols-2">{admissions.map((item) => <AdmissionCard key={item.id} admission={item} />)}</div> : <div className="rounded-3xl border border-dashed border-gray-300 bg-white py-20 text-center"><GraduationCap className="mx-auto h-11 w-11 text-gray-300" /><h2 className="mt-4 font-display text-xl font-bold text-ink">No matching admissions</h2><p className="mt-2 text-sm text-gray-500">Try clearing a filter or return soon for newly verified openings.</p><Link href="/admissions" className="mt-5 inline-block rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-white">View all</Link></div>}</main></div>
+  return (
+    <div className="min-h-screen bg-sn-ground">
+      <section className="border-b border-sn-border bg-sn-surface">
+        <div className="mx-auto max-w-sn px-5 py-10 sm:px-8 lg:px-12">
+          <p className="text-xs font-bold uppercase tracking-[0.08em] text-sn-primary-hover">Admission calendar</p>
+          <h1 className="mt-2 font-baloo text-3xl font-extrabold leading-tight text-sn-ink sm:text-4xl">Never miss an admission deadline.</h1>
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-sn-ink-soft sm:text-base">Verified openings for colleges and universities—with eligibility, entrance dates and original sources in one place.</p>
+        </div>
+      </section>
+      <div className="mx-auto max-w-sn px-5 py-8 sm:px-8 lg:px-12">
+        <nav aria-label="Admission status" className="mb-6 flex gap-2 overflow-x-auto pb-1">
+          <Link href="/admissions" aria-current={!searchParams.deadline ? 'page' : undefined} className={`min-h-11 whitespace-nowrap rounded-sn-control border px-4 py-3 text-sm font-bold font-nunito ${!searchParams.deadline ? 'border-sn-primary bg-sn-primary text-white' : 'border-sn-border-strong bg-sn-surface text-sn-ink-soft'}`}>All admissions</Link>
+          <Link href="/admissions?deadline=open" aria-current={searchParams.deadline === 'open' ? 'page' : undefined} className={`min-h-11 whitespace-nowrap rounded-sn-control border px-4 py-3 text-sm font-bold font-nunito ${searchParams.deadline === 'open' ? 'border-sn-primary bg-sn-primary text-white' : 'border-sn-border-strong bg-sn-surface text-sn-ink-soft'}`}>Open now</Link>
+          <Link href="/admissions?deadline=7" aria-current={searchParams.deadline === '7' ? 'page' : undefined} className={`min-h-11 whitespace-nowrap rounded-sn-control border px-4 py-3 text-sm font-bold font-nunito ${searchParams.deadline === '7' ? 'border-sn-primary bg-sn-primary text-white' : 'border-sn-border-strong bg-sn-surface text-sn-ink-soft'}`}>Closing in 7 days</Link>
+          <Link href="/admissions/planner" className="min-h-11 whitespace-nowrap rounded-sn-control border border-sn-border-strong bg-sn-surface px-4 py-3 text-sm font-bold font-nunito text-sn-ink-soft">My planner</Link>
+        </nav>
+        <div className="mb-6 grid grid-cols-3 gap-3">
+          {[{ Icon: CalendarCheck2, value: open, label: 'Open' }, { Icon: Clock3, value: soon, label: 'Closing soon' }, { Icon: CheckCircle2, value: verified, label: 'Verified' }].map(({ Icon, value, label }) => (
+            <div key={label} className="rounded-sn-card border border-sn-border bg-sn-surface p-4">
+              <Icon className="mb-2 h-5 w-5 text-sn-primary" />
+              <p className="font-baloo text-2xl font-extrabold text-sn-ink">{value}</p>
+              <p className="text-xs font-nunito text-sn-ink-muted">{label}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
+          <AdmissionFilters searchParams={searchParams} count={admissions.length} />
+          <main>
+            {admissions.length ? (
+              <div className="grid gap-5 md:grid-cols-2">{admissions.map((item) => <AdmissionCard key={item.id} admission={item} />)}</div>
+            ) : (
+              <div className="rounded-sn-card border border-sn-border bg-sn-surface py-20 text-center">
+                <Mascot pose="point" size={72} className="mx-auto mb-4" />
+                <h2 className="font-baloo text-xl font-bold text-sn-ink">No matching admissions</h2>
+                <p className="mt-2 text-sm text-sn-ink-soft">Try clearing a filter or return soon for newly verified openings.</p>
+                <Link href="/admissions" className="mt-5 inline-block rounded-sn-control bg-sn-primary px-5 py-2.5 text-sm font-bold text-white hover:bg-sn-primary-hover">View all</Link>
+              </div>
+            )}
+          </main>
+        </div>
+      </div>
     </div>
-  </div>
+  )
 }
