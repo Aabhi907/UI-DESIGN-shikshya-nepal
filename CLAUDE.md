@@ -39,6 +39,9 @@ Repo: kasamthapa/sikshyanepal
 - Do not chase engagement with infinite feeds, fake urgency, streak pressure, empty gamification, noisy notifications, fabricated social proof, or trend-driven visual clutter.
 - Every “modern” interaction must improve one of: decision confidence, speed to an official source, application readiness, affordability clarity, or the ability to return and continue.
 
+## Commit and PR conventions
+- Do not add "Co-Authored-By: Claude" or "Generated with Claude Code" lines to commit messages or pull request descriptions.
+
 ## Principles
 - Write clean, readable, maintainable code
 - Mobile-first always
