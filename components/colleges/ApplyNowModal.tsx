@@ -14,11 +14,10 @@ interface Props {
   isSponsored: boolean
   programs:    Program[]
   onClose:     () => void
-  onSuccess?:  () => void
 }
 
 export default function ApplyNowModal({
-  collegeName, collegeId, isSponsored, programs, onClose, onSuccess,
+  collegeName, collegeId, isSponsored, programs, onClose,
 }: Props) {
   const [form, setForm] = useState({
     name:    '',
@@ -83,7 +82,6 @@ export default function ApplyNowModal({
       if (!res.ok) throw new Error(data.error || 'Submission failed')
       setReference(typeof data.reference==='string'?data.reference:'')
       setSuccess(true)
-      onSuccess?.()  // notify parent to persist localStorage
     } catch (err: unknown) {
       setApiError(err instanceof Error ? err.message : 'Something went wrong. Please try again.')
     } finally {

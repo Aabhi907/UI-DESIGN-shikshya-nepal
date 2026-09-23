@@ -92,7 +92,8 @@ export async function POST(request: Request) {
 
     // ── Notify admin ───────────────────────────────────────────────────
     if (resend && ADMIN_EMAIL) {
-      await resend.emails.send({
+      try {
+        const { error: emailError } = await resend.emails.send({
         from:    FROM,
         to:      ADMIN_EMAIL,
         subject: `New admission enquiry — ${collegeName}`,
@@ -135,7 +136,11 @@ export async function POST(request: Request) {
             </div>
           </div>
         `,
-      }).catch(e => console.warn('[apply] admin email failed:', e))
+        })
+        if (emailError) console.error('[apply] admin email failed:', emailError)
+      } catch (emailError) {
+        console.error('[apply] admin email failed:', emailError)
+      }
     }
 
     return NextResponse.json({ success: true, id: lead.id, reference: `SN-${lead.id.slice(0,8).toUpperCase()}` })

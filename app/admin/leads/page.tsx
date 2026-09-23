@@ -38,6 +38,7 @@ export default function AdminLeadsPage() {
   const [leads,    setLeads]    = useState<Lead[]>([])
   const [total,    setTotal]    = useState(0)
   const [loading,  setLoading]  = useState(true)
+  const [loadError, setLoadError] = useState<string | null>(null)
   const [filter,   setFilter]   = useState<string>('all')
   const [collegeFilter, setCollegeFilter] = useState('all')
   const [collegeOptions, setCollegeOptions] = useState<Array<{ id: string; name: string }>>([])
@@ -52,16 +53,22 @@ export default function AdminLeadsPage() {
     if (collegeFilter !== 'all') params.set('college_id', collegeFilter)
     try {
       const res  = await fetch(`/api/admin/leads?${params.toString()}`, { cache: 'no-store' })
-      const data = await res.json()
-      setLeads(data.leads || [])
-      setTotal(data.total || 0)
+      const data = await res.json().catch(() => null)
+      if (!res.ok || !data || !Array.isArray(data.leads) || typeof data.total !== 'number') {
+        throw new Error(typeof data?.error === 'string' ? data.error : 'Unable to load enquiries. Please retry.')
+      }
+      setLoadError(null)
+      setLeads(data.leads)
+      setTotal(data.total)
       setCollegeOptions((current) => {
         const byId = new Map(current.map((college) => [college.id, college]))
-        for (const lead of data.leads || []) byId.set(lead.college_id, { id: lead.college_id, name: lead.college_name })
+        for (const lead of data.leads) byId.set(lead.college_id, { id: lead.college_id, name: lead.college_name })
         return Array.from(byId.values()).sort((a, b) => a.name.localeCompare(b.name))
       })
-    } catch {
-      toast.error('Failed to load enquiries')
+    } catch (reason) {
+      setLeads([])
+      setTotal(0)
+      setLoadError(reason instanceof Error ? reason.message : 'Unable to load enquiries. Please retry.')
     } finally {
       setLoading(false)
     }
@@ -148,11 +155,11 @@ export default function AdminLeadsPage() {
         <div>
           <h1 className="text-2xl font-bold text-white">Admission enquiries</h1>
           <p className="text-gray-400 mt-0.5 text-sm">
-            Student requests for college admission information — {total} total
+            Student requests for college admission information — {loadError ? 'total unavailable' : <>{total} total</>}
           </p>
         </div>
         <div className="flex flex-wrap justify-end gap-2">
-          <button onClick={exportCsv} disabled={leads.length === 0} className="flex min-h-10 items-center gap-1.5 rounded-lg bg-gray-700 px-3 py-2 text-sm text-gray-200 transition-colors hover:bg-gray-600 disabled:cursor-not-allowed disabled:opacity-50">
+          <button onClick={exportCsv} disabled={loading || !!loadError || leads.length === 0} className="flex min-h-10 items-center gap-1.5 rounded-lg bg-gray-700 px-3 py-2 text-sm text-gray-200 transition-colors hover:bg-gray-600 disabled:cursor-not-allowed disabled:opacity-50">
             <Download className="h-3.5 w-3.5" /> Export CSV
           </button>
           <button onClick={fetchLeads} className="flex min-h-10 items-center gap-1.5 rounded-lg bg-gray-700 px-3 py-2 text-sm text-gray-300 transition-colors hover:bg-gray-600">
@@ -161,6 +168,16 @@ export default function AdminLeadsPage() {
         </div>
       </div>
 
+      {loadError ? (
+        <div role="alert" className="rounded-xl border border-red-700/50 bg-red-900/20 p-6 text-red-100">
+          <h2 className="text-base font-semibold">Enquiries could not be loaded</h2>
+          <p className="mt-1 text-sm text-red-200">{loadError}</p>
+          <button type="button" onClick={fetchLeads} className="mt-4 inline-flex min-h-10 items-center gap-2 rounded-lg bg-gray-700 px-4 text-sm font-semibold text-white hover:bg-gray-600">
+            <RefreshCw className="h-4 w-4" /> Retry
+          </button>
+        </div>
+      ) : (
+        <>
       {/* Stats strip */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
         {ALL_STATUSES.map((s) => {
@@ -333,6 +350,9 @@ export default function AdminLeadsPage() {
             )
           })}
         </div>
+      )}
+
+        </>
       )}
 
       <ConfirmDialog {...dialog} onCancel={() => setDialog(CONFIRM_CLOSED)} />
