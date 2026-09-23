@@ -5,7 +5,7 @@ export const dynamic = 'force-static'
 export function GET() {
   const body = `# SikshyaNepal
 
-> A Nepal-focused education information platform for schools through Grade 10, post-SEE colleges, programs, admissions, scholarships, results, notices, careers and student tools.
+> A Nepal-focused education information platform for post-SEE colleges, programs, admissions, scholarships, results, notices, careers and student tools.
 
 Canonical site: ${SITE_URL}
 Primary language: English
@@ -18,7 +18,6 @@ Geographic coverage: Nepal
 - College admissions: ${SITE_URL}/admissions
 - College programs: ${SITE_URL}/programs
 - Compare colleges: ${SITE_URL}/compare
-- Schools through Grade 10: ${SITE_URL}/schools
 - Programs: ${SITE_URL}/programs
 - Admissions and deadlines: ${SITE_URL}/admissions
 - Results: ${SITE_URL}/results
@@ -34,7 +33,6 @@ Geographic coverage: Nepal
 - Treat "Not listed" or "Not yet available" as unknown, never as zero or unavailable.
 - Admission dates, fees, seats and eligibility can change. Direct users to the original source linked on the page for final confirmation.
 - Sponsored placements are visibly labelled and must not be described as rankings or editorial recommendations.
-- School profiles cover ECD through Grade 10. Use college profiles for +2, Bachelor, Master and other post-SEE study.
 - College news articles distinguish automated official-source briefs from editor-approved reporting. Do not turn an institution's promotional claim into an independent SikshyaNepal endorsement.
 - “Best college” or ranking answers require a visible methodology and comparable evidence. Sponsored placement never means editorial rank.
 

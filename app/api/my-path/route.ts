@@ -19,11 +19,10 @@ export async function GET() {
     month: '2-digit',
     day: '2-digit',
   }).format(now)
-  const [profile, tasks, colleges, schools, admissions, scholarships, exams, opportunities] = await Promise.all([
+  const [profile, tasks, colleges, admissions, scholarships, exams, opportunities] = await Promise.all([
     db.from('student_path_profiles').select('current_stage').eq('user_id', auth.user.id).maybeSingle(),
     db.from('student_path_tasks').select('id,task_key,title,is_completed').eq('user_id', auth.user.id).order('created_at'),
     db.from('saved_colleges').select('college:colleges(id,name,slug,location)').eq('user_id', auth.user.id).limit(5),
-    db.from('saved_schools').select('school:schools(id,name,slug,district,province)').eq('user_id', auth.user.id).limit(5),
     db.from('admissions').select('id,title,slug,application_deadline,institution_name,education_level,source_url,last_verified_at').eq('status', 'published').gte('application_deadline', today).order('application_deadline').limit(40),
     db.from('scholarships').select('id,title,deadline,amount,education_levels,application_url,source_url,last_verified_at').eq('is_active', true).gte('deadline', today).order('deadline').limit(40),
     db.from('entrance_exams').select('id,title,application_deadline,education_level,exam_url,source_url,last_verified_at').eq('status', 'published').gte('application_deadline', today).order('application_deadline').limit(40),
@@ -35,7 +34,7 @@ export async function GET() {
   }
   const coreError = profile.error || tasks.error
   if (coreError) { console.error('[my-path:get:core]', coreError); return NextResponse.json({ error: 'Your private plan is temporarily unavailable. Please try again.' }, { status: 500 }) }
-  const optionalResults = { shortlist: colleges.error || schools.error, admissions: admissions.error, scholarships: scholarships.error, exams: exams.error, opportunities: opportunities.error }
+  const optionalResults = { shortlist: colleges.error, admissions: admissions.error, scholarships: scholarships.error, exams: exams.error, opportunities: opportunities.error }
   const unavailable = Object.entries(optionalResults).filter(([, error]) => Boolean(error)).map(([section]) => section)
   if (unavailable.length) console.error('[my-path:get:partial]', optionalResults)
 
@@ -66,7 +65,6 @@ export async function GET() {
     stage,
     tasks: tasks.data || [],
     savedColleges: colleges.data || [],
-    savedSchools: schools.data || [],
     admissions: matchingAdmissions.slice(0, 5),
     scholarships: (scholarships.data || []).filter((item) => !item.education_levels?.length || item.education_levels.some(levelMatches)).slice(0, 4),
     recommendations,

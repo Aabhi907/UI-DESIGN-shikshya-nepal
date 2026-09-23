@@ -24,61 +24,63 @@ const navLinks: NavigationLink[] = [
     label: 'Colleges',
     href: '/colleges',
     sub: [
-      { label: 'All Colleges', href: '/colleges' },
-      { label: '+2 Colleges', href: '/colleges?level=%2B2' },
-      { label: 'Bachelor Colleges', href: '/colleges?level=bachelor' },
-      { label: 'Master Colleges', href: '/colleges?level=master' },
-      { label: 'Compare Colleges', href: '/compare' },
-      { label: 'Plan Study Costs', href: '/tools/college-cost-calculator' },
+      { label: 'All colleges', href: '/colleges' },
+      { label: '+2 colleges', href: '/colleges?level=%2B2' },
+      { label: 'Bachelor colleges', href: '/colleges?level=bachelor' },
+      { label: 'Master colleges', href: '/colleges?level=master' },
+      { label: 'Compare colleges', href: '/compare' },
+      { label: 'Cost calculator', href: '/tools/college-cost-calculator' },
     ],
   },
   {
     label: 'Programs',
     href: '/programs',
     sub: [
-      { label: 'All Programs', href: '/programs' },
+      { label: 'All programs', href: '/programs' },
       { label: 'IT & Computing', href: '/programs?faculty=it' },
       { label: 'Engineering', href: '/programs?faculty=engineering' },
       { label: 'Management', href: '/programs?faculty=management' },
       { label: 'Medical', href: '/programs?faculty=medical' },
-      { label: 'Study & Career Explorer', href: '/careers' },
+      { label: 'What should I study?', href: '/tools/program-finder' },
     ],
   },
-  { label: 'Admissions', href: '/admissions', sub: [
-    { label: 'Open Admissions', href: '/admissions?deadline=open' },
-    { label: 'College Admissions', href: '/admissions?institution=college' },
-    { label: 'Deadlines', href: '/deadlines' },
-    { label: 'Admission Planner', href: '/admissions/planner' },
-  ]},
   {
-    label: 'Schools',
-    href: '/schools',
+    label: 'Admissions',
+    href: '/admissions',
     sub: [
-      { label: 'All Schools', href: '/schools' },
-      { label: 'Verified Schools', href: '/schools?verified=true' },
-      { label: 'Secondary Schools', href: '/schools?level=secondary' },
-      { label: 'Community Schools', href: '/schools?ownership=community' },
+      { label: 'Open admissions', href: '/admissions?deadline=open' },
+      { label: 'Deadlines', href: '/deadlines' },
+      { label: 'Entrance exams', href: '/entrance-exams' },
+      { label: 'Admission planner', href: '/admissions/planner' },
     ],
   },
   {
-    label: 'More',
+    label: 'Scholarships',
+    href: '/scholarships',
+    sub: [
+      { label: 'Scholarships', href: '/scholarships' },
+      { label: 'Opportunities', href: '/opportunities' },
+    ],
+  },
+  {
+    label: 'Guidance',
+    href: '/my-path',
+    sub: [
+      { label: 'My Path', href: '/my-path' },
+      { label: 'Career Explorer', href: '/careers' },
+      { label: 'GPA calculator', href: '/tools/gpa-calculator' },
+      { label: 'Study resources', href: '/study-resources' },
+      { label: 'Student community', href: '/community' },
+      { label: 'Student wellbeing', href: '/wellbeing' },
+    ],
+  },
+  {
+    label: 'Updates',
     href: '/news',
     sub: [
-      { group: 'Updates', label: 'News & Guides', href: '/news' },
-      { group: 'Updates', label: 'Results', href: '/results' },
-      { group: 'Updates', label: 'Notices', href: '/notices' },
-      { group: 'Plan your next step', label: 'My Path', href: '/my-path' },
-      { group: 'Plan your next step', label: 'College Cost Calculator', href: '/tools/college-cost-calculator' },
-      { group: 'Plan your next step', label: 'SEE & NEB GPA Calculator', href: '/tools/gpa-calculator' },
-      { group: 'Plan your next step', label: 'Career Explorer', href: '/careers' },
-      { group: 'Plan your next step', label: 'Saved Institutions', href: '/account/saved' },
-      { group: 'Support & opportunities', label: 'Scholarships', href: '/scholarships' },
-      { group: 'Support & opportunities', label: 'Entrance Exams', href: '/entrance-exams' },
-      { group: 'Support & opportunities', label: 'Opportunities', href: '/opportunities' },
-      { group: 'Support & opportunities', label: 'Study Resources', href: '/study-resources' },
-      { group: 'Support & opportunities', label: 'Student Community', href: '/community' },
-      { group: 'Support & opportunities', label: 'Student Wellbeing', href: '/wellbeing' },
-      { group: 'Language', label: 'नेपाली (Beta)', href: '/ne' },
+      { label: 'News & guides', href: '/news' },
+      { label: 'Results', href: '/results' },
+      { label: 'Notices', href: '/notices' },
     ],
   },
 ]
@@ -92,6 +94,18 @@ function Wordmark() {
         <span className="text-sn-primary">Nepal</span>
       </span>
     </Link>
+  )
+}
+
+// Lightweight EN / नेपाली switch — no i18n machinery, just a link to the
+// existing / and /ne routes. Replaces the old buried "नेपाली (Beta)" item.
+function LanguageSwitch({ pathname, className }: { pathname: string; className?: string }) {
+  const isNepali = pathname === '/ne' || pathname.startsWith('/ne/')
+  return (
+    <div className={`inline-flex items-center overflow-hidden rounded-sn-control border border-sn-border-strong text-xs font-bold font-nunito ${className || ''}`} role="group" aria-label="Language">
+      <Link href="/" aria-current={!isNepali ? 'page' : undefined} className={`px-2.5 py-2 transition-colors ${!isNepali ? 'bg-sn-primary text-white' : 'text-sn-ink-soft hover:text-sn-ink'}`}>EN</Link>
+      <Link href="/ne" aria-current={isNepali ? 'page' : undefined} className={`px-2.5 py-2 transition-colors ${isNepali ? 'bg-sn-primary text-white' : 'text-sn-ink-soft hover:text-sn-ink'}`}>ने</Link>
+    </div>
   )
 }
 
@@ -213,7 +227,7 @@ export default function Nav() {
                   )}
 
                   {link.sub && openDrop === link.label && (
-                    <div className={`absolute top-full z-50 ${link.label === 'More' ? 'right-0' : 'left-0'}`}>
+                    <div className={`absolute top-full z-50 ${link.label === 'Updates' ? 'right-0' : 'left-0'}`}>
                       <div className="absolute -top-2 left-0 right-0 h-2 bg-transparent" />
                       <div id={`sn-desktop-nav-${link.label.toLowerCase().replaceAll(' ', '-')}`} className="mt-1.5 max-h-[70vh] w-72 overflow-y-auto overscroll-contain rounded-sn-card border border-sn-border bg-sn-surface py-2 shadow-sn-float">
                         {link.sub.map((s, index) => (
@@ -234,6 +248,7 @@ export default function Nav() {
             </nav>
 
             <div className="hidden xl:flex items-center gap-2">
+              <LanguageSwitch pathname={pathname} />
               <button onClick={() => window.dispatchEvent(new Event('open-site-search'))} className="inline-flex items-center gap-2 rounded-sn-control border border-sn-border-strong px-3 py-2 text-sm font-bold font-nunito text-sn-ink-soft hover:border-sn-primary hover:text-sn-primary" aria-label="Search SikshyaNepal">
                 <Search className="h-4 w-4" /><span className="hidden xl:inline">Search</span><kbd className="hidden rounded border border-sn-border px-1.5 py-0.5 text-[10px] text-sn-ink-muted xl:inline">⌘K</kbd>
               </button>
@@ -320,6 +335,7 @@ export default function Nav() {
               <Link href="/results" onClick={() => closeMobileMenu(false)} className="flex min-h-11 items-center justify-center gap-2 w-full py-3 rounded-sn-control border border-sn-border-strong text-sm font-bold font-nunito text-sn-ink hover:border-sn-primary hover:text-sn-primary transition-colors">
                 Check Results
               </Link>
+              <div className="flex justify-center pt-1"><LanguageSwitch pathname={pathname} /></div>
             </div>
           </div>
         </div>

@@ -1,11 +1,9 @@
 'use client'
 
 import Link from 'next/link'
-import { useSearchParams } from 'next/navigation'
-import { Suspense, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { AlertCircle, ArrowRight, Bookmark, Calculator, CalendarCheck, CheckCircle2, Clock3, GitCompare, Loader2, MapPin, Trash2 } from 'lucide-react'
 import { cleanCollegeText } from '@/lib/college-display'
-import SavedSchools from '../saved-schools/page'
 
 type Saved = {
   college_id: string
@@ -33,9 +31,7 @@ const sourceState = (value:string|null) => {
   return days<=180?{label:`Checked ${days===0?'today':`${days} days ago`}`,tone:'bg-emerald-50 text-emerald-700',current:true}:{label:'Recheck recommended',tone:'bg-amber-50 text-amber-800',current:false}
 }
 
-function SavedPageContent() {
-  const searchParams = useSearchParams()
-  const savedType = searchParams.get('type') === 'schools' ? 'schools' : 'colleges'
+export default function SavedPage() {
   const [items, setItems] = useState<Saved[]>([])
   const [selected, setSelected] = useState<string[]>([])
   const [needsLogin, setNeedsLogin] = useState(false)
@@ -45,10 +41,6 @@ function SavedPageContent() {
   const [selectionMessage, setSelectionMessage] = useState('')
 
   useEffect(() => {
-    if (savedType === 'schools') {
-      setLoading(false)
-      return
-    }
     const controller = new AbortController()
     setLoading(true)
     setError('')
@@ -65,7 +57,7 @@ function SavedPageContent() {
       })
       .finally(() => setLoading(false))
     return () => controller.abort()
-  }, [savedType])
+  }, [])
 
   const compareUrl = useMemo(() => {
     const params = new URLSearchParams()
@@ -106,11 +98,8 @@ function SavedPageContent() {
     }
   }
 
-  if (savedType === 'schools') return <main className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-12"><h1 className="font-display text-3xl font-extrabold text-ink">Saved institutions</h1><p className="mt-2 text-gray-500">Keep your college and school shortlists together.</p><nav aria-label="Saved institution type" className="mt-6 inline-flex rounded-xl border border-gray-200 bg-white p-1"><Link href="/account/saved" className="min-h-11 rounded-lg px-4 py-3 text-sm font-bold text-gray-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Colleges</Link><Link href="/account/saved?type=schools" aria-current="page" className="min-h-11 rounded-lg bg-primary px-4 py-3 text-sm font-bold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Schools</Link></nav><SavedSchools /></main>
-
   return (
     <main className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-12">
-      <nav aria-label="Saved institution type" className="mb-7 inline-flex rounded-xl border border-gray-200 bg-white p-1"><Link href="/account/saved" aria-current="page" className="min-h-11 rounded-lg bg-primary px-4 py-3 text-sm font-bold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Colleges</Link><Link href="/account/saved?type=schools" className="min-h-11 rounded-lg px-4 py-3 text-sm font-bold text-gray-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">Schools</Link></nav>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="flex items-center gap-2 font-display text-3xl font-extrabold text-ink"><Bookmark className="h-7 w-7 text-blue-600" />Saved colleges</h1>
@@ -170,8 +159,4 @@ function SavedPageContent() {
       )}
     </main>
   )
-}
-
-export default function SavedPage() {
-  return <Suspense fallback={<main className="mx-auto max-w-5xl px-4 py-10 sm:px-6 sm:py-12"><div className="h-8 w-48 animate-pulse rounded bg-slate-200 motion-reduce:animate-none" /></main>}><SavedPageContent /></Suspense>
 }

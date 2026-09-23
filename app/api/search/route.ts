@@ -34,7 +34,6 @@ export async function GET(request: Request) {
   const pattern = `%${query}%`
   const sections = [
     ['admissions', db.from('admissions').select('id,title,slug,institution_name,application_deadline').eq('status', 'published').or(`title.ilike.${pattern},institution_name.ilike.${pattern}`).order('application_deadline', { ascending: true, nullsFirst: false }).limit(8)],
-    ['schools', db.from('schools').select('id,name,slug,district,province,verification_status').eq('status', 'active').ilike('name', pattern).order('name').limit(8)],
     ['colleges', db.from('colleges').select('id,name,slug,location,affiliation').or('status.eq.active,status.is.null').ilike('name', pattern).order('name').limit(8)],
     ['programs', db.from('programs').select('id,name,slug,faculty,duration').or(`name.ilike.${pattern},faculty.ilike.${pattern}`).order('name').limit(8)],
     ['news', db.from('news').select('id,title,slug,published_date').eq('status', 'published').ilike('title', pattern).order('published_date', { ascending: false }).limit(10)],
@@ -72,7 +71,6 @@ export async function GET(request: Request) {
   const colleges = [...values.colleges, ...programColleges].filter((college, index, all) => all.findIndex(item => item.id === college.id) === index)
   const result = {
     admissions: rankByText(values.admissions, item => `${String(item.title || '')} ${String(item.institution_name || '')}`, query),
-    schools: rankByText(values.schools, item => String(item.name || ''), query),
     colleges: rankByText(colleges, item => String(item.name || ''), query).slice(0, 12),
     programs: rankByText(values.programs, item => String(item.name || ''), query),
     news: values.news.slice(0, 6),

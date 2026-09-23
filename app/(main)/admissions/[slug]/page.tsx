@@ -19,7 +19,7 @@ export const revalidate = 0
 type AdmissionWithHistory = Admission & { deadline_history: { id: string; previous_deadline: string | null; new_deadline: string | null; changed_at: string }[] }
 async function getAdmission(slug: string) {
   const db = createServerSupabaseClient()
-  const { data } = await db.from('admissions').select('*, school:schools(id,name,slug,district,province), college:colleges(id,name,slug,location)').eq('slug', slug).eq('status', 'published').single()
+  const { data } = await db.from('admissions').select('*, college:colleges(id,name,slug,location)').eq('slug', slug).eq('status', 'published').single()
   if (!data) return null
   const { data: history } = await db.from('admission_deadline_history').select('id,previous_deadline,new_deadline,changed_at').eq('admission_id', data.id).order('changed_at', { ascending: false }).limit(10)
   return { ...data, deadline_history: history || [] } as AdmissionWithHistory

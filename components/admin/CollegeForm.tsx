@@ -183,7 +183,7 @@ export default function CollegeForm({ initialData, collegeId, isEdit = false }: 
             <div className="md:col-span-2">
               <label className="block text-sm font-medium text-gray-300 mb-2">Education levels offered *</label>
               <div className="flex flex-wrap gap-3">{[['plus_two', '+2'], ['bachelor', 'Bachelor'], ['master', 'Master'], ['mphil', 'MPhil'], ['phd', 'PhD'], ['diploma', 'Diploma'], ['certificate', 'Certificate']].map(([value, label]) => <label key={value} className="flex items-center gap-2 rounded-lg border border-gray-600 bg-gray-700 px-3 py-2 text-sm"><input type="checkbox" checked={form.education_levels.includes(value)} onChange={() => toggleLevel(value)} />{label}</label>)}</div>
-              <p className="mt-2 text-xs text-gray-500">Colleges cover post-SEE education only. Grade 10 and below belongs in Schools.</p>
+              <p className="mt-2 text-xs text-gray-500">Colleges cover post-SEE education only.</p>
             </div>
           </div>
         </div>

@@ -16,7 +16,7 @@ export default function OpenGraphImage() {
         <div style={{fontSize:72,fontWeight:800,lineHeight:1.08,letterSpacing:'-2px'}}>Compare colleges before you apply.</div>
         <div style={{marginTop:28,fontSize:29,lineHeight:1.4,color:'#475569'}}>Check programmes, published fees, admissions and source dates for colleges across Nepal.</div>
       </div>
-      <div style={{display:'flex',justifyContent:'space-between',fontSize:22,color:'#64748b'}}><span>Schools · Colleges · Programs · Results</span><span>Education in Nepal</span></div>
+      <div style={{display:'flex',justifyContent:'space-between',fontSize:22,color:'#64748b'}}><span>Colleges · Programs · Admissions · Results</span><span>Education in Nepal</span></div>
     </div>,
     size,
   )

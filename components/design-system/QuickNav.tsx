@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { Building2, CalendarDays, House, School, Search } from 'lucide-react'
+import { Building2, CalendarDays, House, Search } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 
 // Phase 1 design system version of components/layout/MobileQuickNav.tsx —
@@ -9,7 +9,6 @@ import { usePathname } from 'next/navigation'
 // by every page not yet converted to this system.
 const items = [
   { href: '/', label: 'Home', Icon: House },
-  { href: '/schools', label: 'Schools', Icon: School },
   { href: '/admissions', label: 'Admissions', Icon: CalendarDays },
   { href: '/colleges', label: 'Colleges', Icon: Building2 },
   { href: '/search', label: 'Search', Icon: Search },
@@ -19,7 +18,7 @@ export default function QuickNav() {
   const pathname = usePathname()
   return (
     <nav aria-label="Quick navigation" className="fixed inset-x-0 bottom-0 z-50 border-t border-sn-border bg-sn-ground/95 pb-[env(safe-area-inset-bottom)] shadow-sn-float backdrop-blur lg:hidden">
-      <div className="mx-auto grid max-w-lg grid-cols-5">
+      <div className="mx-auto grid max-w-lg grid-cols-4">
         {items.map(({ href, label, Icon }) => {
           const active = href === '/' ? pathname === '/' : pathname.startsWith(href)
           return (

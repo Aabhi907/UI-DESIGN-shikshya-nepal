@@ -10,6 +10,18 @@ const nextConfig = {
       { protocol: 'https', hostname: 'images.unsplash.com' },
     ],
   },
+  async redirects() {
+    return [
+      // The Schools (K-10 directory) offering was removed entirely — see the
+      // "Remove Schools + reorganise navigation" Build Brief. Old URLs
+      // redirect to the homepage rather than 404ing.
+      { source: '/schools', destination: '/', permanent: true },
+      { source: '/schools/:path*', destination: '/', permanent: true },
+      { source: '/submit-school', destination: '/', permanent: true },
+      { source: '/account/saved-schools', destination: '/account/saved', permanent: true },
+      { source: '/tools/school-finder', destination: '/', permanent: true },
+    ]
+  },
   async headers() {
     return [
       {

@@ -1,13 +1,15 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
-import { LogOut, UserRound } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { Bookmark, ChevronDown, LogOut, MapPinned, UserRound } from 'lucide-react'
 
 export default function AccountButton({ mobile = false, onNavigate }: { mobile?: boolean; onNavigate?: () => void }) {
   const [email, setEmail] = useState<string | null>(null)
   const [ready, setReady] = useState(false)
   const [signingOut, setSigningOut] = useState(false)
+  const [open, setOpen] = useState(false)
+  const rootRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     let active = true
@@ -24,6 +26,17 @@ export default function AccountButton({ mobile = false, onNavigate }: { mobile?:
     window.addEventListener('auth-session-changed', loadSession)
     return () => { active = false; window.removeEventListener('auth-session-changed', loadSession) }
   }, [])
+
+  useEffect(() => {
+    if (!open || mobile) return
+    const handleClickOutside = (event: MouseEvent) => {
+      if (!rootRef.current?.contains(event.target as Node)) setOpen(false)
+    }
+    const handleKey = (event: KeyboardEvent) => { if (event.key === 'Escape') setOpen(false) }
+    document.addEventListener('click', handleClickOutside)
+    document.addEventListener('keydown', handleKey)
+    return () => { document.removeEventListener('click', handleClickOutside); document.removeEventListener('keydown', handleKey) }
+  }, [open, mobile])
 
   async function signOut() {
     if (signingOut) return
@@ -42,6 +55,37 @@ export default function AccountButton({ mobile = false, onNavigate }: { mobile?:
 
   if (!ready) return <span aria-hidden="true" className={`inline-flex min-h-11 shrink-0 items-center justify-center rounded-lg ${mobile ? 'w-full' : 'w-24'}`}/>
   if (!email) return <Link href="/account/login" onClick={onNavigate} className={`inline-flex min-h-11 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg border border-primary bg-white px-4 text-sm font-bold text-primary shadow-sm transition hover:bg-primary hover:text-white ${mobile ? 'w-full' : ''}`}><UserRound className="h-4 w-4"/>Sign in</Link>
-  if (mobile) return <div className="rounded-xl border border-gray-200 bg-gray-50 p-3"><p className="truncate text-xs text-gray-500">Signed in as {email}</p><div className="mt-3 grid grid-cols-2 gap-2"><Link href="/my-path" onClick={onNavigate} className="min-h-11 rounded-lg bg-white px-3 py-2 text-center text-sm font-bold text-primary">My Path</Link><button type="button" onClick={signOut} disabled={signingOut} className="min-h-11 rounded-lg bg-white px-3 py-2 text-sm font-bold text-gray-700 disabled:opacity-60">{signingOut ? 'Logging out…' : 'Log out'}</button></div></div>
-  return <button type="button" onClick={signOut} disabled={signingOut} className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg border border-gray-200 bg-white px-4 text-sm font-bold text-gray-700 transition hover:border-red-200 hover:bg-red-50 hover:text-red-700 disabled:cursor-wait disabled:opacity-60"><LogOut className="h-4 w-4" aria-hidden="true"/>{signingOut ? 'Logging out…' : 'Log out'}</button>
+
+  if (mobile) return (
+    <div className="rounded-xl border border-gray-200 bg-gray-50 p-3">
+      <p className="truncate text-xs text-gray-500">Signed in as {email}</p>
+      <div className="mt-3 space-y-2">
+        <Link href="/my-path" onClick={onNavigate} className="flex min-h-11 items-center justify-center rounded-lg bg-white px-3 py-2 text-sm font-bold text-primary">My Path</Link>
+        <Link href="/account/saved" onClick={onNavigate} className="flex min-h-11 items-center justify-center rounded-lg bg-white px-3 py-2 text-sm font-bold text-primary">Saved institutions</Link>
+        <button type="button" onClick={signOut} disabled={signingOut} className="flex min-h-11 w-full items-center justify-center rounded-lg bg-white px-3 py-2 text-sm font-bold text-gray-700 disabled:opacity-60">{signingOut ? 'Logging out…' : 'Log out'}</button>
+      </div>
+    </div>
+  )
+
+  return (
+    <div ref={rootRef} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((value) => !value)}
+        aria-expanded={open}
+        aria-controls="sn-account-menu"
+        className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg border border-gray-200 bg-white px-4 text-sm font-bold text-gray-700 transition hover:border-primary/40"
+      >
+        <UserRound className="h-4 w-4" aria-hidden="true" />Account<ChevronDown className={`h-3.5 w-3.5 transition-transform ${open ? 'rotate-180' : ''}`} aria-hidden="true" />
+      </button>
+      {open && (
+        <div id="sn-account-menu" role="menu" className="absolute right-0 top-full z-50 mt-1.5 w-56 overflow-hidden rounded-xl border border-gray-200 bg-white py-1.5 shadow-xl">
+          <p className="truncate border-b border-gray-100 px-4 pb-2 pt-1 text-xs text-gray-500">Signed in as {email}</p>
+          <Link href="/my-path" role="menuitem" onClick={() => setOpen(false)} className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 hover:text-primary"><MapPinned className="h-4 w-4" aria-hidden="true" />My Path</Link>
+          <Link href="/account/saved" role="menuitem" onClick={() => setOpen(false)} className="flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 hover:text-primary"><Bookmark className="h-4 w-4" aria-hidden="true" />Saved institutions</Link>
+          <button type="button" role="menuitem" onClick={signOut} disabled={signingOut} className="flex w-full items-center gap-2 border-t border-gray-100 px-4 py-2.5 text-left text-sm font-semibold text-gray-700 hover:bg-red-50 hover:text-red-700 disabled:cursor-wait disabled:opacity-60"><LogOut className="h-4 w-4" aria-hidden="true" />{signingOut ? 'Logging out…' : 'Log out'}</button>
+        </div>
+      )}
+    </div>
+  )
 }

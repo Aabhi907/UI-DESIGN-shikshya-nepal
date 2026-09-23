@@ -1,5 +1,5 @@
 // Phase-2-scoped loading skeleton for the sn- listing/search pages (colleges,
-// schools, programs). Kept separate from components/ui/DirectorySkeleton,
+// programs). Kept separate from components/ui/DirectorySkeleton,
 // which admissions/loading.tsx still uses — that page isn't converted yet.
 export default function ListingSkeleton({ title = 'Loading…', withSidebar = false }: { title?: string; withSidebar?: boolean }) {
   const cards = (

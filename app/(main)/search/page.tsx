@@ -3,11 +3,10 @@
 import { useState, useEffect, useCallback, Suspense, useMemo, useRef } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Search, Building2, BookOpen, Newspaper, FileText, GraduationCap, Award, School, CalendarCheck2 } from 'lucide-react'
+import { Search, Building2, BookOpen, Newspaper, FileText, GraduationCap, Award, CalendarCheck2 } from 'lucide-react'
 
 interface SearchResults {
   admissions: { id: string; title: string; slug: string; institution_name: string; application_deadline: string | null }[]
-  schools: { id: string; name: string; slug: string; district: string; province: string; verification_status: string }[]
   colleges: { id: string; name: string; slug: string; location: string; affiliation: string | null }[]
   programs: { id: string; name: string; slug: string; faculty: string; duration: string }[]
   news: { id: string; title: string; slug: string; published_date: string | null }[]
@@ -102,7 +101,7 @@ function SearchPageInner() {
   }
 
   const totalResults = data
-    ? data.admissions.length + data.schools.length + data.colleges.length + data.programs.length + data.news.length +
+    ? data.admissions.length + data.colleges.length + data.programs.length + data.news.length +
       data.notices.length + data.results.length + data.scholarships.length
     : 0
   useEffect(() => { if (!loading && query && data && tracked.current !== query) { tracked.current = query; void fetch('/api/events/search', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query, result_count: totalResults }) }) } }, [data, loading, query, totalResults])
@@ -119,7 +118,7 @@ function SearchPageInner() {
             type="text"
             value={inputVal}
             onChange={e => setInputVal(e.target.value)}
-            placeholder="Search schools, colleges, programs, news..."
+            placeholder="Search colleges, programs, news..."
             className="w-full pl-12 pr-28 py-3.5 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm"
           />
           <button
@@ -174,28 +173,6 @@ function SearchPageInner() {
             <section>
               <div className="flex items-center gap-2 mb-3"><CalendarCheck2 className="w-4 h-4 text-cyan-600" /><h2 className="font-semibold text-gray-800">Admissions ({data.admissions.length})</h2></div>
               <div className="space-y-2">{data.admissions.map((a) => <Link key={a.id} href={`/admissions/${a.slug}`} className="flex items-center justify-between gap-4 rounded-xl border border-gray-200 bg-white p-4 hover:border-cyan-300"><div><p className="text-sm font-medium text-gray-900">{a.title}</p><p className="mt-1 text-xs text-gray-500">{a.institution_name}</p></div>{a.application_deadline && <span className="flex-shrink-0 text-xs font-medium text-orange-600">Closes {new Date(a.application_deadline).toLocaleDateString('en-NP', { day: 'numeric', month: 'short' })}</span>}</Link>)}</div>
-            </section>
-          )}
-
-          {/* Schools */}
-          {data.schools.length > 0 && (
-            <section>
-              <div className="flex items-center gap-2 mb-3">
-                <School className="w-4 h-4 text-blue-600" />
-                <h2 className="font-semibold text-gray-800">Schools ({data.schools.length})</h2>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {data.schools.map(s => (
-                  <Link key={s.id} href={`/schools/${s.slug}`}
-                    className="flex items-start gap-3 p-4 bg-white rounded-xl border border-gray-200 hover:border-blue-300 hover:shadow-sm transition-all">
-                    <div className="w-9 h-9 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0"><School className="w-4 h-4 text-blue-600" /></div>
-                    <div className="min-w-0">
-                      <p className="font-medium text-gray-900 text-sm line-clamp-1">{s.name}</p>
-                      <p className="text-xs text-gray-500 mt-0.5">{s.district}, {s.province}{s.verification_status !== 'unverified' ? ' • Verified' : ''}</p>
-                    </div>
-                  </Link>
-                ))}
-              </div>
             </section>
           )}
 

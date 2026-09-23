@@ -1,10 +1,9 @@
 import { slugify } from '@/lib/utils'
 
-const institutionTypes = ['school', 'college', 'university', 'training_provider', 'other'] as const
+const institutionTypes = ['college', 'university', 'training_provider', 'other'] as const
 const admissionTypes = ['general', 'entrance', 'scholarship', 'quota', 'transfer', 'other'] as const
 const statuses = ['draft', 'published', 'closed', 'archived'] as const
 const verificationStatuses = ['unverified', 'source_verified', 'institution_verified'] as const
-const schoolLevels = ['ECD / Grade 1-10', 'SEE']
 const collegeLevels = ['+2', 'Diploma', 'Certificate', 'Bachelor', 'Master', 'MPhil', 'PhD']
 type Parsed<T> = { value: T } | { error: string }
 
@@ -31,7 +30,7 @@ export function parseAdmissionInput(body: unknown, fallbackSlug = ''): { value: 
   if (!('value' in fee)) return { error: fee.error }; if (!('value' in seats)) return { error: seats.error }
   if (openAt.value && deadline.value && Date.parse(openAt.value) > Date.parse(deadline.value)) return { error: 'The opening date cannot be after the application deadline.' }
   const level = optionalText(input.education_level, 80)
-  if (level && ((institutionType === 'school' && !schoolLevels.includes(level)) || ((institutionType === 'college' || institutionType === 'university') && !collegeLevels.includes(level)))) return { error: 'Schools may only use ECD/Grade 1–10 or SEE. +2 and higher admissions belong to colleges.' }
+  if (level && (institutionType === 'college' || institutionType === 'university') && !collegeLevels.includes(level)) return { error: 'Education level must be +2, Diploma, Certificate, Bachelor, Master, MPhil or PhD.' }
   const sponsored = input.is_sponsored === true, sponsorLabel = optionalText(input.sponsor_label, 160)
   if (sponsored && (!sponsorLabel || !/(sponsored|paid)/i.test(sponsorLabel))) return { error: 'Paid placements require a visible label containing “Sponsored” or “Paid”.' }
   const suppliedSlug = text(input.slug, 180), slug = suppliedSlug || fallbackSlug || `${slugify(title)}-${Date.now()}`

@@ -27,6 +27,5 @@ export function admissionState(admission: Pick<Admission, 'status' | 'applicatio
 }
 
 export function admissionLocation(admission: Admission): string | null {
-  if (admission.school) return [admission.school.district, admission.school.province].filter(Boolean).join(', ')
   return admission.college?.location || null
 }

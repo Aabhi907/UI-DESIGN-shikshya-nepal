@@ -8,7 +8,7 @@ export default function ReportCorrectionForm({
   entityId,
   entityName,
 }: {
-  entityType: 'school' | 'college'
+  entityType: 'college'
   entityId: string
   entityName: string
 }) {

@@ -21,7 +21,7 @@ export async function POST(request: Request) {
     const email = clean(body.reporter_email, 254).toLowerCase()
     const sourceUrl = clean(body.source_url, 1000)
 
-    if (!['school', 'college'].includes(entityType) || !/^[0-9a-f-]{36}$/i.test(entityId)) {
+    if (entityType !== 'college' || !/^[0-9a-f-]{36}$/i.test(entityId)) {
       return NextResponse.json({ error: 'Invalid institution.' }, { status: 400 })
     }
     if (!entityName || !TYPES.has(correctionType) || details.length < 10) {

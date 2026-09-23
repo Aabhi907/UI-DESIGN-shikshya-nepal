@@ -18,7 +18,6 @@ import Button from '@/components/design-system/Button'
 import FeaturedCollegeCard from '@/components/design-system/FeaturedCollegeCard'
 import {
   Building2,
-  School,
   FileText,
   Bell,
   CalendarCheck2,
@@ -84,12 +83,12 @@ async function getHomeData() {
 
   const [
     admissionsRes, resultsRes, noticesRes, collegesRes,
-    schoolCountRes, collegeCountRes, programCountRes, universityCountRes,
+    collegeCountRes, programCountRes, universityCountRes,
     tuCountRes, kuCountRes, puCountRes, purUCountRes,
   ] = await Promise.all([
     supabase
       .from('admissions')
-      .select('*, school:schools(id,name,slug,district,province), college:colleges(id,name,slug,location)')
+      .select('*, college:colleges(id,name,slug,location)')
       .eq('status', 'published')
       .order('is_featured', { ascending: false })
       .order('application_deadline', { ascending: true, nullsFirst: false })
@@ -105,7 +104,6 @@ async function getHomeData() {
       .order('published_date', { ascending: false })
       .limit(6),
     supabase.from('colleges').select('*').eq('is_featured', true).or('status.eq.active,status.is.null').order('name').limit(6),
-    supabase.from('schools').select('id', { count: 'exact', head: true }).eq('status', 'active'),
     supabase.from('colleges').select('id', { count: 'exact', head: true }).or('status.eq.active,status.is.null'),
     supabase.from('programs').select('id',  { count: 'exact', head: true }),
     supabase.from('universities').select('id', { count: 'exact', head: true }),
@@ -116,12 +114,10 @@ async function getHomeData() {
   ])
 
   const collegeCount = collegeCountRes.count ?? 0
-  const schoolCount = schoolCountRes.count ?? 0
   const programCount = programCountRes.count ?? 0
   const universityCount = universityCountRes.count ?? 0
 
   const heroStats = [
-    { label: 'Schools',      value: schoolCount },
     { label: 'Colleges',     value: collegeCount },
     { label: 'Programs',     value: programCount },
     { label: 'Universities', value: universityCount },
@@ -236,18 +232,8 @@ export default async function HomePage() {
                 <Button.Link href="/colleges" variant="secondary">Browse colleges</Button.Link>
               </div>
 
-              <div className="mt-8 grid gap-4 sm:grid-cols-2">
-                <Link href="/schools" className="group rounded-sn-card border border-sn-border bg-sn-surface p-5 shadow-sn-card transition hover:shadow-sn-float">
-                  <div className="flex items-start gap-3">
-                    <IconTile icon={School} tint="mint" />
-                    <div>
-                      <p className="font-bold font-nunito text-sn-ink">Looking for a school?</p>
-                      <p className="mt-1 text-xs leading-5 font-nunito text-sn-ink-soft">ECD to Grade 10, for parents and guardians.</p>
-                      <span className="mt-2 inline-flex items-center gap-1 text-xs font-bold font-nunito text-sn-primary">Find a school <ArrowRight className="h-3.5 w-3.5 transition group-hover:translate-x-0.5" aria-hidden="true" /></span>
-                    </div>
-                  </div>
-                </Link>
-                <Link href="/colleges" className="group rounded-sn-card border border-sn-border bg-sn-surface p-5 shadow-sn-card transition hover:shadow-sn-float">
+              <div className="mt-8">
+                <Link href="/colleges" className="group block rounded-sn-card border border-sn-border bg-sn-surface p-5 shadow-sn-card transition hover:shadow-sn-float">
                   <div className="flex items-start gap-3">
                     <IconTile icon={GraduationCap} tint="peach" />
                     <div>
@@ -301,7 +287,6 @@ export default async function HomePage() {
             {[
               { href: '/results', label: 'Check results', text: 'TU, KU, NEB & more', Icon: FileText, tint: 'peach' as const },
               { href: '/admissions?deadline=open', label: 'Admissions', text: 'Open & upcoming', Icon: CalendarCheck2, tint: 'mint' as const },
-              { href: '/schools', label: 'Find a school', text: 'ECD to Grade 10', Icon: School, tint: 'butter' as const },
               { href: '/colleges', label: 'Find a college', text: '+2 and higher', Icon: GraduationCap, tint: 'lilac' as const },
               { href: '/scholarships', label: 'Scholarships', text: 'Funding options', Icon: Award, tint: 'peach' as const },
               { href: '/entrance-exams', label: 'Entrance exams', text: 'Dates & eligibility', Icon: CalendarClock, tint: 'mint' as const },

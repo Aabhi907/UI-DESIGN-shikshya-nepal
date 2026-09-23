@@ -7,7 +7,6 @@ import { Search, X } from 'lucide-react'
 
 const TRENDING = [
   { label: 'Admissions open', href: '/admissions' },
-  { label: 'Schools near me', href: '/schools' },
   { label: 'TU Results',   href: '/results?university=TU' },
   { label: 'KU Notices',   href: '/notices?university=KU' },
   { label: 'BCA Colleges', href: '/colleges?q=BCA' },
@@ -40,7 +39,7 @@ export default function HeroSearch() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Try “BCA colleges in Kathmandu”"
-              aria-label="Search schools, colleges, programs and results"
+              aria-label="Search colleges, programs and results"
               aria-describedby="hero-search-help"
               autoComplete="off"
               enterKeyHint="search"

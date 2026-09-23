@@ -3,7 +3,6 @@ import { NextResponse } from 'next/server'
 import { createAdminSupabaseClient } from '@/lib/supabase'
 
 const checks = [
-  { table: 'schools', label: 'School directory', select: 'id' },
   { table: 'admissions', label: 'Admissions engine', select: 'id' },
   { table: 'scholarships', label: 'Scholarships', select: 'id' },
   { table: 'student_opportunities', label: 'Opportunities', select: 'id' },

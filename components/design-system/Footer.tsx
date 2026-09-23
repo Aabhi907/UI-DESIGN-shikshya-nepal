@@ -23,7 +23,6 @@ const institutionLinks = [
   { label: 'Institution dashboard', href: '/account/institutions' },
   { label: 'Claim an institution', href: '/account/claim' },
   { label: 'Submit a college', href: '/submit-college' },
-  { label: 'Submit a school', href: '/submit-school' },
 ]
 
 const universityLinks = [
