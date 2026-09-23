@@ -15,6 +15,7 @@ export default function AccountAccessPage() {
   const [busy, setBusy] = useState(false)
   const [cooldown, setCooldown] = useState(0)
   const [showPassword, setShowPassword] = useState(false)
+  const [confirmationSent, setConfirmationSent] = useState(false)
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
@@ -31,6 +32,7 @@ export default function AccountAccessPage() {
   function switchMode(nextMode: Mode) {
     setMode(nextMode)
     setError('')
+    setConfirmationSent(false)
     const params = new URLSearchParams()
     if (nextMode === 'register') params.set('mode', 'register')
     window.history.replaceState(null, '', `/account/login${params.size ? `?${params}` : ''}`)
@@ -50,7 +52,10 @@ export default function AccountAccessPage() {
         if (data.retry_after) setCooldown(Number(data.retry_after))
         throw new Error(data.error || (mode === 'register' ? 'Account creation could not be completed.' : 'Sign in could not be completed.'))
       }
-      if (data.confirmation_required) throw new Error('Your account could not be activated. Please try again later.')
+      if (data.confirmation_required) {
+        setConfirmationSent(true)
+        return
+      }
       router.replace('/')
       router.refresh()
     } catch (reason) {
@@ -72,6 +77,12 @@ export default function AccountAccessPage() {
     </div>
     <div className="mt-6"><GoogleSignInButton next="/"/></div>
     <div className="my-5 flex items-center gap-3 text-xs font-semibold uppercase tracking-wider text-slate-400"><span className="h-px flex-1 bg-[#e6e4df]"/><span>or use email</span><span className="h-px flex-1 bg-[#e6e4df]"/></div>
+    {confirmationSent ? (
+      <div role="status" className="rounded-xl border border-blue-200 bg-blue-50 p-5 text-sm leading-6 text-slate-700">
+        <h2 className="font-display text-lg font-bold text-ink">Check your email</h2>
+        <p className="mt-2">If this address can be registered, a confirmation link is on its way. Open the link to verify your email, then return here to sign in. You cannot use the account before confirming it.</p>
+      </div>
+    ) : (
     <form onSubmit={submit} className="space-y-4" aria-busy={busy}>
       {mode === 'register' && <label className="block text-sm font-semibold text-ink">Your name<input required disabled={busy} value={form.full_name} onChange={event => setForm({ ...form, full_name: event.target.value })} className={field} autoComplete="name"/></label>}
       <label className="block text-sm font-semibold text-ink">Email<input type="email" required disabled={busy} value={form.email} onChange={event => setForm({ ...form, email: event.target.value })} className={field} autoComplete="email"/></label>
@@ -79,6 +90,7 @@ export default function AccountAccessPage() {
       {error && <p role="alert" className="rounded-lg bg-amber-50 p-3 text-sm leading-6 text-amber-900">{error}{cooldown > 0 && <span className="mt-1 block font-bold">Try again in {cooldown} seconds.</span>}</p>}
       <button disabled={busy || cooldown > 0} className="min-h-12 w-full rounded-lg bg-primary px-4 text-sm font-bold text-white hover:bg-primary-600 disabled:cursor-not-allowed disabled:opacity-60">{busy ? (mode === 'signin' ? 'Signing in…' : 'Creating account…') : cooldown > 0 ? `Wait ${cooldown}s` : mode === 'signin' ? 'Sign in' : 'Create account'}</button>
     </form>
+    )}
     <p className="mt-5 text-sm text-slate-600">{mode === 'signin' ? 'New here?' : 'Already have an account?'} <button type="button" onClick={() => switchMode(mode === 'signin' ? 'register' : 'signin')} className="font-bold text-primary hover:underline">{mode === 'signin' ? 'Create an account' : 'Sign in'}</button></p>
     <p className="mt-4 border-t border-[#e6e4df] pt-4 text-xs leading-5 text-slate-500">Institution representatives use the same account, then claim or manage an approved institution profile.</p>
   </section></main>

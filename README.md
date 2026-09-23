@@ -46,7 +46,7 @@ Create `.env.local` at the project root. Never commit it. Fill this template wit
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 
-# Server-only. Required for protected admin operations and immediate email registration.
+# Server-only. Required for protected admin operations and account-registration rate limiting.
 SUPABASE_SERVICE_ROLE_KEY=
 
 # Owner account used for admin access
@@ -81,9 +81,9 @@ For existing production, check which migrations have already run before applying
 
 - `20261013_private_community_media.sql` for private moderated community media
 - `20261017_verify_core_programme_catalogue.sql` for audited core programme details
-- `20261018_secure_immediate_email_signup.sql` for rate-limited, immediately confirmed email registration
+- `20261018_secure_immediate_email_signup.sql` for the account-registration rate limiter (the current flow requires email confirmation)
 
-See [docs/AUTH_SETUP.md](docs/AUTH_SETUP.md) for Supabase Auth and Google sign-in configuration.
+See [docs/AUTH_SETUP.md](docs/AUTH_SETUP.md) for Supabase Auth, required email confirmation, and Google sign-in configuration.
 
 ### 4. Run the app
 

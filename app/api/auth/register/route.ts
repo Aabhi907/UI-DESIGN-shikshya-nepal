@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { createAuthClient } from '@/lib/auth'
 import { createAdminSupabaseClient } from '@/lib/supabase'
 import { checkPublicFormRateLimit } from '@/lib/public-form-security'
+import { SITE_URL } from '@/lib/seo'
 
 export async function POST(request: Request) {
   let body: Record<string, unknown>
@@ -17,11 +18,14 @@ export async function POST(request: Request) {
   if (rate === 'limited') return NextResponse.json({ error: 'Too many account attempts. Please try again in an hour.' }, { status: 429, headers: { 'Retry-After': '3600' } })
   if (rate !== 'allowed') return NextResponse.json({ error: 'Account creation is temporarily unavailable. Please try again shortly.' }, { status: 503 })
 
-  const { error } = await db.auth.admin.createUser({
+  const auth = createAuthClient()
+  const { data, error } = await auth.auth.signUp({
     email,
     password,
-    email_confirm: true,
-    user_metadata: { full_name: fullName },
+    options: {
+      data: { full_name: fullName },
+      emailRedirectTo: SITE_URL + '/account/login',
+    },
   })
   if (error) {
     if (/already|exists|registered/i.test(error.message)) return NextResponse.json({ error: 'An account already exists for this email. Sign in instead.' }, { status: 409 })
@@ -29,10 +33,12 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Account creation could not be completed. Please try again.' }, { status: 400 })
   }
 
-  const { error: signInError } = await createAuthClient().auth.signInWithPassword({ email, password })
-  if (signInError) {
-    console.error('[auth:register:session]', signInError)
-    return NextResponse.json({ error: 'Your account was created, but could not be signed in. Please sign in with your new password.' }, { status: 201 })
+  if (data.session) {
+    const { error: signOutError } = await auth.auth.signOut()
+    if (signOutError) console.error('[auth:register:signout]', signOutError)
+    console.error('[auth:register] Supabase Confirm Email is disabled; registration cannot safely continue.')
+    return NextResponse.json({ error: 'Account registration is temporarily unavailable.' }, { status: 503 })
   }
-  return NextResponse.json({ success: true }, { status: 201 })
+
+  return NextResponse.json({ success: true, confirmation_required: true }, { status: 202 })
 }
