@@ -10,6 +10,7 @@
     "check:links": "node scripts/check-links.mjs",
     "check:slop": "node scripts/check-ai-slop.mjs",
     "test:ingestion-atomicity": "tsx scripts/test-ingestion-approval-atomicity.ts",
+    "test:deadline-visibility": "node scripts/test-deadline-visibility.mjs",
     "schools:extract": "node scripts/extract-cehrd-schools.mjs",
     "schools:import": "node scripts/import-cehrd-schools.mjs"
   },

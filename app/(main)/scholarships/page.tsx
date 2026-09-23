@@ -14,6 +14,14 @@ const LEVELS = ['+2', 'Bachelor', 'Master', 'Diploma'] as const
 const GROUPS: Record<string, string> = { merit: 'Merit-based', need_based: 'Financial need', female: 'Female students', disability: 'Students with disabilities', dalit: 'Dalit students', janajati: 'Janajati students', remote_area: 'Remote-area students' }
 const cleanSearch = (value?: string) => (value || '').replace(/[,().%]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 80)
 const validUrl = (value?: string | null) => { if (!value) return null; try { const url = new URL(value); return ['http:', 'https:'].includes(url.protocol) ? url.toString() : null } catch { return null } }
+// A date-only deadline (entered via <input type="date">) is stored as midnight
+// UTC for that calendar day — verified directly against the database. Comparing
+// against the exact current instant fails this check the moment "now" passes
+// midnight on the deadline's own day, even though it should stay open all day.
+// Compare against the start of today (UTC, matching how the bare date was
+// stored) instead — this also naturally covers a same-day timestamp with a
+// real time component, matching the day-granularity "Closes today" label below.
+const startOfTodayIso = () => { const d = new Date(); d.setUTCHours(0, 0, 0, 0); return d.toISOString() }
 const displayDate = (value: string) => new Intl.DateTimeFormat('en-NP', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(value))
 const deadlineLabel = (value: string | null) => {
   if (!value || !Number.isFinite(new Date(value).getTime())) return { text: 'Deadline not announced', tone: 'text-sn-ink-soft', open: true }
@@ -41,14 +49,14 @@ export default async function ScholarshipsPage({ searchParams }: { searchParams:
   if (q) query = query.or(`title.ilike.%${q}%,provider_name.ilike.%${q}%,eligibility.ilike.%${q}%`)
   if (level) query = query.contains('education_levels', [level])
   if (group) query = query.contains('target_groups', [group])
-  if (status === 'open') query = query.or(`deadline.gte.${new Date().toISOString()},deadline.is.null`)
+  if (status === 'open') query = query.or(`deadline.gte.${startOfTodayIso()},deadline.is.null`)
   let { data, error } = await query
   let schemaLimited = false
   if (error?.code === '42703') {
     schemaLimited = true
     let fallback = db.from('scholarships').select('*, college:colleges(name,slug,location)').eq('is_active', true).order('deadline', { ascending: true, nullsFirst: false }).limit(100)
     if (q) fallback = fallback.ilike('title', `%${q}%`)
-    if (status === 'open') fallback = fallback.or(`deadline.gte.${new Date().toISOString()},deadline.is.null`)
+    if (status === 'open') fallback = fallback.or(`deadline.gte.${startOfTodayIso()},deadline.is.null`)
     const fallbackResult = await fallback
     data = fallbackResult.data
     error = fallbackResult.error
