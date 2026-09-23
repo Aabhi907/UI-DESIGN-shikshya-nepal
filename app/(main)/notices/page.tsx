@@ -9,7 +9,7 @@ import SectionHeader from '@/components/design-system/SectionHeader'
 import Button from '@/components/design-system/Button'
 import { formatDateShort } from '@/lib/utils'
 import type { Notice } from '@/types'
-import { Bell, RefreshCcw } from 'lucide-react'
+import { AlertTriangle, Bell, RefreshCcw } from 'lucide-react'
 import AdUnit from '@/components/ads/AdUnit'
 
 export const dynamic   = 'force-dynamic'
@@ -24,23 +24,25 @@ const UNIVERSITIES = ['TU', 'KU', 'PU', 'PurU', 'NEB', 'CTEVT']
 
 async function getNotices(sp: { q?: string; university?: string }) {
   const supabase = createServerSupabaseClient()
+  // !inner turns the university join into an actual row filter (not just an
+  // embed) — without it, filtering by university only hides the joined object,
+  // not the row, so it has no effect on which rows are returned.
+  const universityTable = sp.university ? 'universities!inner' : 'universities'
   let query = supabase
     .from('notices')
-    .select('*, university:universities(id, name, short_name, slug, website, created_at)')
+    .select(`*, university:${universityTable}(id, name, short_name, slug, website, created_at)`)
     .order('published_date', { ascending: false })
 
   if (sp.q) query = query.ilike('title', `%${sp.q}%`)
+  if (sp.university) query = query.ilike('university.short_name', sp.university)
 
-  const { data } = await query.limit(100)
-  let notices = (data || []) as Notice[]
-
-  if (sp.university) {
-    notices = notices.filter(
-      (n) => n.university?.short_name?.toLowerCase() === sp.university?.toLowerCase()
-    )
+  const { data, error } = await query.limit(100)
+  if (error) {
+    console.error('[notices:list]', { code: error.code, message: error.message })
+    return { notices: [] as Notice[], error: true }
   }
 
-  return notices
+  return { notices: (data || []) as Notice[], error: false }
 }
 
 export default async function NoticesPage({
@@ -48,7 +50,7 @@ export default async function NoticesPage({
 }: {
   searchParams: { q?: string; university?: string }
 }) {
-  const notices   = await getNotices(searchParams)
+  const { notices, error } = await getNotices(searchParams)
   const hasFilter = !!(searchParams.university || searchParams.q)
 
   function filterUrl(university: string) {
@@ -58,6 +60,14 @@ export default async function NoticesPage({
     const s = p.toString()
     return `/notices${s ? `?${s}` : ''}`
   }
+
+  const currentUrl = (() => {
+    const p = new URLSearchParams()
+    if (searchParams.q)          p.set('q', searchParams.q)
+    if (searchParams.university) p.set('university', searchParams.university)
+    const s = p.toString()
+    return `/notices${s ? `?${s}` : ''}`
+  })()
 
   return (
     <div className="bg-sn-ground min-h-screen">
@@ -87,6 +97,22 @@ export default async function NoticesPage({
       {/* ── Notices list ─────────────────────────────────────── */}
       <div className="max-w-sn mx-auto px-5 sm:px-8 lg:px-12 py-6">
 
+        {error ? (
+          <Card className="py-16 text-center lg:py-16">
+            <div className="w-14 h-14 bg-sn-confirm-bg rounded-sn-card flex items-center justify-center mx-auto mb-4">
+              <AlertTriangle className="w-7 h-7 text-sn-confirm-ink" />
+            </div>
+            <h3 className="text-base font-semibold text-sn-ink mb-2">Notices could not be loaded</h3>
+            <p className="text-sm text-sn-ink-soft mb-6 max-w-xs mx-auto">
+              This is a temporary problem, not an empty list. Your filters are safe — please try again.
+            </p>
+            <Button.Link href={currentUrl}>
+              <RefreshCcw className="w-4 h-4" />
+              Try again
+            </Button.Link>
+          </Card>
+        ) : (
+        <>
         {/* Count */}
         <p className="mb-4 text-sm text-sn-ink-soft tabular-nums">
           <span className="font-bold text-sn-ink">{notices.length}</span>{' '}
@@ -140,6 +166,8 @@ export default async function NoticesPage({
               </Button.Link>
             )}
           </Card>
+        )}
+        </>
         )}
       </div>
     </div>

@@ -9,7 +9,7 @@ import SectionHeader from '@/components/design-system/SectionHeader'
 import Button from '@/components/design-system/Button'
 import type { Result } from '@/types'
 import { formatDateShort } from '@/lib/utils'
-import { FileText, RefreshCcw } from 'lucide-react'
+import { AlertTriangle, FileText, RefreshCcw } from 'lucide-react'
 import AdUnit from '@/components/ads/AdUnit'
 
 export const dynamic   = 'force-dynamic'
@@ -23,23 +23,40 @@ export const metadata: Metadata = {
 const UNIVERSITIES = ['TU', 'KU', 'PU', 'PurU', 'NEB', 'CTEVT']
 const PROGRAMS     = ['BCA', 'BBA', 'BE', 'MBBS', 'BBS', 'BSc', 'BA', 'MA', 'MBS']
 
+// PostgREST "or" filter syntax uses , . ( ) as delimiters — quote the value so a
+// program/search term containing them can't be mistaken for filter syntax.
+function orValue(value: string) {
+  return `"${value.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`
+}
+
 async function getResults(sp: { q?: string; university?: string; program?: string }) {
   const supabase = createServerSupabaseClient()
+  // !inner turns the university join into an actual row filter (not just an
+  // embed) — without it, filtering by university only hides the joined object,
+  // not the row, so it has no effect on which rows are returned.
+  const universityTable = sp.university ? 'universities!inner' : 'universities'
   let query = supabase
     .from('results')
-    .select('*, university:universities(id, name, short_name, slug, website, created_at)')
+    .select(`*, university:${universityTable}(id, name, short_name, slug, website, created_at)`)
     .order('published_date', { ascending: false })
 
   if (sp.q) query = query.ilike('title', `%${sp.q}%`)
+  if (sp.university) query = query.ilike('university.short_name', sp.university)
+  if (sp.program) {
+    // Loose match at the query level (so a real match isn't excluded by the
+    // 100-row cap before the precise whole-word check below can even see it).
+    const term = orValue(`%${sp.program}%`)
+    query = query.or(`program.ilike.${term},title.ilike.${term}`)
+  }
 
-  const { data } = await query.limit(100)
+  const { data, error } = await query.limit(100)
+  if (error) {
+    console.error('[results:list]', { code: error.code, message: error.message })
+    return { results: [] as Result[], error: true }
+  }
+
   let results = (data || []) as Result[]
 
-  if (sp.university) {
-    results = results.filter(
-      (r) => r.university?.short_name?.toLowerCase() === sp.university?.toLowerCase()
-    )
-  }
   if (sp.program) {
     const program = sp.program.toLowerCase()
     // Whole word, allowing dotted forms (B.E., B.Sc.) but not BEd or BEcon for BE.
@@ -50,7 +67,7 @@ async function getResults(sp: { q?: string; university?: string; program?: strin
     )
   }
 
-  return results
+  return { results, error: false }
 }
 
 export default async function ResultsPage({
@@ -58,7 +75,7 @@ export default async function ResultsPage({
 }: {
   searchParams: { q?: string; university?: string; program?: string }
 }) {
-  const results   = await getResults(searchParams)
+  const { results, error } = await getResults(searchParams)
   const hasFilter = !!(searchParams.university || searchParams.program || searchParams.q)
 
   function filterUrl(key: string, val: string) {
@@ -71,6 +88,15 @@ export default async function ResultsPage({
     const s = p.toString()
     return `/results${s ? `?${s}` : ''}`
   }
+
+  const currentUrl = (() => {
+    const p = new URLSearchParams()
+    if (searchParams.q)          p.set('q',          searchParams.q)
+    if (searchParams.university) p.set('university', searchParams.university)
+    if (searchParams.program)    p.set('program',    searchParams.program)
+    const s = p.toString()
+    return `/results${s ? `?${s}` : ''}`
+  })()
 
   return (
     <div className="bg-sn-ground min-h-screen">
@@ -109,6 +135,22 @@ export default async function ResultsPage({
           ))}
         </div>
 
+        {error ? (
+          <Card className="py-16 text-center lg:py-16">
+            <div className="w-14 h-14 bg-sn-confirm-bg rounded-sn-card flex items-center justify-center mx-auto mb-4">
+              <AlertTriangle className="w-7 h-7 text-sn-confirm-ink" />
+            </div>
+            <h3 className="text-base font-semibold text-sn-ink mb-2">Results could not be loaded</h3>
+            <p className="text-sm text-sn-ink-soft mb-6 max-w-xs mx-auto">
+              This is a temporary problem, not an empty list. Your filters are safe — please try again.
+            </p>
+            <Button.Link href={currentUrl}>
+              <RefreshCcw className="w-4 h-4" />
+              Try again
+            </Button.Link>
+          </Card>
+        ) : (
+        <>
         {/* Count */}
         <p className="text-sm text-sn-ink-soft mb-4 font-mono">
           <span className="font-bold text-sn-ink">{results.length}</span>{' '}
@@ -163,6 +205,8 @@ export default async function ResultsPage({
               </Button.Link>
             )}
           </Card>
+        )}
+        </>
         )}
       </div>
     </div>

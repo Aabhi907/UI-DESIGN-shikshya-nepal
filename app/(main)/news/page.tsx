@@ -8,8 +8,9 @@ import Pill from '@/components/design-system/Pill'
 import SectionHeader from '@/components/design-system/SectionHeader'
 import { formatDateShort } from '@/lib/utils'
 import type { News } from '@/types'
-import { Calendar, Newspaper, ArrowRight } from 'lucide-react'
+import { AlertTriangle, Calendar, Newspaper, ArrowRight, RefreshCcw } from 'lucide-react'
 import AdUnit from '@/components/ads/AdUnit'
+import Button from '@/components/design-system/Button'
 import { COLLEGE_NEWS_TOPICS } from '@/lib/college-news'
 
 export const dynamic   = 'force-dynamic'
@@ -28,8 +29,12 @@ async function getNews(searchParams: { q?: string; topic?: string }) {
   let query = supabase.from('news').select('*').eq('status', 'published').order('published_date', { ascending: false })
   if (searchParams.q) query = query.ilike('title', `%${searchParams.q}%`)
   if (searchParams.topic) query = query.eq('content_category', searchParams.topic)
-  const { data } = await query.limit(30)
-  return (data || []) as News[]
+  const { data, error } = await query.limit(30)
+  if (error) {
+    console.error('[news:list]', { code: error.code, message: error.message })
+    return { newsList: [] as News[], error: true }
+  }
+  return { newsList: (data || []) as News[], error: false }
 }
 
 function PlaceholderCover({ idx }: { idx: number }) {
@@ -41,9 +46,17 @@ function PlaceholderCover({ idx }: { idx: number }) {
 }
 
 export default async function NewsPage({ searchParams }: { searchParams: { q?: string; topic?: string } }) {
-  const newsList = await getNews(searchParams)
+  const { newsList, error } = await getNews(searchParams)
   const featured = newsList[0]
   const rest     = newsList.slice(1)
+
+  const currentUrl = (() => {
+    const p = new URLSearchParams()
+    if (searchParams.q)     p.set('q', searchParams.q)
+    if (searchParams.topic) p.set('topic', searchParams.topic)
+    const s = p.toString()
+    return `/news${s ? `?${s}` : ''}`
+  })()
 
   return (
     <div className="bg-sn-ground min-h-screen">
@@ -62,7 +75,21 @@ export default async function NewsPage({ searchParams }: { searchParams: { q?: s
 
       <div className="max-w-sn mx-auto px-5 sm:px-8 lg:px-12 py-10">
 
-        {newsList.length === 0 ? (
+        {error ? (
+          <Card className="py-16 text-center lg:py-16">
+            <div className="w-14 h-14 bg-sn-confirm-bg rounded-sn-card flex items-center justify-center mx-auto mb-4">
+              <AlertTriangle className="w-7 h-7 text-sn-confirm-ink" />
+            </div>
+            <h3 className="text-base font-semibold text-sn-ink mb-2">News could not be loaded</h3>
+            <p className="text-sm text-sn-ink-soft mb-6 max-w-xs mx-auto">
+              This is a temporary problem, not an empty list. Please try again.
+            </p>
+            <Button.Link href={currentUrl}>
+              <RefreshCcw className="w-4 h-4" />
+              Try again
+            </Button.Link>
+          </Card>
+        ) : newsList.length === 0 ? (
           <Card className="py-16 text-center lg:py-16">
             <div className="w-14 h-14 bg-sn-surface-alt rounded-sn-card flex items-center justify-center mx-auto mb-4">
               <Newspaper className="w-7 h-7 text-sn-ink-soft" />
