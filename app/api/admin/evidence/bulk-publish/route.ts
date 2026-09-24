@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getAuthContext, isStaff, writeAudit } from '@/lib/auth'
 import { createAdminSupabaseClient } from '@/lib/supabase'
+import { revalidateAllCollegePages } from '@/lib/revalidate-college'
 
 const IMPORT_SOURCE = 'Nepal Education Institutions full research dataset (review required)'
 
@@ -31,6 +32,7 @@ export async function POST() {
   }
 
   const count = data?.length || 0
+  if (count) revalidateAllCollegePages()
   await writeAudit('evidence.bulk_publish_import', 'college_evidence', undefined, {
     count,
     source_name: IMPORT_SOURCE,

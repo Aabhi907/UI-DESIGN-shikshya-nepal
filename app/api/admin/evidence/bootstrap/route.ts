@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { isStaff, writeAudit } from '@/lib/auth'
 import { createAdminSupabaseClient } from '@/lib/supabase'
+import { revalidateAllCollegePages } from '@/lib/revalidate-college'
 
 export async function POST(){
   if(!(await isStaff(['editor','owner'])))return NextResponse.json({error:'Editor access required'},{status:403})
@@ -23,6 +24,7 @@ export async function POST(){
   if(!rows.length)return NextResponse.json({created:0,message:'No new sourced profile fields were available.'})
   const {data,error}=await db.from('college_evidence').insert(rows).select('id')
   if(error)return NextResponse.json({error:error.message},{status:500})
+  if (data?.length) revalidateAllCollegePages()
   await writeAudit('evidence.bootstrap','college_evidence',undefined,{college_count:ids.length,evidence_created:data?.length||0})
   return NextResponse.json({created:data?.length||0,colleges_scanned:ids.length})
 }

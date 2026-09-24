@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { createAdminSupabaseClient } from '@/lib/supabase'
 import { isStaff, writeAudit } from '@/lib/auth'
 import { sanitizeCollegeAdminPayload } from '@/lib/college-admin'
+import { revalidateCollege, revalidateCollegeListings } from '@/lib/revalidate-college'
 
 export const dynamic = 'force-dynamic'
 
@@ -31,6 +32,8 @@ export async function POST(request: Request) {
     .select()
     .single()
   if (error) { console.error('[admin/colleges:create]', error); return NextResponse.json({ error: error.code === '23505' ? 'A college with this slug already exists.' : 'The college could not be created.' }, { status: error.code === '23505' ? 409 : 500, headers: noStore }) }
+  revalidateCollege(data.slug)
+  revalidateCollegeListings()
   await writeAudit('college.create', 'college', data.id, { name: data.name })
   return NextResponse.json(data, { status: 201, headers: noStore })
 }

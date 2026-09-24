@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { isStaff, writeAudit } from '@/lib/auth'
 import { createAdminSupabaseClient } from '@/lib/supabase'
+import { revalidateAllCollegePages, revalidateCollege } from '@/lib/revalidate-college'
 
 const fields=['affiliation','programs','fee','admission_deadline','scholarship','result','facilities','contact']
 const methods=['manual','structured_import','automated_extraction']
@@ -21,6 +22,9 @@ export async function POST(request:Request){
   const {data,error}=await createAdminSupabaseClient().from('college_evidence').insert(row).select('*,college:colleges(id,name,slug)').single()
   if(missing(error))return NextResponse.json({error:'Run migration 20261008_college_evidence_ledger.sql first.'},{status:503})
   if(error)return NextResponse.json({error:error.code==='23505'?'This source already supports the same current field.':error.message},{status:error.code==='23505'?409:500})
+  const slug = (data.college as { slug?: string } | null)?.slug
+  if (slug) revalidateCollege(slug)
+  else revalidateAllCollegePages()
   await writeAudit('evidence.create','college_evidence',data.id,{college_id:body.college_id,field_key:field})
   return NextResponse.json(data,{status:201})
 }
