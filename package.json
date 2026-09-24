@@ -12,6 +12,7 @@
     "check:queries": "node scripts/check-queries.mjs",
     "test:ingestion-atomicity": "tsx scripts/test-ingestion-approval-atomicity.ts",
     "test:deadline-visibility": "node scripts/test-deadline-visibility.mjs",
+    "test:scrapers": "python3 -m unittest discover -s scrapers/tests -v",
     "schools:extract": "node scripts/extract-cehrd-schools.mjs",
     "schools:import": "node scripts/import-cehrd-schools.mjs"
   },

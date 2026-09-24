@@ -14,6 +14,7 @@ URL status (last verified 2025-05):
 
 from urllib.parse import urlparse
 from base_scraper import BaseScraper
+from notice_dates import find_notice_date, parse_notice_date
 
 # ── Portal registry ────────────────────────────────────────────────────────
 # (label, urls_to_try, faculty_tag | None, fetch_kwargs)
@@ -146,7 +147,10 @@ class TUNoticesScraper(BaseScraper):
                         break
                 if date_raw:
                     break
-            items.append({"title": title, "notice_url": href, "date_raw": date_raw})
+            items.append({
+                "title": title, "notice_url": href, "date_raw": date_raw,
+                "published_raw": date_raw or find_notice_date(link_tag),
+            })
 
         # Strategy 2: div/article containers
         if not items:
@@ -168,7 +172,10 @@ class TUNoticesScraper(BaseScraper):
                     href = base_url + "/" + href.lstrip("/")
                 date_tag = div.find(["time", "span"], class_=lambda c: c and "date" in c)
                 date_raw = date_tag.get_text(strip=True) if date_tag else ""
-                items.append({"title": title, "notice_url": href, "date_raw": date_raw})
+                items.append({
+                    "title": title, "notice_url": href, "date_raw": date_raw,
+                    "published_raw": date_raw or find_notice_date(link_tag),
+                })
 
         # Strategy 3: broad anchor scan filtered by notice keywords
         if not items:
@@ -183,7 +190,10 @@ class TUNoticesScraper(BaseScraper):
                         href = base_url + href
                     elif not href.startswith("http"):
                         href = base_url + "/" + href.lstrip("/")
-                    items.append({"title": title, "notice_url": href, "date_raw": ""})
+                    items.append({
+                        "title": title, "notice_url": href, "date_raw": "",
+                        "published_raw": find_notice_date(anchor),
+                    })
 
         return items
 
@@ -195,6 +205,7 @@ class TUNoticesScraper(BaseScraper):
         university_id: str,
         faculty_tag: str | None,
     ) -> None:
+        dated = 0
         for item in items:
             raw_title = item["title"].strip()
             if not raw_title:
@@ -205,7 +216,10 @@ class TUNoticesScraper(BaseScraper):
             else:
                 title = raw_title
 
-            date_str = self.parse_date(item["date_raw"], fallback_to_today=False) if item.get("date_raw") else None
+            # published_raw is where the date was found on the page; date_raw stays
+            # the slug's input so slugs do not change with better extraction.
+            date_str = parse_notice_date(item.get("published_raw") or item.get("date_raw") or "")
+            dated   += 1 if date_str else 0
             slug     = self.slugify_with_date(title, item.get("date_raw", ""))
 
             if self.check_exists("notices", slug):
@@ -231,6 +245,8 @@ class TUNoticesScraper(BaseScraper):
             }
 
             self.insert_record("notices", record)
+
+        self.logger.info(f"   {dated}/{len(items)} items have a real published date")
 
     # ── Main entry point ───────────────────────────────────────────────────
 

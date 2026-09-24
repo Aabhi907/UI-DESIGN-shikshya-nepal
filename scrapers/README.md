@@ -50,6 +50,21 @@ The scheduled workflow runs at 00:17, 05:17, 10:17, 15:17 and 20:17 UTC. GitHub
 Actions schedules are best-effort and may start a few minutes late. Apply
 `20261002_college_newsroom_automation.sql` before enabling the workflow.
 
+## Notice publication dates
+
+`notice_dates.py` finds the date that belongs to each scraped notice. It climbs from the
+notice's link to the smallest container holding only that notice and reads a date from there;
+if the container holds other notices, or two different dates, it returns nothing. Dates
+it cannot read, or that are ambiguous, stay `null`: never today, never `created_at`, never a
+neighbour's date, and Bikram Sambat dates are not converted. `tu_notices.py` uses it; the other
+notice collectors do not yet.
+
+Regression tests use saved excerpts of the real portal pages, so they need no network or database:
+
+```bash
+npm run test:scrapers
+```
+
 ## Ranking and “best college” articles
 
 Never generate a “best college” list from promotional language or payment. Publish
