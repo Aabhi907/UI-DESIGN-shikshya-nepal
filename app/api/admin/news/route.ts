@@ -11,7 +11,7 @@ const isAuthed = isStaff
 export async function GET() {
   if (!(await isAuthed())) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const supabase = createAdminSupabaseClient()
-  const { data, error } = await supabase.from('news').select('*').order('published_date', { ascending: false })
+  const { data, error } = await supabase.from('news').select('*').order('published_date', { ascending: false, nullsFirst: false })
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json(data)
 }

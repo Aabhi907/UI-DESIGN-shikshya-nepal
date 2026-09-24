@@ -21,18 +21,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     supabase
       .from('results')
       .select('slug, published_date')
-      .order('published_date', { ascending: false })
+      .order('published_date', { ascending: false, nullsFirst: false })
       .limit(500),
     supabase
       .from('notices')
       .select('slug, published_date')
-      .order('published_date', { ascending: false })
+      .order('published_date', { ascending: false, nullsFirst: false })
       .limit(500),
     supabase
       .from('news')
       .select('slug, published_date')
       .eq('status', 'published')
-      .order('published_date', { ascending: false })
+      .order('published_date', { ascending: false, nullsFirst: false })
       .limit(200),
     supabase
       .from('programs')
@@ -136,21 +136,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const resultRoutes: MetadataRoute.Sitemap = (results.data ?? []).map((r) => ({
     url:             `${BASE_URL}/results/${r.slug}`,
-    lastModified:    new Date(r.published_date),
+    lastModified:    r.published_date ? new Date(r.published_date) : undefined,
     changeFrequency: 'never' as const,
     priority:        0.7,
   }))
 
   const noticeRoutes: MetadataRoute.Sitemap = (notices.data ?? []).map((n) => ({
     url:             `${BASE_URL}/notices/${n.slug}`,
-    lastModified:    new Date(n.published_date),
+    lastModified:    n.published_date ? new Date(n.published_date) : undefined,
     changeFrequency: 'never' as const,
     priority:        0.7,
   }))
 
   const newsRoutes: MetadataRoute.Sitemap = (news.data ?? []).map((n) => ({
     url:             `${BASE_URL}/news/${n.slug}`,
-    lastModified:    new Date(n.published_date),
+    lastModified:    n.published_date ? new Date(n.published_date) : undefined,
     changeFrequency: 'never' as const,
     priority:        0.7,
   }))

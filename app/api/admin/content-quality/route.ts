@@ -23,8 +23,8 @@ export async function GET() {
   const db = createAdminSupabaseClient()
   const [{ data: colleges, error: collegesError }, { data: news, error: newsError }, { data: notices, error: noticesError }] = await Promise.all([
     db.from('colleges').select('id,name,description,source_url,last_verified_at,status').order('name').limit(500),
-    db.from('news').select('id,title,content,status,source_url,published_date').in('status', ['published', 'draft']).order('published_date', { ascending: false }).limit(500),
-    db.from('notices').select('id,title,content,notice_url,published_date').order('published_date', { ascending: false }).limit(500),
+    db.from('news').select('id,title,content,status,source_url,published_date').in('status', ['published', 'draft']).order('published_date', { ascending: false, nullsFirst: false }).limit(500),
+    db.from('notices').select('id,title,content,notice_url,published_date').order('published_date', { ascending: false, nullsFirst: false }).limit(500),
   ])
 
   if (collegesError || newsError || noticesError) {

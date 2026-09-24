@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { ExternalLink, Sparkles, FileDown, ImageIcon } from 'lucide-react'
 import type { Result } from '@/types'
-import { formatDateShort, timeAgo } from '@/lib/utils'
+import { DATE_NOT_PUBLISHED, formatPublishedDate, timeAgo } from '@/lib/utils'
 
 const UNI_BADGE: Record<string, string> = {
   TU:    'bg-blue-100   text-blue-700',
@@ -69,7 +69,7 @@ export default function ResultCard({ result, compact = false }: ResultCardProps)
               {shortName}
             </span>
             <span className="text-[10px] font-mono text-gray-400 hidden sm:block">
-              {timeAgo(result.published_date)}
+              {timeAgo(result.published_date) || DATE_NOT_PUBLISHED}
             </span>
           </div>
 
@@ -124,7 +124,7 @@ export default function ResultCard({ result, compact = false }: ResultCardProps)
                 </span>
               )}
               <span className="text-xs font-mono text-gray-400 ml-auto">
-                {formatDateShort(result.published_date)}
+                {formatPublishedDate(result.published_date)}
               </span>
             </div>
           </div>

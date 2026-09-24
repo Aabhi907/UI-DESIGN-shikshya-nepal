@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import { ArrowLeft, Calendar, User, Download, ExternalLink, ShieldCheck, Building2 } from 'lucide-react'
 import { formatDate } from '@/lib/utils'
+import PublishedDate from '@/components/ui/PublishedDate'
 import type { News } from '@/types'
 import PdfViewer from '@/components/results/PdfViewer'
 import Card from '@/components/design-system/Card'
@@ -65,10 +66,10 @@ export default async function NewsDetailPage({ params }: { params: { slug: strin
         <div className="p-6 sm:p-8">
           <SectionHeader as="h1" title={news.title} className="mb-4" />
           <div className="flex items-center gap-4 text-sm text-sn-ink-soft mb-6 pb-6 border-b border-sn-border">
-            {news.published_date && <span className="flex items-center gap-1.5">
+            <span className="flex items-center gap-1.5">
               <Calendar className="w-4 h-4" aria-hidden="true" />
-              <time dateTime={news.published_date}>{formatDate(news.published_date)}</time>
-            </span>}
+              <PublishedDate value={news.published_date} long />
+            </span>
             <span className="flex items-center gap-1.5">
               <User className="w-4 h-4" aria-hidden="true" />
               {news.author_name || 'SikshyaNepal'}

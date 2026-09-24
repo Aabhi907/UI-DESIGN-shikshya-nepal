@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { createServerSupabaseClient } from "@/lib/supabase";
+import { DATE_NOT_PUBLISHED } from "@/lib/utils";
 import {
   MapPin,
   Phone,
@@ -102,7 +103,7 @@ const getCollege = cache(async function getCollege(slug: string) {
       .or(`application_deadline.is.null,application_deadline.gte.${new Date().toISOString()}`)
       .order("application_deadline", { ascending: true })
       .limit(4),
-    supabase.from("news").select("id,title,slug,published_date,content_category").eq("college_id", college.id).eq("status", "published").order("published_date", { ascending: false }).limit(5),
+    supabase.from("news").select("id,title,slug,published_date,content_category").eq("college_id", college.id).eq("status", "published").order("published_date", { ascending: false, nullsFirst: false }).limit(5),
     supabase.from("college_evidence").select("id,field_key,claim_summary,source_name,source_url,checked_at,confidence_score,verification_status").eq("college_id",college.id).in("verification_status",["source_verified","editor_verified"]).is("superseded_at",null).order("checked_at",{ascending:false}).limit(12),
   ]);
 
@@ -466,7 +467,7 @@ export default async function CollegeProfilePage({
           {news.length > 0 && (
             <Card as="section" aria-labelledby="college-news-heading">
               <div className="mb-4 flex items-end justify-between gap-4"><div><h2 id="college-news-heading" className="text-lg font-baloo font-bold text-sn-ink">Latest updates from {college.name}</h2><p className="mt-1 text-sm font-nunito text-sn-ink-muted">Admissions, results, achievements and campus events with original sources.</p></div><Link href={`/news?q=${encodeURIComponent(college.name)}`} className="whitespace-nowrap text-sm font-bold font-nunito text-sn-primary">All updates</Link></div>
-              <div className="divide-y divide-sn-border">{news.map(article => <Link key={article.id} href={`/news/${article.slug}`} className="group flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0"><div><p className="text-xs font-bold font-nunito uppercase tracking-wide text-sn-primary">{article.content_category?.replaceAll('_', ' ') || 'College news'}</p><h3 className="mt-1 text-sm font-bold font-nunito text-sn-ink group-hover:text-sn-primary">{article.title}</h3></div><span className="text-xs font-nunito text-sn-ink-muted">{new Date(article.published_date).toLocaleDateString('en-NP', { day: 'numeric', month: 'short', year: 'numeric' })}</span></Link>)}</div>
+              <div className="divide-y divide-sn-border">{news.map(article => <Link key={article.id} href={`/news/${article.slug}`} className="group flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0"><div><p className="text-xs font-bold font-nunito uppercase tracking-wide text-sn-primary">{article.content_category?.replaceAll('_', ' ') || 'College news'}</p><h3 className="mt-1 text-sm font-bold font-nunito text-sn-ink group-hover:text-sn-primary">{article.title}</h3></div><span className="text-xs font-nunito text-sn-ink-muted">{article.published_date ? new Date(article.published_date).toLocaleDateString('en-NP', { day: 'numeric', month: 'short', year: 'numeric' }) : DATE_NOT_PUBLISHED}</span></Link>)}</div>
             </Card>
           )}
 

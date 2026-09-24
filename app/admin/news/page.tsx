@@ -3,11 +3,11 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Plus, Pencil, Trash2, Newspaper } from 'lucide-react'
-import { formatDateShort } from '@/lib/utils'
+import { formatPublishedDate } from '@/lib/utils'
 import ConfirmDialog, { ConfirmState, CONFIRM_CLOSED } from '@/components/ui/ConfirmDialog'
 import { ToastList, useToast } from '@/components/ui/Toast'
 
-interface NewsItem { id: string; title: string; slug: string; published_date: string; status?: 'draft' | 'published' | 'archived'; source_name?: string | null }
+interface NewsItem { id: string; title: string; slug: string; published_date: string | null; status?: 'draft' | 'published' | 'archived'; source_name?: string | null }
 
 export default function AdminNewsPage() {
   const [items,   setItems]   = useState<NewsItem[]>([])
@@ -94,7 +94,7 @@ export default function AdminNewsPage() {
                       <div className="text-xs text-gray-500 mt-0.5">{item.source_name || item.slug}</div>
                     </td>
                     <td className="px-5 py-3 text-gray-400 hidden md:table-cell">
-                      {formatDateShort(item.published_date)}
+                      {formatPublishedDate(item.published_date)}
                     </td>
                     <td className="px-5 py-3"><span className={`rounded-full px-2 py-1 text-[10px] font-bold uppercase ${item.status === 'published' ? 'bg-emerald-950 text-emerald-300' : item.status === 'archived' ? 'bg-gray-700 text-gray-300' : 'bg-amber-950 text-amber-300'}`}>{item.status || 'published'}</span></td>
                     <td className="px-5 py-3">

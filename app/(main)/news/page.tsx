@@ -6,11 +6,11 @@ import SearchField from '@/components/design-system/SearchField'
 import Card from '@/components/design-system/Card'
 import Pill from '@/components/design-system/Pill'
 import SectionHeader from '@/components/design-system/SectionHeader'
-import { formatDateShort } from '@/lib/utils'
 import type { News } from '@/types'
 import { AlertTriangle, Calendar, Newspaper, ArrowRight, RefreshCcw } from 'lucide-react'
 import AdUnit from '@/components/ads/AdUnit'
 import Button from '@/components/design-system/Button'
+import PublishedDate from '@/components/ui/PublishedDate'
 import { COLLEGE_NEWS_TOPICS } from '@/lib/college-news'
 
 export const dynamic   = 'force-dynamic'
@@ -26,7 +26,7 @@ const CARD_COLORS = ['bg-sn-tint-peach', 'bg-sn-tint-mint', 'bg-sn-tint-lilac']
 
 async function getNews(searchParams: { q?: string; topic?: string }) {
   const supabase = createServerSupabaseClient()
-  let query = supabase.from('news').select('*').eq('status', 'published').order('published_date', { ascending: false })
+  let query = supabase.from('news').select('*').eq('status', 'published').order('published_date', { ascending: false, nullsFirst: false })
   if (searchParams.q) query = query.ilike('title', `%${searchParams.q}%`)
   if (searchParams.topic) query = query.eq('content_category', searchParams.topic)
   const { data, error } = await query.limit(30)
@@ -121,7 +121,7 @@ export default async function NewsPage({ searchParams }: { searchParams: { q?: s
                   <div className="p-7 lg:p-9 flex flex-col justify-center">
                     <div className="mb-4 flex items-center gap-1.5 text-xs tabular-nums text-sn-ink-soft">
                       <Calendar className="w-3.5 h-3.5" />
-                      <span>{formatDateShort(featured.published_date)}</span>
+                      <PublishedDate value={featured.published_date} />
                     </div>
                     <h2
                       className="font-baloo font-bold text-sn-ink text-2xl lg:text-3xl leading-tight mb-4
@@ -164,7 +164,7 @@ export default async function NewsPage({ searchParams }: { searchParams: { q?: s
                       <div className="p-4">
                         <div className="mb-2 flex items-center gap-1.5 text-xs tabular-nums text-sn-ink-soft">
                           <Calendar className="w-3 h-3" />
-                          <span>{formatDateShort(news.published_date)}</span>
+                          <PublishedDate value={news.published_date} />
                         </div>
                         <h2 className="font-semibold text-sn-ink text-sm leading-snug line-clamp-2 mb-1
                                        group-hover:text-sn-primary-hover transition-colors">

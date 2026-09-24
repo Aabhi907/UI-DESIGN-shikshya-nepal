@@ -5,7 +5,7 @@ import Script from 'next/script'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import { FileText, Calendar, ExternalLink, ArrowLeft, Globe, Download, ZoomIn } from 'lucide-react'
 import NextImage from 'next/image'
-import { formatDate } from '@/lib/utils'
+import PublishedDate from '@/components/ui/PublishedDate'
 import type { Result } from '@/types'
 import PdfViewer from '@/components/results/PdfViewer'
 
@@ -64,7 +64,7 @@ export default async function ResultDetailPage({ params }: { params: { slug: str
     '@context':    'https://schema.org',
     '@type':       'Article',
     headline:      result.title,
-    datePublished: result.published_date,
+    datePublished: result.published_date || undefined,
     publisher: {
       '@type': 'Organization',
       name:    result.university?.name,
@@ -146,10 +146,10 @@ export default async function ResultDetailPage({ params }: { params: { slug: str
             )}
           </div>
 
-          {result.published_date && <div className="flex items-center gap-2 text-sm text-sn-ink-soft mb-6">
+          <div className="flex items-center gap-2 text-sm text-sn-ink-soft mb-6">
             <Calendar className="w-4 h-4" aria-hidden="true" />
-            <time dateTime={result.published_date}>Published {formatDate(result.published_date)}</time>
-          </div>}
+            <PublishedDate value={result.published_date} prefix="Published " long />
+          </div>
           <div className="mb-6">{result.result_url ? <EvidenceChip state="confirm" label="Confirm result details on official source" /> : <EvidenceChip state="limited" className="!text-sn-ink-soft" label="Official source not recorded" />}</div>
 
           {/* Action buttons */}

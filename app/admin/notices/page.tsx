@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Plus, Pencil, Trash2, Bell } from 'lucide-react'
-import { formatDateShort } from '@/lib/utils'
+import { formatPublishedDate } from '@/lib/utils'
 import ConfirmDialog, { ConfirmState, CONFIRM_CLOSED } from '@/components/ui/ConfirmDialog'
 import { ToastList, useToast } from '@/components/ui/Toast'
 
@@ -11,7 +11,7 @@ interface NoticeItem {
   id: string
   title: string
   slug: string
-  published_date: string
+  published_date: string | null
   university?: { short_name: string }
 }
 
@@ -102,7 +102,7 @@ export default function AdminNoticesPage() {
                       {item.university?.short_name || '—'}
                     </td>
                     <td className="px-5 py-3 text-gray-400 hidden md:table-cell">
-                      {formatDateShort(item.published_date)}
+                      {formatPublishedDate(item.published_date)}
                     </td>
                     <td className="px-5 py-3">
                       <div className="flex items-center justify-end gap-2">

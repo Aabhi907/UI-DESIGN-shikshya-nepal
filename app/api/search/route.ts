@@ -36,9 +36,9 @@ export async function GET(request: Request) {
     ['admissions', db.from('admissions').select('id,title,slug,institution_name,application_deadline').eq('status', 'published').or(`title.ilike.${pattern},institution_name.ilike.${pattern}`).order('application_deadline', { ascending: true, nullsFirst: false }).limit(8)],
     ['colleges', db.from('colleges').select('id,name,slug,location,affiliation').or('status.eq.active,status.is.null').ilike('name', pattern).order('name').limit(8)],
     ['programs', db.from('programs').select('id,name,slug,faculty,duration').or(`name.ilike.${pattern},faculty.ilike.${pattern}`).order('name').limit(8)],
-    ['news', db.from('news').select('id,title,slug,published_date').eq('status', 'published').ilike('title', pattern).order('published_date', { ascending: false }).limit(10)],
-    ['notices', db.from('notices').select('id,title,slug,published_date').ilike('title', pattern).order('published_date', { ascending: false }).limit(10)],
-    ['results', db.from('results').select('id,title,slug,published_date').ilike('title', pattern).order('published_date', { ascending: false }).limit(10)],
+    ['news', db.from('news').select('id,title,slug,published_date').eq('status', 'published').ilike('title', pattern).order('published_date', { ascending: false, nullsFirst: false }).limit(10)],
+    ['notices', db.from('notices').select('id,title,slug,published_date').ilike('title', pattern).order('published_date', { ascending: false, nullsFirst: false }).limit(10)],
+    ['results', db.from('results').select('id,title,slug,published_date').ilike('title', pattern).order('published_date', { ascending: false, nullsFirst: false }).limit(10)],
     ['scholarships', db.from('scholarships').select('id,title,amount,deadline').eq('is_active', true).or(`title.ilike.${pattern},description.ilike.${pattern}`).order('deadline', { ascending: true, nullsFirst: false }).limit(6)],
   ] as const
 

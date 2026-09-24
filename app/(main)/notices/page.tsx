@@ -7,7 +7,7 @@ import Card from '@/components/design-system/Card'
 import Pill from '@/components/design-system/Pill'
 import SectionHeader from '@/components/design-system/SectionHeader'
 import Button from '@/components/design-system/Button'
-import { formatDateShort } from '@/lib/utils'
+import PublishedDate from '@/components/ui/PublishedDate'
 import type { Notice } from '@/types'
 import { AlertTriangle, Bell, RefreshCcw } from 'lucide-react'
 import AdUnit from '@/components/ads/AdUnit'
@@ -31,7 +31,7 @@ async function getNotices(sp: { q?: string; university?: string }) {
   let query = supabase
     .from('notices')
     .select(`*, university:${universityTable}(id, name, short_name, slug, website, created_at)`)
-    .order('published_date', { ascending: false })
+    .order('published_date', { ascending: false, nullsFirst: false })
 
   if (sp.q) query = query.ilike('title', `%${sp.q}%`)
   if (sp.university) query = query.ilike('university.short_name', sp.university)
@@ -133,7 +133,7 @@ export default async function NoticesPage({
                       {notice.content_type === 'pdf' && <Pill tone="neutral">PDF</Pill>}
                       {notice.content_type === 'image' && <Pill tone="neutral">Image</Pill>}
                       {notice.published_date && Date.now() - new Date(notice.published_date).getTime() < 86400000 && <Pill tone="primary" className="!text-sn-ink-soft">New</Pill>}
-                      <time dateTime={notice.published_date} className="ml-auto text-sn-ink-soft">{formatDateShort(notice.published_date)}</time>
+                      <PublishedDate value={notice.published_date} className="ml-auto text-sn-ink-soft" />
                     </div>
                   </Link>
                 </Card>

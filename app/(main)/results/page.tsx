@@ -7,8 +7,8 @@ import Card from '@/components/design-system/Card'
 import Pill from '@/components/design-system/Pill'
 import SectionHeader from '@/components/design-system/SectionHeader'
 import Button from '@/components/design-system/Button'
+import PublishedDate from '@/components/ui/PublishedDate'
 import type { Result } from '@/types'
-import { formatDateShort } from '@/lib/utils'
 import { AlertTriangle, FileText, RefreshCcw } from 'lucide-react'
 import AdUnit from '@/components/ads/AdUnit'
 
@@ -38,7 +38,7 @@ async function getResults(sp: { q?: string; university?: string; program?: strin
   let query = supabase
     .from('results')
     .select(`*, university:${universityTable}(id, name, short_name, slug, website, created_at)`)
-    .order('published_date', { ascending: false })
+    .order('published_date', { ascending: false, nullsFirst: false })
 
   if (sp.q) query = query.ilike('title', `%${sp.q}%`)
   if (sp.university) query = query.ilike('university.short_name', sp.university)
@@ -172,7 +172,7 @@ export default async function ResultsPage({
                       {result.content_type === 'pdf' && <Pill tone="neutral">PDF</Pill>}
                       {result.content_type === 'image' && <Pill tone="neutral">Image</Pill>}
                       {result.published_date && Date.now() - new Date(result.published_date).getTime() < 86400000 && <Pill tone="primary" className="!text-sn-ink-soft">New</Pill>}
-                      <time dateTime={result.published_date} className="ml-auto text-sn-ink-soft">{formatDateShort(result.published_date)}</time>
+                      <PublishedDate value={result.published_date} className="ml-auto text-sn-ink-soft" />
                     </div>
                   </Link>
                 </Card>

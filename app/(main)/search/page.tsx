@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, Suspense, useMemo, useRef } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { DATE_NOT_PUBLISHED } from '@/lib/utils'
 import { Search, Building2, BookOpen, Newspaper, FileText, GraduationCap, Award, CalendarCheck2 } from 'lucide-react'
 
 interface SearchResults {
@@ -236,11 +237,9 @@ function SearchPageInner() {
                   <Link key={n.id} href={`/news/${n.slug}`}
                     className="flex items-center justify-between p-4 bg-white rounded-xl border border-gray-200 hover:border-green-300 hover:shadow-sm transition-all">
                     <p className="font-medium text-gray-900 text-sm line-clamp-1 flex-1">{n.title}</p>
-                    {n.published_date && (
-                      <span className="text-xs text-gray-400 ml-4 flex-shrink-0">
-                        {new Date(n.published_date).toLocaleDateString('en-NP', { day: 'numeric', month: 'short', year: 'numeric' })}
-                      </span>
-                    )}
+                    <span className="text-xs text-gray-400 ml-4 flex-shrink-0">
+                      {n.published_date ? new Date(n.published_date).toLocaleDateString('en-NP', { day: 'numeric', month: 'short', year: 'numeric' }) : DATE_NOT_PUBLISHED}
+                    </span>
                   </Link>
                 ))}
               </div>
@@ -259,11 +258,9 @@ function SearchPageInner() {
                   <Link key={n.id} href={`/notices/${n.slug}`}
                     className="flex items-center justify-between p-4 bg-white rounded-xl border border-gray-200 hover:border-orange-300 hover:shadow-sm transition-all">
                     <p className="font-medium text-gray-900 text-sm line-clamp-1 flex-1">{n.title}</p>
-                    {n.published_date && (
-                      <span className="text-xs text-gray-400 ml-4 flex-shrink-0">
-                        {new Date(n.published_date).toLocaleDateString('en-NP', { day: 'numeric', month: 'short', year: 'numeric' })}
-                      </span>
-                    )}
+                    <span className="text-xs text-gray-400 ml-4 flex-shrink-0">
+                      {n.published_date ? new Date(n.published_date).toLocaleDateString('en-NP', { day: 'numeric', month: 'short', year: 'numeric' }) : DATE_NOT_PUBLISHED}
+                    </span>
                   </Link>
                 ))}
               </div>
@@ -282,11 +279,9 @@ function SearchPageInner() {
                   <Link key={r.id} href={`/results/${r.slug}`}
                     className="flex items-center justify-between p-4 bg-white rounded-xl border border-gray-200 hover:border-red-300 hover:shadow-sm transition-all">
                     <p className="font-medium text-gray-900 text-sm line-clamp-1 flex-1">{r.title}</p>
-                    {r.published_date && (
-                      <span className="text-xs text-gray-400 ml-4 flex-shrink-0">
-                        {new Date(r.published_date).toLocaleDateString('en-NP', { day: 'numeric', month: 'short', year: 'numeric' })}
-                      </span>
-                    )}
+                    <span className="text-xs text-gray-400 ml-4 flex-shrink-0">
+                      {r.published_date ? new Date(r.published_date).toLocaleDateString('en-NP', { day: 'numeric', month: 'short', year: 'numeric' }) : DATE_NOT_PUBLISHED}
+                    </span>
                   </Link>
                 ))}
               </div>

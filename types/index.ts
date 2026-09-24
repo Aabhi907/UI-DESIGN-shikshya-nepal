@@ -162,7 +162,7 @@ export interface Result {
   result_url: string | null
   result_pdf_url: string | null   // holds PDF or image URL; check content_type
   content_type: 'pdf' | 'image' | 'link' | null
-  published_date: string
+  published_date: string | null
   created_at: string
   university?: University
 }
@@ -176,7 +176,7 @@ export interface Notice {
   notice_url: string | null
   notice_pdf_url: string | null   // holds PDF or image URL; check content_type
   content_type: 'pdf' | 'image' | 'link' | null
-  published_date: string
+  published_date: string | null
   created_at: string
   university?: University
 }
@@ -189,7 +189,7 @@ export interface News {
   image_url: string | null
   news_pdf_url: string | null   // holds PDF or image URL; check content_type
   content_type: 'pdf' | 'image' | 'link' | null
-  published_date: string
+  published_date: string | null
   created_at: string
   author_name?: string
   source_name?: string | null

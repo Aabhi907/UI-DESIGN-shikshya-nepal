@@ -14,7 +14,7 @@ export async function GET() {
   const { data, error } = await supabase
     .from('notices')
     .select('*, university:universities(id, name, short_name, slug, website, created_at)')
-    .order('published_date', { ascending: false })
+    .order('published_date', { ascending: false, nullsFirst: false })
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json(data)
 }

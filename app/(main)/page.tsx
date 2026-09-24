@@ -96,12 +96,12 @@ async function getHomeData() {
     supabase
       .from('results')
       .select('*, university:universities(id, name, short_name, slug, website, created_at)')
-      .order('published_date', { ascending: false })
+      .order('published_date', { ascending: false, nullsFirst: false })
       .limit(6),
     supabase
       .from('notices')
       .select('*, university:universities(id, name, short_name, slug, website, created_at)')
-      .order('published_date', { ascending: false })
+      .order('published_date', { ascending: false, nullsFirst: false })
       .limit(6),
     supabase.from('colleges').select('*').eq('is_featured', true).or('status.eq.active,status.is.null').order('name').limit(6),
     supabase.from('colleges').select('id', { count: 'exact', head: true }).or('status.eq.active,status.is.null'),

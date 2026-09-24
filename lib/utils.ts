@@ -26,6 +26,20 @@ export function formatDateShort(dateString: string | null | undefined): string {
   })
 }
 
+export const DATE_NOT_PUBLISHED = 'Date not published'
+
+// published_date is nullable in the database and many scraped notices have none.
+// A missing or unparseable date must read as explicitly unknown — never blank,
+// never a dash, never a guess from another column.
+export function hasPublishedDate(dateString: string | null | undefined): dateString is string {
+  return Boolean(dateString) && !isNaN(new Date(dateString as string).getTime())
+}
+
+export function formatPublishedDate(dateString: string | null | undefined, style: 'short' | 'long' = 'short'): string {
+  if (!hasPublishedDate(dateString)) return DATE_NOT_PUBLISHED
+  return style === 'long' ? formatDate(dateString) : formatDateShort(dateString)
+}
+
 export function timeAgo(dateString: string | null | undefined): string {
   if (!dateString) return ''
   const date = new Date(dateString)

@@ -4,7 +4,7 @@ import Link from 'next/link'
 import NextImage from 'next/image'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import { Bell, Calendar, ExternalLink, ArrowLeft, Globe, Download, ZoomIn } from 'lucide-react'
-import { formatDate } from '@/lib/utils'
+import PublishedDate from '@/components/ui/PublishedDate'
 import type { Notice } from '@/types'
 import PdfViewer from '@/components/results/PdfViewer'
 import Card from '@/components/design-system/Card'
@@ -84,10 +84,10 @@ export default async function NoticeDetailPage({ params }: { params: { slug: str
         </div>
 
         <div className="p-6">
-          {notice.published_date && <div className="flex items-center gap-2 text-sm text-sn-ink-soft mb-6">
+          <div className="flex items-center gap-2 text-sm text-sn-ink-soft mb-6">
             <Calendar className="w-4 h-4" aria-hidden="true" />
-            <time dateTime={notice.published_date}>Published {formatDate(notice.published_date)}</time>
-          </div>}
+            <PublishedDate value={notice.published_date} prefix="Published " long />
+          </div>
           <div className="mb-6">{notice.notice_url ? <EvidenceChip state="confirm" label="Confirm notice details on official source" /> : <EvidenceChip state="limited" className="!text-sn-ink-soft" label="Official source not recorded" />}</div>
 
           {notice.content && (

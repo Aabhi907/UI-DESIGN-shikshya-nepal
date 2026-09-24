@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { Bell, ExternalLink, Sparkles, FileDown, ImageIcon } from 'lucide-react'
 import type { Notice } from '@/types'
-import { formatDateShort, timeAgo } from '@/lib/utils'
+import { DATE_NOT_PUBLISHED, formatPublishedDate, timeAgo } from '@/lib/utils'
 
 const UNI_ACCENT: Record<string, { bar: string; badge: string }> = {
   TU:    { bar: 'bg-blue-500',    badge: 'bg-blue-50   text-blue-700   border-blue-200' },
@@ -60,7 +60,7 @@ export default function NoticeCard({ notice, compact = false }: NoticeCardProps)
               {shortName}
             </span>
             <span className="text-[10px] font-mono text-gray-400 hidden sm:block">
-              {timeAgo(notice.published_date)}
+              {timeAgo(notice.published_date) || DATE_NOT_PUBLISHED}
             </span>
           </div>
 
@@ -118,7 +118,7 @@ export default function NoticeCard({ notice, compact = false }: NoticeCardProps)
                 </span>
               )}
               <span className="text-[10px] font-mono text-gray-400 ml-auto">
-                {formatDateShort(notice.published_date)}
+                {formatPublishedDate(notice.published_date)}
               </span>
             </div>
           </div>
