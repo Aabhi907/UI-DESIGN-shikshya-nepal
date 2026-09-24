@@ -217,8 +217,7 @@ class TUResultsScraper(BaseScraper):
             else:
                 title = raw_title
 
-            # parse_date() returns today as fallback when date_raw is empty/missing
-            date_str = self.parse_date(item.get("date_raw", ""))
+            date_str = self.parse_date(item.get("date_raw") or "", fallback_to_today=False)
             slug     = self.slugify_with_date(title, item.get("date_raw", ""))
 
             # Skip duplicates — slug check first (fast), then title+uni check (catches

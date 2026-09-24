@@ -144,7 +144,7 @@ class PUResultsScraper(BaseScraper):
             else:
                 title = raw_title
 
-            date_str = self.parse_date(item["date_raw"]) if item.get("date_raw") else None
+            date_str = self.parse_date(item.get("date_raw") or "", fallback_to_today=False)
             slug     = self.slugify_with_date(title, item.get("date_raw", ""))
 
             if self.check_exists("results", slug):
