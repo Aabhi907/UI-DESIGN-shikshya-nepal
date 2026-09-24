@@ -72,21 +72,37 @@ export async function applyIngestionReview(db: ReturnType<typeof createAdminSupa
       })
       if (issues.length) return { status: 400, json: { error: `Review before publishing: ${issues.join('; ')}.` } }
     }
+    // The queue UUID is also the first public record's UUID. If the insert
+    // succeeds but the queue-link write fails, a retry finds the same record
+    // instead of inserting another one.
+    if (!item.published_record_id) {
+      const urlField = item.target_type === 'news' ? 'source_url' : item.target_type === 'notice' ? 'notice_url' : 'result_url'
+      const { data: existing, error: lookupError } = await db.from(table)
+        .select(`id,slug,${urlField}`).eq('id', item.id).maybeSingle()
+      if (lookupError) return { status: 500, json: { error: `Could not check existing publication: ${lookupError.message}` } }
+      if (existing && (existing.slug !== record.slug || String((existing as Record<string, unknown>)[urlField] || '') !== String(record[urlField] || item.source_url || ''))) {
+        return { status: 409, json: { error: 'A public record already uses this queue ID but does not match its source and slug. Manual review required.' } }
+      }
+    }
     const { data, error } = item.published_record_id
       ? await db.from(table).update(record).eq('id', item.published_record_id).select('id').single()
-      : await db.from(table).insert(record).select('id').single()
+      : await db.from(table).upsert({ ...record, id: item.id }, { onConflict: 'id' }).select('id').single()
     if (error) return { status: 500, json: { error: `Publish failed: ${error.message}` } }
     publishedId = data.id
 
-    // Persist the link back to the queue item immediately, before the evidence
-    // ledger insert below or the status-flip update further down can fail. Once
-    // this succeeds, a retry sees item.published_record_id already set and takes
-    // the update branch above instead of inserting a second public record — so
-    // "public record exists, queue item still pending" can't be reached past
-    // this point, even if a later step in this same request fails.
+    // Persist the link before the evidence and status writes. The stable ID
+    // above also covers failure of this link write itself.
     if (!item.published_record_id) {
-      const { error: linkError } = await db.from('content_ingestion_items').update({ published_record_id: publishedId }).eq('id', item.id)
-      if (linkError) return { status: 500, json: { error: `Publish succeeded but could not be recorded: ${linkError.message}. Retry approval — it will not create a duplicate.` } }
+      const { data: linked, error: linkError } = await db.from('content_ingestion_items')
+        .update({ published_record_id: publishedId }).eq('id', item.id).is('published_record_id', null).select('id').maybeSingle()
+      if (linkError) return { status: 500, json: { error: `Publish succeeded but could not be recorded: ${linkError.message}. Retry approval — it will reuse the same public record.` } }
+      if (!linked) {
+        const { data: current, error: currentError } = await db.from('content_ingestion_items')
+          .select('published_record_id').eq('id', item.id).maybeSingle()
+        if (currentError || current?.published_record_id !== publishedId) {
+          return { status: 409, json: { error: 'The publication link changed during review. Reload before retrying.' } }
+        }
+      }
     }
 
     const category = String(item.content_category || '').toLowerCase()
