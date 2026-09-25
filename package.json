@@ -10,6 +10,7 @@
     "check:links": "node scripts/check-links.mjs",
     "check:slop": "node scripts/check-ai-slop.mjs",
     "check:queries": "node scripts/check-queries.mjs",
+    "test:public-list-errors": "node --import tsx scripts/test-public-list-errors.mjs",
     "test:admission-dates": "node --import tsx scripts/test-admission-date-boundaries.ts",
     "test:ingestion-atomicity": "tsx scripts/test-ingestion-approval-atomicity.ts",
     "test:deadline-visibility": "node scripts/test-deadline-visibility.mjs",

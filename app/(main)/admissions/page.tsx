@@ -1,12 +1,13 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { CalendarCheck2, CheckCircle2, Clock3 } from 'lucide-react'
+import { AlertTriangle, CalendarCheck2, CheckCircle2, Clock3, RefreshCcw } from 'lucide-react'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import AdmissionCard from '@/components/admissions/AdmissionCard'
 import AdmissionFilters, { type AdmissionSearchParams } from '@/components/admissions/AdmissionFilters'
 import Mascot from '@/components/design-system/Mascot'
 import { addDaysToDateOnly, deadlineState, nepalDateOnly } from '@/lib/admissions'
 import type { Admission } from '@/types'
+import { publicListState } from '@/lib/public-list-state'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
@@ -30,12 +31,18 @@ async function getAdmissions(sp: AdmissionSearchParams) {
     if (sp.deadline !== 'open') query = query.lt('application_deadline', addDaysToDateOnly(today, Number(sp.deadline) + 1))
   }
   const { data, error } = await query
-  if (error) console.error('[admissions]', error.message)
-  return (data || []) as Admission[]
+  if (error) console.error('[admissions]', { code: error.code, message: error.message })
+  const state = publicListState({ data: data as Admission[] | null, error })
+  return { admissions: state.items, loadError: state.loadError }
 }
 
 export default async function AdmissionsPage({ searchParams }: { searchParams: AdmissionSearchParams }) {
-  const admissions = await getAdmissions(searchParams)
+  const { admissions, loadError } = await getAdmissions(searchParams)
+  const retryParams = new URLSearchParams()
+  for (const key of ['q', 'institution', 'level', 'type', 'verified', 'deadline'] as const) {
+    if (searchParams[key]) retryParams.set(key, searchParams[key]!)
+  }
+  const retryUrl = `/admissions${retryParams.size ? `?${retryParams}` : ''}`
   const open = admissions.filter((item) => deadlineState(item.application_deadline) !== 'closed').length
   const soon = admissions.filter((item) => deadlineState(item.application_deadline) === 'closing_soon').length
   const verified = admissions.filter((item) => item.verification_status !== 'unverified').length
@@ -55,7 +62,7 @@ export default async function AdmissionsPage({ searchParams }: { searchParams: A
           <Link href="/admissions?deadline=7" aria-current={searchParams.deadline === '7' ? 'page' : undefined} className={`min-h-11 whitespace-nowrap rounded-sn-control border px-4 py-3 text-sm font-bold font-nunito ${searchParams.deadline === '7' ? 'border-sn-primary bg-sn-primary text-white' : 'border-sn-border-strong bg-sn-surface text-sn-ink-soft'}`}>Closing in 7 days</Link>
           <Link href="/admissions/planner" className="min-h-11 whitespace-nowrap rounded-sn-control border border-sn-border-strong bg-sn-surface px-4 py-3 text-sm font-bold font-nunito text-sn-ink-soft">My planner</Link>
         </nav>
-        <div className="mb-6 grid grid-cols-3 gap-3">
+        {!loadError && <div className="mb-6 grid grid-cols-3 gap-3">
           {[{ Icon: CalendarCheck2, value: open, label: 'Open' }, { Icon: Clock3, value: soon, label: 'Closing soon' }, { Icon: CheckCircle2, value: verified, label: 'Verified' }].map(({ Icon, value, label }) => (
             <div key={label} className="rounded-sn-card border border-sn-border bg-sn-surface p-4">
               <Icon className="mb-2 h-5 w-5 text-sn-primary" />
@@ -63,9 +70,16 @@ export default async function AdmissionsPage({ searchParams }: { searchParams: A
               <p className="text-xs font-nunito text-sn-ink-muted">{label}</p>
             </div>
           ))}
-        </div>
+        </div>}
 
-        <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
+        {loadError ? (
+          <div role="alert" className="rounded-sn-card border border-sn-confirm/30 bg-sn-confirm-bg p-8 text-center text-sn-confirm-ink">
+            <AlertTriangle className="mx-auto h-8 w-8" aria-hidden="true" />
+            <h2 className="mt-3 font-baloo text-xl font-bold">Admissions could not be loaded</h2>
+            <p className="mt-2 text-sm">This is a temporary problem, not an empty list. Your filters are safe — please try again.</p>
+            <a href={retryUrl} className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-sn-control bg-sn-ink px-4 text-sm font-bold text-white"><RefreshCcw className="h-4 w-4" aria-hidden="true" />Try again</a>
+          </div>
+        ) : <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
           <AdmissionFilters searchParams={searchParams} count={admissions.length} />
           <main>
             {admissions.length ? (
@@ -79,7 +93,7 @@ export default async function AdmissionsPage({ searchParams }: { searchParams: A
               </div>
             )}
           </main>
-        </div>
+        </div>}
       </div>
     </div>
   )

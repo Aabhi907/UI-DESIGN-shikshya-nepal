@@ -1,9 +1,11 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { AlertTriangle, RefreshCcw } from 'lucide-react'
 import CollegeCard from '@/components/colleges/CollegeCard'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import type { College } from '@/types'
+import { publicListState } from '@/lib/public-list-state'
 
 export const revalidate = 0
 
@@ -13,8 +15,10 @@ async function load(location: string) {
   const safeSlug = decodeURIComponent(location).replace(/[^a-z0-9-]/gi, '')
   const name = titleCase(safeSlug)
   const db = createServerSupabaseClient()
-  const { data } = await db.from('colleges').select('*,programs:college_programs(fee,fee_period,fee_source_url,fee_last_verified_at,scholarship_available,program:programs(id,name,slug,faculty,degree_level)),reviews(rating,is_approved)').or(`district.ilike.%${name}%,location.ilike.%${name}%`).or('status.eq.active,status.is.null').order('is_featured', { ascending: false }).limit(200)
-  return { name, colleges: (data || []) as College[] }
+  const { data, error } = await db.from('colleges').select('*,programs:college_programs(fee,fee_period,fee_source_url,fee_last_verified_at,scholarship_available,program:programs(id,name,slug,faculty,degree_level)),reviews(rating,is_approved)').or(`district.ilike.%${name}%,location.ilike.%${name}%`).or('status.eq.active,status.is.null').order('is_featured', { ascending: false }).limit(200)
+  if (error) console.error('[colleges:location]', { code: error.code, message: error.message })
+  const { items: colleges, loadError } = publicListState({ data: data as College[] | null, error })
+  return { name, colleges, loadError }
 }
 
 export async function generateMetadata({ params }: { params: { location: string } }): Promise<Metadata> {
@@ -23,17 +27,19 @@ export async function generateMetadata({ params }: { params: { location: string 
 }
 
 export default async function Page({ params }: { params: { location: string } }) {
-  const { name, colleges } = await load(params.location)
+  const { name, colleges, loadError } = await load(params.location)
   if (!name) notFound()
   return (
     <div className="mx-auto max-w-sn px-5 py-10 sm:px-8 lg:px-12 lg:py-14">
       <nav className="text-sm text-sn-ink-muted"><Link href="/colleges" className="hover:text-sn-primary">Colleges</Link> / {name}</nav>
       <h1 className="mt-4 font-baloo text-3xl font-extrabold text-sn-ink sm:text-4xl">Colleges in {name}</h1>
       <p className="mt-3 max-w-2xl text-sm leading-6 text-sn-ink-soft sm:text-base">Explore post-SEE colleges for +2, Bachelor, Master and diploma study in {name}. Compare programs and verify details with official sources before applying.</p>
+      {loadError ? <div role="alert" className="mt-8 rounded-sn-card border border-sn-confirm/30 bg-sn-confirm-bg p-8 text-center text-sn-confirm-ink"><AlertTriangle className="mx-auto h-8 w-8" aria-hidden="true" /><h2 className="mt-3 font-baloo text-xl font-bold">Colleges could not be loaded</h2><p className="mt-2 text-sm">This is a temporary problem, not an empty list. Please try again.</p><a href={`/colleges/in/${params.location}`} className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-sn-control bg-sn-ink px-4 text-sm font-bold text-white"><RefreshCcw className="h-4 w-4" aria-hidden="true" />Try again</a></div> : <>
       <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {colleges.map(college => <CollegeCard key={college.id} college={college} />)}
       </div>
       {!colleges.length && <p className="mt-12 rounded-sn-card border border-sn-border bg-sn-surface p-10 text-center text-sn-ink-soft">No active colleges are indexed for {name} yet.</p>}
+      </>}
     </div>
   )
 }
