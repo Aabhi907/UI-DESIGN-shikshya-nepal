@@ -5,7 +5,7 @@ import { createServerSupabaseClient } from '@/lib/supabase'
 import AdmissionCard from '@/components/admissions/AdmissionCard'
 import AdmissionFilters, { type AdmissionSearchParams } from '@/components/admissions/AdmissionFilters'
 import Mascot from '@/components/design-system/Mascot'
-import { deadlineState } from '@/lib/admissions'
+import { addDaysToDateOnly, deadlineState, nepalDateOnly } from '@/lib/admissions'
 import type { Admission } from '@/types'
 
 export const dynamic = 'force-dynamic'
@@ -26,8 +26,8 @@ async function getAdmissions(sp: AdmissionSearchParams) {
   if (sp.type) query = query.eq('admission_type', sp.type)
   if (sp.verified === 'true') query = query.in('verification_status', ['source_verified', 'institution_verified'])
   if (sp.deadline) {
-    const now = new Date(); query = query.gte('application_deadline', now.toISOString())
-    if (sp.deadline !== 'open') { const end = new Date(now.getTime() + Number(sp.deadline) * 86_400_000); query = query.lte('application_deadline', end.toISOString()) }
+    const today = nepalDateOnly(); query = query.gte('application_deadline', today)
+    if (sp.deadline !== 'open') query = query.lt('application_deadline', addDaysToDateOnly(today, Number(sp.deadline) + 1))
   }
   const { data, error } = await query
   if (error) console.error('[admissions]', error.message)

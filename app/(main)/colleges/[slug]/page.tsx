@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { createServerSupabaseClient } from "@/lib/supabase";
+import { nepalDateOnly } from "@/lib/admissions";
 import { DATE_NOT_PUBLISHED } from "@/lib/utils";
 import {
   MapPin,
@@ -100,7 +101,7 @@ const getCollege = cache(async function getCollege(slug: string) {
       .select("*, college:colleges(id,name,slug,location)")
       .eq("college_id", college.id)
       .eq("status", "published")
-      .or(`application_deadline.is.null,application_deadline.gte.${new Date().toISOString()}`)
+      .or(`application_deadline.is.null,application_deadline.gte.${nepalDateOnly()}`)
       .order("application_deadline", { ascending: true })
       .limit(4),
     supabase.from("news").select("id,title,slug,published_date,content_category").eq("college_id", college.id).eq("status", "published").order("published_date", { ascending: false, nullsFirst: false }).limit(5),

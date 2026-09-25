@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getAuthContext } from '@/lib/auth'
 import { createAdminSupabaseClient } from '@/lib/supabase'
+import { nepalDateOnly } from '@/lib/admissions'
 
 const statuses = ['not_started', 'documents_ready', 'applied', 'entrance', 'enrolled']
 const checklistKeys = ['official_notice', 'documents', 'payment', 'deadline']
@@ -14,7 +15,7 @@ export async function GET() {
   const db = createAdminSupabaseClient()
   const [plans, admissions] = await Promise.all([
     db.from('student_admission_plans').select(`id,status,checklist,notes,admission:admissions(${admissionFields})`).eq('user_id', auth.user.id).order('updated_at', { ascending: false }),
-    db.from('admissions').select(admissionFields).eq('status', 'published').or(`application_deadline.is.null,application_deadline.gte.${new Date().toISOString()}`).order('application_deadline', { ascending: true, nullsFirst: false }).limit(20),
+    db.from('admissions').select(admissionFields).eq('status', 'published').or(`application_deadline.is.null,application_deadline.gte.${nepalDateOnly()}`).order('application_deadline', { ascending: true, nullsFirst: false }).limit(20),
   ])
   if (plans.error?.code === '42P01') return NextResponse.json({ error: 'The admission-planner database setup has not been applied yet.', setupRequired: true }, { status: 503, headers: noStore })
   if (plans.error || admissions.error) {

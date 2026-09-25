@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getAuthContext } from '@/lib/auth'
 import { createAdminSupabaseClient } from '@/lib/supabase'
+import { addDaysToDateOnly, nepalDateOnly } from '@/lib/admissions'
 
 export const dynamic = 'force-dynamic'
 
@@ -36,9 +37,10 @@ export async function GET() {
   const activeRows = rows.filter(item => item.college && (item.college.status === 'active' || item.college.status == null))
   const collegeIds = activeRows.map(item => item.college_id)
   const db = createAdminSupabaseClient()
+  const today = nepalDateOnly()
   const [programsResult, admissionsResult] = collegeIds.length ? await Promise.all([
     db.from('college_programs').select('college_id,fee').in('college_id', collegeIds),
-    db.from('admissions').select('college_id').in('college_id', collegeIds).eq('status', 'published').or(`application_open_at.is.null,application_open_at.lte.${new Date().toISOString()}`).or(`application_deadline.is.null,application_deadline.gte.${new Date().toISOString()}`),
+    db.from('admissions').select('college_id').in('college_id', collegeIds).eq('status', 'published').or(`application_open_at.is.null,application_open_at.lt.${addDaysToDateOnly(today, 1)}`).or(`application_deadline.is.null,application_deadline.gte.${today}`),
   ]) : [{ data: [], error: null }, { data: [], error: null }]
   if (programsResult.error || admissionsResult.error) console.error('[saved-colleges:summary]', programsResult.error || admissionsResult.error)
 

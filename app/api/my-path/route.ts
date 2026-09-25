@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { getAuthContext } from '@/lib/auth'
 import { createAdminSupabaseClient } from '@/lib/supabase'
 import { isPathStage, levelFitsStage, taskForStage, type PathStage } from '@/lib/my-path'
+import { nepalDateOnly } from '@/lib/admissions'
 
 function setupError() {
   return NextResponse.json({ error: 'My Path is temporarily unavailable. Please try again shortly.' }, { status: 503 })
@@ -13,12 +14,7 @@ export async function GET() {
 
   const db = createAdminSupabaseClient()
   const now = new Date()
-  const today = new Intl.DateTimeFormat('en-CA', {
-    timeZone: 'Asia/Kathmandu',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).format(now)
+  const today = nepalDateOnly(now)
   const [profile, tasks, colleges, admissions, scholarships, exams, opportunities] = await Promise.all([
     db.from('student_path_profiles').select('current_stage').eq('user_id', auth.user.id).maybeSingle(),
     db.from('student_path_tasks').select('id,task_key,title,is_completed').eq('user_id', auth.user.id).order('created_at'),

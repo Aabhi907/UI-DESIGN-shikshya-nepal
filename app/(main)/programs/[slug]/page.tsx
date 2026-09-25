@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { createServerSupabaseClient } from '@/lib/supabase'
+import { nepalDateOnly } from '@/lib/admissions'
 import { BookOpen, Clock, ArrowLeft, Building2, BadgeCheck, BriefcaseBusiness, CircleDollarSign, ExternalLink, GraduationCap } from 'lucide-react'
 import Pill from '@/components/design-system/Pill'
 import Card from '@/components/design-system/Card'
@@ -49,7 +50,7 @@ const getProgram = cache(async function getProgram(slug: string) {
 
   const visibleColleges = ((colleges || []) as CollegeProgram[]).filter(item => item.college && (item.college.status === 'active' || item.college.status == null))
   const collegeIds = visibleColleges.map(item => item.college_id)
-  const today = new Date().toISOString()
+  const today = nepalDateOnly()
   const [{ data: admissions }, { data: scholarships }] = await Promise.all([
     supabase.from('admissions').select('id,title,slug,institution_name,application_deadline,status,programs').eq('status','published').contains('programs',[program.name]).or(`application_deadline.is.null,application_deadline.gte.${today}`).order('application_deadline',{ascending:true,nullsFirst:false}).limit(8),
     collegeIds.length ? supabase.from('scholarships').select('*,college:colleges(id,name,slug)').in('college_id',collegeIds).eq('is_active',true).or(`deadline.is.null,deadline.gte.${today}`).order('deadline',{ascending:true,nullsFirst:false}).limit(8) : Promise.resolve({ data: [] }),
