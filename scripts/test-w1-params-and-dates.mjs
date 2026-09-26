@@ -30,13 +30,22 @@ const ok = (condition, message) => { assert.ok(condition, message); checks++ }
 
 // ---- fake Supabase client: answers a queued result per table, and records
 // every chained method call (with its arguments) so a test can inspect not
-// just what rendered, but exactly which filters a query actually applied. ----
+// just what rendered, but exactly which filters a query actually applied.
+// A table's entry may be a single { data, error } used for every call to it,
+// or an array of them consumed one per call — needed where a page issues two
+// separate queries against the same table (e.g. entrance-exams' open/upcoming
+// and recently-closed queries) and a test wants them to differ. ----
 function fakeDb(tables) {
   const log = []
+  const callCounts = {}
   return {
     log,
     from(table) {
-      const result = tables[table] ?? { data: [], error: null }
+      const spec = tables[table] ?? { data: [], error: null }
+      const sequence = Array.isArray(spec) ? spec : [spec]
+      const index = callCounts[table] ?? 0
+      callCounts[table] = index + 1
+      const result = sequence[Math.min(index, sequence.length - 1)]
       const builder = new Proxy({}, {
         get(_, prop) {
           if (prop === 'then') return (resolve, reject) => Promise.resolve(result).then(resolve, reject)
@@ -106,6 +115,9 @@ async function render(file, tables, props, scenario) {
   }
   return { markup: renderToStaticMarkup(element), log: db.log, page }
 }
+
+const ERROR = { data: null, error: { message: 'database unavailable', code: '57P03', details: null, hint: null } }
+const alerts = markup => (markup.match(/role="alert"/g) || []).length
 
 const calledWith = (log, table, method, firstArg) => log.some(e => e.table === table && e.method === method && (firstArg === undefined || e.args[0] === firstArg))
 // Scholarships/opportunities also call .or() for their deadline window
@@ -223,6 +235,18 @@ async function main() {
     ok(closedFloor !== -1 && closedCeiling !== -1 && all[closedFloor].args[1] < all[closedCeiling].args[1], 'entrance-exams?status=all: the recently-closed floor must be earlier than its ceiling')
     ok(limitIndexes.length >= 2, 'entrance-exams?status=all: open/upcoming and recently-closed must be capped separately so neither crowds the other out')
     ok(limitIndexes.every(i => i > upcomingFloor) , 'entrance-exams?status=all: every cap must come after its query\'s own floor')
+  }
+  {
+    // A failed recently-closed query (open/upcoming succeeds) must show the
+    // same failure state as a failed open/upcoming query — not quietly drop
+    // the closed exams and render as if the page loaded fine.
+    const { markup } = await render('app/(main)/entrance-exams/page.tsx', { entrance_exams: [rows(), ERROR] }, { searchParams: { status: 'all' } }, 'entrance-exams?status=all (closed query fails)')
+    ok(alerts(markup) === 1, `entrance-exams?status=all with a failed closed-exam query: expected exactly one role="alert", found ${alerts(markup)}`)
+    ok(markup.includes('Entrance exams could not be loaded'), 'entrance-exams?status=all with a failed closed-exam query must show the failure state, not silently drop the closed exams')
+    // Reverse check: the same request with BOTH queries succeeding must not
+    // show that failure state, proving the assertion above isn't vacuous.
+    const ok2 = await render('app/(main)/entrance-exams/page.tsx', { entrance_exams: [rows(), rows()] }, { searchParams: { status: 'all' } }, 'entrance-exams?status=all (both queries succeed, control)')
+    ok(alerts(ok2.markup) === 0 && !ok2.markup.includes('Entrance exams could not be loaded'), 'entrance-exams?status=all: the failure state must not show when both queries succeed (control for the check above)')
   }
 
   // ---- Section E: /deadlines — every source query must floor (and, for

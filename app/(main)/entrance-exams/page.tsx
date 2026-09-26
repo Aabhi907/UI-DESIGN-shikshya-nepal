@@ -74,7 +74,11 @@ export default async function EntranceExamsPage({ searchParams }: { searchParams
   ])
   if (upcomingResult.error) console.error('[entrance-exams:list]', { code: upcomingResult.error.code, message: upcomingResult.error.message })
   if (closedResult.error) console.error('[entrance-exams:list:closed]', { code: closedResult.error.code, message: closedResult.error.message })
-  const { items: upcomingExams, loadError } = publicListState({ data: upcomingResult.data as EntranceExam[] | null, error: upcomingResult.error })
+  // A failed "recently closed" query must not quietly render as if those
+  // exams simply didn't exist — show the same failure state a failed
+  // open/upcoming query would.
+  const { items: upcomingExams, loadError: upcomingLoadError } = publicListState({ data: upcomingResult.data as EntranceExam[] | null, error: upcomingResult.error })
+  const loadError = upcomingLoadError || Boolean(closedResult.error)
   const exams = [...upcomingExams, ...((closedResult.data as EntranceExam[] | null) || [])]
   const retryParams = new URLSearchParams()
   const retryValues = { q, level, status: one(searchParams.status) || '', authority, field }
