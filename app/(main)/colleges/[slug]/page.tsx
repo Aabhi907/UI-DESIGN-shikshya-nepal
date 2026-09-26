@@ -70,7 +70,7 @@ const getCollege = cache(async function getCollege(slug: string) {
   const supabase = createServerSupabaseClient();
   const { data: college } = await supabase
     .from("colleges")
-    .select("*")
+    .select("id,name,slug,location,district,province,local_level,affiliation,logo_url,cover_url,is_featured,verification_status,programs_offered,education_levels,is_sponsored,sponsor_label,sponsor_starts_at,sponsor_ends_at,sponsor_disclosure,description,address,phone,email,website,established_year,status,source_name,source_url,last_verified_at,facilities,created_at,updated_at")
     .eq("slug", slug)
     .or("status.eq.active,status.is.null")
     .single();
@@ -84,7 +84,7 @@ const getCollege = cache(async function getCollege(slug: string) {
       .eq("college_id", college.id),
     supabase
       .from("reviews")
-      .select("*, review_responses(*)")
+      .select("id,rating,review_text,student_name,program,year,verification_status,teaching_rating,facilities_rating,administration_rating,value_rating,placement_rating,attendance_rating,safety_rating,internship_support_rating,hidden_costs_reported,hostel_transport_note,review_responses(id,response_text,status)")
       .eq("college_id", college.id)
       .eq("is_approved", true)
       .order("created_at", { ascending: false })
@@ -116,9 +116,9 @@ const getCollege = cache(async function getCollege(slug: string) {
     : null;
 
   return {
-    college: college as College,
+    college: college as unknown as College,
     programs: (programsRes.data || []) as CollegeProgram[],
-    reviews: (reviewsRes.data || []) as Review[],
+    reviews: (reviewsRes.data || []) as unknown as Review[],
     reviewStats: { averageRating, reviewCount },
     scholarships: scholarshipsRes.data || [],
     admissions: (admissionsRes.data || []) as Admission[],

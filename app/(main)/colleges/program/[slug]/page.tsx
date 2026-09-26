@@ -17,7 +17,7 @@ async function load(slug: string) {
     return { program: null, colleges: [] as College[], loadError: true }
   }
   if (!program) return { program: null, colleges: [] as College[], loadError: false }
-  const { data, error } = await db.from('college_programs').select('college:colleges(*,programs:college_programs(fee,fee_period,fee_source_url,fee_last_verified_at,scholarship_available,program:programs(id,name,slug,faculty,degree_level)),reviews(rating,is_approved))').eq('program_id', program.id).limit(200)
+  const { data, error } = await db.from('college_programs').select('college:colleges(id,name,slug,location,district,province,local_level,affiliation,logo_url,cover_url,is_featured,verification_status,programs_offered,education_levels,is_sponsored,sponsor_label,sponsor_starts_at,sponsor_ends_at,sponsor_disclosure,programs:college_programs(fee,fee_period,fee_source_url,fee_last_verified_at,scholarship_available,program:programs(id,name,slug,faculty,degree_level)),reviews(rating,is_approved))').eq('program_id', program.id).limit(200)
   if (error) console.error('[colleges:program-colleges]', { code: error.code, message: error.message })
   const { items, loadError } = publicListState({ data, error })
   return { program: program as Program, colleges: items.map(row => row.college).filter(Boolean) as unknown as College[], loadError }

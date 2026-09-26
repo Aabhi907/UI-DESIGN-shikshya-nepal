@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: { params: { province: string 
 export default async function Page({ params }: { params: { province: string } }) {
   const province = resolve(params.province)
   if (!province) notFound()
-  const { data, error } = await createServerSupabaseClient().from('colleges').select('*,programs:college_programs(fee,fee_period,fee_source_url,fee_last_verified_at,scholarship_available,program:programs(id,name,slug,faculty,degree_level)),reviews(rating,is_approved)').eq('province', province).or('status.eq.active,status.is.null').order('is_featured', { ascending: false }).order('name').limit(300)
+  const { data, error } = await createServerSupabaseClient().from('colleges').select('id,name,slug,location,district,province,local_level,affiliation,logo_url,cover_url,is_featured,verification_status,programs_offered,education_levels,is_sponsored,sponsor_label,sponsor_starts_at,sponsor_ends_at,sponsor_disclosure,programs:college_programs(fee,fee_period,fee_source_url,fee_last_verified_at,scholarship_available,program:programs(id,name,slug,faculty,degree_level)),reviews(rating,is_approved)').eq('province', province).or('status.eq.active,status.is.null').order('is_featured', { ascending: false }).order('name').limit(300)
   if (error) console.error('[colleges:province]', { code: error.code, message: error.message })
   const { items: colleges, loadError } = publicListState({ data: data as College[] | null, error })
   return (
