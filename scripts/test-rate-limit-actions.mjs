@@ -55,6 +55,8 @@ for (const file of ['app', 'lib', 'components'].flatMap(filesIn)) {
 assert.deepEqual([...used].sort(), actions, 'PublicFormAction must match actions used by forms')
 assert.match(sql.trim(), /^--[^]*?BEGIN;/)
 assert.match(sql.trim(), /COMMIT;$/)
+assert.match(sql, /ALTER DEFAULT PRIVILEGES FOR ROLE postgres\s+REVOKE EXECUTE ON FUNCTIONS FROM PUBLIC, anon, authenticated;/)
+assert.match(sql, /ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public\s+REVOKE EXECUTE ON FUNCTIONS FROM PUBLIC, anon, authenticated;/)
 for (const signature of [
   'cast_community_vote(TEXT, UUID, TEXT, SMALLINT)',
   'consume_public_form_rate_limit(TEXT, TEXT, INTEGER)',

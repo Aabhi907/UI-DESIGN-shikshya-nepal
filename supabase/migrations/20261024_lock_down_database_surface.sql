@@ -38,6 +38,9 @@ REVOKE ALL ON FUNCTION public.delete_expired_community_security_events() FROM PU
 GRANT EXECUTE ON FUNCTION public.delete_expired_community_security_events() TO service_role;
 REVOKE ALL ON FUNCTION public.handle_new_user() FROM PUBLIC, anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.handle_new_user() TO service_role;
+-- Schema defaults are additive; the global default must also be revoked.
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres
+  REVOKE EXECUTE ON FUNCTIONS FROM PUBLIC, anon, authenticated;
 ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA public
   REVOKE EXECUTE ON FUNCTIONS FROM PUBLIC, anon, authenticated;
 
