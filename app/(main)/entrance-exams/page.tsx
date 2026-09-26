@@ -8,18 +8,26 @@ import EvidenceChip from '@/components/design-system/EvidenceChip'
 import Card from '@/components/design-system/Card'
 import type { EntranceExam } from '@/types'
 import { publicListState } from '@/lib/public-list-state'
+import { nepalDateOnly, addDaysToDateOnly } from '@/lib/admissions'
 
 export const dynamic = 'force-dynamic'
 export const metadata: Metadata = { title: 'Entrance Exams in Nepal – Dates, Deadlines and Eligibility', description: 'Track verified entrance exam application deadlines, exam dates, fees, eligibility and official notices for study in Nepal.' }
 const LEVELS = ['+2', 'Bachelor', 'Master', 'Diploma'] as const
-const clean = (value?: string) => (value || '').replace(/[,().%]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 80)
+// A repeated query key (e.g. `?q=a&q=b`) arrives as an array — treat it like
+// any other value this page doesn't recognise: as if the param were unset.
+const clean = (value?: string | string[]) => (Array.isArray(value) ? '' : (value || '')).replace(/[,().%]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 80)
 const validUrl = (value?: string | null) => { if (!value) return null; try { const url = new URL(value); return ['http:', 'https:'].includes(url.protocol) ? url.toString() : null } catch { return null } }
 const validDate = (value?: string | null) => Boolean(value && Number.isFinite(new Date(value).getTime()))
-const dateLabel = (value: string | null) => validDate(value) ? new Intl.DateTimeFormat('en-NP', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(value!)) : 'Not announced'
-const daysFromToday = (value: string) => { const end = new Date(value); const today = new Date(); end.setHours(0, 0, 0, 0); today.setHours(0, 0, 0, 0); return Math.round((end.getTime() - today.getTime()) / 86400000) }
-const stateFor = (exam: EntranceExam) => {
+const dateLabel = (value: string | null) => validDate(value) ? new Intl.DateTimeFormat('en-NP', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Kathmandu' }).format(new Date(value!)) : 'Not announced'
+// A calendar-day difference in Nepal time, not the server's local midnight
+// (UTC on Vercel) — otherwise a deadline can read as "still open" for up to
+// 5h45m after it has actually closed in Nepal. `now` defaults to the real
+// current time and is only ever overridden by tests.
+const dateKeyEpoch = (key: string) => Date.UTC(Number(key.slice(0, 4)), Number(key.slice(5, 7)) - 1, Number(key.slice(8, 10)))
+const daysFromToday = (value: string, now = new Date()) => Math.round((dateKeyEpoch(nepalDateOnly(new Date(value))) - dateKeyEpoch(nepalDateOnly(now))) / 86400000)
+const stateFor = (exam: EntranceExam, now = new Date()) => {
   if (!validDate(exam.application_deadline)) return { label: 'Deadline to be announced', tone: 'bg-sn-confirm-bg text-sn-confirm-ink', days: null }
-  const days = daysFromToday(exam.application_deadline!)
+  const days = daysFromToday(exam.application_deadline!, now)
   if (days < 0) return { label: 'Closed', tone: 'bg-sn-surface-alt text-sn-ink-soft', days }
   if (days === 0) return { label: 'Closes today', tone: 'bg-sn-confirm-bg text-sn-confirm-ink', days }
   if (days <= 7) return { label: `${days} day${days === 1 ? '' : 's'} left`, tone: 'bg-sn-confirm-bg text-sn-confirm-ink', days }
@@ -38,20 +46,40 @@ type SearchParams = { q?: string; level?: string; status?: string; authority?: s
 
 export default async function EntranceExamsPage({ searchParams }: { searchParams: SearchParams }) {
   const db = createServerSupabaseClient()
+  // A repeated query key (e.g. `?status=all&status=open`) arrives as an array
+  // — treat it like any other value this page doesn't recognise: as if unset.
+  const one = (value?: string | string[]) => (Array.isArray(value) ? undefined : value)
   const q = clean(searchParams.q)
-  const level = LEVELS.includes(searchParams.level as typeof LEVELS[number]) ? searchParams.level! : ''
-  const status = searchParams.status === 'all' ? 'all' : 'open'
+  const level = LEVELS.includes(one(searchParams.level) as typeof LEVELS[number]) ? (one(searchParams.level) as string) : ''
+  const status = one(searchParams.status) === 'all' ? 'all' : 'open'
   const authority = clean(searchParams.authority)
   const field = clean(searchParams.field)
-  let query = db.from('entrance_exams').select('*, university:universities(name,short_name)').eq('status', 'published').order('application_deadline', { ascending: true, nullsFirst: false }).limit(150)
-  if (q) query = query.or(`title.ilike.%${q}%,program.ilike.%${q}%,exam_body.ilike.%${q}%`)
-  if (level) query = query.eq('education_level', level)
-  const { data, error } = await query
-  if (error) console.error('[entrance-exams:list]', { code: error.code, message: error.message })
-  const { items: exams, loadError } = publicListState({ data: data as EntranceExam[] | null, error })
+  const today = nepalDateOnly()
+  // Ordering by deadline ascending with one flat cap pushes current and
+  // upcoming exams out once enough old ones pile up. Fetch the open/upcoming
+  // set (floored at today) and, only when shown, a separate recently-closed
+  // set (floored 90 days back, newest miss first) so neither crowds the
+  // other out of its own cap.
+  const baseQuery = () => {
+    let query = db.from('entrance_exams').select('*, university:universities(name,short_name)').eq('status', 'published')
+    if (q) query = query.or(`title.ilike.%${q}%,program.ilike.%${q}%,exam_body.ilike.%${q}%`)
+    if (level) query = query.eq('education_level', level)
+    return query
+  }
+  const [upcomingResult, closedResult] = await Promise.all([
+    baseQuery().or(`application_deadline.is.null,application_deadline.gte.${today}`).order('application_deadline', { ascending: true, nullsFirst: false }).limit(150),
+    status === 'all'
+      ? baseQuery().lt('application_deadline', today).gte('application_deadline', addDaysToDateOnly(today, -90)).order('application_deadline', { ascending: false }).limit(150)
+      : Promise.resolve({ data: [] as EntranceExam[] | null, error: null }),
+  ])
+  if (upcomingResult.error) console.error('[entrance-exams:list]', { code: upcomingResult.error.code, message: upcomingResult.error.message })
+  if (closedResult.error) console.error('[entrance-exams:list:closed]', { code: closedResult.error.code, message: closedResult.error.message })
+  const { items: upcomingExams, loadError } = publicListState({ data: upcomingResult.data as EntranceExam[] | null, error: upcomingResult.error })
+  const exams = [...upcomingExams, ...((closedResult.data as EntranceExam[] | null) || [])]
   const retryParams = new URLSearchParams()
+  const retryValues = { q, level, status: one(searchParams.status) || '', authority, field }
   for (const key of ['q', 'level', 'status', 'authority', 'field'] as const) {
-    if (searchParams[key]) retryParams.set(key, searchParams[key]!)
+    if (retryValues[key]) retryParams.set(key, retryValues[key])
   }
   const retryUrl = `/entrance-exams${retryParams.size ? `?${retryParams}` : ''}`
   const authorities = Array.from(new Set(exams.map(authorityFor))).sort((a, b) => a.localeCompare(b)).slice(0, 40)
