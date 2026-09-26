@@ -12,7 +12,9 @@ export const dynamic = 'force-dynamic'
 export const metadata: Metadata = { title: 'Scholarship Finder Nepal – Check Funding Options', description: 'Match scholarships in Nepal by study level, funding type and student eligibility, with official sources and verified deadlines.' }
 const LEVELS = ['+2', 'Bachelor', 'Master', 'Diploma'] as const
 const GROUPS: Record<string, string> = { merit: 'Merit-based', need_based: 'Financial need', female: 'Female students', disability: 'Students with disabilities', dalit: 'Dalit students', janajati: 'Janajati students', remote_area: 'Remote-area students' }
-const cleanSearch = (value?: string) => (value || '').replace(/[,().%]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 80)
+// A repeated query key (`?q=a&q=b`) arrives here as an array — treat it the
+// same as any other value this page doesn't recognise: as if q were unset.
+const cleanSearch = (value?: string | string[]) => (Array.isArray(value) ? '' : (value || '')).replace(/[,().%]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 80)
 const validUrl = (value?: string | null) => { if (!value) return null; try { const url = new URL(value); return ['http:', 'https:'].includes(url.protocol) ? url.toString() : null } catch { return null } }
 // A date-only deadline (entered via <input type="date">) is stored as midnight
 // UTC for that calendar day — verified directly against the database. Comparing

@@ -18,10 +18,33 @@ export const metadata: Metadata = {
   alternates: { canonical: '/admissions' },
 }
 
-async function getAdmissions(sp: AdmissionSearchParams) {
+// Next.js hands back an array for a repeated query key (e.g. `?q=a&q=b`). Treat
+// that, and any other value this page doesn't recognise, the same way: as if
+// the param were never set, rather than guessing which value the visitor meant.
+type RawParams = Record<string, string | string[] | undefined>
+const one = (value?: string | string[]): string | undefined => (Array.isArray(value) ? undefined : value)
+// The filter UI only ever sends "open" or a small day count ("7", "30"). Match
+// that shape; anything else (a word, an out-of-range or huge number) is ignored.
+const DEADLINE_WINDOW = /^[1-9][0-9]{0,3}$/
+const cleanDeadline = (value?: string): string => (value === 'open' || (value && DEADLINE_WINDOW.test(value)) ? value : '')
+
+function parseAdmissionParams(searchParams: AdmissionSearchParams): Required<AdmissionSearchParams> {
+  const raw = searchParams as RawParams
+  const q = one(raw.q)?.replace(/[,%()]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 80) || ''
+  return {
+    q,
+    institution: one(raw.institution) || '',
+    level: one(raw.level) || '',
+    type: one(raw.type) || '',
+    verified: one(raw.verified) || '',
+    deadline: cleanDeadline(one(raw.deadline)),
+  }
+}
+
+async function getAdmissions(sp: Required<AdmissionSearchParams>) {
   const supabase = createServerSupabaseClient()
   let query = supabase.from('admissions').select('*, college:colleges(id,name,slug,location)').eq('status', 'published').order('is_featured', { ascending: false }).order('application_deadline', { ascending: true, nullsFirst: false }).limit(200)
-  if (sp.q) query = query.or(`title.ilike.%${sp.q.replace(/[,%()]/g, '')}%,institution_name.ilike.%${sp.q.replace(/[,%()]/g, '')}%`)
+  if (sp.q) query = query.or(`title.ilike.%${sp.q}%,institution_name.ilike.%${sp.q}%`)
   if (sp.institution) query = query.eq('institution_type', sp.institution)
   if (sp.level) query = query.ilike('education_level', sp.level)
   if (sp.type) query = query.eq('admission_type', sp.type)
@@ -37,10 +60,11 @@ async function getAdmissions(sp: AdmissionSearchParams) {
 }
 
 export default async function AdmissionsPage({ searchParams }: { searchParams: AdmissionSearchParams }) {
-  const { admissions, loadError } = await getAdmissions(searchParams)
+  const params = parseAdmissionParams(searchParams)
+  const { admissions, loadError } = await getAdmissions(params)
   const retryParams = new URLSearchParams()
   for (const key of ['q', 'institution', 'level', 'type', 'verified', 'deadline'] as const) {
-    if (searchParams[key]) retryParams.set(key, searchParams[key]!)
+    if (params[key]) retryParams.set(key, params[key])
   }
   const retryUrl = `/admissions${retryParams.size ? `?${retryParams}` : ''}`
   const open = admissions.filter((item) => deadlineState(item.application_deadline) !== 'closed').length
@@ -57,9 +81,9 @@ export default async function AdmissionsPage({ searchParams }: { searchParams: A
       </section>
       <div className="mx-auto max-w-sn px-5 py-8 sm:px-8 lg:px-12">
         <nav aria-label="Admission status" className="mb-6 flex gap-2 overflow-x-auto pb-1">
-          <Link href="/admissions" aria-current={!searchParams.deadline ? 'page' : undefined} className={`min-h-11 whitespace-nowrap rounded-sn-control border px-4 py-3 text-sm font-bold font-nunito ${!searchParams.deadline ? 'border-sn-primary bg-sn-primary text-white' : 'border-sn-border-strong bg-sn-surface text-sn-ink-soft'}`}>All admissions</Link>
-          <Link href="/admissions?deadline=open" aria-current={searchParams.deadline === 'open' ? 'page' : undefined} className={`min-h-11 whitespace-nowrap rounded-sn-control border px-4 py-3 text-sm font-bold font-nunito ${searchParams.deadline === 'open' ? 'border-sn-primary bg-sn-primary text-white' : 'border-sn-border-strong bg-sn-surface text-sn-ink-soft'}`}>Open now</Link>
-          <Link href="/admissions?deadline=7" aria-current={searchParams.deadline === '7' ? 'page' : undefined} className={`min-h-11 whitespace-nowrap rounded-sn-control border px-4 py-3 text-sm font-bold font-nunito ${searchParams.deadline === '7' ? 'border-sn-primary bg-sn-primary text-white' : 'border-sn-border-strong bg-sn-surface text-sn-ink-soft'}`}>Closing in 7 days</Link>
+          <Link href="/admissions" aria-current={!params.deadline ? 'page' : undefined} className={`min-h-11 whitespace-nowrap rounded-sn-control border px-4 py-3 text-sm font-bold font-nunito ${!params.deadline ? 'border-sn-primary bg-sn-primary text-white' : 'border-sn-border-strong bg-sn-surface text-sn-ink-soft'}`}>All admissions</Link>
+          <Link href="/admissions?deadline=open" aria-current={params.deadline === 'open' ? 'page' : undefined} className={`min-h-11 whitespace-nowrap rounded-sn-control border px-4 py-3 text-sm font-bold font-nunito ${params.deadline === 'open' ? 'border-sn-primary bg-sn-primary text-white' : 'border-sn-border-strong bg-sn-surface text-sn-ink-soft'}`}>Open now</Link>
+          <Link href="/admissions?deadline=7" aria-current={params.deadline === '7' ? 'page' : undefined} className={`min-h-11 whitespace-nowrap rounded-sn-control border px-4 py-3 text-sm font-bold font-nunito ${params.deadline === '7' ? 'border-sn-primary bg-sn-primary text-white' : 'border-sn-border-strong bg-sn-surface text-sn-ink-soft'}`}>Closing in 7 days</Link>
           <Link href="/admissions/planner" className="min-h-11 whitespace-nowrap rounded-sn-control border border-sn-border-strong bg-sn-surface px-4 py-3 text-sm font-bold font-nunito text-sn-ink-soft">My planner</Link>
         </nav>
         {!loadError && <div className="mb-6 grid grid-cols-3 gap-3">
@@ -80,7 +104,7 @@ export default async function AdmissionsPage({ searchParams }: { searchParams: A
             <a href={retryUrl} className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-sn-control bg-sn-ink px-4 text-sm font-bold text-white"><RefreshCcw className="h-4 w-4" aria-hidden="true" />Try again</a>
           </div>
         ) : <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
-          <AdmissionFilters searchParams={searchParams} count={admissions.length} />
+          <AdmissionFilters searchParams={params} count={admissions.length} />
           <main>
             {admissions.length ? (
               <div className="grid gap-5 md:grid-cols-2">{admissions.map((item) => <AdmissionCard key={item.id} admission={item} />)}</div>
