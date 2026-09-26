@@ -15,7 +15,7 @@ async function load(location: string) {
   const safeSlug = decodeURIComponent(location).replace(/[^a-z0-9-]/gi, '')
   const name = titleCase(safeSlug)
   const db = createServerSupabaseClient()
-  const { data, error } = await db.from('colleges').select('*,programs:college_programs(fee,fee_period,fee_source_url,fee_last_verified_at,scholarship_available,program:programs(id,name,slug,faculty,degree_level)),reviews(rating,is_approved)').or(`district.ilike.%${name}%,location.ilike.%${name}%`).or('status.eq.active,status.is.null').order('is_featured', { ascending: false }).limit(200)
+  const { data, error } = await db.from('colleges').select('id,name,slug,location,district,province,local_level,affiliation,logo_url,cover_url,is_featured,verification_status,programs_offered,education_levels,is_sponsored,sponsor_label,sponsor_starts_at,sponsor_ends_at,sponsor_disclosure,programs:college_programs(fee,fee_period,fee_source_url,fee_last_verified_at,scholarship_available,program:programs(id,name,slug,faculty,degree_level)),reviews(rating,is_approved)').or(`district.ilike.%${name}%,location.ilike.%${name}%`).or('status.eq.active,status.is.null').order('is_featured', { ascending: false }).limit(200)
   if (error) console.error('[colleges:location]', { code: error.code, message: error.message })
   const { items: colleges, loadError } = publicListState({ data: data as College[] | null, error })
   return { name, colleges, loadError }

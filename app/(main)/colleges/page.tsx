@@ -216,7 +216,7 @@ async function getColleges(sp: {
     let query = supabase
       .from('colleges')
       .select(`
-        *,
+        id,name,slug,location,district,province,local_level,affiliation,logo_url,cover_url,is_featured,verification_status,programs_offered,education_levels,is_sponsored,sponsor_label,sponsor_starts_at,sponsor_ends_at,sponsor_disclosure,last_verified_at,source_url,
         programs:college_programs(
           fee,
           fee_period,
@@ -245,7 +245,7 @@ async function getColleges(sp: {
       return { filtered: [], loadError: true }
     }
 
-    const batch = (data ?? []) as (College & { programs?: CollegeProgram[]; reviews?: Review[] })[]
+    const batch = (data ?? []) as unknown as (College & { programs?: CollegeProgram[]; reviews?: Review[] })[]
     raw.push(...batch)
     if (batch.length < COLLEGE_BATCH_SIZE) break
   }

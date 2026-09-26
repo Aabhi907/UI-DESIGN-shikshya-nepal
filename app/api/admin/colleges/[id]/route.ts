@@ -15,6 +15,9 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   const parsed = sanitizeCollegeAdminPayload(body, 'update')
   if (parsed.error) return NextResponse.json({ error: parsed.error }, { status: 400, headers: noStore })
   const supabase = createAdminSupabaseClient()
+  if (parsed.data!.status === 'active') {
+    Object.assign(parsed.data!, { submitted_by: null, submitter_role: null, submitter_contact: null })
+  }
   const { data: previous } = await supabase.from('colleges').select('slug').eq('id', params.id).maybeSingle()
   const { data, error } = await supabase
     .from('colleges')

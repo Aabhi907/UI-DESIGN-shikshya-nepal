@@ -103,7 +103,7 @@ async function getHomeData() {
       .select('*, university:universities(id, name, short_name, slug, website, created_at)')
       .order('published_date', { ascending: false, nullsFirst: false })
       .limit(6),
-    supabase.from('colleges').select('*').eq('is_featured', true).or('status.eq.active,status.is.null').order('name').limit(6),
+    supabase.from('colleges').select('id,name,slug,location,district,province,local_level,affiliation,logo_url,cover_url,is_featured,verification_status,programs_offered,education_levels,is_sponsored,sponsor_label,sponsor_starts_at,sponsor_ends_at,sponsor_disclosure').eq('is_featured', true).or('status.eq.active,status.is.null').order('name').limit(6),
     supabase.from('colleges').select('id', { count: 'exact', head: true }).or('status.eq.active,status.is.null'),
     supabase.from('programs').select('id',  { count: 'exact', head: true }),
     supabase.from('universities').select('id', { count: 'exact', head: true }),

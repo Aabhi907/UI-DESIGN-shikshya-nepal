@@ -26,10 +26,18 @@ export async function DELETE(request: Request) {
   if (!type || !/^[0-9a-f-]{36}$/i.test(id)) return NextResponse.json({ error: 'Invalid content.' }, { status: 400 })
   const db = createAdminSupabaseClient()
   const table = type === 'post' ? 'community_posts' : 'community_comments'
-  const { data } = await db.from(table).select('id').eq('id', id).eq('author_id', auth.user.id).maybeSingle()
+  const { data } = await db.from(table).select(type === 'post' ? 'id,media_path' : 'id').eq('id', id).eq('author_id', auth.user.id).maybeSingle()
   if (!data) return NextResponse.json({ error: 'Content not found.' }, { status: 404 })
   const { error } = await db.from(table).delete().eq('id', id).eq('author_id', auth.user.id)
   if (error) return NextResponse.json({ error: 'Could not delete this content.' }, { status: 500 })
+  if (type === 'post' && 'media_path' in data && typeof data.media_path === 'string' && data.media_path) {
+    try {
+      const { error: storageError } = await db.storage.from('community-media').remove([data.media_path])
+      if (storageError) console.error('[community-content:media-delete]', { postId: id })
+    } catch {
+      console.error('[community-content:media-delete]', { postId: id })
+    }
+  }
   await recordCommunitySecurityEvent(db, { userId: auth.user.id, action: 'delete', fingerprint: requestFingerprint(request), targetId: id })
   return NextResponse.json({ success: true })
 }
