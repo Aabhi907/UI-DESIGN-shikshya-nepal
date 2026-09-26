@@ -11,7 +11,9 @@ export const dynamic = 'force-dynamic'
 export const metadata: Metadata = { title: 'Internships & Student Opportunities Nepal', description: 'Find verified internships, fellowships, competitions, courses and volunteering opportunities for students in Nepal.' }
 type Opportunity = { id:string; title:string; opportunity_type:string; organisation:string; location:string|null; eligibility:string|null; summary:string; application_url:string; source_url:string|null; deadline:string|null; is_verified:boolean; last_verified_at:string|null }
 const TYPES:Record<string,string>={internship:'Internships',apprenticeship:'Apprenticeships',fellowship:'Fellowships',competition:'Competitions',course:'Short courses',volunteering:'Volunteering',project:'Project challenges'}
-const clean=(value?:string)=>(value||'').replace(/[,().%]/g,' ').replace(/\s+/g,' ').trim().slice(0,80)
+// A repeated query key (`?q=a&q=b`) arrives here as an array — treat it the
+// same as any other value this page doesn't recognise: as if q were unset.
+const clean=(value?:string|string[])=>(Array.isArray(value)?'':(value||'')).replace(/[,().%]/g,' ').replace(/\s+/g,' ').trim().slice(0,80)
 const validUrl=(value?:string|null)=>{if(!value)return null;try{const url=new URL(value);return ['http:','https:'].includes(url.protocol)?url.toString():null}catch{return null}}
 const validDate=(value?:string|null)=>Boolean(value&&Number.isFinite(new Date(value).getTime()))
 // A date-only deadline (entered via <input type="date">, or a datetime-local

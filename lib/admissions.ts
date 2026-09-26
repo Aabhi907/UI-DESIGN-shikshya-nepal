@@ -14,9 +14,10 @@ export function nepalDateOnly(now = new Date()): string {
 }
 
 export function addDaysToDateOnly(date: string, days: number): string {
+  if (!Number.isFinite(days)) return date
   const parsed = new Date(`${date}T00:00:00Z`)
   parsed.setUTCDate(parsed.getUTCDate() + days)
-  return parsed.toISOString().slice(0, 10)
+  return Number.isNaN(parsed.getTime()) ? date : parsed.toISOString().slice(0, 10)
 }
 
 export function deadlineState(deadline: string | null, now = new Date()): DeadlineState {
