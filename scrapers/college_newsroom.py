@@ -111,7 +111,7 @@ class CollegeNewsroomScraper(BaseScraper):
                 self.supabase.table("content_sources").upsert({
                     "name": source_name, "base_url": website, "organization": college["name"],
                     "source_type": "institution", "college_focus": True, "trust_level": 90,
-                    "requires_review": False, "auto_publish_low_risk": True, "is_active": True,
+                    "requires_review": False, "auto_publish_low_risk": False, "is_active": True,
                     "permitted_targets": ["news"], "fetch_frequency_minutes": 300,
                     "last_checked_at": datetime.now(timezone.utc).isoformat(),
                 }, on_conflict="name").execute()
