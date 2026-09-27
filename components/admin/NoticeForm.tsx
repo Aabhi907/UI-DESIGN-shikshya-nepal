@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Save, ArrowLeft } from 'lucide-react'
 import { slugify } from '@/lib/utils'
@@ -8,25 +8,13 @@ import { slugify } from '@/lib/utils'
 interface NoticeFormData { title: string; slug: string; content: string; university_id: string; notice_url: string; published_date: string }
 const EMPTY: NoticeFormData = { title: '', slug: '', content: '', university_id: '', notice_url: '', published_date: new Date().toISOString().split('T')[0] }
 
-interface Props { initialData?: Partial<NoticeFormData>; noticeId?: string; isEdit?: boolean }
+interface Props { universities: { id: string; name: string }[]; initialData?: Partial<NoticeFormData>; noticeId?: string; isEdit?: boolean }
 
-export default function NoticeForm({ initialData, noticeId, isEdit = false }: Props) {
+export default function NoticeForm({ initialData, noticeId, isEdit = false, universities }: Props) {
   const [form, setForm] = useState<NoticeFormData>({ ...EMPTY, ...initialData })
-  const [universities, setUniversities] = useState<{ id: string; name: string }[]>([])
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const router = useRouter()
-
-  useEffect(() => {
-    fetch('/api/admin/colleges').then(() => {})
-    // Fetch universities from supabase directly via public API
-    fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/universities?select=id,name&order=name`, {
-      headers: {
-        apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '',
-        Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''}`,
-      },
-    }).then(r => r.json()).then(setUniversities).catch(() => {})
-  }, [])
 
   const set = (field: keyof NoticeFormData, value: string) => {
     setForm(prev => {

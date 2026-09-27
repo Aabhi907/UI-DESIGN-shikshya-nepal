@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import { Star, Send, CheckCircle } from 'lucide-react'
 import Link from 'next/link'
-import { supabase } from '@/lib/supabase'
 
 interface ReviewFormProps {
   collegeId:   string
@@ -40,7 +39,14 @@ export default function ReviewForm({ collegeId, collegeName }: ReviewFormProps) 
   const [signedIn, setSignedIn] = useState<boolean | null>(null)
   const [consent, setConsent] = useState(false)
 
-  useEffect(() => { void supabase.auth.getUser().then(({ data }) => setSignedIn(Boolean(data.user))) }, [])
+  useEffect(() => {
+    let active = true
+    void fetch('/api/auth/session', { cache: 'no-store' })
+      .then(async response => response.ok && (await response.json()).authenticated === true)
+      .then(authenticated => { if (active) setSignedIn(Boolean(authenticated)) })
+      .catch(() => { if (active) setSignedIn(false) })
+    return () => { active = false }
+  }, [])
 
   // Restore submitted state from localStorage (persists across refreshes)
   useEffect(() => {
@@ -102,7 +108,7 @@ export default function ReviewForm({ collegeId, collegeName }: ReviewFormProps) 
     }
   }
 
-  if (signedIn === false) return <div className="rounded-sn-card border border-sn-primary/30 bg-sn-primary-bg p-6"><h3 className="font-bold font-nunito text-sn-ink">Sign in to write a review</h3><p className="mt-2 text-sm leading-6 font-nunito text-sn-ink-soft">Anyone can read reviews. Sign-in reduces fake submissions and permits safety follow-up; your account email is not displayed publicly.</p><Link href="/account/login" className="mt-4 inline-flex rounded-sn-control bg-sn-primary px-4 py-2.5 text-sm font-bold font-nunito text-white shadow-sn-button">Sign in to continue</Link></div>
+  if (signedIn !== true) return <div className="rounded-sn-card border border-sn-primary/30 bg-sn-primary-bg p-6"><h3 className="font-bold font-nunito text-sn-ink">Sign in to write a review</h3><p className="mt-2 text-sm leading-6 font-nunito text-sn-ink-soft">Anyone can read reviews. Sign-in reduces fake submissions and permits safety follow-up; your account email is not displayed publicly.</p><Link href="/account/login" className="mt-4 inline-flex rounded-sn-control bg-sn-primary px-4 py-2.5 text-sm font-bold font-nunito text-white shadow-sn-button">Sign in to continue</Link></div>
 
   // ── Submitted state (shown across refreshes until 7-day expiry) ──────────
   if (submitted) {

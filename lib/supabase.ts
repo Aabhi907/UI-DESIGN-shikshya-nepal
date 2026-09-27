@@ -14,8 +14,6 @@ if (!supabaseUrl || !supabaseAnonKey) {
 const url = supabaseUrl || 'https://placeholder.supabase.co'
 const anonKey = supabaseAnonKey || 'placeholder'
 
-export const supabase = createClient(url, anonKey)
-
 // Read-only server client (anon key)
 export function createServerSupabaseClient() {
   return createClient(url, anonKey, {
@@ -26,10 +24,9 @@ export function createServerSupabaseClient() {
 // Admin server client — bypasses RLS for write operations
 export function createAdminSupabaseClient() {
   if (!supabaseServiceKey) {
-    console.error('[supabase] SUPABASE_SERVICE_ROLE_KEY is not set — falling back to anon key, RLS will apply!')
+    throw new Error('SUPABASE_SERVICE_ROLE_KEY is required for the admin Supabase client')
   }
-  const key = supabaseServiceKey || anonKey
-  return createClient(url, key, {
+  return createClient(url, supabaseServiceKey, {
     auth: { persistSession: false },
   })
 }
