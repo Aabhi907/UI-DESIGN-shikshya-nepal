@@ -14,6 +14,7 @@
     "test:rate-limit-actions": "node scripts/test-rate-limit-actions.mjs",
     "test:public-list-errors": "node --import tsx scripts/test-public-list-errors.mjs",
     "test:w1-params-and-dates": "node --import tsx scripts/test-w1-params-and-dates.mjs",
+    "test:w2-updates": "node --import tsx scripts/test-w2-updates.mjs",
     "test:admission-dates": "node --import tsx scripts/test-admission-date-boundaries.ts",
     "test:ingestion-atomicity": "tsx scripts/test-ingestion-approval-atomicity.ts",
     "test:deadline-visibility": "node scripts/test-deadline-visibility.mjs",
