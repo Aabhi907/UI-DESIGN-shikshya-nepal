@@ -259,6 +259,13 @@ class BaseScraper:
 
     def _auto_publish_news(self, queue_row: dict) -> None:
         """Publish only a low-risk, source-backed, original college update."""
+        # A source config's own auto_publish_low_risk flag is not enough on
+        # its own — a config typo or a copy-pasted source row must not be
+        # able to turn auto-publish back on by itself. Nothing sets this
+        # environment variable, so auto-publish is off unless a human
+        # deliberately sets it for this run.
+        if os.environ.get("SCRAPER_AUTO_PUBLISH") != "1":
+            return
         payload = queue_row.get("payload") or {}
         content = str(payload.get("content") or "").strip()
         if queue_row.get("claim_risk") != "low" or queue_row.get("confidence_score", 0) < 92:

@@ -2,6 +2,7 @@ import { getAuthContext, writeAudit } from '@/lib/auth'
 import { NextResponse } from 'next/server'
 import { createAdminSupabaseClient } from '@/lib/supabase'
 import { applyIngestionReview } from '@/lib/ingestion-review'
+import { sendResultAlertForApproval } from '@/lib/result-alerts'
 
 export async function PATCH(request: Request, { params }: { params: { id: string } }) {
   const auth = await getAuthContext()
@@ -20,5 +21,11 @@ export async function PATCH(request: Request, { params }: { params: { id: string
       published_record_id: result.publishedId ?? null, evidence_id: result.evidenceId ?? null, evidence_warning: result.evidenceWarning ?? null,
     })
   }
-  return NextResponse.json(result.json, { status: result.status })
+  // Only a result's own transition to published triggers a result alert —
+  // never a notice or news approval, and never anything short of a
+  // successfully published record.
+  const alert = result.status === 200 && item.target_type === 'result' && result.publishedId
+    ? await sendResultAlertForApproval(db, result.publishedId)
+    : undefined
+  return NextResponse.json(alert ? { ...result.json, alert } : result.json, { status: result.status })
 }

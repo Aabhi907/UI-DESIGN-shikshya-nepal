@@ -18,14 +18,28 @@ export const revalidate = 0
 
 const BASE_URL = SITE_URL
 
+// Only the columns this page actually renders (including what the JSON-LD block below reads).
+const NEWS_COLUMNS = 'id, title, slug, content, image_url, news_pdf_url, content_type, published_date, created_at, updated_at, author_name, source_name, source_url, last_verified_at, content_category, education_levels, college_id, disclosure'
+
 async function getNews(slug: string) {
   const supabase = createServerSupabaseClient()
-  const { data } = await supabase.from('news').select('*').eq('slug', slug).eq('status', 'published').single()
+  const { data, error } = await supabase.from('news').select(NEWS_COLUMNS).eq('slug', slug).eq('status', 'published').maybeSingle()
+  // A query failure is not the same as "no such article" — throw it so the
+  // error boundary shows and the page is never cached as a 404.
+  if (error) throw error
   return data as News | null
 }
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const news = await getNews(params.slug)
+  let news: News | null
+  try {
+    news = await getNews(params.slug)
+  } catch {
+    // Metadata must never crash the request; the page component's own throw
+    // is what shows the real error state. Fall back to a generic title,
+    // never the "not found" one — this isn't known to be missing.
+    return { title: 'News' }
+  }
   if (!news) return { title: 'News Not Found' }
   return {
     title:       news.title,
