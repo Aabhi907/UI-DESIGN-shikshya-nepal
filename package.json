@@ -12,6 +12,7 @@
     "check:queries": "node scripts/check-queries.mjs",
     "test:private-columns": "node scripts/test-private-columns.mjs",
     "test:rate-limit-actions": "node scripts/test-rate-limit-actions.mjs",
+    "test:w2-auth": "node scripts/test-w2-auth.mjs",
     "test:public-list-errors": "node --import tsx scripts/test-public-list-errors.mjs",
     "test:w1-params-and-dates": "node --import tsx scripts/test-w1-params-and-dates.mjs",
     "test:admission-dates": "node --import tsx scripts/test-admission-date-boundaries.ts",

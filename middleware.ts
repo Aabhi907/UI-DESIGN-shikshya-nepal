@@ -23,10 +23,14 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(secureUrl, 308)
   }
 
+  let response = NextResponse.next({ request })
+  const client = createServerClient(process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder', {
+    cookieOptions: { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax', path: '/', maxAge: 7 * 24 * 60 * 60 },
+    cookies: { getAll: () => request.cookies.getAll(), setAll: values => { values.forEach(({ name, value }) => request.cookies.set(name, value)); response = NextResponse.next({ request }); values.forEach(({ name, value, options }) => response.cookies.set(name, value, options)) } },
+  })
+  const { data: { user } } = await client.auth.getUser()
+
   if ((pathname.startsWith('/admin') && pathname !== '/admin/login') || pathname.startsWith('/account/claim')) {
-    let response = NextResponse.next({ request })
-    const client = createServerClient(process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder', { cookies: { getAll: () => request.cookies.getAll(), setAll: values => { values.forEach(({ name, value }) => request.cookies.set(name, value)); response = NextResponse.next({ request }); values.forEach(({ name, value, options }) => response.cookies.set(name, value, options)) } } })
-    const { data: { user } } = await client.auth.getUser()
     let allowed = Boolean(user)
     if (allowed && pathname.startsWith('/admin')) {
       const { data: profile } = await client.from('profiles').select('role,status').eq('id', user!.id).single()
@@ -39,7 +43,7 @@ export async function middleware(request: NextRequest) {
     return response
   }
 
-  return NextResponse.next()
+  return response
 }
 
 export const config = {

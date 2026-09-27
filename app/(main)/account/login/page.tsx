@@ -5,10 +5,13 @@ import { FormEvent, useEffect, useState } from 'react'
 import { Eye, EyeOff } from 'lucide-react'
 import GoogleSignInButton from '@/components/auth/GoogleSignInButton'
 
+import { safeNextPath } from '@/lib/safe-next'
+
 type Mode = 'signin' | 'register'
 
 export default function AccountAccessPage() {
   const router = useRouter()
+  const [nextPath, setNextPath] = useState('/')
   const [mode, setMode] = useState<Mode>('signin')
   const [form, setForm] = useState({ full_name: '', email: '', password: '' })
   const [error, setError] = useState('')
@@ -19,6 +22,7 @@ export default function AccountAccessPage() {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
+    setNextPath(safeNextPath(params.get('next')))
     setMode(params.get('mode') === 'register' ? 'register' : 'signin')
     if (params.has('error')) setError('Google sign-in could not be completed. Please try again.')
   }, [])
@@ -34,6 +38,7 @@ export default function AccountAccessPage() {
     setError('')
     setConfirmationSent(false)
     const params = new URLSearchParams()
+    if (nextPath !== '/') params.set('next', safeNextPath(nextPath))
     if (nextMode === 'register') params.set('mode', 'register')
     window.history.replaceState(null, '', `/account/login${params.size ? `?${params}` : ''}`)
   }
@@ -56,7 +61,7 @@ export default function AccountAccessPage() {
         setConfirmationSent(true)
         return
       }
-      router.replace('/')
+      router.replace(safeNextPath(nextPath))
       router.refresh()
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : 'Check your connection and try again.')
@@ -75,7 +80,7 @@ export default function AccountAccessPage() {
       <button type="button" role="tab" aria-selected={mode === 'signin'} onClick={() => switchMode('signin')} className={`min-h-11 rounded-lg px-3 text-sm font-bold ${mode === 'signin' ? 'bg-white text-primary shadow-sm' : 'text-slate-600'}`}>Sign in</button>
       <button type="button" role="tab" aria-selected={mode === 'register'} onClick={() => switchMode('register')} className={`min-h-11 rounded-lg px-3 text-sm font-bold ${mode === 'register' ? 'bg-white text-primary shadow-sm' : 'text-slate-600'}`}>Create account</button>
     </div>
-    <div className="mt-6"><GoogleSignInButton next="/"/></div>
+    <div className="mt-6"><GoogleSignInButton next={safeNextPath(nextPath)}/></div>
     <div className="my-5 flex items-center gap-3 text-xs font-semibold uppercase tracking-wider text-slate-400"><span className="h-px flex-1 bg-[#e6e4df]"/><span>or use email</span><span className="h-px flex-1 bg-[#e6e4df]"/></div>
     {confirmationSent ? (
       <div role="status" className="rounded-xl border border-blue-200 bg-blue-50 p-5 text-sm leading-6 text-slate-700">
