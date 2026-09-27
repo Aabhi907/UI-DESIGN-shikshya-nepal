@@ -200,7 +200,7 @@ export default function AdminReviewsPage() {
                         {updating === review.id ? '…' : 'Unapprove'}
                       </button>
                     )}
-                    {review.verification_status === 'submitted' && <button onClick={() => updateReview(review.id, review.is_approved, 'verified')} disabled={updating === review.id} className="flex items-center gap-1 px-3 py-1.5 bg-blue-700 hover:bg-blue-600 text-white text-xs font-medium rounded-lg transition-colors disabled:opacity-50"><BadgeCheck className="w-3 h-3" />Verify</button>}
+                    {review.verification_status === 'submitted' && <span className="px-2 text-[11px] font-medium text-gray-500">Verification paused until evidence review is built.</span>}
                     <button
                       onClick={() => handleDelete(review.id)}
                       disabled={updating === review.id}

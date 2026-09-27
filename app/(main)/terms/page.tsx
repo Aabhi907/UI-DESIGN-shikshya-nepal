@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import PolicyPage from '@/components/community/PolicyPage'
 
 export const metadata: Metadata = { title: 'Terms of Use', description: 'Terms for using SikshyaNepal education information, accounts, submissions and moderated community features.', alternates: { canonical: '/terms' } }
@@ -9,6 +10,6 @@ export default function TermsPage() {
     <h2>Content and moderation</h2><p>You grant SikshyaNepal permission to host and display submitted content for operating the service. You must own it or have permission to share it. We may review, reject, remove, preserve or disclose content where required for safety, enforcement or law. Moderation does not make user claims verified.</p>
     <h2>Education information</h2><p>Deadlines, fees, eligibility and results can change. Confirm important decisions with the named institution or official authority. SikshyaNepal does not guarantee admission, scholarship or employment outcomes.</p>
     <h2>Paid content</h2><p>Commercial placements and paid college content must be marked “Sponsored” or “Advertisement.” Payment does not permit false factual claims or remove editorial and safety review.</p>
-    <h2>Appeals and complaints</h2><p>Send moderation appeals to safety@sikshyanepal.com and general complaints to info@sikshyanepal.com. Include the page link and a concise explanation; do not email unnecessary sensitive information.</p>
+    <h2>Appeals and complaints</h2><p>Send moderation appeals through our <Link href="/safety?concern_type=other" className="font-bold text-primary hover:underline">report form</Link> and general complaints through our <Link href="/privacy?concern_type=other" className="font-bold text-primary hover:underline">report form</Link>. Include the page link and a concise explanation; do not include unnecessary sensitive information.</p>
   </PolicyPage>
 }

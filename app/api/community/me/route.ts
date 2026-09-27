@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { getAuthContext, isGoogleAccount } from '@/lib/auth'
 import { createAdminSupabaseClient } from '@/lib/supabase'
 import { cleanPublicAlias, validPublicAlias } from '@/lib/community-server'
+import { COMMUNITY_OPEN, COMMUNITY_CLOSED_MESSAGE } from '@/lib/community-status'
 
 export const dynamic = 'force-dynamic'
 
@@ -14,6 +15,7 @@ export async function GET() {
 }
 
 export async function PUT(request: Request) {
+  if (!COMMUNITY_OPEN) return NextResponse.json({ error: COMMUNITY_CLOSED_MESSAGE }, { status: 503 })
   const auth = await getAuthContext()
   if (!auth) return NextResponse.json({ error: 'Sign in to choose a community name.' }, { status: 401 })
   if (!isGoogleAccount(auth.user)) return NextResponse.json({ error: 'Use Google sign-in for the student community.' }, { status: 403 })

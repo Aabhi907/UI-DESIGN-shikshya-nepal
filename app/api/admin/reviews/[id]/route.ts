@@ -9,6 +9,9 @@ export async function PUT(request: Request, { params }: { params: { id: string }
   if (!(await isAuthed())) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const body = await request.json()
+  if (body.verification_status === 'verified') {
+    return NextResponse.json({ error: 'Verification paused until evidence review is built.' }, { status: 409 })
+  }
   const update: Record<string, unknown> = {}
   if (typeof body.is_approved === 'boolean') update.is_approved = body.is_approved
   if (['unverified', 'submitted', 'verified', 'rejected'].includes(body.verification_status)) update.verification_status = body.verification_status
