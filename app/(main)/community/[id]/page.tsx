@@ -9,11 +9,26 @@ import ReplyForm from '@/components/community/ReplyForm'
 import ReportButton from '@/components/community/ReportButton'
 import CommunityMedia from '@/components/community/CommunityMedia'
 import VoteButtons from '@/components/community/VoteButtons'
+import { COMMUNITY_OPEN, COMMUNITY_CLOSED_MESSAGE } from '@/lib/community-status'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 export async function generateMetadata(): Promise<Metadata> {
   return { title: 'Student Discussion | SikshyaNepal', robots: { index: false, follow: true } }
+}
+
+function CommunityClosedNotice() {
+  return <main className="min-h-screen bg-[#f6f7fb] px-4 py-16 sm:px-6">
+    <div className="mx-auto max-w-xl rounded-2xl border border-gray-200 bg-white p-8 text-center shadow-sm">
+      <ShieldCheck className="mx-auto h-10 w-10 text-primary" aria-hidden="true" />
+      <h1 className="mt-4 font-display text-2xl font-extrabold text-ink">Community is closed</h1>
+      <p className="mt-3 text-sm leading-6 text-gray-600">{COMMUNITY_CLOSED_MESSAGE} This discussion isn&apos;t available right now.</p>
+      <div className="mt-6 flex flex-col items-center gap-2 sm:flex-row sm:justify-center">
+        <Link href="/community/my-content" className="inline-flex min-h-11 items-center justify-center rounded-xl bg-primary px-5 text-sm font-bold text-white">Manage my content</Link>
+        <Link href="/community/guidelines" className="inline-flex min-h-11 items-center justify-center rounded-xl border border-gray-200 px-5 text-sm font-bold text-ink">Community rules</Link>
+      </div>
+    </div>
+  </main>
 }
 
 async function load(id: string) {
@@ -37,6 +52,7 @@ async function load(id: string) {
 }
 
 export default async function CommunityPostPage({ params }: { params: { id: string } }) {
+  if (!COMMUNITY_OPEN) return <CommunityClosedNotice />
   const { post, comments } = await load(params.id)
   if (!post) notFound()
   return <main className="min-h-screen bg-[#f6f7fb]"><div className="mx-auto max-w-3xl px-4 py-8 sm:px-6">

@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { Mail, MapPin } from 'lucide-react'
 import CookieSettingsButton from '@/components/privacy/CookieSettingsButton'
 import Mascot from '@/components/design-system/Mascot'
+import LanguageSwitch from '@/components/design-system/LanguageSwitch'
 
 // Phase 1 design system footer. Same links as components/layout/Footer.tsx —
 // only the visual treatment is new. Kept separate since the original Footer
@@ -16,7 +17,6 @@ const exploreLinks = [
   { label: 'My Path', href: '/my-path' },
   { label: 'News & Guides', href: '/news' },
   { label: 'Scholarships', href: '/scholarships' },
-  { label: 'Student Community', href: '/community' },
 ]
 
 const institutionLinks = [
@@ -51,10 +51,10 @@ export default function Footer() {
               An independent guide to colleges, programs and education in Nepal. Verification status and original sources are shown where available.
             </p>
             <div className="space-y-2.5">
-              <a href="mailto:info@sikshyanepal.com" className="flex items-center gap-2.5 text-sm font-nunito text-white/60 hover:text-white transition-colors duration-150">
+              <Link href="/contact" className="flex items-center gap-2.5 text-sm font-nunito text-white/60 hover:text-white transition-colors duration-150">
                 <Mail className="w-4 h-4 text-sn-primary flex-shrink-0" />
-                info@sikshyanepal.com
-              </a>
+                Contact us
+              </Link>
               <div className="flex items-center gap-2.5 text-sm font-nunito text-white/60">
                 <MapPin className="w-4 h-4 text-sn-primary flex-shrink-0" />
                 Kathmandu, Nepal
@@ -115,6 +115,7 @@ export default function Footer() {
             <Link href="/refunds" className="inline-flex min-h-11 items-center hover:text-white transition-colors duration-150">Refunds</Link>
             <CookieSettingsButton />
             <Link href="/contact" className="inline-flex min-h-11 items-center hover:text-white transition-colors duration-150">Contact</Link>
+            <LanguageSwitch />
           </div>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Mail, MapPin, ArrowUpRight, BookOpenCheck } from 'lucide-react'
 import CookieSettingsButton from '@/components/privacy/CookieSettingsButton'
+import LanguageSwitch from '@/components/design-system/LanguageSwitch'
 
 const exploreLinks = [
   { label: 'All Colleges',     href: '/colleges' },
@@ -11,7 +12,6 @@ const exploreLinks = [
   { label: 'My Path', href: '/my-path' },
   { label: 'News & Guides', href: '/news' },
   { label: 'Scholarships', href: '/scholarships' },
-  { label: 'Student Community', href: '/community' },
 ]
 
 const institutionLinks = [
@@ -53,13 +53,13 @@ export default function Footer() {
             </p>
 
             <div className="space-y-2.5 mb-6">
-              <a
-                href="mailto:info@sikshyanepal.com"
+              <Link
+                href="/contact"
                 className="flex items-center gap-2.5 text-sm text-slate-400 hover:text-white transition-colors duration-150"
               >
                 <Mail className="w-4 h-4 text-blue-400 flex-shrink-0" />
-                info@sikshyanepal.com
-              </a>
+                Contact us
+              </Link>
               <div className="flex items-center gap-2.5 text-sm text-slate-400">
                 <MapPin className="w-4 h-4 text-blue-400 flex-shrink-0" />
                 Kathmandu, Nepal
@@ -133,6 +133,7 @@ export default function Footer() {
             <Link href="/refunds" className="inline-flex min-h-11 items-center hover:text-white transition-colors duration-150">Refunds</Link>
             <CookieSettingsButton />
             <Link href="/contact" className="inline-flex min-h-11 items-center hover:text-white transition-colors duration-150">Contact</Link>
+            <LanguageSwitch />
           </div>
         </div>
       </div>

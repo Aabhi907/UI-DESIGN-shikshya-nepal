@@ -70,7 +70,6 @@ const navLinks: NavigationLink[] = [
       { label: 'Career Explorer', href: '/careers' },
       { label: 'GPA calculator', href: '/tools/gpa-calculator' },
       { label: 'Study resources', href: '/study-resources' },
-      { label: 'Student community', href: '/community' },
       { label: 'Student wellbeing', href: '/wellbeing' },
     ],
   },
@@ -94,18 +93,6 @@ function Wordmark() {
         <span className="text-sn-primary">Nepal</span>
       </span>
     </Link>
-  )
-}
-
-// Lightweight EN / नेपाली switch — no i18n machinery, just a link to the
-// existing / and /ne routes. Replaces the old buried "नेपाली (Beta)" item.
-function LanguageSwitch({ pathname, className }: { pathname: string; className?: string }) {
-  const isNepali = pathname === '/ne' || pathname.startsWith('/ne/')
-  return (
-    <div className={`inline-flex items-center overflow-hidden rounded-sn-control border border-sn-border-strong text-xs font-bold font-nunito ${className || ''}`} role="group" aria-label="Language">
-      <Link href="/" aria-current={!isNepali ? 'page' : undefined} className={`px-2.5 py-2 transition-colors ${!isNepali ? 'bg-sn-primary text-white' : 'text-sn-ink-soft hover:text-sn-ink'}`}>EN</Link>
-      <Link href="/ne" aria-current={isNepali ? 'page' : undefined} className={`px-2.5 py-2 transition-colors ${isNepali ? 'bg-sn-primary text-white' : 'text-sn-ink-soft hover:text-sn-ink'}`}>ने</Link>
-    </div>
   )
 }
 
@@ -248,7 +235,6 @@ export default function Nav() {
             </nav>
 
             <div className="hidden xl:flex items-center gap-2">
-              <LanguageSwitch pathname={pathname} />
               <button onClick={() => window.dispatchEvent(new Event('open-site-search'))} className="inline-flex items-center gap-2 rounded-sn-control border border-sn-border-strong px-3 py-2 text-sm font-bold font-nunito text-sn-ink-soft hover:border-sn-primary hover:text-sn-primary" aria-label="Search SikshyaNepal">
                 <Search className="h-4 w-4" /><span className="hidden xl:inline">Search</span><kbd className="hidden rounded border border-sn-border px-1.5 py-0.5 text-[10px] text-sn-ink-muted xl:inline">⌘K</kbd>
               </button>
@@ -335,7 +321,6 @@ export default function Nav() {
               <Link href="/results" onClick={() => closeMobileMenu(false)} className="flex min-h-11 items-center justify-center gap-2 w-full py-3 rounded-sn-control border border-sn-border-strong text-sm font-bold font-nunito text-sn-ink hover:border-sn-primary hover:text-sn-primary transition-colors">
                 Check Results
               </Link>
-              <div className="flex justify-center pt-1"><LanguageSwitch pathname={pathname} /></div>
             </div>
           </div>
         </div>

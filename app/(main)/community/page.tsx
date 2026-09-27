@@ -6,10 +6,25 @@ import { COMMUNITY_TOPICS, CommunityPost, topicLabel } from '@/lib/community'
 import NewPostForm from '@/components/community/NewPostForm'
 import CommunityMedia from '@/components/community/CommunityMedia'
 import VoteButtons from '@/components/community/VoteButtons'
+import { COMMUNITY_OPEN, COMMUNITY_CLOSED_MESSAGE } from '@/lib/community-status'
 
 export const dynamic = 'force-dynamic'
 export const revalidate = 0
 export const metadata: Metadata = { title: 'Student Community', description: 'A moderated, pseudonymous space for students in Nepal to discuss college and study life safely.', alternates: { canonical: '/community' }, robots: { index: false, follow: true } }
+
+function CommunityClosedNotice() {
+  return <main className="min-h-screen bg-[#f6f7fb] px-4 py-16 sm:px-6">
+    <div className="mx-auto max-w-xl rounded-2xl border border-gray-200 bg-white p-8 text-center shadow-sm">
+      <ShieldCheck className="mx-auto h-10 w-10 text-primary" aria-hidden="true" />
+      <h1 className="mt-4 font-display text-2xl font-extrabold text-ink">Community is closed</h1>
+      <p className="mt-3 text-sm leading-6 text-gray-600">{COMMUNITY_CLOSED_MESSAGE} Existing members can still review or delete their own posts and replies.</p>
+      <div className="mt-6 flex flex-col items-center gap-2 sm:flex-row sm:justify-center">
+        <Link href="/community/my-content" className="inline-flex min-h-11 items-center justify-center rounded-xl bg-primary px-5 text-sm font-bold text-white">Manage my content</Link>
+        <Link href="/community/guidelines" className="inline-flex min-h-11 items-center justify-center rounded-xl border border-gray-200 px-5 text-sm font-bold text-ink">Community rules</Link>
+      </div>
+    </div>
+  </main>
+}
 
 async function getPosts(topic?: string, sort?: string) {
   const db = createServerSupabaseClient()
@@ -34,6 +49,7 @@ function timeLabel(value: string | null) {
 }
 
 export default async function CommunityPage({ searchParams }: { searchParams: { topic?: string; sort?: string } }) {
+  if (!COMMUNITY_OPEN) return <CommunityClosedNotice />
   const { posts, failed } = await getPosts(searchParams.topic, searchParams.sort)
   return <main className="min-h-screen bg-[#f6f7fb]">
     <section className="border-b border-gray-200 bg-white"><div className="mx-auto max-w-6xl px-4 py-10 sm:px-6"><p className="text-xs font-bold uppercase tracking-widest text-primary">Student community</p><h1 className="mt-3 font-display text-3xl font-extrabold text-ink sm:text-4xl">Join with a public display name.</h1><p className="mt-3 max-w-2xl text-sm leading-6 text-gray-600">Other students see your chosen public name. SikshyaNepal retains your sign-in details for safety and moderation. Every post and reply is reviewed before publication.</p><div className="mt-5 flex items-start gap-2 rounded-xl bg-amber-50 p-3 text-xs leading-5 text-amber-900"><ShieldCheck className="mt-0.5 h-4 w-4 flex-shrink-0" aria-hidden="true"/><span>Do not share contact details, precise addresses, threats, accusations or identifying details. This board is not an emergency service.</span></div></div></section>

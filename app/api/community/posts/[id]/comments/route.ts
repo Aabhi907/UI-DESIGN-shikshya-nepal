@@ -3,8 +3,10 @@ import { createAdminSupabaseClient } from '@/lib/supabase'
 import { checkCommunityRateLimit, cleanCommunityText, containsPersonalContact, requestFingerprint } from '@/lib/community-server'
 import { getAuthContext, isGoogleAccount } from '@/lib/auth'
 import { recordCommunitySecurityEvent } from '@/lib/community-server'
+import { COMMUNITY_OPEN, COMMUNITY_CLOSED_MESSAGE } from '@/lib/community-status'
 
 export async function POST(request: Request, { params }: { params: { id: string } }) {
+  if (!COMMUNITY_OPEN) return NextResponse.json({ error: COMMUNITY_CLOSED_MESSAGE }, { status: 503 })
   const auth = await getAuthContext()
   if (!auth) return NextResponse.json({ error: 'Sign in with Google before replying.' }, { status: 401 })
   if (!isGoogleAccount(auth.user)) return NextResponse.json({ error: 'Community replies require a Google-verified account.' }, { status: 403 })

@@ -5,6 +5,7 @@ import { checkCommunityRateLimit, cleanCommunityText, containsPersonalContact, h
 import { randomUUID } from 'crypto'
 import { getAuthContext, isGoogleAccount } from '@/lib/auth'
 import { recordCommunitySecurityEvent } from '@/lib/community-server'
+import { COMMUNITY_OPEN, COMMUNITY_CLOSED_MESSAGE } from '@/lib/community-status'
 
 const MEDIA_TYPES: Record<string, { kind: 'image' | 'video'; extension: string; max: number }> = {
   'image/jpeg': { kind: 'image', extension: 'jpg', max: 5 * 1024 * 1024 },
@@ -16,6 +17,7 @@ const MEDIA_TYPES: Record<string, { kind: 'image' | 'video'; extension: string; 
 }
 
 export async function POST(request: Request) {
+  if (!COMMUNITY_OPEN) return NextResponse.json({ error: COMMUNITY_CLOSED_MESSAGE }, { status: 503 })
   const auth = await getAuthContext()
   if (!auth) return NextResponse.json({ error: 'Sign in with Google before posting.' }, { status: 401 })
   if (!isGoogleAccount(auth.user)) return NextResponse.json({ error: 'Community posting requires a Google-verified account.' }, { status: 403 })

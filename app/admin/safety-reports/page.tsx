@@ -61,8 +61,8 @@ export default function SafetyReportsPage() {
             Safety &amp; privacy reports
           </h1>
           <p className="mt-1 max-w-2xl text-sm text-gray-400">
-            Interim reports collected from the safety and privacy pages while safety@/privacy@sikshyanepal.com are
-            unreachable. Review these directly; move to the working email route once the domain is live (Build Brief 10).
+            Interim reports collected from the safety and privacy pages while the sikshyanepal.com email domain is
+            unregistered. Review these directly; move to the working email route once the domain is live (Build Brief 10).
           </p>
         </div>
         <p className="rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-xs text-gray-400">{openCount} open</p>

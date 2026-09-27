@@ -2,8 +2,10 @@ import { NextResponse } from 'next/server'
 import { createAdminSupabaseClient } from '@/lib/supabase'
 import { cleanCommunityText, recordCommunitySecurityEvent, requestFingerprint } from '@/lib/community-server'
 import { getAuthContext, isGoogleAccount } from '@/lib/auth'
+import { COMMUNITY_OPEN, COMMUNITY_CLOSED_MESSAGE } from '@/lib/community-status'
 
 export async function POST(request: Request) {
+  if (!COMMUNITY_OPEN) return NextResponse.json({ error: COMMUNITY_CLOSED_MESSAGE }, { status: 503 })
   const auth = await getAuthContext()
   if (!auth || !isGoogleAccount(auth.user)) return NextResponse.json({ error: 'Sign in with Google to vote.' }, { status: 401 })
   if (!process.env.SUPABASE_SERVICE_ROLE_KEY) return NextResponse.json({ error: 'Voting is temporarily unavailable.' }, { status: 503 })

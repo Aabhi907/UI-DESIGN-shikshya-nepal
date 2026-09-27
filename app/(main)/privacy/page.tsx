@@ -4,7 +4,7 @@ import ReportConcernForm from '@/components/trust/ReportConcernForm'
 
 export const metadata: Metadata = { title: 'Privacy Policy', description: 'How SikshyaNepal collects, uses, protects and retains account, moderation and security information.', alternates: { canonical: '/privacy' } }
 
-export default function PrivacyPage({ searchParams }: { searchParams: { reported?: string; report_error?: string } }) {
+export default function PrivacyPage({ searchParams }: { searchParams: { reported?: string; report_error?: string; concern_type?: string } }) {
   return <PolicyPage eyebrow="Legal & trust" title="Privacy policy" intro="We collect only the information needed to run SikshyaNepal, protect students and meet legal obligations.">
     <h2>Accounts and public names</h2><p>Community participation requires Google authentication. Other users see only your chosen public name. SikshyaNepal&apos;s authorised administrators can link that name to the authenticated account, including its email and account identifier, for moderation, security and lawful requests.</p>
     <h2>Security information</h2><p>For abuse prevention we may record account ID, action type, date and time, and a one-way fingerprint derived from limited request information such as IP address and browser user-agent. The raw IP is not stored in the community tables. Security events are scheduled to expire after 180 days unless longer preservation is reasonably required for an active safety investigation, dispute or legal duty.</p>
