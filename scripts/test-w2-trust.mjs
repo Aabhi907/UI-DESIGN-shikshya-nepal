@@ -199,4 +199,17 @@ function reviewsWorkingImportMap(updateResult) {
   ok(!source.includes('LanguageSwitch'), 'Nav.tsx must not reference LanguageSwitch (moved to the footer)')
 }
 
+// ── 6. admin scholarship edit page reads via the admin client ───────────
+// createServerSupabaseClient runs as anon, subject to the published-only RLS
+// policy this brief adds — an inactive scholarship would 404 in the admin
+// edit UI. It must use the admin (service-role) client instead, exactly like
+// the equivalent news edit page.
+
+{
+  const file = 'app/admin/scholarships/[id]/edit/page.tsx'
+  const source = fs.readFileSync(file, 'utf8')
+  ok(source.includes('createAdminSupabaseClient'), `${file}: must read via createAdminSupabaseClient (bypasses RLS)`)
+  ok(!source.includes('createServerSupabaseClient'), `${file}: must not read via createServerSupabaseClient (anon key, subject to the published-only policy)`)
+}
+
 console.log(`W2 trust checks passed: ${checks} assertions.`)
