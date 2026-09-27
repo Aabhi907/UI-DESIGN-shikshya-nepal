@@ -160,7 +160,10 @@ async function cookieTests() {
 }
 async function oauthTests(safeNextPath) {
   const button = load('components/auth/GoogleSignInButton.tsx', { '@/lib/safe-next': { safeNextPath } }).default
-  const markup = renderToStaticMarkup(button({ next: '/colleges?q=ku' }))
+  const element = button({ next: '/colleges?q=ku' })
+  assert.equal(element.type, 'a', 'Google button must render a plain anchor, not Link')
+  assert.ok(!read('components/auth/GoogleSignInButton.tsx').includes('next/link'), 'Google button must not import next/link')
+  const markup = renderToStaticMarkup(element)
   assert.ok(markup.includes('/auth/google?next=%2Fcolleges%3Fq%3Dku'), 'Google button must use server start route')
   let options
   const start = load('app/auth/google/route.ts', {
@@ -246,6 +249,7 @@ if (process.argv.includes('--mutations')) {
   const mutations = [
     ['redirect normalization', 'lib/safe-next.ts', text => text.replace("path.pathname.startsWith('//')", 'false')],
     ['browser client boundary', 'components/auth/GoogleSignInButton.tsx', text => "import { supabase } from '@/lib/supabase'\n" + text],
+    ['Google full-page navigation', 'components/auth/GoogleSignInButton.tsx', text => "import Link from 'next/link'\n" + text.replace('<a\n', '<Link\n').replace('</a>', '</Link>')],
     ['callback next', 'app/auth/callback/route.ts', text => text.replace("safeNextPath(url.searchParams.get('next'))", "'/'")],
     ['email next', 'app/(main)/account/login/page.tsx', text => text.replace('router.replace(safeNextPath(nextPath))', "router.replace('/')")],
     ['review session endpoint', 'components/colleges/ReviewForm.tsx', text => text.replace("fetch('/api/auth/session'", "fetch('/api/auth/wrong'")],

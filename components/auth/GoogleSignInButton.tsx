@@ -1,9 +1,8 @@
-import Link from 'next/link'
 import { safeNextPath } from '@/lib/safe-next'
 
 export default function GoogleSignInButton({ next = '/' }: { next?: string }) {
   return (
-    <Link
+    <a
       href={`/auth/google?next=${encodeURIComponent(safeNextPath(next))}`}
       className="flex w-full items-center justify-center gap-3 rounded-lg border border-[#d9d6cf] bg-white px-4 py-3 text-sm font-bold text-ink transition hover:border-slate-400 hover:bg-slate-50"
     >
@@ -14,6 +13,6 @@ export default function GoogleSignInButton({ next = '/' }: { next?: string }) {
           <path fill="#EA4335" d="M12 5.9c1.5 0 2.8.5 3.9 1.5l2.9-2.9A9.8 9.8 0 0 0 3 7.4l3.4 2.7A6 6 0 0 1 12 5.9Z" />
         </svg>
       Continue with Google
-    </Link>
+    </a>
   )
 }
