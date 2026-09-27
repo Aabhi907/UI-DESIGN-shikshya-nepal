@@ -1,0 +1,840 @@
+diff --git a/app/(main)/community/[id]/page.tsx b/app/(main)/community/[id]/page.tsx
+index dde21ee..55910ef 100644
+--- a/app/(main)/community/[id]/page.tsx
++++ b/app/(main)/community/[id]/page.tsx
+@@ -9,6 +9,7 @@ import ReplyForm from '@/components/community/ReplyForm'
+ import ReportButton from '@/components/community/ReportButton'
+ import CommunityMedia from '@/components/community/CommunityMedia'
+ import VoteButtons from '@/components/community/VoteButtons'
++import { COMMUNITY_OPEN, COMMUNITY_CLOSED_MESSAGE } from '@/lib/community-status'
+ 
+ export const dynamic = 'force-dynamic'
+ export const revalidate = 0
+@@ -16,6 +17,20 @@ export async function generateMetadata(): Promise<Metadata> {
+   return { title: 'Student Discussion | SikshyaNepal', robots: { index: false, follow: true } }
+ }
+ 
++function CommunityClosedNotice() {
++  return <main className="min-h-screen bg-[#f6f7fb] px-4 py-16 sm:px-6">
++    <div className="mx-auto max-w-xl rounded-2xl border border-gray-200 bg-white p-8 text-center shadow-sm">
++      <ShieldCheck className="mx-auto h-10 w-10 text-primary" aria-hidden="true" />
++      <h1 className="mt-4 font-display text-2xl font-extrabold text-ink">Community is closed</h1>
++      <p className="mt-3 text-sm leading-6 text-gray-600">{COMMUNITY_CLOSED_MESSAGE} This discussion isn&apos;t available right now.</p>
++      <div className="mt-6 flex flex-col items-center gap-2 sm:flex-row sm:justify-center">
++        <Link href="/community/my-content" className="inline-flex min-h-11 items-center justify-center rounded-xl bg-primary px-5 text-sm font-bold text-white">Manage my content</Link>
++        <Link href="/community/guidelines" className="inline-flex min-h-11 items-center justify-center rounded-xl border border-gray-200 px-5 text-sm font-bold text-ink">Community rules</Link>
++      </div>
++    </div>
++  </main>
++}
++
+ async function load(id: string) {
+   const db = createServerSupabaseClient()
+   const loadPost = (includePrivateMediaPath: boolean) => db.from('community_posts')
+@@ -37,6 +52,7 @@ async function load(id: string) {
+ }
+ 
+ export default async function CommunityPostPage({ params }: { params: { id: string } }) {
++  if (!COMMUNITY_OPEN) return <CommunityClosedNotice />
+   const { post, comments } = await load(params.id)
+   if (!post) notFound()
+   return <main className="min-h-screen bg-[#f6f7fb]"><div className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
+diff --git a/app/(main)/community/guidelines/page.tsx b/app/(main)/community/guidelines/page.tsx
+index 3f0e339..d2694a6 100644
+--- a/app/(main)/community/guidelines/page.tsx
++++ b/app/(main)/community/guidelines/page.tsx
+@@ -1,10 +1,11 @@
++import Link from 'next/link'
+ import PolicyPage from '@/components/community/PolicyPage'
+ 
+ export default function CommunityGuidelinesPage() {
+   return <PolicyPage eyebrow="Safety standard" title="Community rules" intro="SikshyaNepal is a moderated education discussion board. Google sign-in is required, but only a chosen public name appears to other students.">
+     <h2>What belongs here</h2><ul><li>Respectful questions, study help and first-hand student experiences.</li><li>Useful discussion of colleges, admissions, scholarships and entrance exams.</li><li>Photos or short videos that you created and have permission to share.</li></ul>
+     <h2>Never allowed</h2><ul><li>Bullying, threats, hate speech, sexual or obscene material, encouragement of self-harm, or content exploiting a child.</li><li>Doxxing, phone numbers, email addresses, exact home/room locations, private messages or another person&apos;s identifying information.</li><li>Impersonation, scams, spam, exam leaks, cheating material or instructions for illegal activity.</li><li>Copyright infringement or unverified allegations against a student, teacher, institution or other person.</li></ul>
+-    <h2>Moderation</h2><p>New posts, comments and media remain pending until reviewed. We may reject, hide or remove content; restrict an account; preserve evidence; or report an immediate safety risk. Use the Report button for content concerns. To appeal, email safety@sikshyanepal.com with the public name and relevant post link.</p>
++    <h2>Moderation</h2><p>New posts, comments and media remain pending until reviewed. We may reject, hide or remove content; restrict an account; preserve evidence; or report an immediate safety risk. Use the Report button for content concerns. To appeal, use our <Link href="/safety?concern_type=other" className="font-bold text-primary hover:underline">report form</Link> with the public name and relevant post link.</p>
+     <h2>No private messaging</h2><p>The community does not provide private messages, random one-to-one chat or location sharing. Do not move conversations to personal accounts with strangers.</p>
+   </PolicyPage>
+ }
+diff --git a/app/(main)/community/my-content/page.tsx b/app/(main)/community/my-content/page.tsx
+index e2ca650..91570df 100644
+--- a/app/(main)/community/my-content/page.tsx
++++ b/app/(main)/community/my-content/page.tsx
+@@ -11,5 +11,5 @@ export default function MyCommunityContentPage() {
+   useEffect(() => { void load() }, [])
+   async function remove(type: 'post'|'comment', id: string) { if (!window.confirm('Permanently delete this content?')) return; const response = await fetch('/api/community/my-content', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type, id }) }); if (response.ok) void load(); else setError('Could not delete the content.') }
+   const groups = [{ title: 'Your posts', type: 'post' as const, items: data.posts }, { title: 'Your replies', type: 'comment' as const, items: data.comments }]
+-  return <main className="min-h-screen bg-[#f6f7fb] px-4 py-10 sm:px-6"><div className="mx-auto max-w-3xl"><Link href="/community" className="text-sm font-bold text-primary">← Community</Link><h1 className="mt-5 font-display text-3xl font-extrabold text-ink">Your community activity</h1><p className="mt-2 text-sm text-gray-600">Review moderation status or permanently delete your own posts and replies. For an appeal, email safety@sikshyanepal.com.</p>{error && <p className="mt-5 rounded-xl bg-amber-50 p-4 text-sm text-amber-900">{error}</p>}{groups.map(group => <section key={group.type} className="mt-8"><h2 className="font-bold text-ink">{group.title}</h2><div className="mt-3 space-y-3">{group.items.map(item => <article key={item.id} className="rounded-xl border border-gray-200 bg-white p-4"><div className="flex items-start justify-between gap-4"><div><p className="font-semibold text-ink">{item.title || item.body?.slice(0, 100)}</p><p className="mt-1 text-xs font-bold uppercase text-gray-400">{item.status}</p>{item.moderation_note && <p className="mt-2 text-xs text-amber-700">Moderator note: {item.moderation_note}</p>}</div><button onClick={() => remove(group.type,item.id)} className="text-xs font-bold text-red-700 hover:underline">Delete</button></div></article>)}{!group.items.length && <p className="rounded-xl border border-dashed border-gray-300 p-5 text-sm text-gray-500">Nothing here yet.</p>}</div></section>)}</div></main>
++  return <main className="min-h-screen bg-[#f6f7fb] px-4 py-10 sm:px-6"><div className="mx-auto max-w-3xl"><Link href="/community" className="text-sm font-bold text-primary">← Community</Link><h1 className="mt-5 font-display text-3xl font-extrabold text-ink">Your community activity</h1><p className="mt-2 text-sm text-gray-600">Review moderation status or permanently delete your own posts and replies. For an appeal, use our <Link href="/safety?concern_type=other" className="font-bold text-primary hover:underline">report form</Link>.</p>{error && <p className="mt-5 rounded-xl bg-amber-50 p-4 text-sm text-amber-900">{error}</p>}{groups.map(group => <section key={group.type} className="mt-8"><h2 className="font-bold text-ink">{group.title}</h2><div className="mt-3 space-y-3">{group.items.map(item => <article key={item.id} className="rounded-xl border border-gray-200 bg-white p-4"><div className="flex items-start justify-between gap-4"><div><p className="font-semibold text-ink">{item.title || item.body?.slice(0, 100)}</p><p className="mt-1 text-xs font-bold uppercase text-gray-400">{item.status}</p>{item.moderation_note && <p className="mt-2 text-xs text-amber-700">Moderator note: {item.moderation_note}</p>}</div><button onClick={() => remove(group.type,item.id)} className="text-xs font-bold text-red-700 hover:underline">Delete</button></div></article>)}{!group.items.length && <p className="rounded-xl border border-dashed border-gray-300 p-5 text-sm text-gray-500">Nothing here yet.</p>}</div></section>)}</div></main>
+ }
+diff --git a/app/(main)/community/page.tsx b/app/(main)/community/page.tsx
+index ece6772..43c4dfd 100644
+--- a/app/(main)/community/page.tsx
++++ b/app/(main)/community/page.tsx
+@@ -6,11 +6,26 @@ import { COMMUNITY_TOPICS, CommunityPost, topicLabel } from '@/lib/community'
+ import NewPostForm from '@/components/community/NewPostForm'
+ import CommunityMedia from '@/components/community/CommunityMedia'
+ import VoteButtons from '@/components/community/VoteButtons'
++import { COMMUNITY_OPEN, COMMUNITY_CLOSED_MESSAGE } from '@/lib/community-status'
+ 
+ export const dynamic = 'force-dynamic'
+ export const revalidate = 0
+ export const metadata: Metadata = { title: 'Student Community', description: 'A moderated, pseudonymous space for students in Nepal to discuss college and study life safely.', alternates: { canonical: '/community' }, robots: { index: false, follow: true } }
+ 
++function CommunityClosedNotice() {
++  return <main className="min-h-screen bg-[#f6f7fb] px-4 py-16 sm:px-6">
++    <div className="mx-auto max-w-xl rounded-2xl border border-gray-200 bg-white p-8 text-center shadow-sm">
++      <ShieldCheck className="mx-auto h-10 w-10 text-primary" aria-hidden="true" />
++      <h1 className="mt-4 font-display text-2xl font-extrabold text-ink">Community is closed</h1>
++      <p className="mt-3 text-sm leading-6 text-gray-600">{COMMUNITY_CLOSED_MESSAGE} Existing members can still review or delete their own posts and replies.</p>
++      <div className="mt-6 flex flex-col items-center gap-2 sm:flex-row sm:justify-center">
++        <Link href="/community/my-content" className="inline-flex min-h-11 items-center justify-center rounded-xl bg-primary px-5 text-sm font-bold text-white">Manage my content</Link>
++        <Link href="/community/guidelines" className="inline-flex min-h-11 items-center justify-center rounded-xl border border-gray-200 px-5 text-sm font-bold text-ink">Community rules</Link>
++      </div>
++    </div>
++  </main>
++}
++
+ async function getPosts(topic?: string, sort?: string) {
+   const db = createServerSupabaseClient()
+   const load = (includePrivateMediaPath: boolean) => {
+@@ -34,6 +49,7 @@ function timeLabel(value: string | null) {
+ }
+ 
+ export default async function CommunityPage({ searchParams }: { searchParams: { topic?: string; sort?: string } }) {
++  if (!COMMUNITY_OPEN) return <CommunityClosedNotice />
+   const { posts, failed } = await getPosts(searchParams.topic, searchParams.sort)
+   return <main className="min-h-screen bg-[#f6f7fb]">
+     <section className="border-b border-gray-200 bg-white"><div className="mx-auto max-w-6xl px-4 py-10 sm:px-6"><p className="text-xs font-bold uppercase tracking-widest text-primary">Student community</p><h1 className="mt-3 font-display text-3xl font-extrabold text-ink sm:text-4xl">Join with a public display name.</h1><p className="mt-3 max-w-2xl text-sm leading-6 text-gray-600">Other students see your chosen public name. SikshyaNepal retains your sign-in details for safety and moderation. Every post and reply is reviewed before publication.</p><div className="mt-5 flex items-start gap-2 rounded-xl bg-amber-50 p-3 text-xs leading-5 text-amber-900"><ShieldCheck className="mt-0.5 h-4 w-4 flex-shrink-0" aria-hidden="true"/><span>Do not share contact details, precise addresses, threats, accusations or identifying details. This board is not an emergency service.</span></div></div></section>
+diff --git a/app/(main)/contact/page.tsx b/app/(main)/contact/page.tsx
+index c6c84e6..14f272e 100644
+--- a/app/(main)/contact/page.tsx
++++ b/app/(main)/contact/page.tsx
+@@ -1,4 +1,24 @@
+ import type { Metadata } from 'next'
++import Link from 'next/link'
+ import PolicyPage from '@/components/community/PolicyPage'
++
+ export const metadata: Metadata = { title: 'Contact SikshyaNepal', description: 'Contact SikshyaNepal for editorial, safety, privacy, copyright, advertising and billing enquiries.', alternates: { canonical: '/contact' } }
+-export default function ContactPage(){return <PolicyPage eyebrow="Operator information" title="Contact SikshyaNepal" intro="SikshyaNepal is an independently operated Nepal education-information platform based in Kathmandu, Nepal. Company registration details will be published here when incorporation is completed."><h2>General and editorial</h2><p>Email: info@sikshyanepal.com<br/>Location: Kathmandu, Nepal</p><h2>Safety and privacy</h2><p>Safety: safety@sikshyanepal.com<br/>Privacy: privacy@sikshyanepal.com<br/>Copyright: copyright@sikshyanepal.com</p><h2>Commercial enquiries</h2><p>Advertising and billing: billing@sikshyanepal.com. Sponsored material is visibly labelled and remains subject to editorial standards.</p></PolicyPage>}
++
++export default function ContactPage() {
++  return <PolicyPage eyebrow="Operator information" title="Contact SikshyaNepal" intro="SikshyaNepal is an independently operated Nepal education-information platform based in Kathmandu, Nepal. Company registration details will be published here when incorporation is completed.">
++    <h2>How to reach us</h2>
++    <p>Our email domain is not yet active, so these forms are the way to reach us for now. Each one is reviewed by the SikshyaNepal team.</p>
++    <ul>
++      <li><Link href="/safety" className="font-bold text-primary hover:underline">Report a safety concern</Link> — including an urgent or child-safety issue.</li>
++      <li><Link href="/privacy" className="font-bold text-primary hover:underline">Report a privacy concern</Link> — your data, an account or a deletion request.</li>
++      <li><Link href="/safety?concern_type=other" className="font-bold text-primary hover:underline">Appeal a moderation decision</Link> — include the public name and the content link.</li>
++      <li><Link href="/privacy?concern_type=other" className="font-bold text-primary hover:underline">Copyright or takedown request</Link> — include the SikshyaNepal URL and your rights in the work.</li>
++      <li><Link href="/privacy?concern_type=other" className="font-bold text-primary hover:underline">Advertising and billing enquiries</Link> — sponsored placements remain visibly labelled and editorially reviewed.</li>
++      <li><Link href="/privacy?concern_type=other" className="font-bold text-primary hover:underline">General and editorial enquiries</Link></li>
++    </ul>
++    <h2>Something wrong on a college page?</h2>
++    <p>Use the &ldquo;Report incorrect information&rdquo; button on that college&apos;s profile page. It goes directly to our data-correction queue rather than the general report form.</p>
++    <h2>Location</h2>
++    <p>Kathmandu, Nepal</p>
++  </PolicyPage>
++}
+diff --git a/app/(main)/copyright/page.tsx b/app/(main)/copyright/page.tsx
+index 12badd6..7cb6c0b 100644
+--- a/app/(main)/copyright/page.tsx
++++ b/app/(main)/copyright/page.tsx
+@@ -1,11 +1,12 @@
+ import type { Metadata } from 'next'
++import Link from 'next/link'
+ import PolicyPage from '@/components/community/PolicyPage'
+ 
+ export const metadata: Metadata = { title: 'Copyright and Takedown Policy', description: 'Copyright rules and the process for requesting removal of material published on SikshyaNepal.', alternates: { canonical: '/copyright' } }
+ 
+ export default function CopyrightPage() {
+   return <PolicyPage eyebrow="Legal & trust" title="Copyright and takedown policy" intro="Only upload material you created or have permission to share.">
+-    <h2>Request removal</h2><p>Email copyright@sikshyanepal.com with your name, contact details, the SikshyaNepal URL, identification of the original work, and a good-faith explanation of your rights. We may temporarily hide disputed content while reviewing it.</p>
+-    <h2>Counter-request</h2><p>If your content was removed by mistake, reply with proof that you created it or have permission to use it. Repeated infringement may lead to account restriction.</p>
++    <h2>Request removal</h2><p>Use our <Link href="/privacy?concern_type=other" className="font-bold text-primary hover:underline">report form</Link> with your name, contact details, the SikshyaNepal URL, identification of the original work, and a good-faith explanation of your rights. We may temporarily hide disputed content while reviewing it.</p>
++    <h2>Counter-request</h2><p>If your content was removed by mistake, use the same form with proof that you created it or have permission to use it. Repeated infringement may lead to account restriction.</p>
+   </PolicyPage>
+ }
+diff --git a/app/(main)/privacy/page.tsx b/app/(main)/privacy/page.tsx
+index 4adde3b..5f176f8 100644
+--- a/app/(main)/privacy/page.tsx
++++ b/app/(main)/privacy/page.tsx
+@@ -4,7 +4,7 @@ import ReportConcernForm from '@/components/trust/ReportConcernForm'
+ 
+ export const metadata: Metadata = { title: 'Privacy Policy', description: 'How SikshyaNepal collects, uses, protects and retains account, moderation and security information.', alternates: { canonical: '/privacy' } }
+ 
+-export default function PrivacyPage({ searchParams }: { searchParams: { reported?: string; report_error?: string } }) {
++export default function PrivacyPage({ searchParams }: { searchParams: { reported?: string; report_error?: string; concern_type?: string } }) {
+   return <PolicyPage eyebrow="Legal & trust" title="Privacy policy" intro="We collect only the information needed to run SikshyaNepal, protect students and meet legal obligations.">
+     <h2>Accounts and public names</h2><p>Community participation requires Google authentication. Other users see only your chosen public name. SikshyaNepal&apos;s authorised administrators can link that name to the authenticated account, including its email and account identifier, for moderation, security and lawful requests.</p>
+     <h2>Security information</h2><p>For abuse prevention we may record account ID, action type, date and time, and a one-way fingerprint derived from limited request information such as IP address and browser user-agent. The raw IP is not stored in the community tables. Security events are scheduled to expire after 180 days unless longer preservation is reasonably required for an active safety investigation, dispute or legal duty.</p>
+diff --git a/app/(main)/refunds/page.tsx b/app/(main)/refunds/page.tsx
+index f30264e..9dd6781 100644
+--- a/app/(main)/refunds/page.tsx
++++ b/app/(main)/refunds/page.tsx
+@@ -1,4 +1,5 @@
+ import type { Metadata } from 'next'
++import Link from 'next/link'
+ import PolicyPage from '@/components/community/PolicyPage'
+ export const metadata: Metadata = { title: 'Refund Policy', description: 'Refund and cancellation terms for future SikshyaNepal advertising, sponsored content and paid services.', alternates: { canonical: '/refunds' } }
+-export default function RefundsPage(){return <PolicyPage eyebrow="Commercial terms" title="Refund policy" intro="Student access to SikshyaNepal’s public information is free. These terms apply only when SikshyaNepal begins selling advertising, sponsored content or other paid services."><h2>Before payment</h2><p>A written order should identify the service, dates, placement, price, taxes, deliverables and cancellation terms. No institution may purchase verification, a fabricated ranking or a higher student-review score.</p><h2>Cancellations and refunds</h2><p>If SikshyaNepal cannot deliver an agreed paid service, the unused portion will be refunded or rescheduled by agreement. Once a campaign has started, completed work and delivered advertising are normally non-refundable unless the written order states otherwise.</p><h2>Incorrect or prohibited material</h2><p>We may refuse or remove misleading, unlawful or unsafe advertising. Refund eligibility depends on the written order and whether the advertiser supplied prohibited or inaccurate material.</p><h2>Request</h2><p>Email billing@sikshyanepal.com with the invoice, payment reference and reason. This policy does not replace rights that cannot legally be excluded.</p></PolicyPage>}
++export default function RefundsPage(){return <PolicyPage eyebrow="Commercial terms" title="Refund policy" intro="Student access to SikshyaNepal’s public information is free. These terms apply only when SikshyaNepal begins selling advertising, sponsored content or other paid services."><h2>Before payment</h2><p>A written order should identify the service, dates, placement, price, taxes, deliverables and cancellation terms. No institution may purchase verification, a fabricated ranking or a higher student-review score.</p><h2>Cancellations and refunds</h2><p>If SikshyaNepal cannot deliver an agreed paid service, the unused portion will be refunded or rescheduled by agreement. Once a campaign has started, completed work and delivered advertising are normally non-refundable unless the written order states otherwise.</p><h2>Incorrect or prohibited material</h2><p>We may refuse or remove misleading, unlawful or unsafe advertising. Refund eligibility depends on the written order and whether the advertiser supplied prohibited or inaccurate material.</p><h2>Request</h2><p>Use our <Link href="/privacy?concern_type=other" className="font-bold text-primary hover:underline">report form</Link> with the invoice, payment reference and reason. This policy does not replace rights that cannot legally be excluded.</p></PolicyPage>}
+diff --git a/app/(main)/safety/page.tsx b/app/(main)/safety/page.tsx
+index 0a1b014..1715776 100644
+--- a/app/(main)/safety/page.tsx
++++ b/app/(main)/safety/page.tsx
+@@ -4,7 +4,7 @@ import ReportConcernForm from '@/components/trust/ReportConcernForm'
+ 
+ export const metadata: Metadata = { title: 'Child Safety and Urgent Reports', description: 'SikshyaNepal child-safety rules, reporting routes and urgent support information for students and families.', alternates: { canonical: '/safety' } }
+ 
+-export default function SafetyPage({ searchParams }: { searchParams: { reported?: string; report_error?: string } }) {
++export default function SafetyPage({ searchParams }: { searchParams: { reported?: string; report_error?: string; concern_type?: string } }) {
+   return <PolicyPage eyebrow="Student protection" title="Child safety and urgent reports" intro="SikshyaNepal is designed for students, including people under 18. Safety takes priority over engagement.">
+     <h2>Protect your identity</h2><p>Use a non-identifying public name. Never post a phone number, email, exact address, school roll number, private chat, identification document or live location.</p>
+     <h2>Urgent concern</h2><p>If someone is in immediate danger, contact local emergency services and a trusted adult. The community is not an emergency or counselling service. Use the report form below for platform safety reports and include the content link if there is one.</p>
+diff --git a/app/(main)/terms/page.tsx b/app/(main)/terms/page.tsx
+index f82dc2b..959f286 100644
+--- a/app/(main)/terms/page.tsx
++++ b/app/(main)/terms/page.tsx
+@@ -1,4 +1,5 @@
+ import type { Metadata } from 'next'
++import Link from 'next/link'
+ import PolicyPage from '@/components/community/PolicyPage'
+ 
+ export const metadata: Metadata = { title: 'Terms of Use', description: 'Terms for using SikshyaNepal education information, accounts, submissions and moderated community features.', alternates: { canonical: '/terms' } }
+@@ -9,6 +10,6 @@ export default function TermsPage() {
+     <h2>Content and moderation</h2><p>You grant SikshyaNepal permission to host and display submitted content for operating the service. You must own it or have permission to share it. We may review, reject, remove, preserve or disclose content where required for safety, enforcement or law. Moderation does not make user claims verified.</p>
+     <h2>Education information</h2><p>Deadlines, fees, eligibility and results can change. Confirm important decisions with the named institution or official authority. SikshyaNepal does not guarantee admission, scholarship or employment outcomes.</p>
+     <h2>Paid content</h2><p>Commercial placements and paid college content must be marked “Sponsored” or “Advertisement.” Payment does not permit false factual claims or remove editorial and safety review.</p>
+-    <h2>Appeals and complaints</h2><p>Send moderation appeals to safety@sikshyanepal.com and general complaints to info@sikshyanepal.com. Include the page link and a concise explanation; do not email unnecessary sensitive information.</p>
++    <h2>Appeals and complaints</h2><p>Send moderation appeals through our <Link href="/safety?concern_type=other" className="font-bold text-primary hover:underline">report form</Link> and general complaints through our <Link href="/privacy?concern_type=other" className="font-bold text-primary hover:underline">report form</Link>. Include the page link and a concise explanation; do not include unnecessary sensitive information.</p>
+   </PolicyPage>
+ }
+diff --git a/app/admin/reviews/page.tsx b/app/admin/reviews/page.tsx
+index 94d2e48..e62cfd3 100644
+--- a/app/admin/reviews/page.tsx
++++ b/app/admin/reviews/page.tsx
+@@ -200,7 +200,7 @@ export default function AdminReviewsPage() {
+                         {updating === review.id ? '…' : 'Unapprove'}
+                       </button>
+                     )}
+-                    {review.verification_status === 'submitted' && <button onClick={() => updateReview(review.id, review.is_approved, 'verified')} disabled={updating === review.id} className="flex items-center gap-1 px-3 py-1.5 bg-blue-700 hover:bg-blue-600 text-white text-xs font-medium rounded-lg transition-colors disabled:opacity-50"><BadgeCheck className="w-3 h-3" />Verify</button>}
++                    {review.verification_status === 'submitted' && <span className="px-2 text-[11px] font-medium text-gray-500">Verification paused until evidence review is built.</span>}
+                     <button
+                       onClick={() => handleDelete(review.id)}
+                       disabled={updating === review.id}
+diff --git a/app/admin/safety-reports/page.tsx b/app/admin/safety-reports/page.tsx
+index 97f8b71..414ef24 100644
+--- a/app/admin/safety-reports/page.tsx
++++ b/app/admin/safety-reports/page.tsx
+@@ -61,8 +61,8 @@ export default function SafetyReportsPage() {
+             Safety &amp; privacy reports
+           </h1>
+           <p className="mt-1 max-w-2xl text-sm text-gray-400">
+-            Interim reports collected from the safety and privacy pages while safety@/privacy@sikshyanepal.com are
+-            unreachable. Review these directly; move to the working email route once the domain is live (Build Brief 10).
++            Interim reports collected from the safety and privacy pages while the sikshyanepal.com email domain is
++            unregistered. Review these directly; move to the working email route once the domain is live (Build Brief 10).
+           </p>
+         </div>
+         <p className="rounded-lg border border-gray-700 bg-gray-800 px-3 py-2 text-xs text-gray-400">{openCount} open</p>
+diff --git a/app/api/admin/reviews/[id]/route.ts b/app/api/admin/reviews/[id]/route.ts
+index 704bb0f..641b144 100644
+--- a/app/api/admin/reviews/[id]/route.ts
++++ b/app/api/admin/reviews/[id]/route.ts
+@@ -9,6 +9,9 @@ export async function PUT(request: Request, { params }: { params: { id: string }
+   if (!(await isAuthed())) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+ 
+   const body = await request.json()
++  if (body.verification_status === 'verified') {
++    return NextResponse.json({ error: 'Verification paused until evidence review is built.' }, { status: 409 })
++  }
+   const update: Record<string, unknown> = {}
+   if (typeof body.is_approved === 'boolean') update.is_approved = body.is_approved
+   if (['unverified', 'submitted', 'verified', 'rejected'].includes(body.verification_status)) update.verification_status = body.verification_status
+diff --git a/app/api/community/me/route.ts b/app/api/community/me/route.ts
+index 1aea050..c414747 100644
+--- a/app/api/community/me/route.ts
++++ b/app/api/community/me/route.ts
+@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
+ import { getAuthContext, isGoogleAccount } from '@/lib/auth'
+ import { createAdminSupabaseClient } from '@/lib/supabase'
+ import { cleanPublicAlias, validPublicAlias } from '@/lib/community-server'
++import { COMMUNITY_OPEN, COMMUNITY_CLOSED_MESSAGE } from '@/lib/community-status'
+ 
+ export const dynamic = 'force-dynamic'
+ 
+@@ -14,6 +15,7 @@ export async function GET() {
+ }
+ 
+ export async function PUT(request: Request) {
++  if (!COMMUNITY_OPEN) return NextResponse.json({ error: COMMUNITY_CLOSED_MESSAGE }, { status: 503 })
+   const auth = await getAuthContext()
+   if (!auth) return NextResponse.json({ error: 'Sign in to choose a community name.' }, { status: 401 })
+   if (!isGoogleAccount(auth.user)) return NextResponse.json({ error: 'Use Google sign-in for the student community.' }, { status: 403 })
+diff --git a/app/api/community/posts/[id]/comments/route.ts b/app/api/community/posts/[id]/comments/route.ts
+index b48c64e..b0215e3 100644
+--- a/app/api/community/posts/[id]/comments/route.ts
++++ b/app/api/community/posts/[id]/comments/route.ts
+@@ -3,8 +3,10 @@ import { createAdminSupabaseClient } from '@/lib/supabase'
+ import { checkCommunityRateLimit, cleanCommunityText, containsPersonalContact, requestFingerprint } from '@/lib/community-server'
+ import { getAuthContext, isGoogleAccount } from '@/lib/auth'
+ import { recordCommunitySecurityEvent } from '@/lib/community-server'
++import { COMMUNITY_OPEN, COMMUNITY_CLOSED_MESSAGE } from '@/lib/community-status'
+ 
+ export async function POST(request: Request, { params }: { params: { id: string } }) {
++  if (!COMMUNITY_OPEN) return NextResponse.json({ error: COMMUNITY_CLOSED_MESSAGE }, { status: 503 })
+   const auth = await getAuthContext()
+   if (!auth) return NextResponse.json({ error: 'Sign in with Google before replying.' }, { status: 401 })
+   if (!isGoogleAccount(auth.user)) return NextResponse.json({ error: 'Community replies require a Google-verified account.' }, { status: 403 })
+diff --git a/app/api/community/posts/route.ts b/app/api/community/posts/route.ts
+index e5c3907..bf1b6a3 100644
+--- a/app/api/community/posts/route.ts
++++ b/app/api/community/posts/route.ts
+@@ -5,6 +5,7 @@ import { checkCommunityRateLimit, cleanCommunityText, containsPersonalContact, h
+ import { randomUUID } from 'crypto'
+ import { getAuthContext, isGoogleAccount } from '@/lib/auth'
+ import { recordCommunitySecurityEvent } from '@/lib/community-server'
++import { COMMUNITY_OPEN, COMMUNITY_CLOSED_MESSAGE } from '@/lib/community-status'
+ 
+ const MEDIA_TYPES: Record<string, { kind: 'image' | 'video'; extension: string; max: number }> = {
+   'image/jpeg': { kind: 'image', extension: 'jpg', max: 5 * 1024 * 1024 },
+@@ -16,6 +17,7 @@ const MEDIA_TYPES: Record<string, { kind: 'image' | 'video'; extension: string;
+ }
+ 
+ export async function POST(request: Request) {
++  if (!COMMUNITY_OPEN) return NextResponse.json({ error: COMMUNITY_CLOSED_MESSAGE }, { status: 503 })
+   const auth = await getAuthContext()
+   if (!auth) return NextResponse.json({ error: 'Sign in with Google before posting.' }, { status: 401 })
+   if (!isGoogleAccount(auth.user)) return NextResponse.json({ error: 'Community posting requires a Google-verified account.' }, { status: 403 })
+diff --git a/app/api/community/vote/route.ts b/app/api/community/vote/route.ts
+index b0cb814..4372c88 100644
+--- a/app/api/community/vote/route.ts
++++ b/app/api/community/vote/route.ts
+@@ -2,8 +2,10 @@ import { NextResponse } from 'next/server'
+ import { createAdminSupabaseClient } from '@/lib/supabase'
+ import { cleanCommunityText, recordCommunitySecurityEvent, requestFingerprint } from '@/lib/community-server'
+ import { getAuthContext, isGoogleAccount } from '@/lib/auth'
++import { COMMUNITY_OPEN, COMMUNITY_CLOSED_MESSAGE } from '@/lib/community-status'
+ 
+ export async function POST(request: Request) {
++  if (!COMMUNITY_OPEN) return NextResponse.json({ error: COMMUNITY_CLOSED_MESSAGE }, { status: 503 })
+   const auth = await getAuthContext()
+   if (!auth || !isGoogleAccount(auth.user)) return NextResponse.json({ error: 'Sign in with Google to vote.' }, { status: 401 })
+   if (!process.env.SUPABASE_SERVICE_ROLE_KEY) return NextResponse.json({ error: 'Voting is temporarily unavailable.' }, { status: 503 })
+diff --git a/components/community/CommunityIdentityGate.tsx b/components/community/CommunityIdentityGate.tsx
+index 7f551db..24e0ebb 100644
+--- a/components/community/CommunityIdentityGate.tsx
++++ b/components/community/CommunityIdentityGate.tsx
+@@ -26,7 +26,7 @@ export default function CommunityIdentityGate({ children }: { children: (alias:
+   if (identity.loading) return <div className="rounded-2xl border border-gray-200 bg-white p-5 text-sm text-gray-500">Checking your community access…</div>
+   if (identity.error) return <div role="alert" className="rounded-2xl border border-amber-200 bg-amber-50 p-5 sm:p-6"><h2 className="font-display text-xl font-bold text-amber-950">Community access is unavailable</h2><p className="mt-2 text-sm leading-6 text-amber-900">{identity.error}</p><button type="button" onClick={() => void refresh()} className="mt-4 min-h-11 rounded-lg bg-amber-950 px-4 py-2 text-sm font-bold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-900 focus-visible:ring-offset-2">Try again</button></div>
+   if (!identity.authenticated) return <div className="rounded-2xl border border-gray-200 bg-white p-5 sm:p-6"><h2 className="font-display text-xl font-bold text-ink">Join the student discussion</h2><p className="mt-2 text-sm leading-6 text-gray-600">Sign in with Google for accountability. Other students only see the public name you choose—never your Google name or email.</p><div className="mt-5"><GoogleSignInButton next="/community" /></div><p className="mt-4 text-xs leading-5 text-gray-500">By continuing, you accept the <Link href="/community/guidelines" className="font-bold text-primary hover:underline">community rules</Link>, <Link href="/terms" className="font-bold text-primary hover:underline">terms</Link> and <Link href="/privacy" className="font-bold text-primary hover:underline">privacy policy</Link>.</p></div>
+-  if (identity.status !== 'active') return <div className="rounded-2xl border border-red-200 bg-red-50 p-5 text-sm text-red-800">This community account is restricted. Contact <a className="font-bold underline" href="mailto:safety@sikshyanepal.com">safety@sikshyanepal.com</a> to appeal.</div>
++  if (identity.status !== 'active') return <div className="rounded-2xl border border-red-200 bg-red-50 p-5 text-sm text-red-800">This community account is restricted. Use our <Link href="/safety?concern_type=other" className="font-bold underline">report form</Link> to appeal.</div>
+   if (!identity.alias) {
+     return <form onSubmit={save} className="rounded-2xl border border-blue-200 bg-white p-5 sm:p-6"><h2 className="font-display text-xl font-bold text-ink">Choose your public name</h2><p className="mt-2 text-sm leading-6 text-gray-600">This is the only identity students will see. Do not use your real name, school roll number, or impersonate another person.</p><label className="mt-5 block text-sm font-semibold text-gray-700">Public name<input value={alias} onChange={event=>setAlias(event.target.value)} minLength={3} maxLength={24} pattern="[A-Za-z0-9_]+" placeholder="e.g. CuriousLearner27" className="mt-2 w-full rounded-xl border border-gray-200 px-3 py-3 outline-none focus:border-blue-500" required/></label><p className="mt-2 text-xs text-gray-500">3–24 letters, numbers or underscores. It cannot be changed without a support request.</p>{error&&<p role="alert" className="mt-3 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</p>}<button disabled={saving} aria-busy={saving} className="mt-4 w-full rounded-xl bg-primary px-5 py-3 text-sm font-bold text-white disabled:opacity-50">{saving?'Saving…':'Use this public name'}</button></form>
+   }
+diff --git a/components/community/PolicyPage.tsx b/components/community/PolicyPage.tsx
+index 1bca7d5..70486f3 100644
+--- a/components/community/PolicyPage.tsx
++++ b/components/community/PolicyPage.tsx
+@@ -1,5 +1,6 @@
+ import type { ReactNode } from 'react'
++import Link from 'next/link'
+ 
+ export default function PolicyPage({ eyebrow, title, intro, children }: { eyebrow: string; title: string; intro: string; children: ReactNode }) {
+-  return <main className="min-h-screen bg-[#f7f8fb] px-4 py-12 sm:px-6"><article className="mx-auto max-w-3xl rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-10"><p className="text-xs font-bold uppercase tracking-widest text-primary">{eyebrow}</p><h1 className="mt-3 font-display text-3xl font-extrabold text-ink">{title}</h1><p className="mt-4 text-sm leading-7 text-gray-600">{intro}</p><div className="prose prose-slate mt-8 max-w-none text-sm leading-7 [&_h2]:mb-2 [&_h2]:mt-7 [&_h2]:text-lg [&_h2]:font-bold [&_h2]:text-ink [&_ul]:space-y-1">{children}</div><p className="mt-10 border-t border-gray-100 pt-5 text-xs text-gray-500">Last updated: 9 September 2026 · Questions: <a className="font-bold text-primary" href="mailto:safety@sikshyanepal.com">safety@sikshyanepal.com</a></p></article></main>
++  return <main className="min-h-screen bg-[#f7f8fb] px-4 py-12 sm:px-6"><article className="mx-auto max-w-3xl rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-10"><p className="text-xs font-bold uppercase tracking-widest text-primary">{eyebrow}</p><h1 className="mt-3 font-display text-3xl font-extrabold text-ink">{title}</h1><p className="mt-4 text-sm leading-7 text-gray-600">{intro}</p><div className="prose prose-slate mt-8 max-w-none text-sm leading-7 [&_h2]:mb-2 [&_h2]:mt-7 [&_h2]:text-lg [&_h2]:font-bold [&_h2]:text-ink [&_ul]:space-y-1">{children}</div><p className="mt-10 border-t border-gray-100 pt-5 text-xs text-gray-500">Last updated: 9 September 2026 · Questions: see <Link className="font-bold text-primary" href="/contact">contact</Link></p></article></main>
+ }
+diff --git a/components/design-system/Footer.tsx b/components/design-system/Footer.tsx
+index 995263f..0f2b74f 100644
+--- a/components/design-system/Footer.tsx
++++ b/components/design-system/Footer.tsx
+@@ -2,6 +2,7 @@ import Link from 'next/link'
+ import { Mail, MapPin } from 'lucide-react'
+ import CookieSettingsButton from '@/components/privacy/CookieSettingsButton'
+ import Mascot from '@/components/design-system/Mascot'
++import LanguageSwitch from '@/components/design-system/LanguageSwitch'
+ 
+ // Phase 1 design system footer. Same links as components/layout/Footer.tsx —
+ // only the visual treatment is new. Kept separate since the original Footer
+@@ -16,7 +17,6 @@ const exploreLinks = [
+   { label: 'My Path', href: '/my-path' },
+   { label: 'News & Guides', href: '/news' },
+   { label: 'Scholarships', href: '/scholarships' },
+-  { label: 'Student Community', href: '/community' },
+ ]
+ 
+ const institutionLinks = [
+@@ -51,10 +51,10 @@ export default function Footer() {
+               An independent guide to colleges, programs and education in Nepal. Verification status and original sources are shown where available.
+             </p>
+             <div className="space-y-2.5">
+-              <a href="mailto:info@sikshyanepal.com" className="flex items-center gap-2.5 text-sm font-nunito text-white/60 hover:text-white transition-colors duration-150">
++              <Link href="/contact" className="flex items-center gap-2.5 text-sm font-nunito text-white/60 hover:text-white transition-colors duration-150">
+                 <Mail className="w-4 h-4 text-sn-primary flex-shrink-0" />
+-                info@sikshyanepal.com
+-              </a>
++                Contact us
++              </Link>
+               <div className="flex items-center gap-2.5 text-sm font-nunito text-white/60">
+                 <MapPin className="w-4 h-4 text-sn-primary flex-shrink-0" />
+                 Kathmandu, Nepal
+@@ -115,6 +115,7 @@ export default function Footer() {
+             <Link href="/refunds" className="inline-flex min-h-11 items-center hover:text-white transition-colors duration-150">Refunds</Link>
+             <CookieSettingsButton />
+             <Link href="/contact" className="inline-flex min-h-11 items-center hover:text-white transition-colors duration-150">Contact</Link>
++            <LanguageSwitch />
+           </div>
+         </div>
+       </div>
+diff --git a/components/design-system/LanguageSwitch.tsx b/components/design-system/LanguageSwitch.tsx
+new file mode 100644
+index 0000000..23a4569
+--- /dev/null
++++ b/components/design-system/LanguageSwitch.tsx
+@@ -0,0 +1,22 @@
++'use client'
++
++import Link from 'next/link'
++import { usePathname } from 'next/navigation'
++
++// Lightweight EN / नेपाली switch — no i18n machinery, just a link to the
++// existing / and /ne routes. Moved out of the main nav into the footer
++// (Build Brief 36 / D8): only one page is translated today, so every link
++// from /ne dropped back to English — this keeps the toggle available without
++// implying a fully translated site is one tap away in primary navigation.
++// Styled for the dark footer backgrounds it now lives on (both footers use a
++// dark surface), not the light nav pill it was originally written for.
++export default function LanguageSwitch({ className }: { className?: string }) {
++  const pathname = usePathname()
++  const isNepali = pathname === '/ne' || pathname.startsWith('/ne/')
++  return (
++    <div className={`inline-flex items-center overflow-hidden rounded-sn-control border border-white/15 text-xs font-bold font-nunito ${className || ''}`} role="group" aria-label="Language">
++      <Link href="/" aria-current={!isNepali ? 'page' : undefined} className={`min-h-11 px-2.5 py-2 flex items-center transition-colors ${!isNepali ? 'bg-sn-primary text-white' : 'text-white/60 hover:text-white'}`}>EN</Link>
++      <Link href="/ne" aria-current={isNepali ? 'page' : undefined} className={`min-h-11 px-2.5 py-2 flex items-center transition-colors ${isNepali ? 'bg-sn-primary text-white' : 'text-white/60 hover:text-white'}`}>ने</Link>
++    </div>
++  )
++}
+diff --git a/components/design-system/Nav.tsx b/components/design-system/Nav.tsx
+index a3bd23f..61ae14f 100644
+--- a/components/design-system/Nav.tsx
++++ b/components/design-system/Nav.tsx
+@@ -70,7 +70,6 @@ const navLinks: NavigationLink[] = [
+       { label: 'Career Explorer', href: '/careers' },
+       { label: 'GPA calculator', href: '/tools/gpa-calculator' },
+       { label: 'Study resources', href: '/study-resources' },
+-      { label: 'Student community', href: '/community' },
+       { label: 'Student wellbeing', href: '/wellbeing' },
+     ],
+   },
+@@ -97,18 +96,6 @@ function Wordmark() {
+   )
+ }
+ 
+-// Lightweight EN / नेपाली switch — no i18n machinery, just a link to the
+-// existing / and /ne routes. Replaces the old buried "नेपाली (Beta)" item.
+-function LanguageSwitch({ pathname, className }: { pathname: string; className?: string }) {
+-  const isNepali = pathname === '/ne' || pathname.startsWith('/ne/')
+-  return (
+-    <div className={`inline-flex items-center overflow-hidden rounded-sn-control border border-sn-border-strong text-xs font-bold font-nunito ${className || ''}`} role="group" aria-label="Language">
+-      <Link href="/" aria-current={!isNepali ? 'page' : undefined} className={`px-2.5 py-2 transition-colors ${!isNepali ? 'bg-sn-primary text-white' : 'text-sn-ink-soft hover:text-sn-ink'}`}>EN</Link>
+-      <Link href="/ne" aria-current={isNepali ? 'page' : undefined} className={`px-2.5 py-2 transition-colors ${isNepali ? 'bg-sn-primary text-white' : 'text-sn-ink-soft hover:text-sn-ink'}`}>ने</Link>
+-    </div>
+-  )
+-}
+-
+ export default function Nav() {
+   const [mobileOpen, setMobileOpen] = useState(false)
+   const [openDrop, setOpenDrop] = useState<string | null>(null)
+@@ -248,7 +235,6 @@ export default function Nav() {
+             </nav>
+ 
+             <div className="hidden xl:flex items-center gap-2">
+-              <LanguageSwitch pathname={pathname} />
+               <button onClick={() => window.dispatchEvent(new Event('open-site-search'))} className="inline-flex items-center gap-2 rounded-sn-control border border-sn-border-strong px-3 py-2 text-sm font-bold font-nunito text-sn-ink-soft hover:border-sn-primary hover:text-sn-primary" aria-label="Search SikshyaNepal">
+                 <Search className="h-4 w-4" /><span className="hidden xl:inline">Search</span><kbd className="hidden rounded border border-sn-border px-1.5 py-0.5 text-[10px] text-sn-ink-muted xl:inline">⌘K</kbd>
+               </button>
+@@ -335,7 +321,6 @@ export default function Nav() {
+               <Link href="/results" onClick={() => closeMobileMenu(false)} className="flex min-h-11 items-center justify-center gap-2 w-full py-3 rounded-sn-control border border-sn-border-strong text-sm font-bold font-nunito text-sn-ink hover:border-sn-primary hover:text-sn-primary transition-colors">
+                 Check Results
+               </Link>
+-              <div className="flex justify-center pt-1"><LanguageSwitch pathname={pathname} /></div>
+             </div>
+           </div>
+         </div>
+diff --git a/components/layout/Footer.tsx b/components/layout/Footer.tsx
+index b533d39..cb17f4c 100644
+--- a/components/layout/Footer.tsx
++++ b/components/layout/Footer.tsx
+@@ -1,6 +1,7 @@
+ import Link from 'next/link'
+ import { Mail, MapPin, ArrowUpRight, BookOpenCheck } from 'lucide-react'
+ import CookieSettingsButton from '@/components/privacy/CookieSettingsButton'
++import LanguageSwitch from '@/components/design-system/LanguageSwitch'
+ 
+ const exploreLinks = [
+   { label: 'All Colleges',     href: '/colleges' },
+@@ -11,7 +12,6 @@ const exploreLinks = [
+   { label: 'My Path', href: '/my-path' },
+   { label: 'News & Guides', href: '/news' },
+   { label: 'Scholarships', href: '/scholarships' },
+-  { label: 'Student Community', href: '/community' },
+ ]
+ 
+ const institutionLinks = [
+@@ -53,13 +53,13 @@ export default function Footer() {
+             </p>
+ 
+             <div className="space-y-2.5 mb-6">
+-              <a
+-                href="mailto:info@sikshyanepal.com"
++              <Link
++                href="/contact"
+                 className="flex items-center gap-2.5 text-sm text-slate-400 hover:text-white transition-colors duration-150"
+               >
+                 <Mail className="w-4 h-4 text-blue-400 flex-shrink-0" />
+-                info@sikshyanepal.com
+-              </a>
++                Contact us
++              </Link>
+               <div className="flex items-center gap-2.5 text-sm text-slate-400">
+                 <MapPin className="w-4 h-4 text-blue-400 flex-shrink-0" />
+                 Kathmandu, Nepal
+@@ -133,6 +133,7 @@ export default function Footer() {
+             <Link href="/refunds" className="inline-flex min-h-11 items-center hover:text-white transition-colors duration-150">Refunds</Link>
+             <CookieSettingsButton />
+             <Link href="/contact" className="inline-flex min-h-11 items-center hover:text-white transition-colors duration-150">Contact</Link>
++            <LanguageSwitch />
+           </div>
+         </div>
+       </div>
+diff --git a/components/trust/ReportConcernForm.tsx b/components/trust/ReportConcernForm.tsx
+index ef06787..07a1377 100644
+--- a/components/trust/ReportConcernForm.tsx
++++ b/components/trust/ReportConcernForm.tsx
+@@ -7,6 +7,8 @@ const ERROR_TEXT: Record<string, string> = {
+   unavailable: 'Something went wrong saving your report. Please try again in a few minutes. If someone is in immediate danger, use the emergency contacts above instead of waiting.',
+ }
+ 
++const CONCERN_TYPE_VALUES = new Set(['safety', 'privacy', 'other'])
++
+ // No client component here on purpose: this posts as a plain HTML form to a
+ // Server Action, so it keeps working with JavaScript disabled — the case that
+ // matters most for a student reporting a safety concern from a slow phone.
+@@ -16,12 +18,16 @@ export default function ReportConcernForm({
+   searchParams,
+ }: {
+   sourcePage: 'safety' | 'privacy'
+-  defaultConcernType: 'safety' | 'privacy'
+-  searchParams: { reported?: string; report_error?: string }
++  defaultConcernType: 'safety' | 'privacy' | 'other'
++  searchParams: { reported?: string; report_error?: string; concern_type?: string }
+ }) {
+   const reported = searchParams.reported === '1'
+   const errorText = searchParams.report_error ? ERROR_TEXT[searchParams.report_error] || ERROR_TEXT.unavailable : null
+   const action = reportConcern.bind(null, sourcePage)
++  // Other pages link here with ?concern_type=... to preselect a category (see /contact, /copyright, /refunds, /terms).
++  const initialConcernType = searchParams.concern_type && CONCERN_TYPE_VALUES.has(searchParams.concern_type)
++    ? (searchParams.concern_type as 'safety' | 'privacy' | 'other')
++    : defaultConcernType
+ 
+   return (
+     <section aria-labelledby={`report-${sourcePage}-heading`} className="mt-8 rounded-2xl border border-gray-200 bg-gray-50 p-6">
+@@ -43,7 +49,7 @@ export default function ReportConcernForm({
+ 
+           <label className="block">
+             <span className="mb-1 block text-sm font-semibold text-ink">What is this about?</span>
+-            <select name="concern_type" required defaultValue={defaultConcernType} className="w-full rounded-xl border border-gray-200 bg-white p-3 text-sm">
++            <select name="concern_type" required defaultValue={initialConcernType} className="w-full rounded-xl border border-gray-200 bg-white p-3 text-sm">
+               <option value="safety">Safety</option>
+               <option value="privacy">Privacy</option>
+               <option value="other">Something else</option>
+diff --git a/lib/community-status.ts b/lib/community-status.ts
+new file mode 100644
+index 0000000..a327f23
+--- /dev/null
++++ b/lib/community-status.ts
+@@ -0,0 +1,8 @@
++// Single switch for the student community feature (Build Brief 36 / D2).
++// Community carries the heaviest child-safety load on the site and today
++// runs with one moderator while posting itself is broken — so it stays
++// closed (no new posts, comments, votes or identities) until safety and
++// moderation tooling is in place. Flip this back to true to reopen it.
++export const COMMUNITY_OPEN = false
++
++export const COMMUNITY_CLOSED_MESSAGE = 'Community is closed while we finish safety work.'
+diff --git a/package.json b/package.json
+index ac31484..a349049 100644
+--- a/package.json
++++ b/package.json
+@@ -17,6 +17,7 @@
+     "test:admission-dates": "node --import tsx scripts/test-admission-date-boundaries.ts",
+     "test:ingestion-atomicity": "tsx scripts/test-ingestion-approval-atomicity.ts",
+     "test:deadline-visibility": "node scripts/test-deadline-visibility.mjs",
++    "test:w2-trust": "node --import tsx scripts/test-w2-trust.mjs",
+     "test:scrapers": "python3 -m unittest discover -s scrapers/tests -v",
+     "schools:extract": "node scripts/extract-cehrd-schools.mjs",
+     "schools:import": "node scripts/import-cehrd-schools.mjs"
+diff --git a/scripts/test-w2-trust.mjs b/scripts/test-w2-trust.mjs
+new file mode 100644
+index 0000000..096e057
+--- /dev/null
++++ b/scripts/test-w2-trust.mjs
+@@ -0,0 +1,202 @@
++// Wave 2 / Stream 3 trust fixes (Build Brief 36).
++//
++// Each API route under test is transpiled from its real source and executed in a
++// sandboxed CommonJS module (the same approach as test-public-list-errors.mjs),
++// with a custom `require` shim standing in for its imports. Where a route must
++// short-circuit before touching the database, its dependencies are "tripwires"
++// that throw the moment any property is read off them — so a handler that falls
++// through the guard fails loudly here instead of quietly passing.
++//
++// Run: npm run test:w2-trust
++import assert from 'node:assert/strict'
++import fs from 'node:fs'
++import path from 'node:path'
++import vm from 'node:vm'
++import ts from 'typescript'
++import { COMMUNITY_OPEN, COMMUNITY_CLOSED_MESSAGE } from '../lib/community-status.ts'
++
++let checks = 0
++const ok = (condition, message) => { assert.ok(condition, message); checks++ }
++
++// ── sandbox plumbing ──────────────────────────────────────────────────────
++
++function tripwire(label) {
++  return new Proxy({}, {
++    get(_, prop) {
++      throw new Error(`${label}.${String(prop)} must not be touched here`)
++    },
++  })
++}
++
++const NextResponse = {
++  json: (body, init = {}) => ({ __isResponse: true, body, status: init.status ?? 200, headers: init.headers ?? {} }),
++}
++
++function loadModule(file, importMap) {
++  const output = ts.transpileModule(fs.readFileSync(file, 'utf8'), {
++    fileName: path.basename(file),
++    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, esModuleInterop: true },
++  }).outputText
++  const loaded = { exports: {} }
++  vm.runInNewContext(output, {
++    module: loaded, exports: loaded.exports, Buffer, console: { error() {}, warn() {}, log() {} },
++    require: name => {
++      if (!(name in importMap)) throw new Error(`Unexpected import in ${file}: ${name}`)
++      return importMap[name]
++    },
++  }, { filename: file })
++  return loaded.exports
++}
++
++// A minimal Supabase query-builder stand-in: every call just returns another
++// chainable proxy, except `.then`/`.single`/`.maybeSingle`, which resolve the
++// queued result — mirrors the fakeDb pattern in test-public-list-errors.mjs.
++function chainable(result) {
++  return new Proxy({}, {
++    get(_, prop) {
++      if (prop === 'then') return (resolve) => Promise.resolve(result).then(resolve)
++      if (prop === 'single' || prop === 'maybeSingle') return () => Promise.resolve(result)
++      return () => chainable(result)
++    },
++  })
++}
++function fakeSequence(responses) {
++  let i = 0
++  return { from() { const result = responses[i++]; if (!result) throw new Error('fakeSequence: ran out of queued responses'); return chainable(result) } }
++}
++
++const UUID = '11111111-1111-1111-1111-111111111111'
++
++// ── 1. no dead address remains ───────────────────────────────────────────
++
++function walk(dir) {
++  return fs.readdirSync(dir, { withFileTypes: true }).flatMap(entry => {
++    const full = path.join(dir, entry.name)
++    return entry.isDirectory() ? walk(full) : [full]
++  })
++}
++{
++  const offenders = []
++  for (const dir of ['app', 'components', 'lib']) {
++    for (const file of walk(dir)) {
++      let content
++      try { content = fs.readFileSync(file, 'utf8') } catch { continue }
++      if (/@sikshyanepal\.com/i.test(content)) offenders.push(file)
++    }
++  }
++  ok(offenders.length === 0, `Dead @sikshyanepal.com address(es) found: ${offenders.join(', ')}`)
++}
++
++// ── 2. community create routes 503 while closed, no database call made ──
++
++ok(COMMUNITY_OPEN === false, 'COMMUNITY_OPEN must be false for this brief (community stays closed)')
++
++function closedImportMap() {
++  return {
++    'next/server': { NextResponse },
++    '@/lib/community-status': { COMMUNITY_OPEN, COMMUNITY_CLOSED_MESSAGE },
++    '@/lib/supabase': tripwire('@/lib/supabase'),
++    '@/lib/auth': tripwire('@/lib/auth'),
++    '@/lib/community-server': tripwire('@/lib/community-server'),
++    '@/lib/community': tripwire('@/lib/community'),
++    'crypto': tripwire('crypto'),
++  }
++}
++
++const closedRoutes = [
++  ['app/api/community/posts/route.ts', 'POST', request => [request]],
++  ['app/api/community/posts/[id]/comments/route.ts', 'POST', request => [request, { params: { id: UUID } }]],
++  ['app/api/community/vote/route.ts', 'POST', request => [request]],
++  ['app/api/community/me/route.ts', 'PUT', request => [request]],
++]
++
++for (const [file, method, callArgs] of closedRoutes) {
++  const mod = loadModule(path.resolve(file), closedImportMap())
++  const handler = mod[method]
++  ok(typeof handler === 'function', `${file}: expected an exported ${method} handler`)
++  const request = new Request('http://localhost/test', { method, body: JSON.stringify({}) })
++  let response
++  try {
++    response = await handler(...callArgs(request))
++  } catch (error) {
++    throw new assert.AssertionError({ message: `${file}: threw instead of returning 503 while COMMUNITY_OPEN is false (${error.message})` })
++  }
++  ok(response.status === 503, `${file}: expected 503 while closed, got ${response.status}`)
++  ok(response.body?.error === COMMUNITY_CLOSED_MESSAGE, `${file}: expected the closed message, got ${JSON.stringify(response.body)}`)
++}
++
++// ── 3. my-content DELETE keeps working while the community is closed ────
++
++{
++  const importMap = {
++    'next/server': { NextResponse },
++    '@/lib/auth': { getAuthContext: async () => ({ user: { id: 'user-1' } }) },
++    '@/lib/supabase': { createAdminSupabaseClient: () => fakeSequence([
++      { data: { id: 'post-1', media_path: null }, error: null }, // select before delete
++      { error: null }, // the delete itself
++    ]) },
++    '@/lib/community-server': { recordCommunitySecurityEvent: async () => {}, requestFingerprint: () => 'fp' },
++  }
++  const mod = loadModule(path.resolve('app/api/community/my-content/route.ts'), importMap)
++  const request = new Request('http://localhost/test', { method: 'DELETE', body: JSON.stringify({ type: 'post', id: UUID }) })
++  const response = await mod.DELETE(request)
++  ok(response.status === 200 && response.body?.success === true, `my-content DELETE: expected success, got ${JSON.stringify(response.body)} (status ${response.status})`)
++}
++
++// ── 4. admin reviews: verify rejected with 409, approve/reject still work ─
++
++const REVIEWS_ROUTE = path.resolve('app/api/admin/reviews/[id]/route.ts')
++const VERIFY_MESSAGE = 'Verification paused until evidence review is built.'
++
++{
++  const importMap = {
++    'next/server': { NextResponse },
++    'next/cache': { revalidatePath: () => {} },
++    '@/lib/auth': {
++      isStaff: async () => true,
++      getAuthContext: async () => { throw new Error('getAuthContext must not be called when rejecting a verify request') },
++      writeAudit: async () => { throw new Error('writeAudit must not be called when rejecting a verify request') },
++    },
++    '@/lib/supabase': {
++      createAdminSupabaseClient: () => { throw new Error('createAdminSupabaseClient must not be called when rejecting a verify request') },
++    },
++  }
++  const mod = loadModule(REVIEWS_ROUTE, importMap)
++  const request = new Request('http://localhost/test', { method: 'PUT', body: JSON.stringify({ verification_status: 'verified' }) })
++  const response = await mod.PUT(request, { params: { id: 'review-1' } })
++  ok(response.status === 409, `admin reviews PUT: expected 409 for a verify request, got ${response.status}`)
++  ok(response.body?.error === VERIFY_MESSAGE, `admin reviews PUT: unexpected message ${JSON.stringify(response.body)}`)
++}
++
++function reviewsWorkingImportMap(updateResult) {
++  return {
++    'next/server': { NextResponse },
++    'next/cache': { revalidatePath: () => {} },
++    '@/lib/auth': { isStaff: async () => true, getAuthContext: async () => ({ user: { id: 'admin-1' } }), writeAudit: async () => {} },
++    '@/lib/supabase': { createAdminSupabaseClient: () => ({ from: () => chainable(updateResult) }) },
++  }
++}
++{
++  const result = { data: { id: 'review-1', is_approved: true, verification_status: 'unverified', college: { slug: 'test-college' } }, error: null }
++  const mod = loadModule(REVIEWS_ROUTE, reviewsWorkingImportMap(result))
++  const request = new Request('http://localhost/test', { method: 'PUT', body: JSON.stringify({ is_approved: true }) })
++  const response = await mod.PUT(request, { params: { id: 'review-1' } })
++  ok(response.status === 200 && response.body?.is_approved === true, `admin reviews PUT: approve must still work, got ${JSON.stringify(response.body)} (status ${response.status})`)
++}
++{
++  const result = { data: { id: 'review-1', is_approved: false, verification_status: 'rejected', college: { slug: 'test-college' } }, error: null }
++  const mod = loadModule(REVIEWS_ROUTE, reviewsWorkingImportMap(result))
++  const request = new Request('http://localhost/test', { method: 'PUT', body: JSON.stringify({ verification_status: 'rejected' }) })
++  const response = await mod.PUT(request, { params: { id: 'review-1' } })
++  ok(response.status === 200 && response.body?.verification_status === 'rejected', `admin reviews PUT: reject must still work, got ${JSON.stringify(response.body)} (status ${response.status})`)
++}
++
++// ── 5. Nav has no Community link and no LanguageSwitch ───────────────────
++
++{
++  const source = fs.readFileSync('components/design-system/Nav.tsx', 'utf8')
++  ok(!source.includes('/community'), 'Nav.tsx must not link to Community')
++  ok(!source.includes('LanguageSwitch'), 'Nav.tsx must not reference LanguageSwitch (moved to the footer)')
++}
++
++console.log(`W2 trust checks passed: ${checks} assertions.`)
+diff --git a/supabase/migrations/20261026_published_only_news_scholarships.sql b/supabase/migrations/20261026_published_only_news_scholarships.sql
+new file mode 100644
+index 0000000..dc0d656
+--- /dev/null
++++ b/supabase/migrations/20261026_published_only_news_scholarships.sql
+@@ -0,0 +1,47 @@
++-- Restrict public reads of news and scholarships to published/active rows only.
++--
++-- 20261024_lock_down_database_surface.sql deliberately left the legacy
++-- "Public read news" / "Public read scholarships" USING (true) policies in
++-- place ("news and scholarships have no stricter policy in the migration
++-- history. Keep their legacy SELECT policies until a separate reviewed
++-- change supplies one.") — this is that reviewed change.
++--
++-- news has a status column (draft/published/archived); scholarships has no
++-- status column at all — its equivalent flag is the boolean is_active.
++BEGIN;
++
++DROP POLICY IF EXISTS "Public read news" ON news;
++DO $$ BEGIN
++  CREATE POLICY "Public read published news"
++    ON news
++    FOR SELECT
++    TO anon, authenticated
++    USING (status = 'published');
++EXCEPTION WHEN duplicate_object THEN NULL;
++END $$;
++
++DROP POLICY IF EXISTS "Public read scholarships" ON scholarships;
++DO $$ BEGIN
++  CREATE POLICY "Public read active scholarships"
++    ON scholarships
++    FOR SELECT
++    TO anon, authenticated
++    USING (is_active = true);
++EXCEPTION WHEN duplicate_object THEN NULL;
++END $$;
++
++COMMENT ON POLICY "Public read published news" ON news IS
++  'Exposes only published articles to public clients; draft/archived remain admin-only.';
++COMMENT ON POLICY "Public read active scholarships" ON scholarships IS
++  'Exposes only active scholarships to public clients; inactive/expired remain admin-only.';
++
++COMMIT;
++
++-- Undo (kept here for the PR description, not applied by this file):
++--
++-- BEGIN;
++-- DROP POLICY IF EXISTS "Public read published news" ON news;
++-- CREATE POLICY "Public read news" ON news FOR SELECT TO anon USING (true);
++-- DROP POLICY IF EXISTS "Public read active scholarships" ON scholarships;
++-- CREATE POLICY "Public read scholarships" ON scholarships FOR SELECT TO anon USING (true);
++-- COMMIT;
