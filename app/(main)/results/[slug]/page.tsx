@@ -28,16 +28,27 @@ const UNIVERSITY_HOMEPAGES: Record<string, string> = {
 async function getResult(slug: string) {
   const supabase = createServerSupabaseClient()
   const decoded  = decodeURIComponent(slug)
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('results')
     .select('*, university:universities(id, name, short_name, slug, website, created_at)')
     .eq('slug', decoded)
-    .single()
+    .maybeSingle()
+  // A query failure is not the same as "no such result" — throw it so the
+  // error boundary shows and the page is never cached as a 404.
+  if (error) throw error
   return data as Result | null
 }
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const result = await getResult(params.slug)
+  let result: Result | null
+  try {
+    result = await getResult(params.slug)
+  } catch {
+    // Metadata must never crash the request; the page component's own throw
+    // is what shows the real error state. Fall back to a generic title,
+    // never the "not found" one — this isn't known to be missing.
+    return { title: 'Result' }
+  }
   if (!result) return { title: 'Result Not Found' }
   return {
     title:       result.title,

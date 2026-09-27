@@ -27,16 +27,27 @@ const UNIVERSITY_HOMEPAGES: Record<string, string> = {
 async function getNotice(slug: string) {
   const supabase = createServerSupabaseClient()
   const decoded  = decodeURIComponent(slug)
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from('notices')
     .select('*, university:universities(id, name, short_name, slug, website, created_at)')
     .eq('slug', decoded)
-    .single()
+    .maybeSingle()
+  // A query failure is not the same as "no such notice" — throw it so the
+  // error boundary shows and the page is never cached as a 404.
+  if (error) throw error
   return data as Notice | null
 }
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const notice = await getNotice(params.slug)
+  let notice: Notice | null
+  try {
+    notice = await getNotice(params.slug)
+  } catch {
+    // Metadata must never crash the request; the page component's own throw
+    // is what shows the real error state. Fall back to a generic title,
+    // never the "not found" one — this isn't known to be missing.
+    return { title: 'Notice' }
+  }
   if (!notice) return { title: 'Notice Not Found' }
   return {
     title:       notice.title,
