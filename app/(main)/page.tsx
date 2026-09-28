@@ -171,14 +171,14 @@ function HeroCard({
           <Link href={`/results/${result.slug}`} className="group block py-3.5 border-b border-sn-border">
             <p className="mb-1 text-xs font-bold font-nunito text-sn-ink-muted">Latest Result</p>
             <p className="text-sm font-bold font-nunito leading-snug line-clamp-2 text-sn-ink group-hover:text-sn-primary">{result.title}</p>
-            <span className="mt-2 inline-flex items-center gap-1 text-xs font-bold font-nunito text-sn-primary">View result <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" /></span>
+            <span className="mt-2 inline-flex items-center gap-1 text-xs font-bold font-nunito text-sn-primary">View result <ArrowRight className="h-3.5 w-3.5 motion-arrow" aria-hidden="true" /></span>
           </Link>
         )}
         {notice && (
           <Link href={`/notices/${notice.slug}`} className="group block py-3.5 border-b border-sn-border">
             <p className="mb-1 text-xs font-bold font-nunito text-sn-ink-muted">Latest Notice</p>
             <p className="text-sm font-bold font-nunito leading-snug line-clamp-2 text-sn-ink group-hover:text-sn-primary">{notice.title}</p>
-            <span className="mt-2 inline-flex items-center gap-1 text-xs font-bold font-nunito text-sn-primary">Read notice <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" /></span>
+            <span className="mt-2 inline-flex items-center gap-1 text-xs font-bold font-nunito text-sn-primary">Read notice <ArrowRight className="h-3.5 w-3.5 motion-arrow" aria-hidden="true" /></span>
           </Link>
         )}
         {college && (
@@ -228,18 +228,18 @@ export default async function HomePage() {
               <HeroSearch />
 
               <div className="mt-8 flex flex-wrap gap-3">
-                <Button.Link href="/tools/college-finder" variant="primary">Start your pathway<ArrowRight className="h-4 w-4" aria-hidden="true" /></Button.Link>
+                <Button.Link href="/tools/college-finder" variant="primary">Start your pathway<ArrowRight className="h-4 w-4 motion-arrow" aria-hidden="true" /></Button.Link>
                 <Button.Link href="/colleges" variant="secondary">Browse colleges</Button.Link>
               </div>
 
               <div className="mt-8">
-                <Link href="/colleges" className="group block rounded-sn-card border border-sn-border bg-sn-surface p-5 shadow-sn-card transition hover:shadow-sn-float">
+                <Link href="/colleges" className="group block rounded-sn-card border border-sn-border bg-sn-surface p-5 shadow-sn-card motion-interactive-card">
                   <div className="flex items-start gap-3">
                     <IconTile icon={GraduationCap} tint="peach" />
                     <div>
                       <p className="font-bold font-nunito text-sn-ink">Planning after SEE or +2?</p>
                       <p className="mt-1 text-xs leading-5 font-nunito text-sn-ink-soft">Explore +2, Bachelor, Master and diploma options.</p>
-                      <span className="mt-2 inline-flex items-center gap-1 text-xs font-bold font-nunito text-sn-primary">Find a college <ArrowRight className="h-3.5 w-3.5 transition group-hover:translate-x-0.5" aria-hidden="true" /></span>
+                      <span className="mt-2 inline-flex items-center gap-1 text-xs font-bold font-nunito text-sn-primary">Find a college <ArrowRight className="h-3.5 w-3.5 motion-arrow" aria-hidden="true" /></span>
                     </div>
                   </div>
                 </Link>
@@ -293,7 +293,7 @@ export default async function HomePage() {
               { href: '/study-resources', label: 'Study resources', text: 'Syllabus & questions', Icon: BookOpen, tint: 'butter' as const },
               { href: '/notices', label: 'Latest notices', text: 'Official updates', Icon: Bell, tint: 'lilac' as const },
             ].map(({ href, label, text, Icon, tint }) => (
-              <Link key={href} href={href} className="group rounded-sn-card border border-sn-border bg-sn-surface p-5 shadow-sn-card transition hover:shadow-sn-float">
+              <Link key={href} href={href} className="group rounded-sn-card border border-sn-border bg-sn-surface p-5 shadow-sn-card motion-interactive-card">
                 <IconTile icon={Icon} tint={tint} size={36} />
                 <p className="mt-3 text-sm font-bold font-nunito text-sn-ink">{label}</p>
                 <p className="mt-1 text-xs font-nunito text-sn-ink-muted">{text}</p>
@@ -322,7 +322,7 @@ export default async function HomePage() {
                 const Icon = FACULTY_ICONS[faculty.slug] ?? Monitor
                 const href = faculty.slug === 'plus-two' ? '/colleges?level=%2B2' : `/programs?faculty=${faculty.slug}`
                 return (
-                  <Link key={faculty.slug} href={href} className="group flex flex-col items-center gap-3 rounded-sn-card border border-sn-border bg-sn-surface p-5 text-center shadow-sn-card transition hover:shadow-sn-float">
+                  <Link key={faculty.slug} href={href} className="group flex flex-col items-center gap-3 rounded-sn-card border border-sn-border bg-sn-surface p-5 text-center shadow-sn-card motion-interactive-card">
                     <IconTile icon={Icon} tint={FACULTY_TINTS[index % FACULTY_TINTS.length]} />
                     <span className="text-sm font-bold font-nunito leading-tight text-sn-ink group-hover:text-sn-primary">{faculty.name}</span>
                   </Link>
@@ -340,7 +340,7 @@ export default async function HomePage() {
               {UNIVERSITY_SHOWCASE.map((u, index) => {
                 const count = universityCounts[u.short] ?? 0
                 return (
-                  <Link key={u.short} href={`/colleges?affiliation=${encodeURIComponent(u.affiliation)}`} className="group flex flex-col gap-3 rounded-sn-card border border-sn-border bg-sn-surface p-5 shadow-sn-card transition hover:shadow-sn-float">
+                  <Link key={u.short} href={`/colleges?affiliation=${encodeURIComponent(u.affiliation)}`} className="group flex flex-col gap-3 rounded-sn-card border border-sn-border bg-sn-surface p-5 shadow-sn-card motion-interactive-card">
                     <span className={`flex h-11 w-11 items-center justify-center rounded-sn-control font-baloo text-lg font-bold text-sn-ink ${['bg-sn-tint-peach', 'bg-sn-tint-mint', 'bg-sn-tint-butter', 'bg-sn-tint-lilac'][index % 4]}`}>{u.short}</span>
                     <div>
                       <p className="text-sm font-bold font-nunito leading-tight text-sn-ink">{u.label}</p>
@@ -435,7 +435,7 @@ export default async function HomePage() {
           <p className="mx-auto mb-8 max-w-2xl text-white/60 font-nunito text-sm">Fees, seats and deadlines can change. Each college profile shows its source and last-checked date when available.</p>
           <div className="flex flex-wrap justify-center gap-3">
             <Button.Link href="/colleges" variant="primary">Browse colleges</Button.Link>
-            <Link href="/results" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-sn-control border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-bold font-nunito text-white transition-colors hover:bg-white/15">Check Results</Link>
+            <Link href="/results" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-sn-control border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-bold font-nunito text-white transition-colors hover:bg-white/15 motion-control">Check Results</Link>
           </div>
 
           <div className="mx-auto mt-12 max-w-md border-t border-white/10 pt-10 lg:mt-16 lg:pt-12">
