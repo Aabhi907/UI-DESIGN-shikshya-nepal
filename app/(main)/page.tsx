@@ -224,27 +224,14 @@ export default async function HomePage() {
               </h1>
 
               <p className="mb-8 max-w-2xl text-lg leading-8 font-nunito text-sn-ink-soft md:text-xl">
-                Verified colleges, courses and career pathways for +2 and university in Nepal. Every fact sourced and dated. No fake reviews, no guesswork.
+                Verified colleges, courses and career pathways for +2 and university in Nepal. Sourced, dated and unbiased.
               </p>
 
               <HeroSearch />
 
               <div className="mt-8 flex flex-wrap gap-3">
-                <Button.Link href="/tools/college-finder" variant="primary" className="shadow-[inset_0_1px_1px_rgba(255,255,255,0.35),0_4px_16px_rgba(224,102,58,0.3)]">Start your pathway<ArrowRight className="h-4 w-4 motion-arrow" aria-hidden="true" /></Button.Link>
-                <Button.Link href="/colleges" variant="secondary" className="border-black/[0.08] bg-white/80 shadow-[inset_0_1px_1px_rgba(255,255,255,0.9)]">Browse colleges</Button.Link>
-              </div>
-
-              <div className="mt-8">
-                <Link href="/colleges" className="apple-card group block p-5">
-                  <div className="flex items-start gap-3.5">
-                    <IconTile icon={GraduationCap} tint="peach" />
-                    <div>
-                      <p className="font-bold font-nunito text-sn-ink group-hover:text-sn-primary transition-colors">Planning after SEE or +2?</p>
-                      <p className="mt-1 text-xs leading-5 font-nunito text-sn-ink-soft">Explore +2, Bachelor, Master and diploma options.</p>
-                      <span className="mt-2 inline-flex items-center gap-1 text-xs font-bold font-nunito text-sn-primary">Find a college <ArrowRight className="h-3.5 w-3.5 motion-arrow" aria-hidden="true" /></span>
-                    </div>
-                  </div>
-                </Link>
+                <Button.Link href="/colleges" variant="primary" className="shadow-[inset_0_1px_1px_rgba(255,255,255,0.35),0_4px_16px_rgba(224,102,58,0.3)]">Find your college<ArrowRight className="h-4 w-4 motion-arrow" aria-hidden="true" /></Button.Link>
+                <Button.Link href="/programs" variant="secondary" className="border-black/[0.08] bg-white/80 shadow-[inset_0_1px_1px_rgba(255,255,255,0.9)]">Explore programs</Button.Link>
               </div>
             </div>
 
@@ -337,7 +324,7 @@ export default async function HomePage() {
           <div className="mt-8 lg:mt-10">
             <div className="flex items-end justify-between gap-4">
               <h3 className="font-baloo text-lg font-bold text-sn-ink">By university</h3>
-              <Link href="/colleges" className="text-sm font-bold font-nunito text-sn-primary hover:text-sn-primary-hover">All colleges</Link>
+              <Link href="/colleges" className="text-sm font-bold font-nunito text-sn-primary hover:text-sn-primary-hover">All affiliated colleges</Link>
             </div>
             <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4 lg:gap-6">
               {UNIVERSITY_SHOWCASE.map((u, index) => {
@@ -446,7 +433,7 @@ export default async function HomePage() {
                 Fees, seats and deadlines can change. Each college profile shows its source and last-checked date when available.
               </p>
               <div className="flex flex-wrap justify-center gap-3">
-                <Button.Link href="/colleges" variant="primary" className="shadow-[inset_0_1px_1px_rgba(255,255,255,0.35),0_4px_16px_rgba(224,102,58,0.3)]">Browse colleges</Button.Link>
+                <Button.Link href="/colleges" variant="primary" className="shadow-[inset_0_1px_1px_rgba(255,255,255,0.35),0_4px_16px_rgba(224,102,58,0.3)]">Search all institutions</Button.Link>
                 <Link href="/results" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-sn-control border border-sn-border bg-white px-5 py-2.5 text-sm font-bold font-nunito text-sn-ink transition-colors hover:bg-sn-surface-alt hover:text-sn-primary shadow-[inset_0_1px_1px_rgba(255,255,255,0.9)] motion-control">Check Results</Link>
               </div>
 
