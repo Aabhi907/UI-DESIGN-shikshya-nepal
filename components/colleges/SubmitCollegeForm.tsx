@@ -241,7 +241,7 @@ export default function SubmitCollegeForm() {
                 key={prog}
                 type="button"
                 onClick={() => toggleProgram(prog)}
-                className={`px-4 py-2 rounded-xl border text-sm font-semibold transition-all ${
+                className={`px-4 py-2 rounded-xl border text-sm font-semibold transition-[color,background-color,border-color,box-shadow,transform] ${
                   active
                     ? 'bg-[#1847c4] border-[#1847c4] text-white'
                     : 'bg-white border-gray-200 text-gray-600 hover:border-[#1847c4] hover:text-[#1847c4]'

@@ -31,7 +31,7 @@ export default function HeroSearch() {
       <form onSubmit={handleSubmit} role="search" aria-label="Search SikshyaNepal">
         <div className="flex items-stretch rounded-sn-card border-2 border-sn-border-strong bg-sn-surface overflow-hidden
                         shadow-sn-card focus-within:border-sn-primary focus-within:shadow-sn-float
-                        transition-all duration-150">
+                        transition-[border-color,box-shadow] duration-150">
           <div className="relative flex-1 flex items-center">
             <Search className="absolute left-4 w-5 h-5 text-sn-ink-muted pointer-events-none" aria-hidden="true" />
             <input
@@ -72,7 +72,7 @@ export default function HeroSearch() {
             className="inline-flex min-h-11 items-center px-3 rounded-sn-pill text-xs font-nunito font-medium text-sn-ink-soft
                        border border-sn-border
                        hover:border-sn-primary hover:bg-sn-primary-bg hover:text-sn-primary-hover
-                       transition-all duration-150"
+                       transition-[background-color,box-shadow,transform] duration-150 active:translate-y-px"
           >
             {tag.label}
           </Link>

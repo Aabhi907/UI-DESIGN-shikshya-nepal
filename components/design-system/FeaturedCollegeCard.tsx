@@ -32,7 +32,7 @@ export default function FeaturedCollegeCard({ college }: { college: College }) {
     <Link
       href={`/colleges/${college.slug}`}
       aria-label={`View ${college.name} college profile`}
-      className="group flex h-full flex-col overflow-hidden rounded-sn-card border border-sn-border bg-sn-surface shadow-sn-card transition-shadow hover:shadow-sn-float"
+      className="motion-interactive-card group flex h-full flex-col overflow-hidden rounded-sn-card border border-sn-border bg-sn-surface shadow-sn-card hover:shadow-sn-float"
     >
       <div className="relative h-32 flex-shrink-0 overflow-hidden bg-sn-surface-alt">
         {college.cover_url ? (

@@ -1,9 +1,10 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useRef, useState } from 'react'
 import Link from 'next/link'
 import { ChevronDown, SlidersHorizontal, X } from 'lucide-react'
 import { districtsForProvince, NEPAL_PROVINCES } from '@/lib/nepal-geography'
+import { useDialogFocus } from '@/components/motion'
 
 const LOCATIONS = ['Kathmandu', 'Pokhara', 'Chitwan', 'Biratnagar', 'Butwal', 'Other']
 const PROVINCES = NEPAL_PROVINCES
@@ -92,6 +93,8 @@ interface Props {
 
 export default function CollegeFilters({ searchParams, filteredCount }: Props) {
   const [open, setOpen] = useState(false)
+  const dialogRef = useRef<HTMLDivElement>(null)
+  const closeRef = useRef<HTMLButtonElement>(null)
   // "More filters" starts open whenever one of its own filters is already
   // active, so a student who arrived via a link never loses sight of it.
   const moreActive = Boolean(searchParams.district || searchParams.maxFee || searchParams.feePeriod || searchParams.faculty || searchParams.scholarship || searchParams.verified)
@@ -101,17 +104,7 @@ export default function CollegeFilters({ searchParams, filteredCount }: Props) {
   const activeCount = [searchParams.location, searchParams.province, searchParams.district, searchParams.affiliation, searchParams.faculty, searchParams.level, searchParams.maxFee, searchParams.feePeriod, searchParams.scholarship, searchParams.verified, searchParams.program].filter(Boolean).length
   const activeFilters = Object.entries(searchParams).filter(([key, value]) => !['q', 'sort', 'page'].includes(key) && Boolean(value))
 
-  useEffect(() => {
-    if (!open) return
-    const closeOnEscape = (event: KeyboardEvent) => { if (event.key === 'Escape') setOpen(false) }
-    document.addEventListener('keydown', closeOnEscape)
-    const previous = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-    return () => {
-      document.removeEventListener('keydown', closeOnEscape)
-      document.body.style.overflow = previous
-    }
-  }, [open])
+  useDialogFocus({ open, dialogRef, initialFocusRef: closeRef, onEscape: () => setOpen(false) })
 
   const pill = (isActive: boolean) =>
     `min-h-9 px-3 py-1.5 rounded-sn-pill text-xs font-bold font-nunito border transition-colors ${
@@ -218,8 +211,8 @@ export default function CollegeFilters({ searchParams, filteredCount }: Props) {
       {/* ── Mobile bottom sheet ── */}
       {open && (
         <div className="fixed inset-0 z-50 lg:hidden">
-          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setOpen(false)} />
-          <div role="dialog" aria-modal="true" aria-labelledby="college-filter-title" className="absolute bottom-0 left-0 right-0 max-h-[85vh] overflow-y-auto rounded-t-sn-card bg-sn-surface p-6">
+          <div className="motion-scrim-enter absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setOpen(false)} />
+          <div ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="college-filter-title" className="motion-sheet-enter absolute bottom-0 left-0 right-0 max-h-[85vh] overflow-y-auto rounded-t-sn-card bg-sn-surface p-6">
             <div className="mb-5 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <SlidersHorizontal className="h-5 w-5 text-sn-ink" />
@@ -231,7 +224,7 @@ export default function CollegeFilters({ searchParams, filteredCount }: Props) {
                     Clear all
                   </Link>
                 )}
-                <button onClick={() => setOpen(false)} aria-label="Close filters" className="flex h-11 w-11 items-center justify-center rounded-full bg-sn-surface-alt transition-colors hover:opacity-80">
+                <button ref={closeRef} onClick={() => setOpen(false)} aria-label="Close filters" className="motion-control flex h-11 w-11 items-center justify-center rounded-full bg-sn-surface-alt hover:opacity-80">
                   <X className="h-4 w-4" />
                 </button>
               </div>

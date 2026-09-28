@@ -68,7 +68,7 @@ export default function ProgramFinderPage() {
           </div>
           <div className="mt-6 flex items-center gap-3">
             <div className="h-2 flex-1 overflow-hidden rounded-full bg-sn-surface-alt" aria-label={`Step ${Math.min(step + 1, totalSteps)} of ${totalSteps}`}>
-              <div className="h-full rounded-full bg-sn-primary transition-all" style={{ width: `${(Math.min(step, questions.length) / questions.length) * 100}%` }} />
+              <div className="h-full rounded-full bg-sn-primary transition-[width] duration-200" style={{ width: `${(Math.min(step, questions.length) / questions.length) * 100}%` }} />
             </div>
             <span className="shrink-0 text-xs font-bold text-sn-ink-muted">{done ? 'Results' : `Step ${step + 1} of ${questions.length}`}</span>
           </div>

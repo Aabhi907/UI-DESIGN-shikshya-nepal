@@ -184,10 +184,10 @@ export default function Nav() {
   return (
     <>
       <header className="sticky top-0 z-50 px-5 pt-3 sm:px-8 sm:pt-4 lg:px-12">
-        <div className={`mx-auto flex h-16 max-w-7xl items-center justify-between rounded-full border border-sn-border bg-sn-surface/95 px-4 backdrop-blur transition-shadow duration-200 sm:px-6 ${scrolled ? 'shadow-sn-float' : 'shadow-sn-card'}`}>
+        <div className={`motion-header mx-auto flex h-16 max-w-[1500px] items-center justify-between rounded-full border border-sn-border bg-sn-surface/95 px-4 backdrop-blur sm:px-6 ${scrolled ? 'shadow-sn-float' : 'shadow-sn-card'}`}>
             <Wordmark />
 
-            <nav className="hidden xl:flex items-center gap-0.5">
+            <nav className="hidden min-[1400px]:flex items-center gap-0.5">
               {navLinks.map((link) => (
                 <div key={link.label} className="relative sn-nav-dropdown">
                   {link.sub ? (
@@ -216,7 +216,7 @@ export default function Nav() {
                   {link.sub && openDrop === link.label && (
                     <div className={`absolute top-full z-50 ${link.label === 'Updates' ? 'right-0' : 'left-0'}`}>
                       <div className="absolute -top-2 left-0 right-0 h-2 bg-transparent" />
-                      <div id={`sn-desktop-nav-${link.label.toLowerCase().replaceAll(' ', '-')}`} className="mt-1.5 max-h-[70vh] w-72 overflow-y-auto overscroll-contain rounded-sn-card border border-sn-border bg-sn-surface py-2 shadow-sn-float">
+                      <div id={`sn-desktop-nav-${link.label.toLowerCase().replaceAll(' ', '-')}`} className="motion-menu-enter mt-1.5 max-h-[70vh] w-72 overflow-y-auto overscroll-contain rounded-sn-card border border-sn-border bg-sn-surface py-2 shadow-sn-float">
                         {link.sub.map((s, index) => (
                           <div key={s.label}>
                             {s.group && (index === 0 || link.sub![index - 1].group !== s.group) && (
@@ -234,7 +234,7 @@ export default function Nav() {
               ))}
             </nav>
 
-            <div className="hidden xl:flex items-center gap-2">
+            <div className="hidden min-[1400px]:flex items-center gap-2">
               <button onClick={() => window.dispatchEvent(new Event('open-site-search'))} className="inline-flex items-center gap-2 rounded-sn-control border border-sn-border-strong px-3 py-2 text-sm font-bold font-nunito text-sn-ink-soft hover:border-sn-primary hover:text-sn-primary" aria-label="Search SikshyaNepal">
                 <Search className="h-4 w-4" /><span className="hidden xl:inline">Search</span><kbd className="hidden rounded border border-sn-border px-1.5 py-0.5 text-[10px] text-sn-ink-muted xl:inline">⌘K</kbd>
               </button>
@@ -245,7 +245,7 @@ export default function Nav() {
               </Link>
             </div>
 
-            <div className="flex items-center gap-1 xl:hidden">
+            <div className="flex items-center gap-1 min-[1400px]:hidden">
               <SubscribeButton variant="header" />
               <button
                 ref={mobileTriggerRef}
@@ -266,9 +266,9 @@ export default function Nav() {
       </header>
 
       {mobileOpen && (
-        <div id="sn-mobile-site-navigation" className="fixed inset-0 z-[300] xl:hidden" role="dialog" aria-modal="true" aria-label="Site navigation">
-          <div className="absolute inset-0 bg-sn-ink/40" onClick={() => closeMobileMenu(true)} />
-          <div ref={mobileDialogRef} className="absolute inset-y-0 right-0 flex w-[min(100%,24rem)] flex-col bg-sn-ground shadow-sn-float">
+        <div id="sn-mobile-site-navigation" className="fixed inset-0 z-[300] min-[1400px]:hidden" role="dialog" aria-modal="true" aria-label="Site navigation">
+          <div className="motion-scrim-enter absolute inset-0 bg-sn-ink/40" onClick={() => closeMobileMenu(true)} />
+          <div ref={mobileDialogRef} className="motion-drawer-enter absolute inset-y-0 right-0 flex w-[min(100%,24rem)] flex-col bg-sn-ground shadow-sn-float">
             <div className="flex items-center justify-between px-5 h-16 border-b border-sn-border flex-shrink-0">
               <Wordmark />
               <button ref={mobileCloseRef} type="button" onClick={() => closeMobileMenu(true)} aria-label="Close navigation menu" className="flex h-11 w-11 items-center justify-center rounded-sn-control text-sn-ink-soft hover:bg-sn-surface-alt">

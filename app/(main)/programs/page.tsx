@@ -190,7 +190,7 @@ export default async function ProgramsPage({ searchParams }: { searchParams: { f
               })()}
               <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                 {progs.map((prog) => (
-                  <div key={prog.id} className="group rounded-sn-control border border-sn-border bg-sn-surface p-4 transition-colors duration-150 hover:border-sn-primary/40">
+                  <div key={prog.id} className="motion-interactive-card group rounded-sn-control border border-sn-border bg-sn-surface p-4 hover:border-sn-primary/40">
                     <div className="flex items-start justify-between gap-3">
                       <Link href={`/programs/${prog.slug}`} className="min-w-0 flex-1">
                         <h3 className="text-sm font-bold text-sn-ink transition-colors group-hover:text-sn-primary">{prog.name}</h3>

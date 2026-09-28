@@ -73,7 +73,7 @@ export default function CollegeCard({ college, matchReasons = [] }: CollegeCardP
   return (
     <article className="group h-full">
       <div
-        className={`flex h-full flex-col overflow-hidden rounded-sn-card border bg-sn-surface shadow-sn-card transition-shadow hover:shadow-sn-float
+        className={`motion-interactive-card flex h-full flex-col overflow-hidden rounded-sn-card border bg-sn-surface shadow-sn-card hover:shadow-sn-float
                     ${isSponsored ? 'border-sn-confirm/40' : college.is_featured ? 'border-sn-primary/30' : 'border-sn-border'}`}
       >
         <Link href={`/colleges/${college.slug}`} aria-label={`View ${college.name} college profile`} className="block">
