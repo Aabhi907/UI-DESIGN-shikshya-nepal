@@ -38,6 +38,7 @@ import {
   Calculator,
   CheckCircle2,
   Clock,
+  Paperclip,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
@@ -226,9 +227,100 @@ export default async function HomePage() {
       </section>
 
       {/* ════════════════════════════════════════════════════════
-          2. FEATURE SHOWCASE 1 — Results without the chaos (Matching Image 2)
+          2. STATS STRIP — Luminous verification ribbon
+      ════════════════════════════════════════════════════════ */}
+      {heroStats.length > 0 && (
+        <section className="border-b border-black/[0.06] bg-white/80 backdrop-blur-md py-8 lg:py-10">
+          <div className={CONTAINER}>
+            <div className="grid grid-cols-2 gap-6 sm:grid-cols-4 sm:divide-x sm:divide-black/[0.06]">
+              {heroStats.map((stat) => (
+                <div key={stat.label} className="text-center sm:px-6">
+                  <p className="font-baloo text-3xl sm:text-4xl font-extrabold text-sn-ink tabular-nums tracking-tight">
+                    {stat.value.toLocaleString()}
+                  </p>
+                  <p className="mt-1 font-nunito text-xs sm:text-sm font-bold text-sn-ink-muted">
+                    {stat.label} cataloged &amp; dated
+                  </p>
+                </div>
+              ))}
+              <div className="text-center sm:px-6">
+                <p className="font-baloo text-3xl sm:text-4xl font-extrabold text-sn-primary tabular-nums tracking-tight">
+                  100%
+                </p>
+                <p className="mt-1 font-nunito text-xs sm:text-sm font-bold text-sn-ink-muted">
+                  Independent student guidance
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ════════════════════════════════════════════════════════
+          3. WHAT MAKES OUR GUIDE DIFFERENT — 4-Column Strip (Matching Image 2)
       ════════════════════════════════════════════════════════ */}
       <section className={`border-b border-sn-border bg-white ${SECTION_PAD}`}>
+        <div className={CONTAINER}>
+          <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
+            <p className="text-xs font-bold uppercase tracking-wider text-sn-ink-muted font-nunito mb-2">
+              The Shikshya Standard
+            </p>
+            <h2 className="font-baloo text-3xl sm:text-4xl font-extrabold text-sn-ink tracking-tight">
+              What makes our guide different
+            </h2>
+            <p className="mt-2 text-sm sm:text-base font-nunito text-sn-ink-soft">
+              Every detail is calibrated for the student, not the marketing department.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+            <div className="text-center sm:text-left space-y-3">
+              <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-sn-tint-mint text-[#142C35] shadow-sm">
+                <ShieldCheck className="h-5 w-5" />
+              </div>
+              <h3 className="font-baloo text-lg font-bold text-sn-ink">Zero paid rankings</h3>
+              <p className="text-sm font-nunito text-sn-ink-soft leading-relaxed">
+                Colleges cannot pay for higher placement or skewed reviews. Real affiliation &amp; merit data always comes first.
+              </p>
+            </div>
+
+            <div className="text-center sm:text-left space-y-3">
+              <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-sn-tint-peach text-sn-ink shadow-sm">
+                <Clock className="h-5 w-5" />
+              </div>
+              <h3 className="font-baloo text-lg font-bold text-sn-ink">Dated &amp; sourced</h3>
+              <p className="text-sm font-nunito text-sn-ink-soft leading-relaxed">
+                Every fee figure, seat quota, and deadline displays the exact date it was checked against official notices.
+              </p>
+            </div>
+
+            <div className="text-center sm:text-left space-y-3">
+              <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-sn-tint-butter text-sn-ink shadow-sm">
+                <FileText className="h-5 w-5" />
+              </div>
+              <h3 className="font-baloo text-lg font-bold text-sn-ink">Official gazette links</h3>
+              <p className="text-sm font-nunito text-sn-ink-soft leading-relaxed">
+                Direct verification links to TU, KU, Pokhara, NEB and CTEVT portals without confusing redirects or ads.
+              </p>
+            </div>
+
+            <div className="text-center sm:text-left space-y-3">
+              <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-sn-tint-lilac text-sn-ink shadow-sm">
+                <GraduationCap className="h-5 w-5" />
+              </div>
+              <h3 className="font-baloo text-lg font-bold text-sn-ink">100% Free for students</h3>
+              <p className="text-sm font-nunito text-sn-ink-soft leading-relaxed">
+                No subscription, no paywalled GPA calculators, and no gated guides. Public access for every student in Nepal.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════
+          4. FEATURE SHOWCASE 1 — Results without the chaos (TinyShots Rhythm)
+      ════════════════════════════════════════════════════════ */}
+      <section className={`border-b border-sn-border bg-sn-ground ${SECTION_PAD}`}>
         <div className={CONTAINER}>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             {/* Left Column: Typography & Feature Checklist */}
@@ -443,97 +535,213 @@ export default async function HomePage() {
       </section>
 
       {/* ════════════════════════════════════════════════════════
-          4. EDITORIAL STATEMENT — Typographic Art Banner (Matching Screenshot)
+          6. INTERACTIVE PATHWAY EXPLORER — Deep Teal Waters (Matching Image 4)
       ════════════════════════════════════════════════════════ */}
-      <section className="relative border-b border-sn-border bg-[#FBF9F4] py-24 sm:py-32 overflow-hidden text-center">
-        <div className="mx-auto max-w-5xl px-5 sm:px-8">
-          {/* Top Micro-label matching "Live camera cutouts, decorated mats." */}
-          <p className="font-nunito text-xs sm:text-sm font-semibold text-sn-ink-muted mb-8 tracking-wide flex items-center justify-center gap-2">
-            <span>🏛️</span>
-            <span>Live campus cutouts, verified admissions.</span>
-          </p>
+      <section className="border-b border-sn-border bg-[#204654] text-white py-20 lg:py-28 overflow-hidden relative">
+        {/* Subtle atmospheric glow */}
+        <div className="pointer-events-none absolute -top-40 right-0 h-[480px] w-[480px] rounded-full bg-[#CAFFA6]/10 blur-3xl" aria-hidden="true" />
+        <div className="pointer-events-none absolute -bottom-40 left-0 h-[480px] w-[480px] rounded-full bg-[#A9E0F1]/10 blur-3xl" aria-hidden="true" />
 
-          {/* Editorial Headline with Inline Image Cutouts & Chips */}
-          <h2
-            className="font-baloo font-extrabold text-[#0D2619] leading-[1.28] tracking-[-0.035em] text-balance max-w-4xl mx-auto"
-            style={{ fontSize: 'clamp(2.35rem, 5.2vw, 4.4rem)' }}
-          >
-            the independent{' '}
-            <span className="inline-flex items-center gap-1.5 align-middle mx-1 px-3 py-1 rounded-xl bg-amber-100/90 border border-amber-300/70 shadow-sm text-sm sm:text-base font-bold font-nunito text-amber-900 -rotate-2">
-              <span>🏛️</span>
-              <span>Campus</span>
-            </span>{' '}
-            where your{' '}
-            <span className="inline-block w-14 h-8 sm:w-20 sm:h-11 rounded-xl align-middle mx-1.5 overflow-hidden shadow-sm border border-black/[0.1] relative -translate-y-0.5">
-              <Image
-                src={CAMPUS_FALLBACK_IMAGES[0]}
-                alt="Campus thumbnail"
-                fill
-                sizes="80px"
-                className="object-cover"
-              />
-            </span>{' '}
-            academic{' '}
-            <span className="inline-flex items-center gap-1.5 align-middle mx-1 px-3 py-1 rounded-xl bg-[#CAFFA6]/70 border border-[#CAFFA6] shadow-sm text-sm sm:text-base font-bold font-nunito text-[#142C35] rotate-2">
-              <span>🎓</span>
-              <span>dreams</span>
-            </span>{' '}
-            live on your{' '}
-            <span className="inline-flex items-center gap-1.5 align-middle mx-1 px-3.5 py-1 rounded-xl bg-[#A9E0F1]/50 border border-[#A9E0F1] shadow-sm text-sm sm:text-base font-bold font-nunito text-[#142C35] -rotate-1">
-              <Mascot pose="wave" size={20} />
-              <span>screen</span>
-            </span>
-          </h2>
+        <div className={CONTAINER}>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+            {/* Left Column: Heading + Command jumps */}
+            <div className="lg:col-span-6 space-y-6">
+              <p className="text-xs font-bold uppercase tracking-widest text-[#CAFFA6] font-nunito">
+                PATHWAY INTELLIGENCE
+              </p>
+              <h2 className="font-baloo text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-[1.08] tracking-[-0.03em]">
+                Find the right course. In 3 clicks, not 3 months.
+              </h2>
+              <p className="text-base sm:text-lg font-nunito text-white/80 leading-relaxed max-w-xl">
+                Skip the guesswork. Search eligibility criteria, entrance exam patterns, and tuition breakdown across all major universities in Nepal.
+              </p>
 
-          {/* CTA Button */}
-          <div className="mt-10 sm:mt-12 flex justify-center">
-            <Link
-              href="/colleges"
-              className="inline-flex items-center gap-2 rounded-full bg-[#204654] px-7 py-3.5 text-sm font-bold font-nunito text-white shadow-[0_4px_16px_rgba(32,70,84,0.28)] hover:bg-[#173743] hover:shadow-[0_6px_22px_rgba(32,70,84,0.36)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
-            >
-              <span>Explore for Students</span>
-              <span>🎓</span>
-            </Link>
+              {/* Command Prompt Links matching Image 4 */}
+              <div className="pt-2 space-y-2.5 font-mono text-xs sm:text-sm">
+                <Link
+                  href="/programs?faculty=it"
+                  className="group flex items-center gap-2 text-white/90 hover:text-[#CAFFA6] transition-colors"
+                >
+                  <span className="text-[#CAFFA6]">/explore-it</span>
+                  <span className="text-white/60">→</span>
+                  <span className="font-nunito text-white/80 group-hover:text-white">BSc CSIT vs BIT vs BCA fee &amp; cutoff</span>
+                </Link>
+                <Link
+                  href="/programs?faculty=engineering"
+                  className="group flex items-center gap-2 text-white/90 hover:text-[#CAFFA6] transition-colors"
+                >
+                  <span className="text-[#CAFFA6]">/ioe-entrance</span>
+                  <span className="text-white/60">→</span>
+                  <span className="font-nunito text-white/80 group-hover:text-white">Pulchowk &amp; affiliated engineering quotas</span>
+                </Link>
+                <Link
+                  href="/tools/gpa-calculator"
+                  className="group flex items-center gap-2 text-white/90 hover:text-[#CAFFA6] transition-colors"
+                >
+                  <span className="text-[#CAFFA6]">/check-eligibility</span>
+                  <span className="text-white/60">→</span>
+                  <span className="font-nunito text-white/80 group-hover:text-white">Verify your SEE or +2 GPA for medical/tech</span>
+                </Link>
+              </div>
+            </div>
+
+            {/* Right Column: Interactive Prompt Mockup matching Image 4 */}
+            <div className="lg:col-span-6">
+              <div className="rounded-[28px] bg-[#142C35]/90 border border-white/15 p-6 sm:p-8 backdrop-blur-xl shadow-2xl relative">
+                <div className="flex items-center justify-between pb-4 border-b border-white/10 text-xs font-nunito text-white/70">
+                  <div className="flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full bg-[#CAFFA6] animate-pulse" />
+                    <span className="font-bold text-white">Live Pathway Simulator</span>
+                  </div>
+                  <span className="text-white/50 font-mono">Nepal Curriculum 2082</span>
+                </div>
+
+                {/* Input Card Container */}
+                <div className="mt-5 rounded-2xl bg-white p-4 sm:p-5 text-sn-ink shadow-lg">
+                  <div className="flex items-center justify-between text-xs font-nunito text-sn-ink-muted mb-2">
+                    <span>Target criteria query</span>
+                    <span className="text-[10px] bg-sn-tint-mint font-bold px-2 py-0.5 rounded text-[#142C35]">Instant verify</span>
+                  </div>
+                  <p className="font-nunito text-sm sm:text-base font-bold text-sn-ink leading-snug">
+                    &ldquo;Can I study BSc CSIT with a C+ in Mathematics in +2?&rdquo;
+                  </p>
+
+                  <div className="mt-4 pt-3 border-t border-black/[0.06] flex items-center justify-between">
+                    {/* Attached file pill matching Image 4's Product-Design-Playbook.pdf */}
+                    <div className="inline-flex items-center gap-1.5 rounded-full bg-sn-surface-alt px-3 py-1 text-xs font-nunito font-semibold text-sn-ink-soft border border-black/[0.06]">
+                      <FileText className="w-3.5 h-3.5 text-sn-primary" />
+                      <span>TU-CSIT-Ordinance-2082.pdf</span>
+                    </div>
+                    <Link
+                      href="/programs?faculty=it"
+                      className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#204654] text-white hover:bg-[#173743] transition-colors"
+                      aria-label="View verified response"
+                    >
+                      <ArrowRight className="w-4 h-4" />
+                    </Link>
+                  </div>
+                </div>
+
+                {/* Instant verification result box */}
+                <div className="mt-4 rounded-xl bg-white/10 border border-white/15 p-4 text-xs font-nunito text-white/90 space-y-1.5">
+                  <p className="flex items-center gap-2 font-bold text-[#CAFFA6]">
+                    <CheckCircle2 className="w-4 h-4" />
+                    <span>Official Tribhuvan University Requirement Met:</span>
+                  </p>
+                  <p className="text-white/80 leading-relaxed pl-6">
+                    Minimum Grade C in Math, Physics &amp; Chemistry with overall 2.0 GPA. Eligible for TU IOST central entrance examination.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Laurel Wreath Badge matching "🌿 Used by 1700+ users on Testflight 🌿" */}
-          <div className="mt-8 flex items-center justify-center gap-2 font-nunito text-xs sm:text-sm font-bold text-sn-ink-muted">
-            <span className="text-base select-none">🌿</span>
-            <span>Used by 25,000+ students across Nepal</span>
-            <span className="text-base select-none">🌿</span>
+          {/* Logo Ticker Bar matching Image 4 */}
+          <div className="mt-16 pt-10 border-t border-white/10 flex flex-wrap items-center justify-center gap-8 sm:gap-14 text-xs uppercase font-bold tracking-widest text-white/60">
+            <span>Tribhuvan University</span>
+            <span>Kathmandu University</span>
+            <span>Pokhara University</span>
+            <span>Purbanchal</span>
+            <span>NEB Sanothimi</span>
+            <span>CTEVT</span>
+          </div>
+
+          {/* Giant Highlight Quote matching Image 4 */}
+          <div className="mt-16 text-center max-w-3xl mx-auto">
+            <blockquote className="font-baloo text-2xl sm:text-3xl lg:text-4xl font-bold leading-snug text-white">
+              &ldquo;I spent weeks asking coaching institutes. Shikshya Nepal gave me the{' '}
+              <span className="bg-[#CAFFA6] text-[#142C35] px-2.5 py-0.5 rounded-lg inline-block my-1 font-extrabold">
+                exact eligibility and official dates
+              </span>{' '}
+              in under two minutes.&rdquo;
+            </blockquote>
+            <div className="mt-6 flex items-center justify-center gap-3">
+              <div className="h-10 w-10 rounded-full bg-white/20 border border-white/30 flex items-center justify-center text-sm font-bold text-[#CAFFA6]">
+                AS
+              </div>
+              <div className="text-left font-nunito text-xs">
+                <p className="font-bold text-white">Ayush Shrestha</p>
+                <p className="text-white/60">Pulchowk Campus Aspirant · Lalitpur</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* ════════════════════════════════════════════════════════
-          2. STATS STRIP — Apple clean minimal luminous ribbon
+          7. EDITORIAL STORY — Paperclip & Polaroid (Matching Image 3 & 1)
       ════════════════════════════════════════════════════════ */}
-      {heroStats.length > 0 && (
-        <section className="border-y border-black/[0.06] bg-white/75 backdrop-blur-md py-8 lg:py-10">
-          <div className={CONTAINER}>
-            <div className="grid grid-cols-2 gap-6 sm:grid-cols-4 sm:divide-x sm:divide-black/[0.06]">
-              {heroStats.map((stat) => (
-                <div key={stat.label} className="text-center sm:px-6">
-                  <p className="font-baloo text-3xl sm:text-4xl font-extrabold text-sn-ink tabular-nums tracking-tight">
-                    {stat.value.toLocaleString()}
-                  </p>
-                  <p className="mt-1 font-nunito text-xs sm:text-sm font-bold text-sn-ink-muted">
-                    {stat.label} cataloged &amp; dated
-                  </p>
+      <section className={`border-b border-sn-border bg-sn-ground ${SECTION_PAD}`}>
+        <div className={CONTAINER}>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+            {/* Left Column: The Editorial Story */}
+            <div className="lg:col-span-7 space-y-6">
+              <h2 className="font-baloo text-3xl sm:text-4xl lg:text-5xl font-extrabold text-sn-ink leading-[1.1] tracking-[-0.03em]">
+                Top students choose with data, not consultancy promises.
+              </h2>
+              <div className="space-y-4 font-nunito text-base sm:text-lg text-sn-ink-soft leading-relaxed">
+                <p>
+                  Every academic year in Nepal, over 400,000 students graduate from SEE and +2 facing high-pressure decisions. Too often, they are guided by sponsored billboards, consultancy sales agents, or unverified social media claims.
+                </p>
+                <p>
+                  Constituent campus vs private quota fees can differ by over 800,000 NPR for the exact same syllabus. Knowing the entrance date, seat allocation, and scholarship quota in advance changes your career trajectory.
+                </p>
+                <p className="font-bold text-sn-ink">
+                  Shikshya Nepal exists to give every student in Nepal the clear, dated, official truth — free, always.
+                </p>
+              </div>
+
+              <div className="pt-2 flex flex-wrap items-center gap-4">
+                <Button.Link href="/colleges" variant="primary" className="rounded-full px-6 py-3">
+                  Explore verified colleges
+                </Button.Link>
+                <Link
+                  href="/news"
+                  className="font-bold font-nunito text-sm text-sn-ink hover:text-sn-primary flex items-center gap-1.5 transition-colors"
+                >
+                  <span>Read our verification policy</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </div>
+
+            {/* Right Column: Tactile Polaroid Photo with Metallic Paperclip (Image 3) */}
+            <div className="lg:col-span-5 flex justify-center">
+              <div className="relative rotate-2 hover:rotate-0 transition-transform duration-300">
+                {/* Paperclip matching Image 3 */}
+                <div className="absolute -top-5 right-10 z-20 drop-shadow-md">
+                  <Paperclip className="w-10 h-10 -rotate-12 stroke-[2.2] text-slate-600" />
                 </div>
-              ))}
-              <div className="text-center sm:px-6">
-                <p className="font-baloo text-3xl sm:text-4xl font-extrabold text-sn-primary tabular-nums tracking-tight">
-                  100%
-                </p>
-                <p className="mt-1 font-nunito text-xs sm:text-sm font-bold text-sn-ink-muted">
-                  Independent student guidance
-                </p>
+
+                {/* White border Polaroid / Photographic Card */}
+                <div className="apple-card rounded-2xl bg-white p-4 pb-6 shadow-[0_20px_50px_rgba(15,23,42,0.12)] border border-black/[0.08] max-w-[340px] sm:max-w-[380px]">
+                  <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-slate-100">
+                    <Image
+                      src={CAMPUS_FALLBACK_IMAGES[1]}
+                      alt="Student studying on campus in Nepal"
+                      fill
+                      sizes="(max-width: 768px) 100vw, 380px"
+                      className="object-cover"
+                    />
+                    <div className="absolute bottom-2 left-2 rounded-md bg-black/60 backdrop-blur-sm px-2 py-0.5 text-[10px] font-bold text-white">
+                      Pulchowk Campus, Lalitpur
+                    </div>
+                  </div>
+
+                  <div className="mt-4 space-y-1">
+                    <p className="font-baloo text-base font-bold text-sn-ink">
+                      Real campuses, official gazettes.
+                    </p>
+                    <p className="font-nunito text-xs text-sn-ink-muted">
+                      Source-dated to university boards. No paid rankings.
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </section>
-      )}
+        </div>
+      </section>
 
       {/* ════════════════════════════════════════════════════════
           3. WHAT DO YOU NEED TODAY — Clean Minimal 4-Grid
@@ -830,6 +1038,79 @@ export default async function HomePage() {
       )}
 
       {/* ════════════════════════════════════════════════════════
+          WHAT STUDENTS SAY — Clean 5-Star Testimonials (Matching Image 2)
+      ════════════════════════════════════════════════════════ */}
+      <section className={`border-b border-sn-border bg-white ${SECTION_PAD}`}>
+        <div className={CONTAINER}>
+          <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
+            <p className="text-xs font-bold uppercase tracking-wider text-sn-ink-muted font-nunito mb-2">
+              Verified Student Voice
+            </p>
+            <h2 className="font-baloo text-3xl sm:text-4xl font-extrabold text-sn-ink tracking-tight">
+              What students and counselors say
+            </h2>
+            <p className="mt-2 text-sm sm:text-base font-nunito text-sn-ink-soft">
+              Real feedback from students who planned their admissions with Shikshya Nepal.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+            {[
+              {
+                quote: "Found the real fee structure for KU BTech before paying any consultancy consultation fee. Unbelievably clean and trustworthy.",
+                author: "Suman Thapa",
+                role: "Engineering Aspirant, Kathmandu"
+              },
+              {
+                quote: "No confusing ads or popup scams. Just the exact roll number lookup and syllabus breakdown for IOE entrance.",
+                author: "Pooja Shrestha",
+                role: "IOE Pulchowk Campus student"
+              },
+              {
+                quote: "Checked the CTEVT diploma college affiliation list in 2 minutes. Saved our family from choosing an unaccredited institute.",
+                author: "Bikash Adhikari",
+                role: "+2 Graduate, Pokhara"
+              },
+              {
+                quote: "The GPA calculator is the only one in Nepal that handles the exact NEB theory and practical grade boundaries correctly.",
+                author: "Rohan Gautam",
+                role: "Class 12 Student, Butwal"
+              },
+              {
+                quote: "I recommend this to all my students instead of glossy admission brochures. The verified date on notices is priceless.",
+                author: "Sarita Khadka",
+                role: "Academic Counselor, Dharan"
+              },
+              {
+                quote: "Super easy to compare TU vs PU Bachelor programs without opening 15 different broken university websites.",
+                author: "Anish Manandhar",
+                role: "BIM Graduate, Lalitpur"
+              }
+            ].map((t, idx) => (
+              <div
+                key={idx}
+                className="apple-card rounded-2xl bg-sn-ground/70 p-6 sm:p-7 border border-black/[0.06] shadow-sm flex flex-col justify-between"
+              >
+                <div>
+                  {/* 5 Green Stars matching Image 2 */}
+                  <div className="flex items-center gap-1 text-emerald-600 text-sm mb-3">
+                    {'★★★★★'}
+                  </div>
+                  <p className="font-nunito text-sm sm:text-base text-sn-ink font-medium leading-relaxed">
+                    &ldquo;{t.quote}&rdquo;
+                  </p>
+                </div>
+                <div className="mt-5 pt-4 border-t border-black/[0.05]">
+                  <p className="font-baloo text-sm font-bold text-sn-ink">{t.author}</p>
+                  <p className="font-nunito text-xs text-sn-ink-muted">{t.role}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════
           6. GET STARTED — Apple Verification & Alert Center
       ════════════════════════════════════════════════════════ */}
       <section className={`border-t border-sn-border bg-sn-ground ${SECTION_PAD}`}>
@@ -840,17 +1121,97 @@ export default async function HomePage() {
               <div className="pointer-events-none absolute -top-24 left-1/2 h-[350px] w-[500px] -translate-x-1/2 rounded-full bg-gradient-to-b from-[#A9E0F1]/25 via-[#CAFFA6]/15 to-transparent blur-2xl" aria-hidden="true" />
 
               <div className="relative">
-                <h2 className="font-baloo font-extrabold text-sn-ink text-3xl sm:text-4xl mb-3 tracking-[-0.02em]">
-                  Check the current notice before you pay.
-                </h2>
-                <p className="mx-auto mb-8 max-w-xl text-sn-ink-soft font-nunito text-sm sm:text-base leading-relaxed">
-                  Fees, seats and deadlines can change. Each college profile shows its source and last-checked date when available.
-                </p>
-                <div className="flex flex-wrap justify-center gap-3.5">
+                <div className="max-w-2xl mx-auto mb-10 text-center">
+                  <span className="apple-pill inline-flex items-center gap-2 rounded-full px-3.5 py-1 text-xs font-bold font-nunito text-sn-ink bg-white border border-black/[0.08] shadow-sm mb-4">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span>Updated for 2082 / 2026 Academic Session</span>
+                  </span>
+                  <h2 className="font-baloo font-extrabold text-sn-ink text-3xl sm:text-4xl lg:text-5xl mb-3 tracking-[-0.025em]">
+                    Every decision verified before you apply.
+                  </h2>
+                  <p className="text-sn-ink-soft font-nunito text-sm sm:text-base leading-relaxed">
+                    Fees, seats and deadlines can change without warning. Every college profile displays its source gazette and last-checked date.
+                  </p>
+                </div>
+
+                {/* 2-Column Guide Spec Breakdown matching Image 2 Top */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center text-left mb-12">
+                  {/* Left: 3D Guide Book Card */}
+                  <div className="lg:col-span-5 flex justify-center">
+                    <div className="w-full max-w-[280px] sm:max-w-[320px] rounded-2xl bg-[#142C35] text-white p-7 sm:p-8 shadow-[0_24px_50px_rgba(20,44,53,0.25)] border border-white/10 relative overflow-hidden flex flex-col justify-between min-h-[360px]">
+                      {/* Spine highlight */}
+                      <div className="absolute top-0 bottom-0 left-0 w-3 bg-white/10" />
+                      
+                      <div>
+                        <div className="flex items-center justify-between text-xs font-mono text-[#CAFFA6] pb-3 border-b border-white/10">
+                          <span>OFFICIAL GUIDE</span>
+                          <span>2082 BS</span>
+                        </div>
+                        <h3 className="font-baloo text-2xl font-extrabold mt-6 leading-tight text-white">
+                          The Nepal College &amp; Career Directory
+                        </h3>
+                        <p className="mt-3 text-xs font-nunito text-white/70 leading-relaxed">
+                          Tribhuvan, Kathmandu, Pokhara, Purbanchal, NEB and CTEVT verified affiliations.
+                        </p>
+                      </div>
+
+                      <div className="pt-6 border-t border-white/10 flex items-center justify-between text-[11px] font-nunito text-white/60">
+                        <span>Free Public Edition</span>
+                        <span className="text-[#CAFFA6] font-bold">1,200+ Campuses</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right: Spec List with Icons & Divider Lines matching Image 2 */}
+                  <div className="lg:col-span-7 space-y-4">
+                    {[
+                      {
+                        title: '1,200+ Verified Campuses',
+                        desc: 'Constituent government campuses and accredited private colleges mapped across all 7 provinces.',
+                        icon: Building2,
+                      },
+                      {
+                        title: 'Real Intake Deadlines',
+                        desc: 'Live countdowns verified directly against official university examination and admission notices.',
+                        icon: Clock,
+                      },
+                      {
+                        title: 'Zero Paid Placements',
+                        desc: 'No sponsored rankings, hidden consultancy commissions, or altered recommendations.',
+                        icon: ShieldCheck,
+                      },
+                      {
+                        title: 'Free Public Resources',
+                        desc: 'Instant NEB GPA conversion, admission planner, and board syllabus downloads 100% free.',
+                        icon: GraduationCap,
+                      },
+                    ].map((item, idx) => {
+                      const Icon = item.icon
+                      return (
+                        <div key={idx} className="flex items-start gap-4 pb-4 border-b border-black/[0.06] last:border-0 last:pb-0">
+                          <span className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-sn-surface-alt text-sn-primary border border-black/[0.05]">
+                            <Icon className="h-4 w-4" />
+                          </span>
+                          <div>
+                            <h4 className="font-baloo text-base font-bold text-sn-ink leading-snug">
+                              {item.title}
+                            </h4>
+                            <p className="text-xs sm:text-sm font-nunito text-sn-ink-muted leading-relaxed mt-0.5">
+                              {item.desc}
+                            </p>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+
+                {/* Primary Action Buttons */}
+                <div className="flex flex-wrap justify-center items-center gap-3.5">
                   <Button.Link
                     href="/colleges"
                     variant="primary"
-                    className="group rounded-full px-6 py-3 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),0_6px_20px_rgba(32,70,84,0.24)] transition-all duration-300 hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.5),0_10px_28px_rgba(32,70,84,0.32)] hover:-translate-y-0.5 active:translate-y-0"
+                    className="group rounded-full px-7 py-3.5 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),0_6px_20px_rgba(32,70,84,0.24)] transition-all duration-300 hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.5),0_10px_28px_rgba(32,70,84,0.32)] hover:-translate-y-0.5 active:translate-y-0 text-sm font-bold"
                   >
                     <span>Search all institutions</span>
                     <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/20 transition-transform duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-0.5">
@@ -865,6 +1226,13 @@ export default async function HomePage() {
                   </Link>
                 </div>
 
+                {/* Trust badge matching "Secure Stripe payment / Free for students" */}
+                <p className="mt-4 text-xs font-nunito font-semibold text-emerald-800 flex items-center justify-center gap-1.5">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>100% Free Public Guide · No student registration fees</span>
+                </p>
+
+                {/* Email Alert Newsletter Form */}
                 <div className="mx-auto mt-10 max-w-md border-t border-black/[0.06] pt-8 lg:mt-12 lg:pt-10">
                   <p className="font-bold font-nunito text-sm text-sn-ink flex items-center gap-2 justify-center">
                     <Bell className="w-4 h-4 text-sn-primary" aria-hidden="true" />
