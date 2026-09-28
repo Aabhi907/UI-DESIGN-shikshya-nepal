@@ -263,7 +263,7 @@ export default function SubmitCollegeForm() {
         <textarea
           value={form.description}
           onChange={(e) => set('description', e.target.value.slice(0, 500))}
-          placeholder="Brief description — programs offered, facilities, hostel availability, notable achievements, entrance requirements..."
+          placeholder="Brief description: programs offered, facilities, hostel availability, notable achievements, entrance requirements..."
           rows={4}
           className={fieldClass() + ' resize-none'}
         />
@@ -276,7 +276,7 @@ export default function SubmitCollegeForm() {
           About You
         </h2>
         <p className="text-sm text-gray-400 mb-6">
-          We keep this private — it&apos;s only used to follow up if we need more details.
+          We keep this private. It&apos;s only used to follow up if we need more details.
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">

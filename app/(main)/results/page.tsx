@@ -142,7 +142,7 @@ export default async function ResultsPage({
             </div>
             <h3 className="text-base font-semibold text-sn-ink mb-2">Results could not be loaded</h3>
             <p className="text-sm text-sn-ink-soft mb-6 max-w-xs mx-auto">
-              This is a temporary problem, not an empty list. Your filters are safe — please try again.
+              This is a temporary problem, not an empty list. Your filters are safe. Please try again.
             </p>
             <Button.Link href={currentUrl}>
               <RefreshCcw className="w-4 h-4" />

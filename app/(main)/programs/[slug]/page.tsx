@@ -146,7 +146,7 @@ export default async function ProgramDetailPage({ params }: { params: { slug: st
         <Card>
           <CircleDollarSign className="h-5 w-5 text-sn-verified" />
           <h2 className="mt-3 font-baloo font-bold text-sn-ink">Published fee range</h2>
-          <p className="mt-2 text-sm font-nunito text-sn-ink-soft">{feeMin != null ? `NPR ${feeMin.toLocaleString()}${feeMax && feeMax !== feeMin ? ` – ${feeMax.toLocaleString()}` : ''}` : 'Fees vary by college.'}</p>
+          <p className="mt-2 text-sm font-nunito text-sn-ink-soft">{feeMin != null ? `NPR ${feeMin.toLocaleString()}${feeMax && feeMax !== feeMin ? ` - ${feeMax.toLocaleString()}` : ''}` : 'Fees vary by college.'}</p>
           {feeMin != null && (
             <div className="mt-2">
               {sourceBacked && program.average_fee_min != null ? (

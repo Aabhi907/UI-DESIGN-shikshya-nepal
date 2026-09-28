@@ -35,7 +35,7 @@ export default function ReportConcernForm({
         Report a {sourcePage} concern
       </h2>
       <p className="mt-1 text-sm leading-6 text-gray-600">
-        This goes straight to the SikshyaNepal team. Contact details are optional — only add them if you want a reply.
+        This goes straight to the SikshyaNepal team. Contact details are optional. Only add them if you want a reply.
       </p>
 
       {reported ? (

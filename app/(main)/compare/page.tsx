@@ -71,7 +71,7 @@ function feeEvidenceLabel(programs: CollegeDetail['programs'], programName?: str
     const amount = `NPR ${program.fee!.toLocaleString()}`
     const period = feePeriodLabel[program.fee_period || 'unknown'] || 'period not documented'
     const year = program.fee_academic_year ? `, ${program.fee_academic_year}` : ''
-    const name = program.program?.name ? ` — ${program.program.name}` : ''
+    const name = program.program?.name ? ` (${program.program.name})` : ''
     return `${amount} ${period}${year}${name}`
   })
   return `${visible.join('; ')}${documented.length > visible.length ? `; +${documented.length - visible.length} more` : ''}`
@@ -275,7 +275,7 @@ export default function ComparePage() {
   const shareComparison = async () => {
     const collegeNames = selected.map((college) => college.name).join(' and ')
     const shareData = {
-      title: `College comparison — SikshyaNepal`,
+      title: `College comparison: SikshyaNepal`,
       text: `Compare ${collegeNames} on SikshyaNepal.`,
       url: window.location.href,
     }
@@ -460,7 +460,7 @@ export default function ComparePage() {
         </div>
         {showOnlyDifferences && detailsLoaded && displayedRows.length === 0 && <p role="status" className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">The recorded fields are currently the same. Turn off “Only show differences” to inspect the full evidence.</p>}
         {detailsLoaded && <ComparisonEvidenceGraph colleges={selected} details={detailData} />}
-        <p className="mt-4 text-xs leading-5 text-gray-500">Fees, seats and scholarships can change during admission season. Select a shared programme above to compare fees like-for-like; otherwise each college shows all recorded programme fees. Counts cover only programs recorded in SikshyaNepal. Treat “Not listed” as unavailable data—not as “none”—and confirm final details with the college.</p>
+        <p className="mt-4 text-xs leading-5 text-gray-500">Fees, seats and scholarships can change during admission season. Select a shared programme above to compare fees like-for-like; otherwise each college shows all recorded programme fees. Counts cover only programs recorded in SikshyaNepal. Treat “Not listed” as unavailable data, not as “none”, and confirm final details with the college.</p>
         </div>
       ) : selected.length === 1 ? (
         <div className="text-center py-12 bg-white rounded-2xl border border-gray-200">

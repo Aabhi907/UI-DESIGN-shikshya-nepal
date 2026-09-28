@@ -102,7 +102,7 @@ export default function ReviewForm({ collegeId, collegeName }: ReviewFormProps) 
         setError(data.error || 'Failed to submit review')
       }
     } catch {
-      setError('Network error — please try again')
+      setError('Network error. Please try again')
     } finally {
       setSubmitting(false)
     }
@@ -252,7 +252,7 @@ export default function ReviewForm({ collegeId, collegeName }: ReviewFormProps) 
           rows={5}
           minLength={20}
           maxLength={3000}
-          placeholder="Share your experience — teaching quality, facilities, campus life, hostel, canteen, value for money..."
+          placeholder="Share your experience: teaching quality, facilities, campus life, hostel, canteen, value for money..."
           className="w-full px-3 py-2.5 border border-sn-border-strong rounded-sn-control text-sm font-nunito bg-sn-surface focus:outline-none focus:ring-2 focus:ring-sn-primary/40 resize-none"
         />
         <p className={`text-xs mt-1 font-nunito ${form.review_text.length < 20 ? 'text-sn-ink-muted' : 'text-sn-verified'}`}>

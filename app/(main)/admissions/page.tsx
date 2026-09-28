@@ -13,7 +13,7 @@ export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 export const metadata: Metadata = {
-  title: 'Admissions Open in Nepal – Colleges and Universities',
+  title: 'Admissions Open in Nepal - Colleges and Universities',
   description: 'Find verified admission openings, eligibility, entrance dates and application deadlines for colleges and universities in Nepal.',
   alternates: { canonical: '/admissions' },
 }
@@ -76,7 +76,7 @@ export default async function AdmissionsPage({ searchParams }: { searchParams: A
         <div className="mx-auto max-w-sn px-5 py-10 sm:px-8 lg:px-12">
           <p className="text-xs font-bold uppercase tracking-[0.08em] text-sn-primary-hover">Admission calendar</p>
           <h1 className="mt-2 font-baloo text-3xl font-extrabold leading-tight text-sn-ink sm:text-4xl">Never miss an admission deadline.</h1>
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-sn-ink-soft sm:text-base">Verified openings for colleges and universities—with eligibility, entrance dates and original sources in one place.</p>
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-sn-ink-soft sm:text-base">Verified openings for colleges and universities, with eligibility, entrance dates and original sources in one place.</p>
         </div>
       </section>
       <div className="mx-auto max-w-sn px-5 py-8 sm:px-8 lg:px-12">
@@ -100,7 +100,7 @@ export default async function AdmissionsPage({ searchParams }: { searchParams: A
           <div role="alert" className="rounded-sn-card border border-sn-confirm/30 bg-sn-confirm-bg p-8 text-center text-sn-confirm-ink">
             <AlertTriangle className="mx-auto h-8 w-8" aria-hidden="true" />
             <h2 className="mt-3 font-baloo text-xl font-bold">Admissions could not be loaded</h2>
-            <p className="mt-2 text-sm">This is a temporary problem, not an empty list. Your filters are safe — please try again.</p>
+            <p className="mt-2 text-sm">This is a temporary problem, not an empty list. Your filters are safe. Please try again.</p>
             <a href={retryUrl} className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-sn-control bg-sn-ink px-4 text-sm font-bold text-white motion-control hover:bg-sn-ink/90"><RefreshCcw className="h-4 w-4" aria-hidden="true" />Try again</a>
           </div>
         ) : <div className="grid gap-6 lg:grid-cols-[280px_1fr]">

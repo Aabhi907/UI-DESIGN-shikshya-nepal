@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowRight, BookOpenCheck, Calculator, CalendarDays, GraduationCap, HeartHandshake, Trophy } from 'lucide-react'
 
-export const metadata: Metadata = { title: 'शिक्षा नेपाल – कलेज, भर्ना र नतिजा', description: 'नेपालका कलेज, भर्ना सूचना, नतिजा, छात्रवृत्ति र विद्यार्थी उपयोगी उपकरणहरू खोज्नुहोस्।', alternates: { canonical: '/ne', languages: { en: '/' } } }
+export const metadata: Metadata = { title: 'शिक्षा नेपाल - कलेज, भर्ना र नतिजा', description: 'नेपालका कलेज, भर्ना सूचना, नतिजा, छात्रवृत्ति र विद्यार्थी उपयोगी उपकरणहरू खोज्नुहोस्।', alternates: { canonical: '/ne', languages: { en: '/' } } }
 const links = [
   { title: 'कलेज र कार्यक्रम', text: '+2, स्नातक र स्नातकोत्तर कलेज तथा कार्यक्रम तुलना गर्नुहोस्।', href: '/colleges', Icon: GraduationCap },
   { title: 'भर्ना सूचना', text: 'खुला भर्ना, मिति, योग्यता र आधिकारिक स्रोत हेर्नुहोस्।', href: '/admissions', Icon: CalendarDays },

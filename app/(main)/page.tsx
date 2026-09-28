@@ -35,6 +35,7 @@ import {
   Stethoscope,
   Sprout,
   TreePine,
+  Calculator,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
@@ -59,7 +60,7 @@ export const dynamic   = 'force-dynamic'
 export const revalidate = 0
 
 export const metadata: Metadata = {
-  title: { absolute: 'SikshyaNepal — Decide What to Study After +2, and Where' },
+  title: { absolute: 'SikshyaNepal: Decide What to Study After +2, and Where' },
   description:
     'Verified colleges, courses and career pathways for +2 and university in Nepal. Every fact sourced and dated. No fake reviews, no guesswork.',
   alternates: { canonical: '/' },
@@ -219,7 +220,7 @@ export default async function HomePage() {
               </div>
 
               <h1 className="font-baloo font-extrabold text-sn-ink leading-[1.05] mb-5 text-balance tracking-[-0.035em]" style={{ fontSize: 'clamp(2.5rem, 5.5vw, 3.85rem)' }}>
-                Decide what to study after +2 — and where.
+                Decide what to study after +2, and where.
               </h1>
 
               <p className="mb-8 max-w-2xl text-lg leading-8 font-nunito text-sn-ink-soft md:text-xl">
@@ -291,6 +292,7 @@ export default async function HomePage() {
               { href: '/colleges', label: 'Find a college', text: '+2 and higher', Icon: GraduationCap, tint: 'lilac' as const },
               { href: '/scholarships', label: 'Scholarships', text: 'Funding options', Icon: Award, tint: 'peach' as const },
               { href: '/entrance-exams', label: 'Entrance exams', text: 'Dates & eligibility', Icon: CalendarClock, tint: 'mint' as const },
+              { href: '/tools/gpa-calculator', label: 'GPA calculator', text: 'SEE, +2 & university', Icon: Calculator, tint: 'butter' as const },
               { href: '/study-resources', label: 'Study resources', text: 'Syllabus & questions', Icon: BookOpen, tint: 'butter' as const },
               { href: '/notices', label: 'Latest notices', text: 'Official updates', Icon: Bell, tint: 'lilac' as const },
             ].map(({ href, label, text, Icon, tint }) => (
@@ -363,7 +365,7 @@ export default async function HomePage() {
       {hasProofContent && (
         <section className={`border-b border-sn-border bg-sn-surface ${SECTION_PAD}`}>
           <div className={CONTAINER}>
-            <SectionHeader title="See it in action" description="A sample of what's live on the platform right now — sourced and dated, not a static list." />
+            <SectionHeader title="See it in action" description="A sample of what's live on the platform right now. Sourced and dated, not a static list." />
 
             {admissions.length > 0 && (
               <div className="mt-8 lg:mt-10">
@@ -430,19 +432,30 @@ export default async function HomePage() {
       {/* ════════════════════════════════════════════════════════
           6. GET STARTED — final CTA + email capture, one section
       ════════════════════════════════════════════════════════ */}
-      <section className={`bg-sn-ink text-center ${SECTION_PAD}`}>
+      <section className={`border-t border-sn-border bg-sn-ground ${SECTION_PAD}`}>
         <div className={CONTAINER}>
-          <p className="font-baloo font-extrabold text-white text-3xl sm:text-4xl mb-3" style={{ letterSpacing: '-0.02em' }}>Check the current notice before you pay.</p>
-          <p className="mx-auto mb-8 max-w-2xl text-white/60 font-nunito text-sm">Fees, seats and deadlines can change. Each college profile shows its source and last-checked date when available.</p>
-          <div className="flex flex-wrap justify-center gap-3">
-            <Button.Link href="/colleges" variant="primary">Browse colleges</Button.Link>
-            <Link href="/results" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-sn-control border border-white/20 bg-white/10 px-5 py-2.5 text-sm font-bold font-nunito text-white transition-colors hover:bg-white/15 motion-control">Check Results</Link>
-          </div>
+          <div className="apple-card relative overflow-hidden rounded-3xl border border-black/[0.08] bg-white p-8 sm:p-12 lg:p-16 text-center shadow-[inset_0_1px_1.5px_rgba(255,255,255,0.9),0_8px_32px_rgba(15,23,42,0.06)]">
+            {/* Subtle warm accent radial background */}
+            <div className="pointer-events-none absolute -top-24 left-1/2 h-[350px] w-[500px] -translate-x-1/2 rounded-full bg-gradient-to-b from-orange-100/40 via-amber-50/20 to-transparent blur-2xl" aria-hidden="true" />
 
-          <div className="mx-auto mt-12 max-w-md border-t border-white/10 pt-10 lg:mt-16 lg:pt-12">
-            <p className="font-bold font-nunito text-sm text-white flex items-center gap-2 justify-center"><Bell className="w-4 h-4" aria-hidden="true" />Get result alerts in your inbox</p>
-            <p className="text-white/60 text-xs font-nunito mt-1 mb-5">Email updates when a new result or notice is published</p>
-            <EmailSubscribe />
+            <div className="relative">
+              <h2 className="font-baloo font-extrabold text-sn-ink text-3xl sm:text-4xl mb-3 tracking-[-0.02em]">
+                Check the current notice before you pay.
+              </h2>
+              <p className="mx-auto mb-8 max-w-2xl text-sn-ink-soft font-nunito text-sm sm:text-base leading-relaxed">
+                Fees, seats and deadlines can change. Each college profile shows its source and last-checked date when available.
+              </p>
+              <div className="flex flex-wrap justify-center gap-3">
+                <Button.Link href="/colleges" variant="primary" className="shadow-[inset_0_1px_1px_rgba(255,255,255,0.35),0_4px_16px_rgba(224,102,58,0.3)]">Browse colleges</Button.Link>
+                <Link href="/results" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-sn-control border border-sn-border bg-white px-5 py-2.5 text-sm font-bold font-nunito text-sn-ink transition-colors hover:bg-sn-surface-alt hover:text-sn-primary shadow-[inset_0_1px_1px_rgba(255,255,255,0.9)] motion-control">Check Results</Link>
+              </div>
+
+              <div className="mx-auto mt-10 max-w-md border-t border-black/[0.06] pt-8 lg:mt-12 lg:pt-10">
+                <p className="font-bold font-nunito text-sm text-sn-ink flex items-center gap-2 justify-center"><Bell className="w-4 h-4 text-sn-primary" aria-hidden="true" />Get result alerts in your inbox</p>
+                <p className="text-sn-ink-muted text-xs font-nunito mt-1 mb-5">Email updates when a new result or notice is published</p>
+                <EmailSubscribe />
+              </div>
+            </div>
           </div>
         </div>
       </section>

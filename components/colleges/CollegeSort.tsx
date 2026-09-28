@@ -2,7 +2,7 @@ import type { CollegeSearchParams } from './CollegeFilters'
 
 const labels: Record<string, string> = {
   recommended: 'Most complete profiles',
-  name: 'Name A–Z',
+  name: 'Name A-Z',
   rating: 'Student rating (sample-aware)',
   'fee-low': 'Lowest comparable fee',
 }

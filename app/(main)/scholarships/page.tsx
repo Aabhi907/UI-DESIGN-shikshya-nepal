@@ -9,7 +9,7 @@ import EvidenceChip from '@/components/design-system/EvidenceChip'
 import Card from '@/components/design-system/Card'
 
 export const dynamic = 'force-dynamic'
-export const metadata: Metadata = { title: 'Scholarship Finder Nepal – Check Funding Options', description: 'Match scholarships in Nepal by study level, funding type and student eligibility, with official sources and verified deadlines.' }
+export const metadata: Metadata = { title: 'Scholarship Finder Nepal - Check Funding Options', description: 'Match scholarships in Nepal by study level, funding type and student eligibility, with official sources and verified deadlines.' }
 const LEVELS = ['+2', 'Bachelor', 'Master', 'Diploma'] as const
 const GROUPS: Record<string, string> = { merit: 'Merit-based', need_based: 'Financial need', female: 'Female students', disability: 'Students with disabilities', dalit: 'Dalit students', janajati: 'Janajati students', remote_area: 'Remote-area students' }
 // A repeated query key (`?q=a&q=b`) arrives here as an array — treat it the

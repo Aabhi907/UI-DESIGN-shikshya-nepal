@@ -61,7 +61,7 @@ export default function CollegeCard({ college, matchReasons = [] }: CollegeCardP
   const feeLabel = hasFees
     ? college.fee_min === college.fee_max
       ? `Rs. ${formatFee(college.fee_min!)}`
-      : `Rs. ${formatFee(college.fee_min!)} – ${formatFee(college.fee_max!)}`
+      : `Rs. ${formatFee(college.fee_min!)} - ${formatFee(college.fee_max!)}`
     : null
   const feePeriodLabels: Record<string, string> = { monthly: 'per month', semester: 'per semester', annual: 'per year', total_program: 'full programme', one_time: 'one-time' }
   // A single, unambiguous fee value with a documented source and check date

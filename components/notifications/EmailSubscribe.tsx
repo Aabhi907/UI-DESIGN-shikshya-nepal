@@ -53,9 +53,9 @@ export default function EmailSubscribe() {
 
   return (
     <div className="max-w-md mx-auto">
-      <form onSubmit={handleSubmit} className="flex gap-2">
+      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2">
         <div className="relative flex-1">
-          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70 pointer-events-none" aria-hidden="true" />
+          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-sn-ink-muted pointer-events-none" aria-hidden="true" />
           <input
             type="email"
             aria-label="Email address for result alerts"
@@ -63,26 +63,26 @@ export default function EmailSubscribe() {
             value={email}
             onChange={(e) => { setEmail(e.target.value); if (state === 'error') setState('idle') }}
             placeholder="your@email.com"
-            className="w-full rounded-sn-control border border-white/30 bg-white/15 pl-9 pr-3 py-3 text-sm font-nunito text-white placeholder-white/60 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-white/50 transition-colors duration-150"
+            className="w-full rounded-sn-control border border-sn-border-strong bg-white pl-9 pr-3 py-3 text-sm font-nunito text-sn-ink placeholder-sn-ink-muted focus:outline-none focus:ring-2 focus:ring-sn-primary/30 transition-colors shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)]"
           />
         </div>
         <button
           type="submit"
           disabled={state === 'loading'}
-          className="flex min-h-11 items-center gap-2 whitespace-nowrap rounded-sn-control bg-white px-5 py-3 text-sm font-bold font-nunito text-sn-primary-hover transition-colors hover:bg-sn-primary-bg disabled:opacity-60 motion-control"
+          className="flex min-h-11 items-center justify-center gap-2 whitespace-nowrap rounded-sn-control bg-sn-primary px-5 py-3 text-sm font-bold font-nunito text-white shadow-sn-button hover:bg-sn-primary-hover disabled:opacity-60 motion-control"
         >
           {state === 'loading' ? (
             <><Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" /> Subscribing…</>
           ) : (
-            'Subscribe for result alerts'
+            'Subscribe for alerts'
           )}
         </button>
       </form>
       {state === 'error' && (
-        <p className="mt-2 text-xs font-nunito text-white text-center">{errorMsg}</p>
+        <p className="mt-2 text-xs font-nunito text-sn-danger text-center">{errorMsg}</p>
       )}
-      <p className="mt-2 text-xs font-nunito text-white/75 text-center">
-        No spam. Unsubscribe any time. By subscribing, you accept our <Link href="/privacy" className="font-bold underline">privacy policy</Link>.
+      <p className="mt-2.5 text-xs font-nunito text-sn-ink-muted text-center">
+        No spam. Unsubscribe any time. By subscribing, you accept our <Link href="/privacy" className="font-bold text-sn-ink underline hover:text-sn-primary">privacy policy</Link>.
       </p>
     </div>
   )

@@ -73,7 +73,7 @@ export default function CareerDetailPage({ params }: { params: { slug: string } 
           <Card tone="alt" className="!bg-sn-ink !text-white">
             <BadgeCheck className="h-6 w-6 text-white/70" aria-hidden="true" />
             <h2 className="mt-4 font-baloo text-2xl font-bold">Verify before you decide</h2>
-            <p className="mt-2 text-sm leading-6 font-nunito text-white/80">This guide was editorially checked. Requirements can change—always confirm them with the official institution or professional body.</p>
+            <p className="mt-2 text-sm leading-6 font-nunito text-white/80">This guide was editorially checked. Requirements can change, always confirm them with the official institution or professional body.</p>
             <div className="mt-4"><EvidenceChip state="verified" source={career.sourceName} checkedDate={GUIDE_CHECKED_DATE} className="!bg-white/10 !text-white" /></div>
             <a href={career.sourceUrl} target="_blank" rel="noreferrer" className="mt-5 inline-flex min-h-11 items-center gap-1 rounded-sn-control bg-white px-3 py-2.5 text-sm font-bold font-nunito text-sn-ink hover:bg-white/90 transition-colors motion-control">{career.sourceName}<ExternalLink className="h-4 w-4" /></a>
           </Card>

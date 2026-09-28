@@ -18,7 +18,7 @@ export default function MainError({
         </div>
         <h2 className="text-xl font-bold text-gray-900 mb-2">Page failed to load</h2>
         <p className="text-gray-500 text-sm mb-6">
-          We couldn&apos;t load this page. This may be a temporary issue — please try again.
+          We couldn&apos;t load this page. This may be a temporary issue. Please try again.
         </p>
         <div className="flex items-center justify-center gap-3">
           <button

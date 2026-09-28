@@ -31,7 +31,7 @@ async function getAdmission(slug: string) {
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const item = await getAdmission(params.slug)
   if (!item) return { title: 'Admission not found' }
-  return { title: `${item.title} – Eligibility and Deadline`, description: item.summary || `Admission details, eligibility and deadline for ${item.institution_name}.`, alternates: { canonical: `/admissions/${item.slug}` } }
+  return { title: `${item.title} - Eligibility and Deadline`, description: item.summary || `Admission details, eligibility and deadline for ${item.institution_name}.`, alternates: { canonical: `/admissions/${item.slug}` } }
 }
 
 function date(value: string | null) { return value ? new Date(value).toLocaleString('en-NP', { day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: '2-digit' }) : 'Not announced' }
