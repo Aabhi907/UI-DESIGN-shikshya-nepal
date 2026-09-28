@@ -15,7 +15,7 @@ import Card from '@/components/design-system/Card'
 import IconTile from '@/components/design-system/IconTile'
 import SectionHeader from '@/components/design-system/SectionHeader'
 import Button from '@/components/design-system/Button'
-import FeaturedCollegeCard from '@/components/design-system/FeaturedCollegeCard'
+import FeaturedCollegeCard, { CAMPUS_FALLBACK_IMAGES } from '@/components/design-system/FeaturedCollegeCard'
 import {
   Building2,
   FileText,
@@ -151,40 +151,48 @@ function HeroCard({
 }) {
   if (!result && !notice && !college) return null
 
+  const collegeCover = college?.cover_url || (college ? CAMPUS_FALLBACK_IMAGES[0] : null)
+
   return (
     <aside className="apple-card overflow-hidden">
-      {college?.cover_url && (
+      {college && collegeCover && (
         <Link href={`/colleges/${college.slug}`} className="group relative block h-44 overflow-hidden bg-sn-surface-alt" aria-label={`View ${college.name}`}>
           <Image
-            src={college.cover_url}
+            src={collegeCover}
             alt={`${college.name} campus`}
             fill
             sizes="(min-width: 1024px) 33vw, 100vw"
             className="object-cover transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03]"
           />
-          <div className="absolute inset-x-0 bottom-0 bg-sn-ink/85 backdrop-blur-sm px-4 py-2.5 text-xs font-bold font-nunito text-white">
-            Featured college · {college.name}
+          <div className="absolute inset-0 bg-gradient-to-t from-sn-ink/90 via-sn-ink/30 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 p-4 text-white">
+            <span className="inline-block rounded-full bg-white/20 backdrop-blur-md px-2 py-0.5 text-[11px] font-bold font-nunito tracking-wide">
+              Featured campus
+            </span>
+            <p className="mt-1 font-baloo text-base font-bold leading-tight drop-shadow-sm line-clamp-1">
+              {college.name}
+            </p>
           </div>
         </Link>
       )}
       <div className="p-5">
         {result && (
           <Link href={`/results/${result.slug}`} className="group block py-3.5 border-b border-black/[0.06]">
-            <p className="mb-1 text-xs font-bold font-nunito text-sn-ink-muted">Latest Result</p>
+            <p className="mb-1 text-xs font-bold font-nunito text-sn-ink-muted">Latest result</p>
             <p className="text-sm font-bold font-nunito leading-snug line-clamp-2 text-sn-ink group-hover:text-sn-primary transition-colors">{result.title}</p>
             <span className="mt-2 inline-flex items-center gap-1 text-xs font-bold font-nunito text-sn-primary">View result <ArrowRight className="h-3.5 w-3.5 motion-arrow" aria-hidden="true" /></span>
           </Link>
         )}
         {notice && (
           <Link href={`/notices/${notice.slug}`} className="group block py-3.5 border-b border-black/[0.06]">
-            <p className="mb-1 text-xs font-bold font-nunito text-sn-ink-muted">Latest Notice</p>
+            <p className="mb-1 text-xs font-bold font-nunito text-sn-ink-muted">Latest notice</p>
             <p className="text-sm font-bold font-nunito leading-snug line-clamp-2 text-sn-ink group-hover:text-sn-primary transition-colors">{notice.title}</p>
             <span className="mt-2 inline-flex items-center gap-1 text-xs font-bold font-nunito text-sn-primary">Read notice <ArrowRight className="h-3.5 w-3.5 motion-arrow" aria-hidden="true" /></span>
           </Link>
         )}
         {college && (
           <Link href={`/colleges/${college.slug}`} className="block py-3.5 group">
-            <p className="mb-1 text-xs font-bold font-nunito text-sn-ink-muted">Featured College</p>
+            <p className="mb-1 text-xs font-bold font-nunito text-sn-ink-muted">Featured college profile</p>
             <p className="text-sm font-bold font-nunito leading-snug line-clamp-2 text-sn-ink group-hover:text-sn-primary transition-colors">{college.name}</p>
             {college.location && <p className="text-xs font-nunito text-sn-ink-muted mt-1">{college.location}</p>}
           </Link>
@@ -264,7 +272,7 @@ export default async function HomePage() {
       )}
 
       {/* ════════════════════════════════════════════════════════
-          3. WHAT DO YOU NEED TODAY — primary path-in
+          3. WHAT DO YOU NEED TODAY — asymmetric bento path-in
       ════════════════════════════════════════════════════════ */}
       <section className={`border-b border-sn-border bg-sn-surface-alt ${SECTION_PAD}`}>
         <div className={CONTAINER}>
@@ -272,20 +280,71 @@ export default async function HomePage() {
             title="What do you need today?"
             action={<Link href="/search" className="text-sm font-bold font-nunito text-sn-primary hover:text-sn-primary-hover">Search everything →</Link>}
           />
-          <div className="mt-8 lg:mt-10 grid grid-cols-2 gap-4 sm:grid-cols-4 lg:gap-6">
+          <div className="mt-8 lg:mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 lg:gap-5">
+            {/* Focal Point 1: Results (wide bento) */}
+            <Link
+              href="/results"
+              className="apple-card group relative flex flex-col justify-between overflow-hidden p-6 sm:p-7 col-span-1 sm:col-span-1 lg:col-span-3 bg-gradient-to-br from-sn-tint-peach/35 via-sn-surface to-sn-surface border-sn-tint-peach/30 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+            >
+              <div className="flex items-start justify-between gap-4">
+                <IconTile icon={FileText} tint="peach" size={40} />
+                <span className="rounded-full bg-sn-tint-peach/60 border border-sn-tint-peach px-2.5 py-1 text-xs font-bold font-nunito text-sn-ink">
+                  TU · KU · NEB
+                </span>
+              </div>
+              <div className="mt-6">
+                <div className="flex items-center gap-1.5">
+                  <h3 className="font-baloo text-xl font-bold text-sn-ink group-hover:text-sn-primary transition-colors">
+                    Check results
+                  </h3>
+                  <ArrowRight className="h-4 w-4 motion-arrow text-sn-primary opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
+                </div>
+                <p className="mt-1.5 text-sm font-nunito text-sn-ink-soft leading-relaxed">
+                  Search published board results, roll number lookups, and mark sheet archives.
+                </p>
+              </div>
+            </Link>
+
+            {/* Focal Point 2: Admissions (wide bento) */}
+            <Link
+              href="/admissions?deadline=open"
+              className="apple-card group relative flex flex-col justify-between overflow-hidden p-6 sm:p-7 col-span-1 sm:col-span-1 lg:col-span-3 bg-gradient-to-br from-sn-tint-mint/35 via-sn-surface to-sn-surface border-sn-tint-mint/30 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+            >
+              <div className="flex items-start justify-between gap-4">
+                <IconTile icon={CalendarCheck2} tint="mint" size={40} />
+                <span className="rounded-full bg-sn-tint-mint/60 border border-sn-tint-mint px-2.5 py-1 text-xs font-bold font-nunito text-sn-ink">
+                  Live &amp; open
+                </span>
+              </div>
+              <div className="mt-6">
+                <div className="flex items-center gap-1.5">
+                  <h3 className="font-baloo text-xl font-bold text-sn-ink group-hover:text-sn-primary transition-colors">
+                    Admissions
+                  </h3>
+                  <ArrowRight className="h-4 w-4 motion-arrow text-sn-primary opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
+                </div>
+                <p className="mt-1.5 text-sm font-nunito text-sn-ink-soft leading-relaxed">
+                  Active college intake deadlines, entrance eligibility, and application guidelines.
+                </p>
+              </div>
+            </Link>
+
+            {/* 6 Supporting Bento Cards */}
             {[
-              { href: '/results', label: 'Check results', text: 'TU, KU, NEB & more', Icon: FileText, tint: 'peach' as const },
-              { href: '/admissions?deadline=open', label: 'Admissions', text: 'Open & upcoming', Icon: CalendarCheck2, tint: 'mint' as const },
-              { href: '/colleges', label: 'Find a college', text: '+2 and higher', Icon: GraduationCap, tint: 'lilac' as const },
-              { href: '/scholarships', label: 'Scholarships', text: 'Funding options', Icon: Award, tint: 'peach' as const },
-              { href: '/entrance-exams', label: 'Entrance exams', text: 'Dates & eligibility', Icon: CalendarClock, tint: 'mint' as const },
-              { href: '/tools/gpa-calculator', label: 'GPA calculator', text: 'SEE, +2 & university', Icon: Calculator, tint: 'butter' as const },
-              { href: '/study-resources', label: 'Study resources', text: 'Syllabus & questions', Icon: BookOpen, tint: 'butter' as const },
-              { href: '/notices', label: 'Latest notices', text: 'Official updates', Icon: Bell, tint: 'lilac' as const },
+              { href: '/colleges', label: 'Find a college', text: '+2 and university level', Icon: GraduationCap, tint: 'lilac' as const },
+              { href: '/scholarships', label: 'Scholarships', text: 'Government & merit funding', Icon: Award, tint: 'peach' as const },
+              { href: '/entrance-exams', label: 'Entrance exams', text: 'Eligibility & syllabus', Icon: CalendarClock, tint: 'mint' as const },
+              { href: '/tools/gpa-calculator', label: 'GPA calculator', text: 'SEE, +2 & university scales', Icon: Calculator, tint: 'butter' as const },
+              { href: '/study-resources', label: 'Study resources', text: 'Past papers & notes', Icon: BookOpen, tint: 'butter' as const },
+              { href: '/notices', label: 'Latest notices', text: 'Direct official updates', Icon: Bell, tint: 'lilac' as const },
             ].map(({ href, label, text, Icon, tint }) => (
-              <Link key={href} href={href} className="apple-card group p-5">
-                <IconTile icon={Icon} tint={tint} size={36} />
-                <p className="mt-3 text-sm font-bold font-nunito text-sn-ink group-hover:text-sn-primary transition-colors">{label}</p>
+              <Link
+                key={href}
+                href={href}
+                className="apple-card group p-5 col-span-1 sm:col-span-1 lg:col-span-2 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm"
+              >
+                <IconTile icon={Icon} tint={tint} size={32} />
+                <p className="mt-3.5 text-sm font-bold font-nunito text-sn-ink group-hover:text-sn-primary transition-colors">{label}</p>
                 <p className="mt-1 text-xs font-nunito text-sn-ink-muted">{text}</p>
               </Link>
             ))}
@@ -294,48 +353,83 @@ export default async function HomePage() {
       </section>
 
       {/* ════════════════════════════════════════════════════════
-          4. BROWSE — program and university entry points, merged
-          into one section with two sub-groups (24-32px apart)
-          instead of two full-rhythm sections.
+          4. BROWSE — capsule pill-strip & elevated metrics
       ════════════════════════════════════════════════════════ */}
       <section className={`border-b border-sn-border bg-sn-ground ${SECTION_PAD}`}>
         <div className={CONTAINER}>
           <SectionHeader title="Browse by program or university" />
 
+          {/* 4A. Faculties: Sleek horizontal pill-strip */}
           <div className="mt-8 lg:mt-10">
             <div className="flex items-end justify-between gap-4">
               <h3 className="font-baloo text-lg font-bold text-sn-ink">By program</h3>
               <Link href="/programs" className="text-sm font-bold font-nunito text-sn-primary hover:text-sn-primary-hover">All programs</Link>
             </div>
-            <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-8 lg:gap-6">
+            <div className="mt-4 flex flex-wrap items-center gap-2.5 sm:gap-3">
               {FACULTIES.map((faculty, index) => {
                 const Icon = FACULTY_ICONS[faculty.slug] ?? Monitor
                 const href = faculty.slug === 'plus-two' ? '/colleges?level=%2B2' : `/programs?faculty=${faculty.slug}`
+                const tint = FACULTY_TINTS[index % FACULTY_TINTS.length]
+                const tintBg = tint === 'peach'
+                  ? 'bg-sn-tint-peach'
+                  : tint === 'mint'
+                  ? 'bg-sn-tint-mint'
+                  : tint === 'butter'
+                  ? 'bg-sn-tint-butter'
+                  : 'bg-sn-tint-lilac'
+
                 return (
-                  <Link key={faculty.slug} href={href} className="apple-card group flex flex-col items-center gap-3 p-5 text-center">
-                    <IconTile icon={Icon} tint={FACULTY_TINTS[index % FACULTY_TINTS.length]} />
-                    <span className="text-sm font-bold font-nunito leading-tight text-sn-ink group-hover:text-sn-primary transition-colors">{faculty.name}</span>
+                  <Link
+                    key={faculty.slug}
+                    href={href}
+                    className="apple-pill group flex items-center gap-2.5 rounded-full px-3.5 py-2 transition-all duration-200 hover:border-sn-ink/20 hover:bg-sn-surface hover:shadow-sm"
+                  >
+                    <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-sn-ink shadow-[inset_0_1px_1px_rgba(255,255,255,0.7)] ${tintBg}`}>
+                      <Icon className="h-3 w-3" aria-hidden="true" />
+                    </span>
+                    <span className="text-sm font-bold font-nunito text-sn-ink group-hover:text-sn-primary transition-colors">
+                      {faculty.name}
+                    </span>
                   </Link>
                 )
               })}
             </div>
           </div>
 
+          {/* 4B. Universities: Elevated metric rows with prominent tabular counts */}
           <div className="mt-8 lg:mt-10">
             <div className="flex items-end justify-between gap-4">
               <h3 className="font-baloo text-lg font-bold text-sn-ink">By university</h3>
               <Link href="/colleges" className="text-sm font-bold font-nunito text-sn-primary hover:text-sn-primary-hover">All affiliated colleges</Link>
             </div>
-            <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4 lg:gap-6">
+            <div className="mt-4 grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4">
               {UNIVERSITY_SHOWCASE.map((u, index) => {
                 const count = universityCounts[u.short] ?? 0
+                const tint = ['bg-sn-tint-peach', 'bg-sn-tint-mint', 'bg-sn-tint-butter', 'bg-sn-tint-lilac'][index % 4]
                 return (
-                  <Link key={u.short} href={`/colleges?affiliation=${encodeURIComponent(u.affiliation)}`} className="apple-card group flex flex-col gap-3 p-5">
-                    <span className={`flex h-11 w-11 items-center justify-center rounded-xl font-baloo text-lg font-bold text-sn-ink shadow-[inset_0_1px_1px_rgba(255,255,255,0.7)] ${['bg-sn-tint-peach', 'bg-sn-tint-mint', 'bg-sn-tint-butter', 'bg-sn-tint-lilac'][index % 4]}`}>{u.short}</span>
-                    <div>
-                      <p className="text-sm font-bold font-nunito leading-tight text-sn-ink group-hover:text-sn-primary transition-colors">{u.label}</p>
-                      {count > 0 && <p className="text-xs font-nunito text-sn-ink-muted mt-1 tabular-nums">{count} college{count !== 1 ? 's' : ''}</p>}
+                  <Link
+                    key={u.short}
+                    href={`/colleges?affiliation=${encodeURIComponent(u.affiliation)}`}
+                    className="apple-card group flex items-center justify-between gap-3.5 p-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl font-baloo text-base font-bold text-sn-ink shadow-[inset_0_1px_1px_rgba(255,255,255,0.8)] border border-black/[0.04] ${tint}`}>
+                        {u.short}
+                      </span>
+                      <div className="min-w-0">
+                        <p className="text-sm font-bold font-nunito leading-snug text-sn-ink group-hover:text-sn-primary transition-colors truncate">
+                          {u.label}
+                        </p>
+                        <p className="text-xs font-nunito text-sn-ink-muted truncate">
+                          {u.affiliation}
+                        </p>
+                      </div>
                     </div>
+                    {count > 0 && (
+                      <span className="shrink-0 rounded-full border border-black/[0.08] bg-sn-surface-alt px-2.5 py-1 text-xs font-bold font-nunito tabular-nums text-sn-ink shadow-[inset_0_1px_1px_rgba(255,255,255,0.7)] group-hover:border-sn-primary/30 group-hover:text-sn-primary transition-colors">
+                        {count}
+                      </span>
+                    )}
                   </Link>
                 )
               })}
