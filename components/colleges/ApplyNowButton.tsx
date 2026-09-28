@@ -27,8 +27,8 @@ export default function ApplyNowButton({
       <button
         onClick={() => setOpen(true)}
         className={variant === 'card'
-          ? 'inline-flex min-h-11 items-center justify-center gap-2 rounded-sn-control border border-sn-primary px-3 text-sm font-bold font-nunito text-sn-primary transition-colors hover:bg-sn-primary-bg focus:outline-none focus:ring-2 focus:ring-sn-primary/25'
-          : 'mt-4 flex w-full items-center justify-center gap-2 rounded-sn-control bg-sn-primary px-4 py-3 text-sm font-bold font-nunito text-white shadow-sn-button transition-colors hover:bg-sn-primary-hover'}
+          ? 'motion-control focus-ring inline-flex min-h-11 items-center justify-center gap-2 rounded-sn-control border border-sn-primary px-3 text-sm font-bold font-nunito text-sn-primary transition-colors hover:bg-sn-primary-bg'
+          : 'motion-control focus-ring mt-4 flex min-h-11 w-full items-center justify-center gap-2 rounded-sn-control bg-sn-primary px-4 py-3 text-sm font-bold font-nunito text-white shadow-sn-button transition-colors hover:bg-sn-primary-hover'}
       >
         <Send className="w-4 h-4" />
         {variant === 'card' ? 'Apply now' : 'Request admission information'}

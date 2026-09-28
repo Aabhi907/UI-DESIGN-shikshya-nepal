@@ -22,7 +22,7 @@ export default function QuickNav() {
         {items.map(({ href, label, Icon }) => {
           const active = href === '/' ? pathname === '/' : pathname.startsWith(href)
           return (
-            <Link key={href} href={href} aria-current={active ? 'page' : undefined} className={`flex min-h-[60px] flex-col items-center justify-center gap-1 text-[10px] font-bold font-nunito transition ${active ? 'text-sn-primary' : 'text-sn-ink-soft hover:text-sn-primary'}`}>
+            <Link key={href} href={href} aria-current={active ? 'page' : undefined} className={`motion-control focus-ring flex min-h-[60px] flex-col items-center justify-center gap-1 text-[10px] font-bold font-nunito transition ${active ? 'text-sn-primary' : 'text-sn-ink-soft hover:text-sn-primary'}`}>
               <span className={`flex h-7 w-9 items-center justify-center rounded-sn-control ${active ? 'bg-sn-primary-bg' : ''}`}>
                 <Icon className="h-4 w-4" />
               </span>

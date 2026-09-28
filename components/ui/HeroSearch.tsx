@@ -46,12 +46,11 @@ export default function HeroSearch() {
               inputMode="search"
               className="h-14 w-full min-w-0 bg-transparent pl-11 pr-11 text-sm font-nunito text-sn-ink placeholder:text-sn-ink-muted focus:outline-none sm:pl-12 sm:pr-12"
             />
-            {query && <button type="button" onClick={() => setQuery('')} aria-label="Clear search" className="absolute right-1 flex h-11 w-11 items-center justify-center rounded-sn-control text-sn-ink-muted hover:bg-sn-surface-alt hover:text-sn-ink"><X className="h-4 w-4" /></button>}
+            {query && <button type="button" onClick={() => setQuery('')} aria-label="Clear search" className="motion-control focus-ring absolute right-1 flex h-11 w-11 items-center justify-center rounded-sn-control text-sn-ink-muted hover:bg-sn-surface-alt hover:text-sn-ink"><X className="h-4 w-4" /></button>}
           </div>
           <button
             type="submit"
-            className="m-1.5 flex-shrink-0 rounded-sn-control bg-sn-primary px-4 text-sm font-bold font-nunito text-white shadow-sn-button sm:px-6
-                       hover:bg-sn-primary-hover transition-colors duration-150 active:scale-[0.98]"
+            className="motion-control focus-ring m-1.5 flex-shrink-0 rounded-sn-control bg-sn-primary px-4 text-sm font-bold font-nunito text-white shadow-sn-button sm:px-6 hover:bg-sn-primary-hover"
           >
             Search
           </button>

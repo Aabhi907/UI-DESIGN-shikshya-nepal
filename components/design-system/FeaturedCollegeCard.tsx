@@ -62,7 +62,7 @@ export default function FeaturedCollegeCard({ college }: { college: College }) {
           <p className="mt-3 text-xs font-nunito text-sn-ink-soft line-clamp-1">{topPrograms.join(' · ')}</p>
         )}
         <span className="mt-4 flex items-center gap-1 pt-3 border-t border-sn-border text-xs font-bold font-nunito text-sn-primary">
-          View profile <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 motion-reduce:transform-none" aria-hidden="true" />
+          View profile <ArrowRight className="motion-arrow h-3.5 w-3.5" aria-hidden="true" />
         </span>
       </div>
     </Link>

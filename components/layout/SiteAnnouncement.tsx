@@ -56,20 +56,20 @@ export default function SiteAnnouncement() {
         <strong className="block pr-7 font-display text-lg leading-snug">{item.title}</strong>
         <p className="mt-1.5 leading-6 text-amber-900/80">{item.message}</p>
         {item.link_url && (
-          <Link href={item.link_url} className="mt-4 inline-flex rounded-lg bg-amber-950 px-4 py-2 text-xs font-bold text-white hover:bg-amber-900">
+          <Link href={item.link_url} className="motion-control focus-ring mt-4 inline-flex min-h-11 items-center rounded-lg bg-amber-950 px-4 py-2 text-xs font-bold text-white hover:bg-amber-900">
             {item.link_label || 'Learn more'} →
           </Link>
         )}
       </div>
-      <button type="button" onClick={close} aria-label="Dismiss announcement" className="absolute right-2 top-2 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full text-amber-950/60 hover:bg-amber-100 hover:text-amber-950 active:bg-amber-200">
+      <button type="button" onClick={close} aria-label="Dismiss announcement" className="motion-control focus-ring absolute right-2 top-2 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full text-amber-950/60 hover:bg-amber-100 hover:text-amber-950">
         <X className="h-4 w-4" />
       </button>
     </>
   )
 
   return item.placement === 'popup' ? (
-    <div className="fixed inset-0 z-[90] flex items-end justify-center bg-slate-950/45 p-4 backdrop-blur-[2px] sm:items-center" role="presentation">
-      <section role="dialog" aria-modal="true" aria-labelledby={`announcement-${item.id}`} className="relative w-full max-w-md rounded-2xl bg-amber-50 p-6 text-sm text-amber-950 shadow-2xl">
+    <div className="motion-scrim-enter fixed inset-0 z-[90] flex items-end justify-center bg-slate-950/45 p-4 backdrop-blur-[2px] sm:items-center" role="presentation">
+      <section role="dialog" aria-modal="true" aria-labelledby={`announcement-${item.id}`} className="motion-dialog-enter relative w-full max-w-md rounded-2xl bg-amber-50 p-6 text-sm text-amber-950 shadow-2xl">
         <span id={`announcement-${item.id}`} className="sr-only">Site announcement: {item.title}</span>
         {body}
       </section>

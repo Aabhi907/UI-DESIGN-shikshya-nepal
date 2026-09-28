@@ -108,7 +108,7 @@ export default function ReviewForm({ collegeId, collegeName }: ReviewFormProps) 
     }
   }
 
-  if (signedIn !== true) return <div className="rounded-sn-card border border-sn-primary/30 bg-sn-primary-bg p-6"><h3 className="font-bold font-nunito text-sn-ink">Sign in to write a review</h3><p className="mt-2 text-sm leading-6 font-nunito text-sn-ink-soft">Anyone can read reviews. Sign-in reduces fake submissions and permits safety follow-up; your account email is not displayed publicly.</p><Link href="/account/login" className="mt-4 inline-flex rounded-sn-control bg-sn-primary px-4 py-2.5 text-sm font-bold font-nunito text-white shadow-sn-button">Sign in to continue</Link></div>
+  if (signedIn !== true) return <div className="rounded-sn-card border border-sn-primary/30 bg-sn-primary-bg p-6"><h3 className="font-bold font-nunito text-sn-ink">Sign in to write a review</h3><p className="mt-2 text-sm leading-6 font-nunito text-sn-ink-soft">Anyone can read reviews. Sign-in reduces fake submissions and permits safety follow-up; your account email is not displayed publicly.</p><Link href="/account/login" className="motion-control focus-ring mt-4 inline-flex min-h-11 items-center rounded-sn-control bg-sn-primary px-5 py-2.5 text-sm font-bold font-nunito text-white shadow-sn-button hover:bg-sn-primary-hover">Sign in to continue</Link></div>
 
   // ── Submitted state (shown across refreshes until 7-day expiry) ──────────
   if (submitted) {
@@ -273,7 +273,7 @@ export default function ReviewForm({ collegeId, collegeName }: ReviewFormProps) 
         <button
           type="submit"
           disabled={submitting || signedIn !== true}
-          className="flex items-center gap-2 rounded-sn-control bg-sn-primary px-6 py-2.5 text-sm font-bold font-nunito text-white shadow-sn-button hover:bg-sn-primary-hover disabled:opacity-50 transition-colors"
+          className="motion-control focus-ring flex min-h-11 items-center gap-2 rounded-sn-control bg-sn-primary px-6 py-2.5 text-sm font-bold font-nunito text-white shadow-sn-button hover:bg-sn-primary-hover disabled:cursor-not-allowed disabled:opacity-50"
         >
           <Send className="w-4 h-4" aria-hidden="true" />
           {submitting ? 'Submitting…' : 'Submit Review'}

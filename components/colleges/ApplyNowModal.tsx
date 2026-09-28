@@ -146,7 +146,7 @@ export default function ApplyNowModal({
               {reference&&<p className="mt-3 rounded-sn-control bg-sn-surface-alt px-3 py-2 text-xs font-nunito text-sn-ink-soft">Enquiry reference: <strong className="text-sn-ink">{reference}</strong></p>}
               <button
                 onClick={onClose}
-                className="mt-6 w-full py-2.5 rounded-sn-control bg-sn-surface-alt text-sn-ink text-sm font-bold font-nunito hover:opacity-80 transition-opacity"
+                className="motion-control focus-ring mt-6 flex min-h-11 w-full items-center justify-center rounded-sn-control bg-sn-surface-alt text-sm font-bold font-nunito text-sn-ink hover:bg-sn-surface-alt/80"
               >
                 Close
               </button>
@@ -290,9 +290,7 @@ export default function ApplyNowModal({
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex items-center justify-center gap-2 py-3 bg-sn-primary
-                           text-white font-bold font-nunito rounded-sn-control shadow-sn-button hover:bg-sn-primary-hover
-                           disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+                className="motion-control focus-ring flex min-h-11 w-full items-center justify-center gap-2 rounded-sn-control bg-sn-primary py-3 text-sm font-bold font-nunito text-white shadow-sn-button hover:bg-sn-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {loading
                   ? <><Loader2 className="w-4 h-4 animate-spin" /> Sending…</>
