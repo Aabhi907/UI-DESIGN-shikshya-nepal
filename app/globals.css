@@ -51,6 +51,18 @@
   --sn-shadow-card:  0 6px 18px rgba(42, 33, 26, 0.06);
   --sn-shadow-float: 0 10px 26px rgba(42, 33, 26, 0.12);
   --sn-shadow-button: 0 8px 18px rgba(224, 102, 58, 0.26);
+
+  /* Restrained motion shared by both legacy and sn-* interfaces. */
+  --motion-instant: 120ms;
+  --motion-interaction: 160ms;
+  --motion-state: 220ms;
+  --motion-reveal: 380ms;
+  --motion-hero: 480ms;
+  --motion-dialog: 260ms;
+  --motion-exit: 180ms;
+  --ease-enter: cubic-bezier(.22, 1, .36, 1);
+  --ease-standard: cubic-bezier(.4, 0, .2, 1);
+  --ease-exit: cubic-bezier(.4, 0, 1, 1);
 }
 
 @layer base {
@@ -130,21 +142,26 @@
   /* Limit motion to controls. Text should not animate while a student reads. */
   a, button, input, select, textarea {
     transition-property: color, background-color, border-color, box-shadow, transform;
-    transition-duration: 150ms;
-    transition-timing-function: ease;
+    transition-duration: var(--motion-interaction);
+    transition-timing-function: var(--ease-standard);
   }
 
   /* Respect user preference */
   @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
     * {
       transition: none !important;
       animation: none !important;
     }
+    [data-motion-ready],
+    [data-motion-ready] > * { opacity: 1 !important; transform: none !important; }
   }
 
   /* Keep the information hierarchy usable when a browser requests lower data use. */
   @media (prefers-reduced-data: reduce) {
     *, *::before, *::after { animation: none !important; transition: none !important; }
+    [data-motion-ready],
+    [data-motion-ready] > * { opacity: 1 !important; transform: none !important; }
   }
 
   :focus-visible {
@@ -164,8 +181,13 @@
   /* ── Buttons ─────────────────────────────────────────────────── */
   .btn {
     @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-xl font-semibold
-           transition-colors duration-150 select-none cursor-pointer;
+           select-none cursor-pointer;
+    transition-property: color, background-color, border-color, box-shadow, transform;
+    transition-duration: var(--motion-interaction);
+    transition-timing-function: var(--ease-standard);
   }
+  .btn:active:not(:disabled) { transform: translateY(1px); }
+  .btn:disabled { transform: none; }
   .btn-primary {
     @apply btn px-5 py-2.5 bg-primary text-white text-sm
            hover:bg-primary-600;
@@ -240,7 +262,7 @@
   }
   .card-hover {
     @apply card cursor-pointer;
-    transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+    transition: border-color var(--motion-interaction) var(--ease-standard), box-shadow var(--motion-interaction) var(--ease-standard), background-color var(--motion-interaction) var(--ease-standard), transform var(--motion-interaction) var(--ease-standard);
   }
 
   /* Shared public content surface: calm at rest, clear on focus and hover. */
@@ -250,7 +272,7 @@
     box-shadow: var(--shadow-rest);
   }
   .editorial-card-interactive {
-    transition: border-color 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+    transition: border-color var(--motion-interaction) var(--ease-standard), box-shadow var(--motion-interaction) var(--ease-standard), background-color var(--motion-interaction) var(--ease-standard), transform var(--motion-interaction) var(--ease-standard);
   }
   .editorial-card-title {
     @apply font-display font-bold text-ink;
@@ -270,15 +292,21 @@
     .group:hover .editorial-card-interactive {
       border-color: #aebdde;
       box-shadow: var(--shadow-hover);
+      transform: translateY(-2px);
     }
   }
+  .card-hover:active,
+  .editorial-card-interactive:active { transform: translateY(0); }
   /* Legacy aliases */
   .card-base { @apply card; }
 
   /* ── Filter chips ────────────────────────────────────────────── */
   .chip {
     @apply px-3 py-1.5 rounded-lg text-sm font-medium border
-           transition-all duration-150 cursor-pointer whitespace-nowrap;
+           cursor-pointer whitespace-nowrap;
+    transition-property: color, background-color, border-color, box-shadow, transform;
+    transition-duration: var(--motion-interaction);
+    transition-timing-function: var(--ease-standard);
   }
   .chip-active   { @apply chip bg-primary text-white border-primary; }
   .chip-inactive {
@@ -293,6 +321,53 @@
   .bar-puru  { @apply bg-purple-500; }
   .bar-neb   { @apply bg-red-500; }
   .bar-ctevt { @apply bg-orange-500; }
+
+.motion-header {
+    transition-property: background-color, border-color, box-shadow;
+    transition-duration: var(--motion-state);
+    transition-timing-function: var(--ease-standard);
+  }
+  .motion-reveal[data-motion-ready="true"][data-revealed="false"] {
+    opacity: 0;
+    transform: translateY(var(--reveal-distance, 12px));
+  }
+  .motion-reveal[data-motion-ready="true"] {
+    transition: opacity var(--motion-reveal) var(--ease-enter) var(--reveal-delay, 0ms), transform var(--motion-reveal) var(--ease-enter) var(--reveal-delay, 0ms);
+  }
+  .motion-reveal-group[data-motion-ready="true"][data-revealed="false"] > * { opacity: 0; transform: translateY(10px); }
+  .motion-reveal-group[data-motion-ready="true"] > * { transition: opacity var(--motion-reveal) var(--ease-enter), transform var(--motion-reveal) var(--ease-enter); }
+  .motion-reveal-group[data-motion-ready="true"] > *:nth-child(2) { transition-delay: 50ms; }
+  .motion-reveal-group[data-motion-ready="true"] > *:nth-child(3) { transition-delay: 100ms; }
+  .motion-reveal-group[data-motion-ready="true"] > *:nth-child(4) { transition-delay: 150ms; }
+  .motion-reveal-group[data-motion-ready="true"] > *:nth-child(5) { transition-delay: 200ms; }
+  .motion-reveal-group[data-motion-ready="true"] > *:nth-child(6) { transition-delay: 250ms; }
+  .motion-interactive-card { transition: border-color var(--motion-interaction) var(--ease-standard), box-shadow var(--motion-interaction) var(--ease-standard), background-color var(--motion-interaction) var(--ease-standard), transform var(--motion-interaction) var(--ease-standard); }
+  .motion-arrow { transition: transform var(--motion-interaction) var(--ease-standard); }
+  :is(a, button, .group):hover .motion-arrow { transform: translateX(3px); }
+  .motion-menu-enter { animation: motion-menu-enter var(--motion-state) var(--ease-enter) both; }
+  .motion-scrim-enter { animation: motion-scrim-enter var(--motion-interaction) var(--ease-standard) both; }
+  .motion-dialog-enter { animation: motion-dialog-enter var(--motion-dialog) var(--ease-enter) both; }
+  .motion-drawer-enter { animation: motion-drawer-enter var(--motion-dialog) var(--ease-enter) both; }
+  .motion-sheet-enter { animation: motion-sheet-enter var(--motion-dialog) var(--ease-enter) both; }
+
+  @media (hover: hover) and (pointer: fine) {
+    .motion-interactive-card:hover { transform: translateY(-2px); }
+  }
+  .motion-interactive-card:active { transform: translateY(0); }
+}
+
+.motion-control {
+  transition-property: color, background-color, border-color, box-shadow, transform;
+  transition-duration: var(--motion-interaction);
+  transition-timing-function: var(--ease-standard);
+}
+
+.motion-control:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.motion-control:disabled {
+  transform: none;
 }
 
 @layer utilities {
@@ -302,3 +377,9 @@
   .text-balance { text-wrap: balance; }
   .text-pretty  { text-wrap: pretty; }
 }
+
+@keyframes motion-menu-enter { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes motion-scrim-enter { from { opacity: 0; } to { opacity: 1; } }
+@keyframes motion-dialog-enter { from { opacity: 0; transform: translateY(10px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes motion-drawer-enter { from { transform: translateX(100%); } to { transform: translateX(0); } }
+@keyframes motion-sheet-enter { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }

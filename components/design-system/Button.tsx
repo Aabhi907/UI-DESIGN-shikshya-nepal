@@ -8,7 +8,7 @@ type Common = {
   children: React.ReactNode
 }
 
-const base = 'inline-flex min-h-11 items-center justify-center gap-2 rounded-sn-control px-5 py-2.5 text-sm font-bold font-nunito transition-colors duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sn-primary disabled:cursor-not-allowed disabled:opacity-60'
+const base = 'motion-control inline-flex min-h-11 items-center justify-center gap-2 rounded-sn-control px-5 py-2.5 text-sm font-bold font-nunito focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sn-primary disabled:cursor-not-allowed disabled:opacity-60'
 
 const variants: Record<Variant, string> = {
   primary: 'bg-sn-primary text-white shadow-sn-button hover:bg-sn-primary-hover',

@@ -81,7 +81,7 @@ export default async function AdminDashboard() {
           const isRevenue = revenue && val > 0
           return (
             <Link key={key} href={href} className="group block">
-              <div className={`bg-gray-800 rounded-xl border p-5 hover:border-gray-600 transition-all ${
+              <div className={`bg-gray-800 rounded-xl border p-5 hover:border-gray-600 transition-[border-color,box-shadow,transform] ${
                 isAlert   ? 'border-yellow-500/50' :
                 isRevenue ? 'border-green-500/50'  : 'border-gray-700'
               }`}>

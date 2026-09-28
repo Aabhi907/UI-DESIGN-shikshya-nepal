@@ -186,7 +186,7 @@ function SearchPageInner() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {data.colleges.map(c => (
                   <Link key={c.id} href={`/colleges/${c.slug}`}
-                    className="flex items-start gap-3 p-4 bg-white rounded-xl border border-gray-200 hover:border-blue-300 hover:shadow-sm transition-all">
+                    className="motion-interactive-card flex items-start gap-3 p-4 bg-white rounded-xl border border-gray-200 hover:border-blue-300 hover:shadow-sm">
                     <div className="w-9 h-9 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 font-bold text-sm flex-shrink-0">
                       {c.name.charAt(0)}
                     </div>
@@ -210,7 +210,7 @@ function SearchPageInner() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {data.programs.map(p => (
                   <Link key={p.id} href={`/programs/${p.slug}`}
-                    className="flex items-start gap-3 p-4 bg-white rounded-xl border border-gray-200 hover:border-purple-300 hover:shadow-sm transition-all">
+                    className="motion-interactive-card flex items-start gap-3 p-4 bg-white rounded-xl border border-gray-200 hover:border-purple-300 hover:shadow-sm">
                     <div className="w-9 h-9 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
                       <GraduationCap className="w-4 h-4 text-purple-600" />
                     </div>
@@ -234,7 +234,7 @@ function SearchPageInner() {
               <div className="space-y-2">
                 {data.news.map(n => (
                   <Link key={n.id} href={`/news/${n.slug}`}
-                    className="flex items-center justify-between p-4 bg-white rounded-xl border border-gray-200 hover:border-green-300 hover:shadow-sm transition-all">
+                    className="motion-interactive-card flex items-center justify-between p-4 bg-white rounded-xl border border-gray-200 hover:border-green-300 hover:shadow-sm">
                     <p className="font-medium text-gray-900 text-sm line-clamp-1 flex-1">{n.title}</p>
                     {n.published_date && (
                       <span className="text-xs text-gray-400 ml-4 flex-shrink-0">
@@ -257,7 +257,7 @@ function SearchPageInner() {
               <div className="space-y-2">
                 {data.notices.map(n => (
                   <Link key={n.id} href={`/notices/${n.slug}`}
-                    className="flex items-center justify-between p-4 bg-white rounded-xl border border-gray-200 hover:border-orange-300 hover:shadow-sm transition-all">
+                    className="motion-interactive-card flex items-center justify-between p-4 bg-white rounded-xl border border-gray-200 hover:border-orange-300 hover:shadow-sm">
                     <p className="font-medium text-gray-900 text-sm line-clamp-1 flex-1">{n.title}</p>
                     {n.published_date && (
                       <span className="text-xs text-gray-400 ml-4 flex-shrink-0">
@@ -280,7 +280,7 @@ function SearchPageInner() {
               <div className="space-y-2">
                 {data.results.map(r => (
                   <Link key={r.id} href={`/results/${r.slug}`}
-                    className="flex items-center justify-between p-4 bg-white rounded-xl border border-gray-200 hover:border-red-300 hover:shadow-sm transition-all">
+                    className="motion-interactive-card flex items-center justify-between p-4 bg-white rounded-xl border border-gray-200 hover:border-red-300 hover:shadow-sm">
                     <p className="font-medium text-gray-900 text-sm line-clamp-1 flex-1">{r.title}</p>
                     {r.published_date && (
                       <span className="text-xs text-gray-400 ml-4 flex-shrink-0">
@@ -303,7 +303,7 @@ function SearchPageInner() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {data.scholarships.map(s => (
                   <Link key={s.id} href={`/scholarships`}
-                    className="p-4 bg-white rounded-xl border border-gray-200 hover:border-yellow-300 hover:shadow-sm transition-all">
+                    className="motion-interactive-card p-4 bg-white rounded-xl border border-gray-200 hover:border-yellow-300 hover:shadow-sm">
                     <p className="font-medium text-gray-900 text-sm line-clamp-1">{s.title}</p>
                     <div className="flex items-center gap-3 mt-1.5">
                       {s.amount && <span className="text-xs text-green-700 font-medium">NPR {s.amount}</span>}

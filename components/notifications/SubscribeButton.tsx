@@ -1,7 +1,8 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Bell, CheckCircle2, Loader2, Mail, X } from 'lucide-react'
+import { useDialogFocus } from '@/components/motion'
 
 type Variant = 'float' | 'header'
 type SubscriptionState = 'idle' | 'loading' | 'success' | 'error'
@@ -22,6 +23,8 @@ export default function SubscribeButton({ variant }: Props) {
   const [email, setEmail] = useState('')
   const [state, setState] = useState<SubscriptionState>('idle')
   const [error, setError] = useState('')
+  const dialogRef = useRef<HTMLDivElement>(null)
+  const closeRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
     setSubscribed(localStorage.getItem('sn_email_alert_subscribed') === '1')
@@ -33,6 +36,8 @@ export default function SubscribeButton({ variant }: Props) {
     setDismissed(true)
     localStorage.setItem('sn_alert_prompt_dismissed', '1')
   }, [])
+
+  useDialogFocus({ open: modalOpen, dialogRef, initialFocusRef: closeRef, onEscape: handleDismiss })
 
   const handleSubmit = useCallback(async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -74,10 +79,11 @@ export default function SubscribeButton({ variant }: Props) {
 
   const modal = modalOpen && (
     <div className="fixed inset-0 z-[200] flex items-end justify-center p-4 sm:items-center" role="dialog" aria-modal="true" aria-labelledby="notification-dialog-title">
-      <button aria-label="Close notification dialog" className="absolute inset-0 cursor-default bg-slate-950/50 backdrop-blur-sm" onClick={handleDismiss} />
+      <button aria-label="Close notification dialog" className="motion-scrim-enter absolute inset-0 cursor-default bg-slate-950/50 backdrop-blur-sm" onClick={handleDismiss} />
 
-      <div className="relative w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl motion-safe:animate-in motion-safe:slide-in-from-bottom-4 motion-safe:duration-200">
+      <div ref={dialogRef} className="motion-dialog-enter relative w-full max-w-sm rounded-2xl bg-white p-6 shadow-2xl">
         <button
+          ref={closeRef}
           type="button"
           onClick={handleDismiss}
           aria-label="Close notification dialog"

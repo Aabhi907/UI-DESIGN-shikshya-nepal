@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useEffect, useRef, FormEvent } from 'react'
+import { useState, useRef, FormEvent } from 'react'
 import { X, Send, CheckCircle, Star, Loader2 } from 'lucide-react'
 import Link from 'next/link'
+import { useDialogFocus } from '@/components/motion'
 
 interface Program {
   name: string
@@ -34,17 +35,9 @@ export default function ApplyNowModal({
   const [errors,   setErrors]   = useState<Record<string, string>>({})
   const [consent, setConsent] = useState(false)
   const formRef = useRef<HTMLFormElement>(null)
-
-  // Close on Escape
-  useEffect(() => {
-    const fn = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
-    document.addEventListener('keydown', fn)
-    document.body.style.overflow = 'hidden'
-    return () => {
-      document.removeEventListener('keydown', fn)
-      document.body.style.overflow = ''
-    }
-  }, [onClose])
+  const dialogRef = useRef<HTMLDivElement>(null)
+  const closeRef = useRef<HTMLButtonElement>(null)
+  useDialogFocus({ open: true, dialogRef, initialFocusRef: closeRef, onEscape: onClose })
 
   function set(field: string, value: string) {
     setForm(f => ({ ...f, [field]: value }))
@@ -99,12 +92,12 @@ export default function ApplyNowModal({
       {/* Backdrop */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-sn-ink/50 backdrop-blur-sm"
+        className="motion-scrim-enter absolute inset-0 bg-sn-ink/50 backdrop-blur-sm"
         onClick={onClose}
       />
 
       {/* Panel */}
-      <div className="relative w-full sm:max-w-md bg-sn-surface sm:rounded-sn-card rounded-t-sn-card shadow-sn-float
+      <div ref={dialogRef} className="motion-sheet-enter relative w-full sm:max-w-md bg-sn-surface sm:rounded-sn-card rounded-t-sn-card shadow-sn-float
                       max-h-[95vh] overflow-y-auto">
 
         {/* Header */}
@@ -118,6 +111,7 @@ export default function ApplyNowModal({
             </p>
           </div>
           <button
+            ref={closeRef}
             onClick={onClose}
             aria-label="Close admission enquiry"
             className="ml-3 flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-sn-surface-alt hover:opacity-80 transition-opacity"
