@@ -66,9 +66,9 @@ export default async function NewsDetailPage({ params }: { params: { slug: strin
       <JsonLd data={jsonLd} />
       <Link
         href="/news"
-        className="inline-flex min-h-11 items-center gap-2 text-sm text-sn-ink-soft hover:text-sn-primary-hover mb-6 transition-colors"
+        className="inline-flex min-h-11 items-center gap-2 text-sm text-sn-ink-soft hover:text-sn-primary-hover mb-6 transition-colors motion-control"
       >
-        <ArrowLeft className="w-4 h-4" /> Back to News
+        <ArrowLeft className="w-4 h-4 motion-arrow" /> Back to News
       </Link>
 
       <Card as="article" className="mb-6 overflow-hidden p-0 lg:p-0">
@@ -92,7 +92,7 @@ export default async function NewsDetailPage({ params }: { params: { slug: strin
               <a
                 href={news.news_pdf_url!}
                 download
-                className="ml-auto inline-flex min-h-11 items-center gap-1.5 px-3 py-1.5 bg-sn-primary-hover text-white text-xs font-medium rounded-sn-control hover:bg-sn-primary-hover transition-colors"
+                className="ml-auto inline-flex min-h-11 items-center gap-1.5 px-3 py-1.5 bg-sn-primary-hover text-white text-xs font-medium rounded-sn-control hover:bg-sn-primary-hover transition-colors motion-control"
               >
                 <Download className="w-3.5 h-3.5" />
                 Download PDF
@@ -108,7 +108,7 @@ export default async function NewsDetailPage({ params }: { params: { slug: strin
           )}
           {news.college_id && <p className="mt-6 flex items-center gap-2 text-sm text-sn-ink-soft"><Building2 className="h-4 w-4 text-sn-primary-hover" />This update is linked to a college profile in the SikshyaNepal directory.</p>}
           {news.disclosure && <p className="mt-4 border-l-2 border-sn-border-strong pl-3 text-xs leading-5 text-sn-ink-soft">{news.disclosure}</p>}
-          {(news.source_url || news.last_verified_at) && <section className="mt-7 border-t border-sn-border pt-5 text-sm" aria-label="Source information"><p className="flex items-center gap-2 font-semibold text-sn-ink"><ShieldCheck className="h-4 w-4 text-sn-primary-hover" aria-hidden="true" />{news.source_url ? 'Source summary' : 'Publication information'}</p>{news.source_url && <p className="mt-2 max-w-2xl text-sn-ink-soft">Summary based on the linked official announcement. Check the source for final details.</p>}{news.last_verified_at && <p className="mt-2 text-sn-ink-soft">Checked <time dateTime={news.last_verified_at}>{formatDate(news.last_verified_at)}</time></p>}{news.source_url && <a href={news.source_url} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex min-h-11 items-center gap-1.5 font-semibold text-sn-primary-hover">{news.source_name || 'Open official source'} <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" /></a>}</section>}
+          {(news.source_url || news.last_verified_at) && <section className="mt-7 border-t border-sn-border pt-5 text-sm" aria-label="Source information"><p className="flex items-center gap-2 font-semibold text-sn-ink"><ShieldCheck className="h-4 w-4 text-sn-primary-hover" aria-hidden="true" />{news.source_url ? 'Source summary' : 'Publication information'}</p>{news.source_url && <p className="mt-2 max-w-2xl text-sn-ink-soft">Summary based on the linked official announcement. Check the source for final details.</p>}{news.last_verified_at && <p className="mt-2 text-sn-ink-soft">Checked <time dateTime={news.last_verified_at}>{formatDate(news.last_verified_at)}</time></p>}{news.source_url && <a href={news.source_url} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex min-h-11 items-center gap-1.5 font-semibold text-sn-primary-hover hover:underline motion-control">{news.source_name || 'Open official source'} <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" /></a>}</section>}
           {news.source_url && <div className="mt-4">
             {news.last_verified_at
               ? <EvidenceChip state="verified" className="!text-sn-ink-soft" source={news.source_name || 'Linked source'} checkedDate={news.last_verified_at} />

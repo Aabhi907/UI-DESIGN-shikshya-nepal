@@ -118,7 +118,7 @@ export default async function ProgramsPage({ searchParams }: { searchParams: { f
 
       {/* Faculty Filter */}
       <div className="mb-4 flex flex-wrap gap-2">
-        <Link href={searchParams.q ? `/programs?q=${encodeURIComponent(searchParams.q)}` : '/programs'} className={`rounded-sn-pill border px-4 py-1.5 text-sm font-bold font-nunito transition-colors ${!searchParams.faculty ? 'border-sn-primary bg-sn-primary text-white' : 'border-sn-border bg-sn-surface text-sn-ink-soft hover:border-sn-primary/50'}`}>
+        <Link href={searchParams.q ? `/programs?q=${encodeURIComponent(searchParams.q)}` : '/programs'} className={`min-h-11 inline-flex items-center rounded-sn-pill border px-4 py-1.5 text-sm font-bold font-nunito transition-colors motion-control ${!searchParams.faculty ? 'border-sn-primary bg-sn-primary text-white' : 'border-sn-border bg-sn-surface text-sn-ink-soft hover:border-sn-primary/50'}`}>
           All Faculties
         </Link>
         {FACULTIES.map((f) => {
@@ -128,7 +128,7 @@ export default async function ProgramsPage({ searchParams }: { searchParams: { f
             <Link
               key={f.slug}
               href={filterUrl(searchParams, 'faculty', f.slug)}
-              className={`inline-flex items-center gap-1.5 rounded-sn-pill border px-4 py-1.5 text-sm font-bold font-nunito transition-colors ${
+              className={`inline-flex min-h-11 items-center gap-1.5 rounded-sn-pill border px-4 py-1.5 text-sm font-bold font-nunito transition-colors motion-control ${
                 active
                   ? 'border-sn-primary bg-sn-primary text-white'
                   : 'border-sn-border bg-sn-surface text-sn-ink-soft hover:border-sn-primary hover:text-sn-primary'
@@ -147,7 +147,7 @@ export default async function ProgramsPage({ searchParams }: { searchParams: { f
           <Link
             key={value}
             href={filterUrl(searchParams, 'degree', value)}
-            className={`rounded-sn-pill border px-3 py-1 text-xs font-bold font-nunito transition-colors ${
+            className={`min-h-11 inline-flex items-center rounded-sn-pill border px-3 py-1 text-xs font-bold font-nunito transition-colors motion-control ${
               searchParams.degree === value
                 ? 'border-sn-ink bg-sn-ink text-white'
                 : 'border-sn-border bg-sn-surface text-sn-ink-soft hover:border-sn-ink-muted'
@@ -161,8 +161,8 @@ export default async function ProgramsPage({ searchParams }: { searchParams: { f
       {(searchParams.faculty || searchParams.degree) && (
         <div className="mb-6 flex flex-wrap items-center gap-2 text-xs">
           <span className="font-bold text-sn-ink-muted">Active filters:</span>
-          {searchParams.faculty && <Link href={filterUrl(searchParams, 'faculty', searchParams.faculty)} className="rounded-sn-pill bg-sn-primary-bg px-3 py-1 font-bold text-sn-primary-hover">Faculty: {FACULTIES.find(item => item.slug === searchParams.faculty)?.name || searchParams.faculty} ×</Link>}
-          {searchParams.degree && <Link href={filterUrl(searchParams, 'degree', searchParams.degree)} className="rounded-sn-pill bg-sn-surface-alt px-3 py-1 font-bold text-sn-ink-soft">Level: {searchParams.degree === '+2' ? '+2' : searchParams.degree} ×</Link>}
+          {searchParams.faculty && <Link href={filterUrl(searchParams, 'faculty', searchParams.faculty)} className="min-h-9 inline-flex items-center rounded-sn-pill bg-sn-primary-bg px-3 py-1 font-bold text-sn-primary-hover motion-control">Faculty: {FACULTIES.find(item => item.slug === searchParams.faculty)?.name || searchParams.faculty} ×</Link>}
+          {searchParams.degree && <Link href={filterUrl(searchParams, 'degree', searchParams.degree)} className="min-h-9 inline-flex items-center rounded-sn-pill bg-sn-surface-alt px-3 py-1 font-bold text-sn-ink-soft motion-control">Level: {searchParams.degree === '+2' ? '+2' : searchParams.degree} ×</Link>}
         </div>
       )}
 
@@ -171,7 +171,7 @@ export default async function ProgramsPage({ searchParams }: { searchParams: { f
           <AlertCircle className="mx-auto h-10 w-10" />
           <h2 className="mt-3 font-baloo text-xl font-bold">Programs could not load</h2>
           <p className="mt-2 text-sm">This is a temporary connection problem. Please try again.</p>
-          <Link href="/programs" className="mt-4 inline-flex rounded-sn-control bg-sn-ink px-4 py-2 text-sm font-bold text-white">Reload programs</Link>
+          <Link href="/programs" className="mt-4 inline-flex min-h-11 items-center rounded-sn-control bg-sn-ink px-4 py-2 text-sm font-bold text-white motion-control">Reload programs</Link>
         </div>
       ) : Object.keys(grouped).length > 0 ? (
         <div className="space-y-8">
@@ -201,7 +201,7 @@ export default async function ProgramsPage({ searchParams }: { searchParams: { f
                       </Link>
                       <Link
                         href={`/colleges/program/${prog.slug}`}
-                        className="flex-shrink-0 whitespace-nowrap text-xs font-bold text-sn-primary hover:underline"
+                        className="flex-shrink-0 inline-flex min-h-11 items-center whitespace-nowrap text-xs font-bold text-sn-primary hover:underline motion-control"
                       >
                         Find Colleges
                       </Link>
@@ -217,7 +217,7 @@ export default async function ProgramsPage({ searchParams }: { searchParams: { f
           <Mascot pose="point" size={72} className="mx-auto mb-3" />
           <h3 className="mb-1 font-baloo font-bold text-sn-ink">No programs found</h3>
           <p className="mt-2 text-sm text-sn-ink-soft">Try a shorter name or remove one filter.</p>
-          <Link href="/programs" className="mt-4 inline-flex rounded-sn-control bg-sn-primary px-4 py-2 text-sm font-bold text-white hover:bg-sn-primary-hover">Clear search and filters</Link>
+          <Link href="/programs" className="mt-4 inline-flex min-h-11 items-center rounded-sn-control bg-sn-primary px-4 py-2 text-sm font-bold text-white hover:bg-sn-primary-hover motion-control">Clear search and filters</Link>
         </div>
       )}
     </div>

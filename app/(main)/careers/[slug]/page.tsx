@@ -33,7 +33,7 @@ export default function CareerDetailPage({ params }: { params: { slug: string } 
       <JsonLd data={schema} />
       <section className="border-b border-sn-border bg-sn-surface">
         <div className="mx-auto max-w-sn px-5 py-10 sm:px-8 lg:px-12">
-          <Link href="/careers" className="inline-flex items-center gap-1 text-sm font-bold font-nunito text-sn-primary hover:underline"><ArrowLeft className="h-4 w-4" />All career guides</Link>
+          <Link href="/careers" className="inline-flex min-h-11 items-center gap-1 text-sm font-bold font-nunito text-sn-primary hover:underline motion-control"><ArrowLeft className="h-4 w-4 motion-arrow" />All career guides</Link>
           <p className="mt-7 text-xs font-bold uppercase tracking-[0.08em] text-sn-primary-hover">{career.category}</p>
           <h1 className="mt-3 font-baloo text-4xl font-extrabold text-sn-ink sm:text-5xl">{career.title}</h1>
           <p className="mt-4 max-w-3xl text-lg leading-8 font-nunito text-sn-ink-soft">{career.summary}</p>
@@ -75,12 +75,12 @@ export default function CareerDetailPage({ params }: { params: { slug: string } 
             <h2 className="mt-4 font-baloo text-2xl font-bold">Verify before you decide</h2>
             <p className="mt-2 text-sm leading-6 font-nunito text-white/80">This guide was editorially checked. Requirements can change—always confirm them with the official institution or professional body.</p>
             <div className="mt-4"><EvidenceChip state="verified" source={career.sourceName} checkedDate={GUIDE_CHECKED_DATE} className="!bg-white/10 !text-white" /></div>
-            <a href={career.sourceUrl} target="_blank" rel="noreferrer" className="mt-5 inline-flex items-center gap-1 rounded-sn-control bg-white px-3 py-2.5 text-sm font-bold font-nunito text-sn-ink">{career.sourceName}<ExternalLink className="h-4 w-4" /></a>
+            <a href={career.sourceUrl} target="_blank" rel="noreferrer" className="mt-5 inline-flex min-h-11 items-center gap-1 rounded-sn-control bg-white px-3 py-2.5 text-sm font-bold font-nunito text-sn-ink hover:bg-white/90 transition-colors motion-control">{career.sourceName}<ExternalLink className="h-4 w-4" /></a>
           </Card>
           <Card>
             <h2 className="font-baloo text-xl font-bold text-sn-ink">Turn this into a plan</h2>
             <p className="mt-2 text-sm leading-6 font-nunito text-sn-ink-soft">Use My Path to choose a stage, track admission steps and keep your shortlist in one private place.</p>
-            <Link href="/my-path" className="mt-4 inline-flex text-sm font-bold font-nunito text-sn-primary hover:underline">Open My Path →</Link>
+            <Link href="/my-path" className="mt-4 inline-flex min-h-11 items-center text-sm font-bold font-nunito text-sn-primary hover:underline motion-control">Open My Path →</Link>
           </Card>
         </aside>
       </div>

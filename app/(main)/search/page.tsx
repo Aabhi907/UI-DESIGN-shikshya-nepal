@@ -124,14 +124,14 @@ function SearchPageInner() {
           />
           <button
             type="submit"
-            className="absolute right-2 top-1/2 -translate-y-1/2 px-5 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
+            className="absolute right-2 top-1/2 -translate-y-1/2 px-5 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors motion-control"
           >
             Search
           </button>
         </form>
       </div>
 
-      {smart && <Link href={smart.href} className="mb-8 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-blue-200 bg-blue-50 p-4 transition hover:border-primary"><div><p className="text-sm font-bold text-blue-950">Use smart college filters</p><p className="mt-1 text-sm text-blue-800">Recognised: {smart.matched.join(' · ')}. Open the directory with these filters applied.</p></div><span className="rounded-lg bg-primary px-3 py-2 text-sm font-bold text-white">Explore colleges</span></Link>}
+      {smart && <Link href={smart.href} className="mb-8 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-blue-200 bg-blue-50 p-4 transition hover:border-primary motion-control"><div><p className="text-sm font-bold text-blue-950">Use smart college filters</p><p className="mt-1 text-sm text-blue-800">Recognised: {smart.matched.join(' · ')}. Open the directory with these filters applied.</p></div><span className="rounded-lg bg-primary px-3 py-2 text-sm font-bold text-white">Explore colleges</span></Link>}
 
       {error && <div role="alert" className="mb-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950"><p className="font-semibold">Search could not finish</p><p className="mt-1">{error}</p></div>}
 
@@ -173,7 +173,7 @@ function SearchPageInner() {
           {data.admissions.length > 0 && (
             <section>
               <div className="flex items-center gap-2 mb-3"><CalendarCheck2 className="w-4 h-4 text-cyan-600" /><h2 className="font-semibold text-gray-800">Admissions ({data.admissions.length})</h2></div>
-              <div className="space-y-2">{data.admissions.map((a) => <Link key={a.id} href={`/admissions/${a.slug}`} className="flex items-center justify-between gap-4 rounded-xl border border-gray-200 bg-white p-4 hover:border-cyan-300"><div><p className="text-sm font-medium text-gray-900">{a.title}</p><p className="mt-1 text-xs text-gray-500">{a.institution_name}</p></div>{a.application_deadline && <span className="flex-shrink-0 text-xs font-medium text-orange-600">Closes {new Date(a.application_deadline).toLocaleDateString('en-NP', { day: 'numeric', month: 'short' })}</span>}</Link>)}</div>
+              <div className="space-y-2">{data.admissions.map((a) => <Link key={a.id} href={`/admissions/${a.slug}`} className="motion-interactive-card flex items-center justify-between gap-4 rounded-xl border border-gray-200 bg-white p-4 hover:border-cyan-300"><div><p className="text-sm font-medium text-gray-900">{a.title}</p><p className="mt-1 text-xs text-gray-500">{a.institution_name}</p></div>{a.application_deadline && <span className="flex-shrink-0 text-xs font-medium text-orange-600">Closes {new Date(a.application_deadline).toLocaleDateString('en-NP', { day: 'numeric', month: 'short' })}</span>}</Link>)}</div>
             </section>
           )}
 

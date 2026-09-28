@@ -67,8 +67,8 @@ export default async function NewsPage({ searchParams }: { searchParams: { q?: s
           <SectionHeader as="h1" title="College news, admissions and student guides" description="College updates, source summaries and practical guides for +2 and Bachelor students." className="mb-6" />
           <SearchField className="[&_button[type=submit]]:!bg-sn-primary-hover" placeholder="Search news..." redirectTo="/news" initialValue={searchParams.q} />
           <nav aria-label="College news topics" className="mt-5 flex gap-2 overflow-x-auto pb-1 text-sm">
-            <Link href="/news" className={`inline-flex min-h-11 items-center whitespace-nowrap rounded-sn-pill border px-4 py-2 font-medium ${!searchParams.topic ? 'border-sn-primary bg-sn-primary-hover text-white' : 'border-sn-border bg-sn-surface text-sn-ink-soft hover:border-sn-primary'}`}>All</Link>
-            {Object.entries(COLLEGE_NEWS_TOPICS).map(([slug, topic]) => <Link key={slug} href={`/news/topic/${slug}`} className="inline-flex min-h-11 items-center whitespace-nowrap rounded-sn-pill border border-sn-border bg-sn-surface px-4 py-2 font-medium text-sn-ink-soft hover:border-sn-primary">{topic.label}</Link>)}
+            <Link href="/news" className={`inline-flex min-h-11 items-center whitespace-nowrap rounded-sn-pill border px-4 py-2 font-medium transition-colors motion-control ${!searchParams.topic ? 'border-sn-primary bg-sn-primary-hover text-white' : 'border-sn-border bg-sn-surface text-sn-ink-soft hover:border-sn-primary'}`}>All</Link>
+            {Object.entries(COLLEGE_NEWS_TOPICS).map(([slug, topic]) => <Link key={slug} href={`/news/topic/${slug}`} className="inline-flex min-h-11 items-center whitespace-nowrap rounded-sn-pill border border-sn-border bg-sn-surface px-4 py-2 font-medium text-sn-ink-soft hover:border-sn-primary transition-colors motion-control">{topic.label}</Link>)}
           </nav>
         </div>
       </div>
@@ -84,7 +84,7 @@ export default async function NewsPage({ searchParams }: { searchParams: { q?: s
             <p className="text-sm text-sn-ink-soft mb-6 max-w-xs mx-auto">
               This is a temporary problem, not an empty list. Please try again.
             </p>
-            <Button.Link href={currentUrl}>
+            <Button.Link href={currentUrl} className="motion-control">
               <RefreshCcw className="w-4 h-4" />
               Try again
             </Button.Link>
@@ -136,7 +136,7 @@ export default async function NewsPage({ searchParams }: { searchParams: { q?: s
                       </p>
                     )}
                     <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-sn-primary-hover">
-                      Read full story <ArrowRight className="w-4 h-4" />
+                      Read full story <ArrowRight className="w-4 h-4 motion-arrow" />
                     </span>
                   </div>
                 </Card>

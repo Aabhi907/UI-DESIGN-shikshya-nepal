@@ -32,11 +32,11 @@ export default async function Page({ params }: { params: { province: string } })
           <nav className="text-sm text-sn-ink-muted"><Link href="/colleges" className="hover:text-sn-primary">Colleges</Link> / {province}</nav>
           <h1 className="mt-4 font-baloo text-3xl font-extrabold text-sn-ink sm:text-4xl">Colleges in {province}</h1>
           <p className="mt-3 max-w-2xl text-sm leading-6 text-sn-ink-soft sm:text-base">Explore +2, Bachelor, Master and diploma colleges across {province}. Compare programs, fees, affiliations and admissions.</p>
-          <Link href={`/colleges?province=${province}`} className="mt-5 inline-block rounded-sn-control bg-sn-primary px-4 py-2.5 text-sm font-bold text-white hover:bg-sn-primary-hover">Filter colleges in {province}</Link>
+          <Link href={`/colleges?province=${province}`} className="mt-5 inline-block min-h-11 rounded-sn-control bg-sn-primary px-4 py-2.5 text-sm font-bold text-white hover:bg-sn-primary-hover transition-colors motion-control">Filter colleges in {province}</Link>
         </div>
       </section>
       <div className="mx-auto max-w-sn px-5 py-8 sm:px-8 lg:px-12">
-        {loadError ? <div role="alert" className="rounded-sn-card border border-sn-confirm/30 bg-sn-confirm-bg p-8 text-center text-sn-confirm-ink"><AlertTriangle className="mx-auto h-8 w-8" aria-hidden="true" /><h2 className="mt-3 font-baloo text-xl font-bold">Colleges could not be loaded</h2><p className="mt-2 text-sm">This is a temporary problem, not an empty list. Please try again.</p><a href={`/colleges/province/${params.province}`} className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-sn-control bg-sn-ink px-4 text-sm font-bold text-white"><RefreshCcw className="h-4 w-4" aria-hidden="true" />Try again</a></div> : <>
+        {loadError ? <div role="alert" className="rounded-sn-card border border-sn-confirm/30 bg-sn-confirm-bg p-8 text-center text-sn-confirm-ink"><AlertTriangle className="mx-auto h-8 w-8" aria-hidden="true" /><h2 className="mt-3 font-baloo text-xl font-bold">Colleges could not be loaded</h2><p className="mt-2 text-sm">This is a temporary problem, not an empty list. Please try again.</p><a href={`/colleges/province/${params.province}`} className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-sn-control bg-sn-ink px-4 text-sm font-bold text-white motion-control"><RefreshCcw className="h-4 w-4" aria-hidden="true" />Try again</a></div> : <>
         <p className="mb-5 text-sm text-sn-ink-soft"><strong className="text-sn-ink">{colleges.length}</strong> listed colleges</p>
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {colleges.map(c => <CollegeCard key={c.id} college={c} />)}

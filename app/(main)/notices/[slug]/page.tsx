@@ -69,9 +69,9 @@ export default async function NoticeDetailPage({ params }: { params: { slug: str
     <main className="mx-auto max-w-4xl px-5 py-10 font-nunito sm:px-8 lg:py-16">
       <Link
         href="/notices"
-        className="inline-flex min-h-11 items-center gap-2 text-sm text-sn-ink-soft hover:text-sn-primary-hover mb-6 transition-colors"
+        className="inline-flex min-h-11 items-center gap-2 text-sm text-sn-ink-soft hover:text-sn-primary-hover mb-6 transition-colors motion-control"
       >
-        <ArrowLeft className="w-4 h-4" /> Back to Notices
+        <ArrowLeft className="w-4 h-4 motion-arrow" /> Back to Notices
       </Link>
 
       {/* ── Header card ───────────────────────────────────────────────── */}
@@ -114,7 +114,7 @@ export default async function NoticeDetailPage({ params }: { params: { slug: str
                 <a
                   href={notice.notice_pdf_url!}
                   download
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-sn-primary-hover text-white font-medium rounded-sn-card hover:bg-sn-primary-hover transition-colors"
+                  className="inline-flex min-h-11 items-center gap-2 px-6 py-3 bg-sn-primary-hover text-white font-medium rounded-sn-card hover:bg-sn-primary-hover transition-colors motion-control"
                 >
                   <Download className="w-5 h-5" />
                   Download PDF
@@ -125,7 +125,7 @@ export default async function NoticeDetailPage({ params }: { params: { slug: str
                   href={notice.notice_pdf_url!}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-sn-primary-hover text-white font-medium rounded-sn-card hover:bg-sn-primary-hover transition-colors"
+                  className="inline-flex min-h-11 items-center gap-2 px-6 py-3 bg-sn-primary-hover text-white font-medium rounded-sn-card hover:bg-sn-primary-hover transition-colors motion-control"
                 >
                   <ZoomIn className="w-5 h-5" />
                   View Full Size
@@ -136,7 +136,7 @@ export default async function NoticeDetailPage({ params }: { params: { slug: str
                   href={notice.notice_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`inline-flex items-center gap-2 px-6 py-3 font-medium rounded-sn-card transition-colors ${
+                  className={`inline-flex min-h-11 items-center gap-2 px-6 py-3 font-medium rounded-sn-card transition-colors motion-control ${
                     hasPdf || hasImage
                       ? 'bg-sn-surface border border-sn-border-strong text-sn-ink-soft hover:bg-sn-surface-alt'
                       : 'bg-sn-primary-hover text-white hover:bg-sn-primary-hover'
@@ -151,7 +151,7 @@ export default async function NoticeDetailPage({ params }: { params: { slug: str
                   href={UNIVERSITY_HOMEPAGES[uniSlug]}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-6 py-3 bg-sn-surface border border-sn-border-strong text-sn-ink-soft font-medium rounded-sn-card hover:bg-sn-surface-alt transition-colors"
+                  className="inline-flex min-h-11 items-center gap-2 px-6 py-3 bg-sn-surface border border-sn-border-strong text-sn-ink-soft font-medium rounded-sn-card hover:bg-sn-surface-alt transition-colors motion-control"
                 >
                   <Globe className="w-5 h-5" />
                   {uniSlug} Official Site

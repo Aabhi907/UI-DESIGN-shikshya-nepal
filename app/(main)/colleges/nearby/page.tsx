@@ -41,7 +41,7 @@ export default function NearbyCollegesPage() {
           <p className="text-xs font-bold uppercase tracking-[0.08em] text-sn-primary-hover">College discovery</p>
           <h1 className="mt-3 font-baloo text-3xl font-extrabold text-sn-ink sm:text-4xl">Colleges near you</h1>
           <p className="mt-3 max-w-2xl text-sm leading-6 text-sn-ink-soft">Use your device location to find colleges with mapped coordinates, ordered by straight-line distance. Your location is used only for this search and is not saved.</p>
-          <Button onClick={find} disabled={loading} className="mt-6">
+          <Button onClick={find} disabled={loading} className="mt-6 motion-control">
             <LocateFixed className="h-4 w-4" />
             {loading ? 'Finding colleges…' : 'Use my location'}
           </Button>
@@ -50,13 +50,13 @@ export default function NearbyCollegesPage() {
       <div className="mx-auto max-w-sn px-5 py-8 sm:px-8">
         {error && (
           <div className="rounded-sn-card border border-sn-confirm/30 bg-sn-confirm-bg p-4 text-sm text-sn-confirm-ink">
-            {error} <Link href="/colleges" className="font-bold underline">Browse all colleges</Link>
+            {error} <Link href="/colleges" className="font-bold underline motion-control">Browse all colleges</Link>
           </div>
         )}
         {items.length > 0 && (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {items.map(college => (
-              <Link key={college.id} href={`/colleges/${college.slug}`} className="rounded-sn-card border border-sn-border bg-sn-surface p-5 shadow-sn-card transition hover:shadow-sn-float">
+              <Link key={college.id} href={`/colleges/${college.slug}`} className="motion-interactive-card rounded-sn-card border border-sn-border bg-sn-surface p-5 shadow-sn-card">
                 <div className="flex items-start justify-between gap-3">
                   <h2 className="font-baloo text-lg font-bold text-sn-ink">{college.name}</h2>
                   <span className="whitespace-nowrap rounded-sn-pill bg-sn-primary-bg px-2 py-1 text-xs font-bold text-sn-primary-hover">{college.distance_km < 1 ? `${Math.round(college.distance_km * 1000)} m` : `${college.distance_km.toFixed(1)} km`}</span>

@@ -102,8 +102,8 @@ export default async function ProgramDetailPage({ params }: { params: { slug: st
   return (
     <div className="mx-auto max-w-sn px-5 py-10 sm:px-8 lg:px-12 lg:py-14">
       <JsonLd data={jsonLd} />
-      <Link href="/programs" className="mb-6 inline-flex items-center gap-2 text-sm font-bold font-nunito text-sn-ink-muted hover:text-sn-primary transition-colors">
-        <ArrowLeft className="w-4 h-4" /> Back to Programs
+      <Link href="/programs" className="mb-6 inline-flex min-h-11 items-center gap-2 text-sm font-bold font-nunito text-sn-ink-muted hover:text-sn-primary transition-colors motion-control">
+        <ArrowLeft className="w-4 h-4 motion-arrow" /> Back to Programs
       </Link>
 
       <Card className="mb-6">
@@ -201,7 +201,7 @@ export default async function ProgramDetailPage({ params }: { params: { slug: st
               const feeSource = safeExternalUrl(cp.fee_source_url)
               const feeIsVerifiable = Boolean(feeSource) && Boolean(cp.fee_last_verified_at)
               return (
-                <Link key={cp.college_id} href={`/colleges/${cp.college?.slug}`} className="group block">
+                <Link key={cp.college_id} href={`/colleges/${cp.college?.slug}`} className="group block motion-interactive-card">
                   <div className="flex flex-col gap-3 rounded-sn-control border border-sn-border bg-sn-surface-alt p-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                       <p className="text-sm font-bold font-nunito text-sn-ink group-hover:text-sn-primary transition-colors">
@@ -236,7 +236,7 @@ export default async function ProgramDetailPage({ params }: { params: { slug: st
         ) : (
           <div className="rounded-sn-control bg-sn-surface-alt p-5 text-sm font-nunito text-sn-ink-soft">
             <p>No active college profile is linked to this program yet.</p>
-            <Link href={`/colleges?program=${program.slug}`} className="mt-3 inline-flex font-bold font-nunito text-sn-primary">Search the college directory →</Link>
+            <Link href={`/colleges?program=${program.slug}`} className="mt-3 inline-flex min-h-11 items-center font-bold font-nunito text-sn-primary hover:underline motion-control">Search the college directory →</Link>
           </div>
         )}
       </Card>
@@ -244,7 +244,7 @@ export default async function ProgramDetailPage({ params }: { params: { slug: st
         <Card className="mt-6">
           <h2 className="font-baloo text-lg font-bold text-sn-ink">Current admissions</h2>
           <div className="mt-4 space-y-3">{admissions.map(item => (
-            <Link key={item.id} href={`/admissions/${item.slug}`} className="flex justify-between rounded-sn-control bg-sn-primary-bg p-4 text-sm font-nunito">
+            <Link key={item.id} href={`/admissions/${item.slug}`} className="motion-interactive-card flex justify-between rounded-sn-control bg-sn-primary-bg p-4 text-sm font-nunito">
               <span><strong className="text-sn-ink">{item.title}</strong><span className="block text-sn-ink-muted">{item.institution_name}</span></span>
               <span className="font-bold text-sn-primary-hover">View →</span>
             </Link>
@@ -282,7 +282,7 @@ export default async function ProgramDetailPage({ params }: { params: { slug: st
           )}
         </div>
         <p className="mt-3 text-sm font-nunito text-sn-ink-soft">{program.source_url ? 'Confirm changing requirements on the linked original source.' : 'A primary source link has not been recorded; confirm all requirements with the university or college.'}</p>
-        {program.source_url && <a href={program.source_url} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex items-center gap-2 font-bold font-nunito text-sn-primary hover:text-sn-primary-hover">Official program source <ExternalLink className="h-4 w-4" /></a>}
+        {program.source_url && <a href={program.source_url} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex min-h-11 items-center gap-2 font-bold font-nunito text-sn-primary hover:text-sn-primary-hover transition-colors motion-control">Official program source <ExternalLink className="h-4 w-4" /></a>}
       </Card>
     </div>
   )
