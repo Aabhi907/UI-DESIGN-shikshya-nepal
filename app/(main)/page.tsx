@@ -141,7 +141,7 @@ async function getHomeData() {
   }
 }
 
-// ── Hero sidebar card — 3 clean list items ─────────────────────────
+// ── Hero sidebar card — Apple hardware framed live updates ──────────
 function HeroCard({
   result, notice, college,
 }: {
@@ -154,47 +154,53 @@ function HeroCard({
   const collegeCover = college?.cover_url || (college ? CAMPUS_FALLBACK_IMAGES[0] : null)
 
   return (
-    <aside className="apple-card overflow-hidden">
+    <aside className="apple-card overflow-hidden !rounded-[18px]">
       {college && collegeCover && (
-        <Link href={`/colleges/${college.slug}`} className="group relative block h-44 overflow-hidden bg-sn-surface-alt" aria-label={`View ${college.name}`}>
+        <Link href={`/colleges/${college.slug}`} className="group relative block h-48 overflow-hidden bg-sn-surface-alt" aria-label={`View ${college.name}`}>
           <Image
             src={collegeCover}
             alt={`${college.name} campus`}
             fill
             sizes="(min-width: 1024px) 33vw, 100vw"
-            className="object-cover transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03]"
+            className="object-cover transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-sn-ink/90 via-sn-ink/30 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 p-4 text-white">
-            <span className="inline-block rounded-full bg-white/20 backdrop-blur-md px-2 py-0.5 text-[11px] font-bold font-nunito tracking-wide">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
+          <div className="absolute top-3.5 left-3.5 flex items-center gap-1.5">
+            <span className="apple-glass rounded-full px-2.5 py-1 text-[11px] font-bold font-nunito text-sn-ink shadow-sm">
               Featured campus
             </span>
-            <p className="mt-1 font-baloo text-base font-bold leading-tight drop-shadow-sm line-clamp-1">
+          </div>
+          <div className="absolute inset-x-0 bottom-0 p-4 text-white">
+            <p className="font-baloo text-base sm:text-lg font-bold leading-tight drop-shadow-sm line-clamp-1 group-hover:text-amber-200 transition-colors">
               {college.name}
             </p>
+            {college.location && (
+              <p className="text-xs font-nunito text-white/80 mt-0.5 line-clamp-1">{college.location}</p>
+            )}
           </div>
         </Link>
       )}
-      <div className="p-5">
+      <div className="p-4 sm:p-5 space-y-1">
         {result && (
-          <Link href={`/results/${result.slug}`} className="group block py-3.5 border-b border-black/[0.06]">
-            <p className="mb-1 text-xs font-bold font-nunito text-sn-ink-muted">Latest result</p>
-            <p className="text-sm font-bold font-nunito leading-snug line-clamp-2 text-sn-ink group-hover:text-sn-primary transition-colors">{result.title}</p>
-            <span className="mt-2 inline-flex items-center gap-1 text-xs font-bold font-nunito text-sn-primary">View result <ArrowRight className="h-3.5 w-3.5 motion-arrow" aria-hidden="true" /></span>
+          <Link href={`/results/${result.slug}`} className="group flex items-start justify-between gap-3 p-3 rounded-xl transition-all duration-200 hover:bg-sn-surface-alt/70">
+            <div className="min-w-0">
+              <span className="inline-block text-[11px] font-bold font-nunito text-sn-primary-hover mb-0.5">Latest result</span>
+              <p className="text-sm font-bold font-nunito leading-snug line-clamp-1 text-sn-ink group-hover:text-sn-primary transition-colors">{result.title}</p>
+            </div>
+            <span className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sn-surface-alt text-sn-ink group-hover:bg-sn-primary group-hover:text-white transition-all duration-200">
+              <ArrowRight className="h-3 w-3" aria-hidden="true" />
+            </span>
           </Link>
         )}
         {notice && (
-          <Link href={`/notices/${notice.slug}`} className="group block py-3.5 border-b border-black/[0.06]">
-            <p className="mb-1 text-xs font-bold font-nunito text-sn-ink-muted">Latest notice</p>
-            <p className="text-sm font-bold font-nunito leading-snug line-clamp-2 text-sn-ink group-hover:text-sn-primary transition-colors">{notice.title}</p>
-            <span className="mt-2 inline-flex items-center gap-1 text-xs font-bold font-nunito text-sn-primary">Read notice <ArrowRight className="h-3.5 w-3.5 motion-arrow" aria-hidden="true" /></span>
-          </Link>
-        )}
-        {college && (
-          <Link href={`/colleges/${college.slug}`} className="block py-3.5 group">
-            <p className="mb-1 text-xs font-bold font-nunito text-sn-ink-muted">Featured college profile</p>
-            <p className="text-sm font-bold font-nunito leading-snug line-clamp-2 text-sn-ink group-hover:text-sn-primary transition-colors">{college.name}</p>
-            {college.location && <p className="text-xs font-nunito text-sn-ink-muted mt-1">{college.location}</p>}
+          <Link href={`/notices/${notice.slug}`} className="group flex items-start justify-between gap-3 p-3 rounded-xl transition-all duration-200 hover:bg-sn-surface-alt/70">
+            <div className="min-w-0">
+              <span className="inline-block text-[11px] font-bold font-nunito text-sn-primary-hover mb-0.5">Latest notice</span>
+              <p className="text-sm font-bold font-nunito leading-snug line-clamp-1 text-sn-ink group-hover:text-sn-primary transition-colors">{notice.title}</p>
+            </div>
+            <span className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sn-surface-alt text-sn-ink group-hover:bg-sn-primary group-hover:text-white transition-all duration-200">
+              <ArrowRight className="h-3 w-3" aria-hidden="true" />
+            </span>
           </Link>
         )}
       </div>
@@ -213,59 +219,87 @@ export default async function HomePage() {
   return (
     <div>
       {/* ════════════════════════════════════════════════════════
-          1. HERO
+          1. HERO — Apple Clean Minimal Architecture
       ════════════════════════════════════════════════════════ */}
       <section className={`relative border-b border-sn-border bg-sn-ground overflow-hidden ${SECTION_PAD}`}>
-        {/* Ambient warm specular glow */}
-        <div className="pointer-events-none absolute -top-44 left-1/2 h-[550px] w-[850px] -translate-x-1/2 rounded-full bg-gradient-to-b from-orange-200/40 via-amber-100/25 to-transparent blur-3xl" aria-hidden="true" />
+        {/* Apple radial ambient glow */}
+        <div className="pointer-events-none absolute -top-48 left-1/2 h-[580px] w-[900px] -translate-x-1/2 rounded-full bg-gradient-to-b from-orange-200/35 via-amber-100/20 to-transparent blur-3xl" aria-hidden="true" />
 
         <div className={`${CONTAINER} relative`}>
-          <div className="grid grid-cols-1 gap-12 lg:grid-cols-5 lg:gap-16 items-center">
-            <div className="lg:col-span-3">
-              <div className="apple-pill mb-6">
-                <Mascot pose="wave" size={26} />
-                <span className="text-xs font-bold text-sn-ink">An independent education guide for Nepal</span>
+          <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-14 items-center">
+            {/* Left Column: Value Prop, Typography & Search */}
+            <div className="lg:col-span-7">
+              <div className="apple-pill mb-6 shadow-sm">
+                <Mascot pose="wave" size={24} />
+                <span className="text-xs font-bold font-nunito text-sn-ink">An independent education guide for Nepal</span>
               </div>
 
-              <h1 className="font-baloo font-extrabold text-sn-ink leading-[1.05] mb-5 text-balance tracking-[-0.035em]" style={{ fontSize: 'clamp(2.5rem, 5.5vw, 3.85rem)' }}>
+              <h1 className="font-baloo font-extrabold text-sn-ink leading-[1.04] mb-5 text-balance tracking-[-0.038em]" style={{ fontSize: 'clamp(2.6rem, 5.8vw, 4.1rem)' }}>
                 Decide what to study after +2, and where.
               </h1>
 
-              <p className="mb-8 max-w-2xl text-lg leading-8 font-nunito text-sn-ink-soft md:text-xl">
+              <p className="mb-8 max-w-xl text-lg leading-relaxed font-nunito text-sn-ink-soft md:text-xl">
                 Verified colleges, courses and career pathways for +2 and university in Nepal. Sourced, dated and unbiased.
               </p>
 
               <HeroSearch />
 
-              <div className="mt-8 flex flex-wrap gap-3">
-                <Button.Link href="/colleges" variant="primary" className="shadow-[inset_0_1px_1px_rgba(255,255,255,0.35),0_4px_16px_rgba(224,102,58,0.3)]">Find your college<ArrowRight className="h-4 w-4 motion-arrow" aria-hidden="true" /></Button.Link>
-                <Button.Link href="/programs" variant="secondary" className="border-black/[0.08] bg-white/80 shadow-[inset_0_1px_1px_rgba(255,255,255,0.9)]">Explore programs</Button.Link>
+              <div className="mt-8 flex flex-wrap items-center gap-3">
+                <Button.Link
+                  href="/colleges"
+                  variant="primary"
+                  className="group rounded-full px-6 py-3 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),0_6px_20px_rgba(224,102,58,0.28)] transition-all duration-300 hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.5),0_10px_28px_rgba(224,102,58,0.36)] hover:-translate-y-0.5 active:translate-y-0"
+                >
+                  <span>Find your college</span>
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/20 transition-transform duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-0.5">
+                    <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                  </span>
+                </Button.Link>
+                <Button.Link
+                  href="/programs"
+                  variant="secondary"
+                  className="rounded-full px-6 py-3 border-black/[0.08] bg-white/80 backdrop-blur-sm shadow-[inset_0_1px_1px_rgba(255,255,255,0.95)] hover:border-black/[0.15] hover:bg-white transition-all duration-200"
+                >
+                  Explore programs
+                </Button.Link>
               </div>
             </div>
 
-            <div className="hidden lg:block lg:col-span-2">
-              <HeroCard result={latestResult ?? null} notice={latestNotice ?? null} college={featuredCollege} />
+            {/* Right Column: Hardware-Framed Live Showcase Card */}
+            <div className="hidden lg:block lg:col-span-5">
+              <div className="apple-shell">
+                <HeroCard result={latestResult ?? null} notice={latestNotice ?? null} college={featuredCollege} />
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* ════════════════════════════════════════════════════════
-          2. TRUST STRIP — a thin accent band, not a full section;
-          the platform's own real counts, not a third-party claim.
+          2. STATS STRIP — Apple clean minimal luminous ribbon
       ════════════════════════════════════════════════════════ */}
       {heroStats.length > 0 && (
-        <section className="border-y border-white/10 bg-[#0d1629] py-10 lg:py-12">
+        <section className="border-y border-black/[0.06] bg-white/75 backdrop-blur-md py-8 lg:py-10">
           <div className={CONTAINER}>
-            <div className="flex flex-wrap justify-center gap-0 divide-x divide-white/15 sm:justify-between">
+            <div className="grid grid-cols-2 gap-6 sm:grid-cols-4 sm:divide-x sm:divide-black/[0.06]">
               {heroStats.map((stat) => (
-                <div key={stat.label} className="px-8 py-2 text-center">
-                  <p className="font-baloo text-2xl leading-none text-white tabular-nums tracking-tight">
-                    <span className="font-extrabold">{stat.value.toLocaleString()}</span>{' '}
-                    <span className="font-nunito font-normal text-white/60">{stat.label.toLowerCase()}</span>
+                <div key={stat.label} className="text-center sm:px-6">
+                  <p className="font-baloo text-3xl sm:text-4xl font-extrabold text-sn-ink tabular-nums tracking-tight">
+                    {stat.value.toLocaleString()}
+                  </p>
+                  <p className="mt-1 font-nunito text-xs sm:text-sm font-bold text-sn-ink-muted">
+                    {stat.label} cataloged &amp; dated
                   </p>
                 </div>
               ))}
+              <div className="text-center sm:px-6">
+                <p className="font-baloo text-3xl sm:text-4xl font-extrabold text-sn-primary tabular-nums tracking-tight">
+                  100%
+                </p>
+                <p className="mt-1 font-nunito text-xs sm:text-sm font-bold text-sn-ink-muted">
+                  Independent student guidance
+                </p>
+              </div>
             </div>
           </div>
         </section>
@@ -511,30 +545,51 @@ export default async function HomePage() {
       )}
 
       {/* ════════════════════════════════════════════════════════
-          6. GET STARTED — final CTA + email capture, one section
+          6. GET STARTED — Apple Verification & Alert Center
       ════════════════════════════════════════════════════════ */}
       <section className={`border-t border-sn-border bg-sn-ground ${SECTION_PAD}`}>
         <div className={CONTAINER}>
-          <div className="apple-card relative overflow-hidden rounded-3xl border border-black/[0.08] bg-white p-8 sm:p-12 lg:p-16 text-center shadow-[inset_0_1px_1.5px_rgba(255,255,255,0.9),0_8px_32px_rgba(15,23,42,0.06)]">
-            {/* Subtle warm accent radial background */}
-            <div className="pointer-events-none absolute -top-24 left-1/2 h-[350px] w-[500px] -translate-x-1/2 rounded-full bg-gradient-to-b from-orange-100/40 via-amber-50/20 to-transparent blur-2xl" aria-hidden="true" />
+          <div className="apple-shell">
+            <div className="apple-card relative overflow-hidden !rounded-[20px] bg-white p-8 sm:p-12 lg:p-16 text-center shadow-[inset_0_1px_1.5px_rgba(255,255,255,0.9),0_8px_32px_rgba(15,23,42,0.06)]">
+              {/* Subtle warm accent radial background */}
+              <div className="pointer-events-none absolute -top-24 left-1/2 h-[350px] w-[500px] -translate-x-1/2 rounded-full bg-gradient-to-b from-orange-100/40 via-amber-50/20 to-transparent blur-2xl" aria-hidden="true" />
 
-            <div className="relative">
-              <h2 className="font-baloo font-extrabold text-sn-ink text-3xl sm:text-4xl mb-3 tracking-[-0.02em]">
-                Check the current notice before you pay.
-              </h2>
-              <p className="mx-auto mb-8 max-w-2xl text-sn-ink-soft font-nunito text-sm sm:text-base leading-relaxed">
-                Fees, seats and deadlines can change. Each college profile shows its source and last-checked date when available.
-              </p>
-              <div className="flex flex-wrap justify-center gap-3">
-                <Button.Link href="/colleges" variant="primary" className="shadow-[inset_0_1px_1px_rgba(255,255,255,0.35),0_4px_16px_rgba(224,102,58,0.3)]">Search all institutions</Button.Link>
-                <Link href="/results" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-sn-control border border-sn-border bg-white px-5 py-2.5 text-sm font-bold font-nunito text-sn-ink transition-colors hover:bg-sn-surface-alt hover:text-sn-primary shadow-[inset_0_1px_1px_rgba(255,255,255,0.9)] motion-control">Check Results</Link>
-              </div>
+              <div className="relative">
+                <h2 className="font-baloo font-extrabold text-sn-ink text-3xl sm:text-4xl mb-3 tracking-[-0.02em]">
+                  Check the current notice before you pay.
+                </h2>
+                <p className="mx-auto mb-8 max-w-xl text-sn-ink-soft font-nunito text-sm sm:text-base leading-relaxed">
+                  Fees, seats and deadlines can change. Each college profile shows its source and last-checked date when available.
+                </p>
+                <div className="flex flex-wrap justify-center gap-3.5">
+                  <Button.Link
+                    href="/colleges"
+                    variant="primary"
+                    className="group rounded-full px-6 py-3 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),0_6px_20px_rgba(224,102,58,0.28)] transition-all duration-300 hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.5),0_10px_28px_rgba(224,102,58,0.36)] hover:-translate-y-0.5 active:translate-y-0"
+                  >
+                    <span>Search all institutions</span>
+                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/20 transition-transform duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-0.5">
+                      <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                    </span>
+                  </Button.Link>
+                  <Link
+                    href="/results"
+                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-black/[0.08] bg-white/80 px-6 py-3 text-sm font-bold font-nunito text-sn-ink transition-all hover:bg-white hover:border-black/[0.15] shadow-[inset_0_1px_1px_rgba(255,255,255,0.9)] motion-control"
+                  >
+                    Check results
+                  </Link>
+                </div>
 
-              <div className="mx-auto mt-10 max-w-md border-t border-black/[0.06] pt-8 lg:mt-12 lg:pt-10">
-                <p className="font-bold font-nunito text-sm text-sn-ink flex items-center gap-2 justify-center"><Bell className="w-4 h-4 text-sn-primary" aria-hidden="true" />Get result alerts in your inbox</p>
-                <p className="text-sn-ink-muted text-xs font-nunito mt-1 mb-5">Email updates when a new result or notice is published</p>
-                <EmailSubscribe />
+                <div className="mx-auto mt-10 max-w-md border-t border-black/[0.06] pt-8 lg:mt-12 lg:pt-10">
+                  <p className="font-bold font-nunito text-sm text-sn-ink flex items-center gap-2 justify-center">
+                    <Bell className="w-4 h-4 text-sn-primary" aria-hidden="true" />
+                    Get result alerts in your inbox
+                  </p>
+                  <p className="text-sn-ink-muted text-xs font-nunito mt-1 mb-5">
+                    Email updates when a new result or notice is published
+                  </p>
+                  <EmailSubscribe />
+                </div>
               </div>
             </div>
           </div>
