@@ -3,25 +3,17 @@
 import Link from 'next/link'
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { usePathname } from 'next/navigation'
-import { Menu, X, ChevronDown, Search } from 'lucide-react'
+import { Menu, X, ChevronDown, Search, Moon } from 'lucide-react'
 import SubscribeButton from '@/components/notifications/SubscribeButton'
 import AccountButton from '@/components/auth/AccountButton'
 import Mascot from '@/components/design-system/Mascot'
-
-// Site-wide nav (see the "Floating pill nav" Build Brief). Interaction logic
-// (focus trap, outside-click, Escape, scroll lock) is carried over unchanged
-// from the retired components/layout/Header.tsx — this now renders on every
-// route, so Header.tsx was deleted rather than kept as unreachable dead code.
-// Its two behaviours not already here (a ⌘K hint on Search, and a secondary
-// "Check Results" action in the mobile drawer) were ported below; everything
-// else in Header was already present in this component unchanged.
 
 type NavigationItem = { label: string; href: string; group?: string }
 type NavigationLink = { label: string; href: string; sub?: NavigationItem[] }
 
 const navLinks: NavigationLink[] = [
   {
-    label: 'Colleges',
+    label: 'colleges',
     href: '/colleges',
     sub: [
       { label: 'All colleges', href: '/colleges' },
@@ -33,7 +25,7 @@ const navLinks: NavigationLink[] = [
     ],
   },
   {
-    label: 'Programs',
+    label: 'programs',
     href: '/programs',
     sub: [
       { label: 'All programs', href: '/programs' },
@@ -45,7 +37,7 @@ const navLinks: NavigationLink[] = [
     ],
   },
   {
-    label: 'Admissions',
+    label: 'admissions',
     href: '/admissions',
     sub: [
       { label: 'Open admissions', href: '/admissions?deadline=open' },
@@ -55,7 +47,7 @@ const navLinks: NavigationLink[] = [
     ],
   },
   {
-    label: 'Scholarships',
+    label: 'scholarships',
     href: '/scholarships',
     sub: [
       { label: 'Scholarships', href: '/scholarships' },
@@ -63,7 +55,7 @@ const navLinks: NavigationLink[] = [
     ],
   },
   {
-    label: 'Guidance',
+    label: 'guidance',
     href: '/my-path',
     sub: [
       { label: 'My Path', href: '/my-path' },
@@ -74,23 +66,52 @@ const navLinks: NavigationLink[] = [
     ],
   },
   {
-    label: 'Updates',
-    href: '/news',
+    label: 'results',
+    href: '/results',
     sub: [
+      { label: 'Board results', href: '/results' },
+      { label: 'University notices', href: '/notices' },
       { label: 'News & guides', href: '/news' },
-      { label: 'Results', href: '/results' },
-      { label: 'Notices', href: '/notices' },
     ],
   },
 ]
 
+function BatteryIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} width="18" height="10" viewBox="0 0 22 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect x="0.5" y="0.5" width="18" height="11" rx="2.5" stroke="currentColor" strokeWidth="1.2" />
+      <path d="M20.5 4.5V7.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+      <rect x="2.5" y="2.5" width="13" height="7" rx="1.5" fill="currentColor" />
+    </svg>
+  )
+}
+
+function LiveClock() {
+  const [time, setTime] = useState<string>('6:51 PM')
+
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date()
+      setTime(now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }))
+    }
+    updateTime()
+    const interval = setInterval(updateTime, 30000)
+    return () => clearInterval(interval)
+  }, [])
+
+  return (
+    <span className="hidden xl:inline text-[11px] font-mono font-medium text-sn-ink-muted tabular-nums select-none">
+      {time}
+    </span>
+  )
+}
+
 function Wordmark() {
   return (
-    <Link href="/" className="flex items-center gap-2 flex-shrink-0">
-      <Mascot pose="wave" size={30} />
-      <span className="font-baloo text-[19px] font-extrabold leading-none tracking-[-0.02em]">
-        <span className="text-sn-ink">Sikshya</span>
-        <span className="text-sn-primary">Nepal</span>
+    <Link href="/" className="flex items-center gap-2 flex-shrink-0 group">
+      <Mascot pose="wave" size={24} />
+      <span className="text-[15px] font-extrabold tracking-tight font-sans text-sn-ink leading-none">
+        sikshya<span className="text-sn-primary">nepal</span>
       </span>
     </Link>
   )
@@ -183,11 +204,13 @@ export default function Nav() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 px-5 pt-3 sm:px-8 sm:pt-4 lg:px-12">
-        <div className={`motion-header mx-auto flex h-16 max-w-[1500px] items-center justify-between rounded-full border border-black/[0.07] bg-white/85 px-4 backdrop-blur-2xl sm:px-6 shadow-[inset_0_1px_1.5px_rgba(255,255,255,0.95),0_4px_20px_rgba(15,23,42,0.04)] ${scrolled ? 'shadow-[inset_0_1px_1.5px_rgba(255,255,255,1),0_10px_32px_rgba(15,23,42,0.08)]' : ''}`}>
+      <header className={`sticky top-0 z-50 w-full border-b border-black/[0.06] bg-white/80 backdrop-blur-xl transition-all duration-200 ${scrolled ? 'bg-white/95 shadow-sm' : ''}`}>
+        <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+          {/* Left Cluster: Wordmark + Minimal Quiet Nav Links */}
+          <div className="flex items-center gap-7 lg:gap-9">
             <Wordmark />
 
-            <nav className="hidden min-[1400px]:flex items-center gap-0.5">
+            <nav className="hidden lg:flex items-center gap-5 xl:gap-6" aria-label="Main Navigation">
               {navLinks.map((link) => (
                 <div key={link.label} className="relative sn-nav-dropdown">
                   {link.sub ? (
@@ -195,18 +218,18 @@ export default function Nav() {
                       onClick={() => setOpenDrop(openDrop === link.label ? null : link.label)}
                       aria-expanded={openDrop === link.label}
                       aria-controls={`sn-desktop-nav-${link.label.toLowerCase().replaceAll(' ', '-')}`}
-                      className={`motion-control flex min-h-11 items-center gap-1 rounded-full px-3.5 py-2 text-sm font-bold font-nunito transition-colors duration-150 ${
-                        isActive(link.href) ? 'text-sn-primary bg-sn-primary-bg/60' : 'text-sn-ink-soft hover:text-sn-ink hover:bg-black/[0.03]'
+                      className={`motion-control flex items-center gap-1 text-[13px] font-medium font-sans lowercase transition-colors duration-150 py-1 ${
+                        isActive(link.href) ? 'text-sn-ink font-semibold' : 'text-sn-ink-soft hover:text-sn-ink'
                       }`}
                     >
                       {link.label}
-                      <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${openDrop === link.label ? 'rotate-180' : ''}`} />
+                      <ChevronDown className={`w-3 h-3 text-sn-ink-muted transition-transform duration-200 ${openDrop === link.label ? 'rotate-180' : ''}`} />
                     </button>
                   ) : (
                     <Link
                       href={link.href}
-                      className={`motion-control flex items-center gap-0.5 rounded-full px-3.5 py-2 text-sm font-bold font-nunito transition-colors duration-150 ${
-                        isActive(link.href) ? 'text-sn-primary bg-sn-primary-bg/60' : 'text-sn-ink-soft hover:text-sn-ink hover:bg-black/[0.03]'
+                      className={`motion-control text-[13px] font-medium font-sans lowercase transition-colors duration-150 py-1 ${
+                        isActive(link.href) ? 'text-sn-ink font-semibold' : 'text-sn-ink-soft hover:text-sn-ink'
                       }`}
                     >
                       {link.label}
@@ -214,15 +237,14 @@ export default function Nav() {
                   )}
 
                   {link.sub && openDrop === link.label && (
-                    <div className={`absolute top-full z-50 ${link.label === 'Updates' ? 'right-0' : 'left-0'}`}>
-                      <div className="absolute -top-2 left-0 right-0 h-2 bg-transparent" />
-                      <div id={`sn-desktop-nav-${link.label.toLowerCase().replaceAll(' ', '-')}`} className="motion-menu-enter mt-2 max-h-[70vh] w-72 overflow-y-auto overscroll-contain rounded-2xl border border-black/[0.07] bg-white/95 p-2 backdrop-blur-2xl shadow-[inset_0_1px_1.5px_rgba(255,255,255,0.95),0_12px_36px_rgba(15,23,42,0.1)]">
+                    <div className={`absolute top-full z-50 pt-2 ${link.label === 'results' ? 'right-0' : 'left-0'}`}>
+                      <div id={`sn-desktop-nav-${link.label.toLowerCase().replaceAll(' ', '-')}`} className="motion-menu-enter w-64 overflow-hidden rounded-2xl border border-black/[0.07] bg-white/95 p-1.5 backdrop-blur-2xl shadow-[0_12px_36px_rgba(15,23,42,0.08)]">
                         {link.sub.map((s, index) => (
                           <div key={s.label}>
                             {s.group && (index === 0 || link.sub![index - 1].group !== s.group) && (
-                              <p className="px-4 pb-1 pt-3 text-[11px] font-bold uppercase tracking-[0.1em] text-sn-ink-muted">{s.group}</p>
+                              <p className="px-3.5 pb-1 pt-2.5 text-[10px] font-bold uppercase tracking-wider text-sn-ink-muted">{s.group}</p>
                             )}
-                            <Link href={s.href} onClick={() => setOpenDrop(null)} className="motion-control block rounded-xl px-4 py-2.5 text-sm font-nunito font-semibold text-sn-ink-soft hover:bg-sn-primary-bg hover:text-sn-primary-hover">
+                            <Link href={s.href} onClick={() => setOpenDrop(null)} className="motion-control block rounded-xl px-3.5 py-2 text-xs font-nunito font-semibold text-sn-ink-soft hover:bg-sn-surface-alt hover:text-sn-ink">
                               {s.label}
                             </Link>
                           </div>
@@ -233,50 +255,86 @@ export default function Nav() {
                 </div>
               ))}
             </nav>
+          </div>
 
-            <div className="hidden min-[1400px]:flex items-center gap-2.5">
-              <button onClick={() => window.dispatchEvent(new Event('open-site-search'))} className="motion-control focus-ring inline-flex items-center gap-2 rounded-full border border-black/[0.08] bg-black/[0.02] px-3.5 py-1.5 text-xs font-bold font-nunito text-sn-ink-soft hover:bg-black/[0.05] hover:text-sn-ink" aria-label="Search SikshyaNepal">
-                <Search className="h-3.5 w-3.5 text-sn-ink-muted" /><span className="hidden xl:inline">Search</span><kbd className="hidden rounded-md border border-black/10 bg-white/80 px-1.5 py-0.5 text-[10px] font-mono text-sn-ink-muted shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] xl:inline">⌘K</kbd>
-              </button>
+          {/* Right Cluster: Search Capsule, Moon, Battery, Live Time, CTA */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* Search Pill matching [ Q    ⌘K ] */}
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new Event('open-site-search'))}
+              className="motion-control focus-ring inline-flex items-center gap-2 rounded-full border border-black/[0.08] bg-black/[0.03] px-2.5 py-1 text-xs text-sn-ink-muted hover:bg-black/[0.06] hover:border-black/[0.12] transition-all"
+              aria-label="Search SikshyaNepal"
+            >
+              <Search className="h-3 w-3 text-sn-ink-muted" />
+              <span className="hidden xl:inline text-[11px] font-mono text-sn-ink-soft">search</span>
+              <kbd className="hidden sm:inline rounded border border-black/10 bg-white/90 px-1 py-0.2 text-[9px] font-mono text-sn-ink-muted shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]">
+                ⌘K
+              </kbd>
+            </button>
+
+            {/* Moon Icon */}
+            <div className="hidden sm:flex items-center text-sn-ink-muted">
+              <span className="flex h-7 w-7 items-center justify-center rounded-full hover:bg-black/[0.04] transition-colors cursor-pointer" title="System Theme">
+                <Moon className="h-3.5 w-3.5" />
+              </span>
+            </div>
+
+            {/* Battery Icon */}
+            <div className="hidden md:flex items-center text-sn-ink-muted" title="Live System">
+              <BatteryIcon className="text-sn-ink-muted" />
+            </div>
+
+            {/* Live Clock */}
+            <LiveClock />
+
+            {/* Subtle Subscribe Icon & Account */}
+            <div className="hidden xl:flex items-center gap-1.5 pl-1">
               <SubscribeButton variant="header" />
               <AccountButton />
-              <Link href="/colleges" className="motion-control focus-ring inline-flex items-center gap-2 rounded-full bg-sn-primary px-5 py-2 text-xs font-bold font-nunito text-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.35),0_4px_14px_rgba(32,70,84,0.25)] hover:bg-sn-primary-hover">
-                Start your pathway
-              </Link>
             </div>
 
-            <div className="flex items-center gap-1 min-[1400px]:hidden">
-              <SubscribeButton variant="header" />
-              <button
-                ref={mobileTriggerRef}
-                type="button"
-                onClick={() => {
-                  if (mobileOpen) closeMobileMenu(true)
-                  else { restoreMobileFocusRef.current = true; setMobileOpen(true) }
-                }}
-                className="flex h-11 w-11 items-center justify-center rounded-sn-control text-sn-ink-soft hover:bg-sn-surface-alt"
-                aria-label={mobileOpen ? 'Close navigation menu' : 'Open navigation menu'}
-                aria-expanded={mobileOpen}
-                aria-controls="sn-mobile-site-navigation"
-              >
-                <Menu className="h-5 w-5" />
-              </button>
-            </div>
+            {/* Dark Pill CTA matching [ 🌙 book a demo ] */}
+            <Link
+              href="/colleges"
+              className="motion-control focus-ring inline-flex items-center gap-1.5 rounded-full bg-[#142C35] px-3.5 py-1.5 text-xs font-bold font-nunito text-white shadow-sm hover:bg-[#204654] hover:shadow transition-all duration-200"
+            >
+              <Moon className="h-3 w-3 text-[#CAFFA6]" />
+              <span>explore colleges</span>
+            </Link>
+
+            {/* Mobile hamburger */}
+            <button
+              ref={mobileTriggerRef}
+              type="button"
+              onClick={() => {
+                if (mobileOpen) closeMobileMenu(true)
+                else { restoreMobileFocusRef.current = true; setMobileOpen(true) }
+              }}
+              className="flex h-9 w-9 items-center justify-center rounded-lg text-sn-ink-soft hover:bg-sn-surface-alt lg:hidden"
+              aria-label={mobileOpen ? 'Close navigation menu' : 'Open navigation menu'}
+              aria-expanded={mobileOpen}
+              aria-controls="sn-mobile-site-navigation"
+            >
+              <Menu className="h-4 w-4" />
+            </button>
+          </div>
         </div>
       </header>
 
+      {/* Mobile Navigation Drawer */}
       {mobileOpen && (
-        <div id="sn-mobile-site-navigation" className="fixed inset-0 z-[300] min-[1400px]:hidden" role="dialog" aria-modal="true" aria-label="Site navigation">
+        <div id="sn-mobile-site-navigation" className="fixed inset-0 z-[300] lg:hidden" role="dialog" aria-modal="true" aria-label="Site navigation">
           <div className="motion-scrim-enter absolute inset-0 bg-sn-ink/40" onClick={() => closeMobileMenu(true)} />
-          <div ref={mobileDialogRef} className="motion-drawer-enter absolute inset-y-0 right-0 flex w-[min(100%,24rem)] flex-col bg-sn-ground shadow-sn-float">
-            <div className="flex items-center justify-between px-5 h-16 border-b border-sn-border flex-shrink-0">
+          <div ref={mobileDialogRef} className="motion-drawer-enter absolute inset-y-0 right-0 flex w-[min(100%,22rem)] flex-col bg-sn-ground shadow-sn-float">
+            <div className="flex items-center justify-between px-5 h-14 border-b border-sn-border flex-shrink-0">
               <Wordmark />
-              <button ref={mobileCloseRef} type="button" onClick={() => closeMobileMenu(true)} aria-label="Close navigation menu" className="flex h-11 w-11 items-center justify-center rounded-sn-control text-sn-ink-soft hover:bg-sn-surface-alt">
-                <X className="w-5 h-5" />
+              <button ref={mobileCloseRef} type="button" onClick={() => closeMobileMenu(true)} aria-label="Close navigation menu" className="flex h-9 w-9 items-center justify-center rounded-lg text-sn-ink-soft hover:bg-sn-surface-alt">
+                <X className="w-4 h-4" />
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto px-4 py-4 space-y-0.5">
+            <div className="flex-1 overflow-y-auto px-4 py-4 space-y-1">
               {navLinks.map((link) => (
                 <div key={link.label}>
                   {link.sub ? (
@@ -285,24 +343,24 @@ export default function Nav() {
                       onClick={() => setOpenDrop(openDrop === link.label ? null : link.label)}
                       aria-expanded={openDrop === link.label}
                       aria-controls={`sn-mobile-nav-${link.label.toLowerCase().replaceAll(' ', '-')}`}
-                      className={`flex min-h-11 w-full items-center justify-between rounded-sn-control px-3 py-3 text-left text-sm font-bold font-nunito transition-colors ${isActive(link.href) ? 'bg-sn-primary-bg text-sn-primary-hover' : 'text-sn-ink hover:bg-sn-surface-alt'}`}
+                      className={`flex min-h-10 w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm font-medium font-sans capitalize transition-colors ${isActive(link.href) ? 'bg-sn-primary-bg text-sn-primary font-bold' : 'text-sn-ink hover:bg-sn-surface-alt'}`}
                     >
                       {link.label}<ChevronDown className={`h-4 w-4 transition-transform ${openDrop === link.label ? 'rotate-180' : ''}`} />
                     </button>
                   ) : (
-                    <Link href={link.href} onClick={() => closeMobileMenu(false)} className={`flex min-h-11 items-center rounded-sn-control px-3 py-3 text-sm font-bold font-nunito ${isActive(link.href) ? 'bg-sn-primary-bg text-sn-primary-hover' : 'text-sn-ink hover:bg-sn-surface-alt'}`}>
+                    <Link href={link.href} onClick={() => closeMobileMenu(false)} className={`flex min-h-10 items-center rounded-lg px-3 py-2 text-sm font-medium font-sans capitalize ${isActive(link.href) ? 'bg-sn-primary-bg text-sn-primary font-bold' : 'text-sn-ink hover:bg-sn-surface-alt'}`}>
                       {link.label}
                     </Link>
                   )}
                   {link.sub && openDrop === link.label && (
-                    <div id={`sn-mobile-nav-${link.label.toLowerCase().replaceAll(' ', '-')}`} className="ml-3 mt-0.5 mb-1 space-y-0.5">
-                      <Link href={link.href} onClick={() => closeMobileMenu(false)} className="flex min-h-11 items-center rounded-sn-control px-3 py-2 text-sm font-bold font-nunito text-sn-primary hover:bg-sn-primary-bg">View {link.label}</Link>
+                    <div id={`sn-mobile-nav-${link.label.toLowerCase().replaceAll(' ', '-')}`} className="ml-3 mt-1 mb-2 space-y-0.5 border-l-2 border-sn-border pl-2">
+                      <Link href={link.href} onClick={() => closeMobileMenu(false)} className="flex min-h-8 items-center rounded px-2.5 py-1.5 text-xs font-bold font-nunito text-sn-primary hover:bg-sn-primary-bg">View all {link.label}</Link>
                       {link.sub.map((s, index) => (
                         <div key={s.label}>
                           {s.group && (index === 0 || link.sub![index - 1].group !== s.group) && (
-                            <p className="px-3 pb-1 pt-3 text-[11px] font-bold uppercase tracking-[0.1em] text-sn-ink-muted">{s.group}</p>
+                            <p className="px-2.5 pb-0.5 pt-2 text-[10px] font-bold uppercase tracking-wider text-sn-ink-muted">{s.group}</p>
                           )}
-                          <Link href={s.href} onClick={() => closeMobileMenu(false)} className="flex min-h-11 items-center rounded-sn-control px-3 py-2 text-sm font-nunito text-sn-ink-soft hover:bg-sn-surface-alt hover:text-sn-primary transition-colors">
+                          <Link href={s.href} onClick={() => closeMobileMenu(false)} className="flex min-h-8 items-center rounded px-2.5 py-1.5 text-xs font-nunito text-sn-ink-soft hover:bg-sn-surface-alt hover:text-sn-primary transition-colors">
                             {s.label}
                           </Link>
                         </div>
@@ -315,10 +373,11 @@ export default function Nav() {
 
             <div className="p-4 border-t border-sn-border space-y-2 flex-shrink-0">
               <AccountButton mobile onNavigate={() => closeMobileMenu(false)} />
-              <Link href="/colleges" onClick={() => closeMobileMenu(false)} className="flex min-h-11 items-center justify-center gap-2 w-full py-3 rounded-sn-control bg-sn-primary text-sm font-bold font-nunito text-white shadow-sn-button hover:bg-sn-primary-hover transition-colors">
-                Start your pathway
+              <Link href="/colleges" onClick={() => closeMobileMenu(false)} className="flex min-h-10 items-center justify-center gap-1.5 w-full py-2.5 rounded-full bg-[#142C35] text-xs font-bold font-nunito text-white shadow-sm hover:bg-[#204654] transition-colors">
+                <Moon className="h-3 w-3 text-[#CAFFA6]" />
+                <span>explore colleges</span>
               </Link>
-              <Link href="/results" onClick={() => closeMobileMenu(false)} className="flex min-h-11 items-center justify-center gap-2 w-full py-3 rounded-sn-control border border-sn-border-strong text-sm font-bold font-nunito text-sn-ink hover:border-sn-primary hover:text-sn-primary transition-colors">
+              <Link href="/results" onClick={() => closeMobileMenu(false)} className="flex min-h-10 items-center justify-center gap-2 w-full py-2.5 rounded-full border border-sn-border-strong text-xs font-bold font-nunito text-sn-ink hover:border-sn-primary hover:text-sn-primary transition-colors">
                 Check Results
               </Link>
             </div>
