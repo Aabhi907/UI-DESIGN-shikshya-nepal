@@ -431,9 +431,9 @@ export default async function CollegesPage({
           )}
           {totalPages > 1 && (
             <nav aria-label="College directory pages" className="mt-8 flex flex-wrap items-center justify-center gap-2">
-              {currentPage > 1 && <Link href={buildCollegePageUrl(searchParams, currentPage - 1)} className="rounded-sn-control border border-sn-border-strong bg-sn-surface px-4 py-2 text-sm font-bold text-sn-ink-soft hover:border-sn-primary hover:text-sn-primary">Previous</Link>}
+              {currentPage > 1 && <Link href={buildCollegePageUrl(searchParams, currentPage - 1)} className="rounded-sn-control border border-sn-border-strong bg-sn-surface px-4 py-2 text-sm font-bold text-sn-ink-soft hover:border-sn-primary hover:text-sn-primary motion-control">Previous</Link>}
               <span className="px-3 py-2 text-sm text-sn-ink-soft">Page <strong className="text-sn-ink">{currentPage}</strong> of {totalPages}</span>
-              {currentPage < totalPages && <Link href={buildCollegePageUrl(searchParams, currentPage + 1)} className="rounded-sn-control border border-sn-primary bg-sn-primary px-4 py-2 text-sm font-bold text-white hover:bg-sn-primary-hover">Next</Link>}
+              {currentPage < totalPages && <Link href={buildCollegePageUrl(searchParams, currentPage + 1)} className="rounded-sn-control border border-sn-primary bg-sn-primary px-4 py-2 text-sm font-bold text-white hover:bg-sn-primary-hover motion-control">Next</Link>}
             </nav>
           )}
         </>
@@ -447,11 +447,11 @@ export default async function CollegesPage({
           <div className="flex flex-wrap items-center justify-center gap-3">
             <Link
               href={hasDirectoryFilters ? (hasSearch ? `/colleges?q=${encodeURIComponent(searchParams.q || '')}` : '/colleges') : '/colleges'}
-              className="inline-flex min-h-11 items-center gap-2 rounded-sn-control bg-sn-primary px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-sn-primary-hover"
+              className="inline-flex min-h-11 items-center gap-2 rounded-sn-control bg-sn-primary px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-sn-primary-hover motion-control"
             >
               {hasDirectoryFilters ? 'Remove filters' : 'Browse all colleges'}
             </Link>
-            <Link href="/tools/program-finder" className="inline-flex min-h-11 items-center gap-2 rounded-sn-control border border-sn-border-strong bg-sn-surface px-5 py-2.5 text-sm font-bold text-sn-ink hover:border-sn-primary hover:text-sn-primary">
+            <Link href="/tools/program-finder" className="inline-flex min-h-11 items-center gap-2 rounded-sn-control border border-sn-border-strong bg-sn-surface px-5 py-2.5 text-sm font-bold text-sn-ink hover:border-sn-primary hover:text-sn-primary motion-control">
               Not sure what to study? Take the quiz
             </Link>
           </div>
@@ -463,8 +463,8 @@ export default async function CollegesPage({
         <div className="mt-5 divide-y divide-sn-border">
           {directoryAnswers.map(item => (
             <details key={item.question} className="group py-4 first:pt-0 last:pb-0">
-              <summary className="cursor-pointer list-none pr-8 text-sm font-bold text-sn-ink marker:hidden">
-                {item.question}<span className="float-right text-sn-primary group-open:rotate-45">+</span>
+              <summary className="cursor-pointer list-none pr-8 text-sm font-bold text-sn-ink marker:hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sn-primary/40 rounded-sm">
+                {item.question}<span className="float-right inline-block text-sn-primary transition-transform duration-200 group-open:rotate-45">+</span>
               </summary>
               <p className="mt-3 max-w-2xl text-sm leading-6 text-sn-ink-soft">{item.answer}</p>
             </details>

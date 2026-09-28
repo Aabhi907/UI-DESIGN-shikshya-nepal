@@ -111,11 +111,11 @@ export default async function ResultsPage({
         {/* University chips */}
         <div className="max-w-sn mx-auto px-5 sm:px-8 lg:px-12 pb-5">
           <div className="flex flex-wrap gap-2">
-            <Link href={filterUrl('university', '')} className={!searchParams.university ? 'inline-flex min-h-11 items-center rounded-sn-pill border border-sn-ink bg-sn-ink px-4 py-2 text-sm font-bold text-white focus-visible:outline-sn-primary' : 'inline-flex min-h-11 items-center rounded-sn-pill border border-sn-border bg-sn-surface px-4 py-2 text-sm font-bold text-sn-ink-soft hover:border-sn-primary hover:text-sn-primary-hover focus-visible:outline-sn-primary'}>
+            <Link href={filterUrl('university', '')} className={!searchParams.university ? 'inline-flex min-h-11 items-center rounded-sn-pill border border-sn-ink bg-sn-ink px-4 py-2 text-sm font-bold text-white focus-visible:outline-sn-primary motion-control' : 'inline-flex min-h-11 items-center rounded-sn-pill border border-sn-border bg-sn-surface px-4 py-2 text-sm font-bold text-sn-ink-soft hover:border-sn-primary hover:text-sn-primary-hover focus-visible:outline-sn-primary motion-control'}>
               All
             </Link>
             {UNIVERSITIES.map((u) => (
-              <Link key={u} href={filterUrl('university', u)} className={searchParams.university === u ? 'inline-flex min-h-11 items-center rounded-sn-pill border border-sn-ink bg-sn-ink px-4 py-2 text-sm font-bold text-white focus-visible:outline-sn-primary' : 'inline-flex min-h-11 items-center rounded-sn-pill border border-sn-border bg-sn-surface px-4 py-2 text-sm font-bold text-sn-ink-soft hover:border-sn-primary hover:text-sn-primary-hover focus-visible:outline-sn-primary'}>
+              <Link key={u} href={filterUrl('university', u)} className={searchParams.university === u ? 'inline-flex min-h-11 items-center rounded-sn-pill border border-sn-ink bg-sn-ink px-4 py-2 text-sm font-bold text-white focus-visible:outline-sn-primary motion-control' : 'inline-flex min-h-11 items-center rounded-sn-pill border border-sn-border bg-sn-surface px-4 py-2 text-sm font-bold text-sn-ink-soft hover:border-sn-primary hover:text-sn-primary-hover focus-visible:outline-sn-primary motion-control'}>
                 {u}
               </Link>
             ))}
@@ -129,7 +129,7 @@ export default async function ResultsPage({
         {/* Program filter */}
         <div className="flex flex-wrap gap-2 mb-5">
           {PROGRAMS.map((prog) => (
-            <Link key={prog} href={filterUrl('program', prog)} className={searchParams.program === prog ? 'inline-flex min-h-11 items-center rounded-sn-pill border border-sn-ink bg-sn-ink px-4 py-2 text-sm font-bold text-white focus-visible:outline-sn-primary' : 'inline-flex min-h-11 items-center rounded-sn-pill border border-sn-border bg-sn-surface px-4 py-2 text-sm font-bold text-sn-ink-soft hover:border-sn-primary hover:text-sn-primary-hover focus-visible:outline-sn-primary'}>
+            <Link key={prog} href={filterUrl('program', prog)} className={searchParams.program === prog ? 'inline-flex min-h-11 items-center rounded-sn-pill border border-sn-ink bg-sn-ink px-4 py-2 text-sm font-bold text-white focus-visible:outline-sn-primary motion-control' : 'inline-flex min-h-11 items-center rounded-sn-pill border border-sn-border bg-sn-surface px-4 py-2 text-sm font-bold text-sn-ink-soft hover:border-sn-primary hover:text-sn-primary-hover focus-visible:outline-sn-primary motion-control'}>
               {prog}
             </Link>
           ))}

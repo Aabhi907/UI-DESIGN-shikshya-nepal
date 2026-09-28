@@ -18,7 +18,7 @@ export default function CareersPage() {
           <p className="mt-5 max-w-2xl text-lg leading-8 font-nunito text-white/80">Start with guided questions or browse practical Nepal career guides with sources to check.</p>
           <div className="mt-7 flex flex-wrap gap-3">
             <Button.Link href="/tools/program-finder" variant="secondary" className="!bg-white !text-sn-primary !border-white">Help me choose a study area</Button.Link>
-            <a href="#career-guides" className="inline-flex min-h-11 items-center rounded-sn-control border border-white/30 px-5 text-sm font-bold font-nunito text-white">Browse career guides</a>
+            <a href="#career-guides" className="inline-flex min-h-11 items-center rounded-sn-control border border-white/30 px-5 text-sm font-bold font-nunito text-white hover:bg-white/10 transition-colors motion-control">Browse career guides</a>
           </div>
         </div>
       </section>
@@ -35,7 +35,7 @@ export default function CareersPage() {
                   <Card interactive className="h-full">
                     <h3 className="font-baloo text-xl font-bold text-sn-ink">{career.title}</h3>
                     <p className="mt-2 text-sm leading-6 font-nunito text-sn-ink-soft">{career.summary}</p>
-                    <span className="mt-4 inline-flex items-center gap-1 text-sm font-bold font-nunito text-sn-primary">View guide <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5 motion-reduce:transform-none" /></span>
+                    <span className="mt-4 inline-flex items-center gap-1 text-sm font-bold font-nunito text-sn-primary">View guide <ArrowRight className="h-4 w-4 motion-arrow" /></span>
                   </Card>
                 </Link>
               ))}
