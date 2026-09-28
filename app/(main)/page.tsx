@@ -151,7 +151,7 @@ function HeroCard({
   if (!result && !notice && !college) return null
 
   return (
-    <aside className="overflow-hidden rounded-sn-card border border-sn-border bg-sn-surface shadow-sn-float">
+    <aside className="apple-card overflow-hidden">
       {college?.cover_url && (
         <Link href={`/colleges/${college.slug}`} className="group relative block h-44 overflow-hidden bg-sn-surface-alt" aria-label={`View ${college.name}`}>
           <Image
@@ -159,25 +159,25 @@ function HeroCard({
             alt={`${college.name} campus`}
             fill
             sizes="(min-width: 1024px) 33vw, 100vw"
-            className="object-cover transition-transform duration-200 group-hover:scale-[1.02]"
+            className="object-cover transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03]"
           />
-          <div className="absolute inset-x-0 bottom-0 bg-sn-ink/85 px-4 py-2.5 text-xs font-bold font-nunito text-white">
+          <div className="absolute inset-x-0 bottom-0 bg-sn-ink/85 backdrop-blur-sm px-4 py-2.5 text-xs font-bold font-nunito text-white">
             Featured college · {college.name}
           </div>
         </Link>
       )}
       <div className="p-5">
         {result && (
-          <Link href={`/results/${result.slug}`} className="group block py-3.5 border-b border-sn-border">
+          <Link href={`/results/${result.slug}`} className="group block py-3.5 border-b border-black/[0.06]">
             <p className="mb-1 text-xs font-bold font-nunito text-sn-ink-muted">Latest Result</p>
-            <p className="text-sm font-bold font-nunito leading-snug line-clamp-2 text-sn-ink group-hover:text-sn-primary">{result.title}</p>
+            <p className="text-sm font-bold font-nunito leading-snug line-clamp-2 text-sn-ink group-hover:text-sn-primary transition-colors">{result.title}</p>
             <span className="mt-2 inline-flex items-center gap-1 text-xs font-bold font-nunito text-sn-primary">View result <ArrowRight className="h-3.5 w-3.5 motion-arrow" aria-hidden="true" /></span>
           </Link>
         )}
         {notice && (
-          <Link href={`/notices/${notice.slug}`} className="group block py-3.5 border-b border-sn-border">
+          <Link href={`/notices/${notice.slug}`} className="group block py-3.5 border-b border-black/[0.06]">
             <p className="mb-1 text-xs font-bold font-nunito text-sn-ink-muted">Latest Notice</p>
-            <p className="text-sm font-bold font-nunito leading-snug line-clamp-2 text-sn-ink group-hover:text-sn-primary">{notice.title}</p>
+            <p className="text-sm font-bold font-nunito leading-snug line-clamp-2 text-sn-ink group-hover:text-sn-primary transition-colors">{notice.title}</p>
             <span className="mt-2 inline-flex items-center gap-1 text-xs font-bold font-nunito text-sn-primary">Read notice <ArrowRight className="h-3.5 w-3.5 motion-arrow" aria-hidden="true" /></span>
           </Link>
         )}
@@ -206,18 +206,19 @@ export default async function HomePage() {
       {/* ════════════════════════════════════════════════════════
           1. HERO
       ════════════════════════════════════════════════════════ */}
-      <section className={`border-b border-sn-border bg-sn-ground ${SECTION_PAD}`}>
-        <div className={CONTAINER}>
+      <section className={`relative border-b border-sn-border bg-sn-ground overflow-hidden ${SECTION_PAD}`}>
+        {/* Ambient warm specular glow */}
+        <div className="pointer-events-none absolute -top-44 left-1/2 h-[550px] w-[850px] -translate-x-1/2 rounded-full bg-gradient-to-b from-orange-200/40 via-amber-100/25 to-transparent blur-3xl" aria-hidden="true" />
+
+        <div className={`${CONTAINER} relative`}>
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-5 lg:gap-16 items-center">
             <div className="lg:col-span-3">
-              <div className="mb-5 flex items-center gap-3">
-                <Mascot pose="wave" size={52} />
-                <p className="border-l-2 border-sn-primary pl-3 text-sm font-bold font-nunito text-sn-primary-hover">
-                  An independent education guide for Nepal
-                </p>
+              <div className="apple-pill mb-6">
+                <Mascot pose="wave" size={26} />
+                <span className="text-xs font-bold text-sn-ink">An independent education guide for Nepal</span>
               </div>
 
-              <h1 className="font-baloo font-extrabold text-sn-ink leading-[1.08] mb-5 text-balance" style={{ fontSize: 'clamp(2.4rem, 5.2vw, 3.6rem)', letterSpacing: '-0.02em' }}>
+              <h1 className="font-baloo font-extrabold text-sn-ink leading-[1.05] mb-5 text-balance tracking-[-0.035em]" style={{ fontSize: 'clamp(2.5rem, 5.5vw, 3.85rem)' }}>
                 Decide what to study after +2 — and where.
               </h1>
 
@@ -228,16 +229,16 @@ export default async function HomePage() {
               <HeroSearch />
 
               <div className="mt-8 flex flex-wrap gap-3">
-                <Button.Link href="/tools/college-finder" variant="primary">Start your pathway<ArrowRight className="h-4 w-4 motion-arrow" aria-hidden="true" /></Button.Link>
-                <Button.Link href="/colleges" variant="secondary">Browse colleges</Button.Link>
+                <Button.Link href="/tools/college-finder" variant="primary" className="shadow-[inset_0_1px_1px_rgba(255,255,255,0.35),0_4px_16px_rgba(224,102,58,0.3)]">Start your pathway<ArrowRight className="h-4 w-4 motion-arrow" aria-hidden="true" /></Button.Link>
+                <Button.Link href="/colleges" variant="secondary" className="border-black/[0.08] bg-white/80 shadow-[inset_0_1px_1px_rgba(255,255,255,0.9)]">Browse colleges</Button.Link>
               </div>
 
               <div className="mt-8">
-                <Link href="/colleges" className="group block rounded-sn-card border border-sn-border bg-sn-surface p-5 shadow-sn-card motion-interactive-card">
-                  <div className="flex items-start gap-3">
+                <Link href="/colleges" className="apple-card group block p-5">
+                  <div className="flex items-start gap-3.5">
                     <IconTile icon={GraduationCap} tint="peach" />
                     <div>
-                      <p className="font-bold font-nunito text-sn-ink">Planning after SEE or +2?</p>
+                      <p className="font-bold font-nunito text-sn-ink group-hover:text-sn-primary transition-colors">Planning after SEE or +2?</p>
                       <p className="mt-1 text-xs leading-5 font-nunito text-sn-ink-soft">Explore +2, Bachelor, Master and diploma options.</p>
                       <span className="mt-2 inline-flex items-center gap-1 text-xs font-bold font-nunito text-sn-primary">Find a college <ArrowRight className="h-3.5 w-3.5 motion-arrow" aria-hidden="true" /></span>
                     </div>
@@ -258,12 +259,12 @@ export default async function HomePage() {
           the platform's own real counts, not a third-party claim.
       ════════════════════════════════════════════════════════ */}
       {heroStats.length > 0 && (
-        <section className="bg-sn-ink py-10 lg:py-12">
+        <section className="border-y border-white/10 bg-[#0d1629] py-10 lg:py-12">
           <div className={CONTAINER}>
             <div className="flex flex-wrap justify-center gap-0 divide-x divide-white/15 sm:justify-between">
               {heroStats.map((stat) => (
                 <div key={stat.label} className="px-8 py-2 text-center">
-                  <p className="font-baloo text-2xl leading-none text-white tabular-nums" style={{ letterSpacing: '-0.01em' }}>
+                  <p className="font-baloo text-2xl leading-none text-white tabular-nums tracking-tight">
                     <span className="font-extrabold">{stat.value.toLocaleString()}</span>{' '}
                     <span className="font-nunito font-normal text-white/60">{stat.label.toLowerCase()}</span>
                   </p>
@@ -293,9 +294,9 @@ export default async function HomePage() {
               { href: '/study-resources', label: 'Study resources', text: 'Syllabus & questions', Icon: BookOpen, tint: 'butter' as const },
               { href: '/notices', label: 'Latest notices', text: 'Official updates', Icon: Bell, tint: 'lilac' as const },
             ].map(({ href, label, text, Icon, tint }) => (
-              <Link key={href} href={href} className="group rounded-sn-card border border-sn-border bg-sn-surface p-5 shadow-sn-card motion-interactive-card">
+              <Link key={href} href={href} className="apple-card group p-5">
                 <IconTile icon={Icon} tint={tint} size={36} />
-                <p className="mt-3 text-sm font-bold font-nunito text-sn-ink">{label}</p>
+                <p className="mt-3 text-sm font-bold font-nunito text-sn-ink group-hover:text-sn-primary transition-colors">{label}</p>
                 <p className="mt-1 text-xs font-nunito text-sn-ink-muted">{text}</p>
               </Link>
             ))}
@@ -322,9 +323,9 @@ export default async function HomePage() {
                 const Icon = FACULTY_ICONS[faculty.slug] ?? Monitor
                 const href = faculty.slug === 'plus-two' ? '/colleges?level=%2B2' : `/programs?faculty=${faculty.slug}`
                 return (
-                  <Link key={faculty.slug} href={href} className="group flex flex-col items-center gap-3 rounded-sn-card border border-sn-border bg-sn-surface p-5 text-center shadow-sn-card motion-interactive-card">
+                  <Link key={faculty.slug} href={href} className="apple-card group flex flex-col items-center gap-3 p-5 text-center">
                     <IconTile icon={Icon} tint={FACULTY_TINTS[index % FACULTY_TINTS.length]} />
-                    <span className="text-sm font-bold font-nunito leading-tight text-sn-ink group-hover:text-sn-primary">{faculty.name}</span>
+                    <span className="text-sm font-bold font-nunito leading-tight text-sn-ink group-hover:text-sn-primary transition-colors">{faculty.name}</span>
                   </Link>
                 )
               })}
@@ -340,11 +341,11 @@ export default async function HomePage() {
               {UNIVERSITY_SHOWCASE.map((u, index) => {
                 const count = universityCounts[u.short] ?? 0
                 return (
-                  <Link key={u.short} href={`/colleges?affiliation=${encodeURIComponent(u.affiliation)}`} className="group flex flex-col gap-3 rounded-sn-card border border-sn-border bg-sn-surface p-5 shadow-sn-card motion-interactive-card">
-                    <span className={`flex h-11 w-11 items-center justify-center rounded-sn-control font-baloo text-lg font-bold text-sn-ink ${['bg-sn-tint-peach', 'bg-sn-tint-mint', 'bg-sn-tint-butter', 'bg-sn-tint-lilac'][index % 4]}`}>{u.short}</span>
+                  <Link key={u.short} href={`/colleges?affiliation=${encodeURIComponent(u.affiliation)}`} className="apple-card group flex flex-col gap-3 p-5">
+                    <span className={`flex h-11 w-11 items-center justify-center rounded-xl font-baloo text-lg font-bold text-sn-ink shadow-[inset_0_1px_1px_rgba(255,255,255,0.7)] ${['bg-sn-tint-peach', 'bg-sn-tint-mint', 'bg-sn-tint-butter', 'bg-sn-tint-lilac'][index % 4]}`}>{u.short}</span>
                     <div>
-                      <p className="text-sm font-bold font-nunito leading-tight text-sn-ink">{u.label}</p>
-                      {count > 0 && <p className="text-xs font-nunito text-sn-ink-muted mt-1">{count} college{count !== 1 ? 's' : ''}</p>}
+                      <p className="text-sm font-bold font-nunito leading-tight text-sn-ink group-hover:text-sn-primary transition-colors">{u.label}</p>
+                      {count > 0 && <p className="text-xs font-nunito text-sn-ink-muted mt-1 tabular-nums">{count} college{count !== 1 ? 's' : ''}</p>}
                     </div>
                   </Link>
                 )

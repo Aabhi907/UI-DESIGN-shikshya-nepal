@@ -63,6 +63,13 @@
   --ease-enter: cubic-bezier(.22, 1, .36, 1);
   --ease-standard: cubic-bezier(.4, 0, .2, 1);
   --ease-exit: cubic-bezier(.4, 0, 1, 1);
+  --ease-apple: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Apple & Linear physical specular depth tokens */
+  --specular-rim: inset 0 1px 1.5px rgba(255, 255, 255, 0.9);
+  --shadow-apple-card: inset 0 1px 1.5px rgba(255, 255, 255, 0.95), 0 1px 3px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.04);
+  --shadow-apple-card-hover: inset 0 1px 1.5px rgba(255, 255, 255, 1), 0 4px 14px rgba(15, 23, 42, 0.06), 0 18px 40px rgba(15, 23, 42, 0.08);
+  --shadow-apple-float: inset 0 1px 1.5px rgba(255, 255, 255, 0.95), 0 8px 32px rgba(15, 23, 42, 0.08), 0 24px 64px rgba(15, 23, 42, 0.06);
 }
 
 @layer base {
@@ -341,8 +348,11 @@
   .motion-reveal-group[data-motion-ready="true"] > *:nth-child(4) { transition-delay: 150ms; }
   .motion-reveal-group[data-motion-ready="true"] > *:nth-child(5) { transition-delay: 200ms; }
   .motion-reveal-group[data-motion-ready="true"] > *:nth-child(6) { transition-delay: 250ms; }
-  .motion-interactive-card { transition: border-color var(--motion-interaction) var(--ease-standard), box-shadow var(--motion-interaction) var(--ease-standard), background-color var(--motion-interaction) var(--ease-standard), transform var(--motion-interaction) var(--ease-standard); }
-  .motion-arrow { transition: transform var(--motion-interaction) var(--ease-standard); }
+  .motion-interactive-card {
+    box-shadow: var(--shadow-apple-card);
+    transition: border-color 280ms var(--ease-apple), box-shadow 280ms var(--ease-apple), background-color 280ms var(--ease-apple), transform 280ms var(--ease-apple);
+  }
+  .motion-arrow { transition: transform 220ms var(--ease-apple); }
   :is(a, button, .group):hover .motion-arrow { transform: translateX(3px); }
   .motion-menu-enter { animation: motion-menu-enter var(--motion-state) var(--ease-enter) both; }
   .motion-scrim-enter { animation: motion-scrim-enter var(--motion-interaction) var(--ease-standard) both; }
@@ -350,20 +360,69 @@
   .motion-drawer-enter { animation: motion-drawer-enter var(--motion-dialog) var(--ease-enter) both; }
   .motion-sheet-enter { animation: motion-sheet-enter var(--motion-dialog) var(--ease-enter) both; }
 
-  @media (hover: hover) and (pointer: fine) {
-    .motion-interactive-card:hover { transform: translateY(-2px); }
+  /* ── Apple Physical Specular Classes ── */
+  .apple-card {
+    border-radius: 1.25rem;
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    background-color: #ffffff;
+    box-shadow: var(--shadow-apple-card);
+    transition: transform 280ms var(--ease-apple), box-shadow 280ms var(--ease-apple), border-color 280ms var(--ease-apple);
   }
-  .motion-interactive-card:active { transform: translateY(0); }
+
+  .apple-glass {
+    background-color: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    box-shadow: var(--specular-rim), 0 4px 24px rgba(15, 23, 42, 0.04);
+  }
+
+  .apple-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 9999px;
+    background-color: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.95), 0 2px 8px rgba(0, 0, 0, 0.03);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--sn-ink);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .motion-interactive-card:hover,
+    .apple-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-apple-card-hover);
+      border-color: rgba(0, 0, 0, 0.12);
+    }
+  }
+  .motion-interactive-card:active,
+  .apple-card:active { transform: translateY(0); }
 }
 
 .motion-control {
   transition-property: color, background-color, border-color, box-shadow, transform;
-  transition-duration: var(--motion-interaction);
-  transition-timing-function: var(--ease-standard);
+  transition-duration: 200ms;
+  transition-timing-function: var(--ease-apple);
 }
 
 .motion-control:active:not(:disabled) {
   transform: translateY(1px);
+}
+
+.focus-ring {
+  outline: none;
+}
+.focus-ring:focus-visible {
+  outline: none;
+  ring: 2px;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--primary);
 }
 
 .motion-control:disabled {

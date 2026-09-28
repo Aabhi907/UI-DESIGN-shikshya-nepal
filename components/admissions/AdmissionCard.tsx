@@ -9,7 +9,7 @@ import type { Admission } from '@/types'
 
 export default function AdmissionCard({ admission }: { admission: Admission }) {
   const location = admissionLocation(admission)
-  return <Link href={`/admissions/${admission.slug}`} aria-label={`View ${admission.title} admission details`} className="group flex h-full flex-col overflow-hidden rounded-sn-card border border-sn-border bg-sn-surface p-5 shadow-sn-card motion-interactive-card hover:shadow-sn-float">
+  return <Link href={`/admissions/${admission.slug}`} aria-label={`View ${admission.title} admission details`} className="group apple-card flex h-full flex-col overflow-hidden rounded-sn-card border border-sn-border bg-sn-surface p-5 shadow-sn-card motion-interactive-card hover:shadow-sn-float">
     <div className="mb-4 flex flex-wrap items-center justify-between gap-2"><AdmissionStatusBadge admission={admission} />{admission.is_sponsored ? <Pill tone="confirm">{admission.sponsor_label || 'Sponsored'}</Pill> : <VerificationBadge status={admission.verification_status} compact />}</div>
     <p className="mb-2 text-xs font-bold font-nunito uppercase tracking-wide text-sn-primary-hover">{admission.admission_type.replaceAll('_', ' ')} admission</p>
     <h2 className="font-baloo text-lg font-bold leading-6 text-sn-ink transition-colors group-hover:text-sn-primary">{admission.title}</h2>
@@ -20,7 +20,7 @@ export default function AdmissionCard({ admission }: { admission: Admission }) {
     <div className="mt-auto space-y-2 border-t border-sn-border pt-4">
       <div className="flex items-center justify-between gap-3 text-xs">
         <span className="flex items-center gap-1 font-nunito text-sn-ink-soft"><CalendarDays className="h-3.5 w-3.5" aria-hidden="true" />{admission.application_deadline ? new Date(admission.application_deadline).toLocaleDateString('en-NP', { day: 'numeric', month: 'short', year: 'numeric' }) : 'See official notice'}</span>
-        <span className="flex shrink-0 items-center gap-1 font-bold font-nunito text-sn-primary">View details <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 motion-reduce:transform-none" aria-hidden="true" /></span>
+        <span className="flex shrink-0 items-center gap-1 font-bold font-nunito text-sn-primary">View details <ArrowRight className="motion-arrow h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 motion-reduce:transform-none" aria-hidden="true" /></span>
       </div>
       {admission.application_deadline && (
         admission.last_verified_at ? (
