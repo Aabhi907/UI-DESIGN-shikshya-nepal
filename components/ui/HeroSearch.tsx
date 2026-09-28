@@ -29,7 +29,7 @@ export default function HeroSearch() {
     <div className="w-full">
       {/* ── Search bar ─────────────────────────────────── */}
       <form onSubmit={handleSubmit} role="search" aria-label="Search SikshyaNepal">
-        <div className="flex items-stretch rounded-2xl border border-black/[0.08] bg-white/95 overflow-hidden
+        <div className="flex items-stretch rounded-sn-card border border-black/[0.08] bg-white/95 overflow-hidden
                         shadow-[inset_0_1px_1.5px_rgba(255,255,255,0.95),0_4px_24px_rgba(15,23,42,0.04)]
                         focus-within:border-sn-primary/80 focus-within:shadow-[inset_0_1px_1.5px_rgba(255,255,255,1),0_8px_32px_rgba(224,102,58,0.14)]
                         transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]">
@@ -47,11 +47,11 @@ export default function HeroSearch() {
               inputMode="search"
               className="h-14 w-full min-w-0 bg-transparent pl-11 pr-11 text-sm font-nunito text-sn-ink placeholder:text-sn-ink-muted focus:outline-none sm:pl-12 sm:pr-12"
             />
-            {query && <button type="button" onClick={() => setQuery('')} aria-label="Clear search" className="motion-control focus-ring absolute right-1 flex h-11 w-11 items-center justify-center rounded-xl text-sn-ink-muted hover:bg-sn-surface-alt hover:text-sn-ink"><X className="h-4 w-4" /></button>}
+            {query && <button type="button" onClick={() => setQuery('')} aria-label="Clear search" className="motion-control focus-ring absolute right-1 flex h-11 w-11 items-center justify-center rounded-sn-control text-sn-ink-muted hover:bg-sn-surface-alt hover:text-sn-ink"><X className="h-4 w-4" /></button>}
           </div>
           <button
             type="submit"
-            className="motion-control focus-ring m-1.5 flex-shrink-0 rounded-xl bg-sn-primary px-5 text-xs font-bold font-nunito text-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.35),0_4px_14px_rgba(224,102,58,0.25)] sm:px-6 hover:bg-sn-primary-hover"
+            className="motion-control focus-ring m-1.5 flex-shrink-0 rounded-sn-control bg-sn-primary px-5 text-xs font-bold font-nunito text-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.35),0_4px_14px_rgba(224,102,58,0.25)] sm:px-6 hover:bg-sn-primary-hover"
           >
             Search
           </button>

@@ -172,7 +172,7 @@
   }
 
   :focus-visible {
-    outline: 3px solid #f97316;
+    outline: 3px solid var(--primary);
     outline-offset: 3px;
   }
 
@@ -362,11 +362,16 @@
 
   /* ── Apple Physical Specular Classes ── */
   .apple-card {
-    border-radius: 1.25rem;
+    border-radius: 16px;
     border: 1px solid rgba(0, 0, 0, 0.07);
     background-color: #ffffff;
     box-shadow: var(--shadow-apple-card);
     transition: transform 280ms var(--ease-apple), box-shadow 280ms var(--ease-apple), border-color 280ms var(--ease-apple);
+  }
+
+  .apple-control {
+    border-radius: 10px;
+    transition: transform 200ms var(--ease-apple), box-shadow 200ms var(--ease-apple), border-color 200ms var(--ease-apple);
   }
 
   .apple-glass {

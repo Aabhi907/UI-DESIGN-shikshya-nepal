@@ -104,7 +104,7 @@ export default async function ResultsPage({
       {/* ── Page header ─────────────────────────────────────── */}
       <div className="bg-sn-surface border-b border-sn-border">
         <div className="max-w-sn mx-auto px-5 sm:px-8 lg:px-12 pt-10 pb-8">
-          <SectionHeader as="h1" eyebrow="Exam results" title="University results" description="Latest exam results from universities and boards in Nepal" className="mb-6" />
+          <SectionHeader as="h1" title="University results" description="Latest exam results from universities and boards in Nepal" className="mb-6" />
           <SearchField className="[&_button[type=submit]]:!bg-sn-primary-hover" placeholder="Search results by title or program..." redirectTo="/results" initialValue={searchParams.q} />
         </div>
 

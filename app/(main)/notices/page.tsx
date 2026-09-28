@@ -75,7 +75,7 @@ export default async function NoticesPage({
       {/* ── Page header ─────────────────────────────────────── */}
       <div className="bg-sn-surface border-b border-sn-border">
         <div className="max-w-sn mx-auto px-5 sm:px-8 lg:px-12 pt-10 pb-8">
-          <SectionHeader as="h1" eyebrow="University notices" title="Official notices" description="Admission deadlines, exam schedules and official announcements from Nepal's universities" className="mb-6" />
+          <SectionHeader as="h1" title="Official notices" description="Admission deadlines, exam schedules and official announcements from Nepal's universities" className="mb-6" />
           <SearchField className="[&_button[type=submit]]:!bg-sn-primary-hover" placeholder="Search notices..." redirectTo="/notices" initialValue={searchParams.q} />
         </div>
 

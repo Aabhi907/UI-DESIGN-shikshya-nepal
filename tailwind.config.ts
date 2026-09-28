@@ -104,8 +104,8 @@ const config: Config = {
         'sn-button': 'var(--sn-shadow-button)',
       },
       borderRadius: {
-        'sn-card':    '18px',
-        'sn-control': '13px',
+        'sn-card':    '16px',
+        'sn-control': '10px',
         'sn-pill':    '999px',
       },
       spacing: {
