@@ -31,7 +31,7 @@ export default function HeroSearch() {
       <form onSubmit={handleSubmit} role="search" aria-label="Search SikshyaNepal">
         <div className="flex items-stretch rounded-sn-card border border-black/[0.08] bg-white/95 overflow-hidden
                         shadow-[inset_0_1px_1.5px_rgba(255,255,255,0.95),0_4px_24px_rgba(15,23,42,0.04)]
-                        focus-within:border-sn-primary/80 focus-within:shadow-[inset_0_1px_1.5px_rgba(255,255,255,1),0_8px_32px_rgba(224,102,58,0.14)]
+                        focus-within:border-sn-primary/80 focus-within:shadow-[inset_0_1px_1.5px_rgba(255,255,255,1),0_8px_32px_rgba(32,70,84,0.14)]
                         transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]">
           <div className="relative flex-1 flex items-center">
             <Search className="absolute left-4 w-5 h-5 text-sn-ink-muted pointer-events-none" aria-hidden="true" />
@@ -51,7 +51,7 @@ export default function HeroSearch() {
           </div>
           <button
             type="submit"
-            className="motion-control focus-ring m-1.5 flex-shrink-0 rounded-sn-control bg-sn-primary px-5 text-xs font-bold font-nunito text-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.35),0_4px_14px_rgba(224,102,58,0.25)] sm:px-6 hover:bg-sn-primary-hover"
+            className="motion-control focus-ring m-1.5 flex-shrink-0 rounded-sn-control bg-sn-primary px-5 text-xs font-bold font-nunito text-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.35),0_4px_14px_rgba(32,70,84,0.25)] sm:px-6 hover:bg-sn-primary-hover"
           >
             Search
           </button>

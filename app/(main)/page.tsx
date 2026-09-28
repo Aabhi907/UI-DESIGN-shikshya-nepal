@@ -155,7 +155,7 @@ export default async function HomePage() {
       ════════════════════════════════════════════════════════ */}
       <section className="relative border-b border-sn-border bg-sn-ground overflow-hidden py-20 lg:py-28">
         {/* Soft, ultra-subtle ambient glow */}
-        <div className="pointer-events-none absolute -top-44 left-1/2 h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-gradient-to-b from-orange-200/25 via-amber-100/15 to-transparent blur-3xl" aria-hidden="true" />
+        <div className="pointer-events-none absolute -top-44 left-1/2 h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-gradient-to-b from-[#A9E0F1]/20 via-[#CAFFA6]/10 to-transparent blur-3xl" aria-hidden="true" />
 
         <div className="mx-auto max-w-4xl px-5 sm:px-8 text-center relative z-10">
           {/* Eyebrow Pill matching Voxt's [NEW] Voice input app -> */}
@@ -194,7 +194,7 @@ export default async function HomePage() {
             <Button.Link
               href="/colleges"
               variant="primary"
-              className="group rounded-full px-6 py-3 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),0_6px_20px_rgba(224,102,58,0.28)] transition-all duration-300 hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.5),0_10px_28px_rgba(224,102,58,0.36)] hover:-translate-y-0.5 active:translate-y-0 text-sm font-bold"
+              className="group rounded-full px-6 py-3 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),0_6px_20px_rgba(32,70,84,0.24)] transition-all duration-300 hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.5),0_10px_28px_rgba(32,70,84,0.32)] hover:-translate-y-0.5 active:translate-y-0 text-sm font-bold"
             >
               <span>Explore colleges</span>
               <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/20 transition-transform duration-200 group-hover:translate-x-0.5">
@@ -358,13 +358,13 @@ export default async function HomePage() {
                 <div className="apple-card rounded-[22px] border border-black/[0.08] bg-sn-surface-alt/70 p-5 sm:p-6 shadow-[0_12px_36px_rgba(15,23,42,0.06)] mt-4">
                   <div className="flex items-start justify-between pb-3 border-b border-black/[0.06]">
                     <div>
-                      <span className="rounded-full bg-orange-100 border border-orange-200 px-2 py-0.5 text-[10px] font-bold text-orange-800 inline-block mb-1">
+                      <span className="rounded-full bg-[#A9E0F1]/40 border border-[#A9E0F1] px-2 py-0.5 text-[10px] font-bold text-[#142C35] inline-block mb-1">
                         Closes in 4 days
                       </span>
                       <h4 className="font-baloo text-base font-bold text-sn-ink">Kathmandu University</h4>
                       <p className="text-xs font-nunito text-sn-ink-muted">School of Engineering · Dhulikhel</p>
                     </div>
-                    <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-800">
+                    <span className="rounded-full bg-[#CAFFA6]/70 border border-[#CAFFA6] px-2 py-0.5 text-[10px] font-bold text-[#142C35]">
                       Intake Open
                     </span>
                   </div>
@@ -474,22 +474,22 @@ export default async function HomePage() {
               />
             </span>{' '}
             academic{' '}
-            <span className="inline-flex items-center gap-1.5 align-middle mx-1 px-3 py-1 rounded-xl bg-emerald-100/90 border border-emerald-300/70 shadow-sm text-sm sm:text-base font-bold font-nunito text-emerald-900 rotate-2">
+            <span className="inline-flex items-center gap-1.5 align-middle mx-1 px-3 py-1 rounded-xl bg-[#CAFFA6]/70 border border-[#CAFFA6] shadow-sm text-sm sm:text-base font-bold font-nunito text-[#142C35] rotate-2">
               <span>🎓</span>
               <span>dreams</span>
             </span>{' '}
             live on your{' '}
-            <span className="inline-flex items-center gap-1.5 align-middle mx-1 px-3.5 py-1 rounded-xl bg-orange-100 border border-sn-primary/30 shadow-sm text-sm sm:text-base font-bold font-nunito text-sn-primary -rotate-1">
+            <span className="inline-flex items-center gap-1.5 align-middle mx-1 px-3.5 py-1 rounded-xl bg-[#A9E0F1]/50 border border-[#A9E0F1] shadow-sm text-sm sm:text-base font-bold font-nunito text-[#142C35] -rotate-1">
               <Mascot pose="wave" size={20} />
               <span>screen</span>
             </span>
           </h2>
 
-          {/* CTA Button matching "Download for iOS 🍎" */}
+          {/* CTA Button */}
           <div className="mt-10 sm:mt-12 flex justify-center">
             <Link
               href="/colleges"
-              className="inline-flex items-center gap-2 rounded-full bg-[#00875A] px-7 py-3.5 text-sm font-bold font-nunito text-white shadow-[0_4px_16px_rgba(0,135,90,0.32)] hover:bg-[#00704A] hover:shadow-[0_6px_22px_rgba(0,135,90,0.42)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
+              className="inline-flex items-center gap-2 rounded-full bg-[#204654] px-7 py-3.5 text-sm font-bold font-nunito text-white shadow-[0_4px_16px_rgba(32,70,84,0.28)] hover:bg-[#173743] hover:shadow-[0_6px_22px_rgba(32,70,84,0.36)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
             >
               <span>Explore for Students</span>
               <span>🎓</span>
@@ -837,7 +837,7 @@ export default async function HomePage() {
           <div className="apple-shell">
             <div className="apple-card relative overflow-hidden !rounded-[20px] bg-white p-8 sm:p-12 lg:p-16 text-center shadow-[inset_0_1px_1.5px_rgba(255,255,255,0.9),0_8px_32px_rgba(15,23,42,0.06)]">
               {/* Subtle warm accent radial background */}
-              <div className="pointer-events-none absolute -top-24 left-1/2 h-[350px] w-[500px] -translate-x-1/2 rounded-full bg-gradient-to-b from-orange-100/40 via-amber-50/20 to-transparent blur-2xl" aria-hidden="true" />
+              <div className="pointer-events-none absolute -top-24 left-1/2 h-[350px] w-[500px] -translate-x-1/2 rounded-full bg-gradient-to-b from-[#A9E0F1]/25 via-[#CAFFA6]/15 to-transparent blur-2xl" aria-hidden="true" />
 
               <div className="relative">
                 <h2 className="font-baloo font-extrabold text-sn-ink text-3xl sm:text-4xl mb-3 tracking-[-0.02em]">
@@ -850,7 +850,7 @@ export default async function HomePage() {
                   <Button.Link
                     href="/colleges"
                     variant="primary"
-                    className="group rounded-full px-6 py-3 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),0_6px_20px_rgba(224,102,58,0.28)] transition-all duration-300 hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.5),0_10px_28px_rgba(224,102,58,0.36)] hover:-translate-y-0.5 active:translate-y-0"
+                    className="group rounded-full px-6 py-3 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),0_6px_20px_rgba(32,70,84,0.24)] transition-all duration-300 hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.5),0_10px_28px_rgba(32,70,84,0.32)] hover:-translate-y-0.5 active:translate-y-0"
                   >
                     <span>Search all institutions</span>
                     <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/20 transition-transform duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-0.5">

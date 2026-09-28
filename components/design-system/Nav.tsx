@@ -240,7 +240,7 @@ export default function Nav() {
               </button>
               <SubscribeButton variant="header" />
               <AccountButton />
-              <Link href="/colleges" className="motion-control focus-ring inline-flex items-center gap-2 rounded-full bg-sn-primary px-5 py-2 text-xs font-bold font-nunito text-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.35),0_4px_14px_rgba(224,102,58,0.28)] hover:bg-sn-primary-hover">
+              <Link href="/colleges" className="motion-control focus-ring inline-flex items-center gap-2 rounded-full bg-sn-primary px-5 py-2 text-xs font-bold font-nunito text-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.35),0_4px_14px_rgba(32,70,84,0.25)] hover:bg-sn-primary-hover">
                 Start your pathway
               </Link>
             </div>

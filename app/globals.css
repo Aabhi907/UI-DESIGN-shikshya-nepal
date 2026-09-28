@@ -4,53 +4,50 @@
 
 /* ── CSS custom properties ────────────────────────────────────── */
 :root {
-  --primary:     #1e429f;
-  --primary-600: #173782;
-  --accent:      #c93b37;
-  --navy:        #16233f;
+  --primary:     #204654;
+  --primary-600: #173743;
+  --accent:      #204654;
+  --navy:        #142C35;
   --surface:     #ffffff;
-  --surface-soft:#f5f4f1;
-  --page-bg:     #f8f7f3;
-  --text:        #0f1629;
-  --text-secondary: #374151;
-  --text-muted:  #667085;
-  --border:      #e6e4df;
-  --border-strong: #d4d1ca;
-  --shadow-rest: 0 1px 2px rgba(15, 22, 41, 0.035), 0 4px 12px rgba(15, 22, 41, 0.02);
-  --shadow-hover: 0 6px 16px rgba(15, 22, 41, 0.06);
+  --surface-soft:#F0F5E8;
+  --page-bg:     #FAFBF4;
+  --text:        #142C35;
+  --text-secondary: #3D5963;
+  --text-muted:  #6D8690;
+  --border:      #E1E8DC;
+  --border-strong: #CBD6C3;
+  --shadow-rest: 0 1px 2px rgba(20, 44, 53, 0.035), 0 4px 12px rgba(20, 44, 53, 0.02);
+  --shadow-hover: 0 6px 16px rgba(20, 44, 53, 0.06);
   --measure-reading: 68ch;
 
-  /* ── Phase 1 design system (new — see Build Brief "Public UI redesign") ──
-     Scoped to a new "sn-" Tailwind namespace (below) so it never touches the
-     tokens above. Pages not yet converted keep rendering with the old ones
-     unchanged; only components/pages that opt in with sn- classes use these. */
-  --ground:        #FFF7EC;
-  --surface:        #FFFFFF;
-  --surface-alt:    #FBEFE0;
-  --ink:            #2A211A;
-  --ink-soft:       #6B6053;
-  --ink-muted:      #A0937F;
-  --primary:        #E0663A;
-  --primary-hover:  #C94F27;
-  --primary-bg:     #FDE9DC;
-  --verified:       #1B9E77;
-  --verified-ink:   #177A5D;
-  --verified-bg:    #DBF1E8;
-  --confirm:        #C6871A;
-  --confirm-ink:    #8A5B08;
-  --confirm-bg:     #FCEECB;
-  --limited:        #A0937F;
-  --limited-ink:    #8A7C68;
-  --limited-bg:     #F0E9DD;
-  --sn-border:      #F0E6D6;
-  --sn-border-strong:#EAD9C6;
-  --tint-mint:      #DBF1E8;
-  --tint-peach:     #FCE4D2;
-  --tint-butter:    #FCEECB;
-  --tint-lilac:     #EDE6FA;
-  --sn-shadow-card:  0 6px 18px rgba(42, 33, 26, 0.06);
-  --sn-shadow-float: 0 10px 26px rgba(42, 33, 26, 0.12);
-  --sn-shadow-button: 0 8px 18px rgba(224, 102, 58, 0.26);
+  /* ── Phase 1 design system (Teal Waters & Spring Meadow Palette) ── */
+  --ground:        #FAFBF4;
+  --surface:       #FFFFFF;
+  --surface-alt:   #F0F5E8;
+  --ink:           #142C35;
+  --ink-soft:      #3D5963;
+  --ink-muted:     #6D8690;
+  --primary:       #204654;
+  --primary-hover: #173743;
+  --primary-bg:    #E6F4F8;
+  --verified:      #1C6B4F;
+  --verified-ink:  #0F4431;
+  --verified-bg:   #CAFFA6;
+  --confirm:       #204654;
+  --confirm-ink:   #142C35;
+  --confirm-bg:    #CAFFA6;
+  --limited:       #6D8690;
+  --limited-ink:   #4A6570;
+  --limited-bg:    #E7EEF0;
+  --sn-border:     #E1E8DC;
+  --sn-border-strong:#CBD6C3;
+  --tint-mint:     #CAFFA6;
+  --tint-peach:    #A9E0F1;
+  --tint-butter:   #F7F9E1;
+  --tint-lilac:    #D9EEF7;
+  --sn-shadow-card:  0 6px 18px rgba(32, 70, 84, 0.05);
+  --sn-shadow-float: 0 10px 26px rgba(32, 70, 84, 0.10);
+  --sn-shadow-button: 0 8px 18px rgba(32, 70, 84, 0.22);
 
   /* Restrained motion shared by both legacy and sn-* interfaces. */
   --motion-instant: 120ms;
@@ -93,12 +90,12 @@
   }
 
   ::selection {
-    background: #dce5f5;
-    color: #0f1629;
+    background: #CAFFA6;
+    color: #142C35;
   }
 
   body {
-    @apply bg-[#f8f7f3] text-ink font-sans text-[16px] leading-relaxed;
+    @apply bg-[#FAFBF4] text-ink font-sans text-[16px] leading-relaxed;
     font-feature-settings: "cv02", "cv03", "cv04";
     font-optical-sizing: auto;
     letter-spacing: 0.002em;
@@ -408,7 +405,7 @@
   }
 
   .apple-glow {
-    background: radial-gradient(circle at 50% 0%, rgba(224, 102, 58, 0.09) 0%, rgba(251, 239, 224, 0.03) 55%, transparent 75%);
+    background: radial-gradient(circle at 50% 0%, rgba(32, 70, 84, 0.08) 0%, rgba(202, 255, 166, 0.04) 55%, transparent 75%);
   }
 
   @media (hover: hover) and (pointer: fine) {

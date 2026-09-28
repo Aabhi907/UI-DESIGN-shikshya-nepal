@@ -49,40 +49,40 @@ const config: Config = {
           'tint-butter': 'var(--tint-butter)',
           'tint-lilac':  'var(--tint-lilac)',
         },
-        // ── Primary — deep confident blue ─────────────
+        // ── Primary — deep Teal Waters (scholastic & premium) ──
         primary: {
-          DEFAULT: '#1e429f',
-          50:  '#eff3fb',
-          100: '#dce5f5',
-          200: '#bacce9',
-          300: '#91add8',
-          600: '#173782',
-          700: '#122b66',
+          DEFAULT: '#204654',
+          50:  '#f0f7f9',
+          100: '#dbeef3',
+          200: '#b7dde6',
+          300: '#86c4d4',
+          600: '#173743',
+          700: '#102933',
         },
-        // ── Accent — warm orange (Nepal flag energy) ──
+        // ── Accent — vibrant Spring Meadow (fresh & energizing) ──
         accent: {
-          DEFAULT: '#c93b37',
-          50:  '#fff5f3',
-          100: '#fee3df',
-          200: '#fac5bd',
-          600: '#ad2d2a',
+          DEFAULT: '#CAFFA6',
+          50:  '#f8fef5',
+          100: '#edfde4',
+          200: '#dbfccb',
+          600: '#9de76d',
         },
         // ── Dark sections ─────────────────────────────
-        navy: '#16233f',
+        navy: '#142C35',
         // ── Surfaces & cards ─────────────────────────
         card:    '#ffffff',
         surface: '#ffffff',
         // ── Text ─────────────────────────────────────
         ink: {
-          DEFAULT:   '#0f1629',
-          secondary: '#374151',
-          muted:     '#6b7280',
+          DEFAULT:   '#142C35',
+          secondary: '#3D5963',
+          muted:     '#6D8690',
         },
         // ── Borders ──────────────────────────────────
         border: {
-          DEFAULT: '#e6e4df',
-          strong:  '#d4d1ca',
-          subtle:  '#f3f1eb',
+          DEFAULT: '#E1E8DC',
+          strong:  '#CBD6C3',
+          subtle:  '#FAFBF4',
         },
         // ── Brand alias (backward compat) ────────────
         brand: {
