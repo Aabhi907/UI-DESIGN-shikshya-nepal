@@ -1,6 +1,5 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import Image from 'next/image'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import { FACULTIES } from '@/lib/utils'
 import HeroSearch from '@/components/ui/HeroSearch'
@@ -15,7 +14,7 @@ import Card from '@/components/design-system/Card'
 import IconTile from '@/components/design-system/IconTile'
 import SectionHeader from '@/components/design-system/SectionHeader'
 import Button from '@/components/design-system/Button'
-import FeaturedCollegeCard, { CAMPUS_FALLBACK_IMAGES } from '@/components/design-system/FeaturedCollegeCard'
+import FeaturedCollegeCard from '@/components/design-system/FeaturedCollegeCard'
 import {
   Building2,
   FileText,
@@ -35,8 +34,9 @@ import {
   Sprout,
   TreePine,
   ShieldCheck,
-  MapPin,
   Calculator,
+  CheckCircle2,
+  Clock,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
@@ -145,142 +145,296 @@ async function getHomeData() {
 export default async function HomePage() {
   const { admissions, results, notices, featuredColleges, heroStats, universityCounts } = await getHomeData()
 
-  const latestResult  = results[0]
-  const latestNotice  = notices[0]
-  const featuredCollege = featuredColleges[0] ?? null
   const hasProofContent = admissions.length > 0 || results.length > 0 || notices.length > 0 || featuredColleges.length > 0
 
   return (
     <div>
       {/* ════════════════════════════════════════════════════════
-          1. HERO — Apple Clean Minimal Architecture
+          1. HERO — Pure Centered Minimalist Architecture (Matching Image 1)
       ════════════════════════════════════════════════════════ */}
-      <section className={`relative border-b border-sn-border bg-sn-ground overflow-hidden ${SECTION_PAD}`}>
-        {/* Apple radial ambient glow */}
-        <div className="pointer-events-none absolute -top-48 left-1/2 h-[580px] w-[900px] -translate-x-1/2 rounded-full bg-gradient-to-b from-orange-200/35 via-amber-100/20 to-transparent blur-3xl" aria-hidden="true" />
+      <section className="relative border-b border-sn-border bg-sn-ground overflow-hidden py-20 lg:py-28">
+        {/* Soft, ultra-subtle ambient glow */}
+        <div className="pointer-events-none absolute -top-44 left-1/2 h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-gradient-to-b from-orange-200/25 via-amber-100/15 to-transparent blur-3xl" aria-hidden="true" />
 
-        <div className={`${CONTAINER} relative`}>
-          <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-14 items-center">
-            {/* Left Column: Value Prop, Typography & Search */}
-            <div className="lg:col-span-7">
-              <div className="apple-pill mb-6 shadow-sm">
-                <Mascot pose="wave" size={24} />
-                <span className="text-xs font-bold font-nunito text-sn-ink">An independent education guide for Nepal</span>
-              </div>
+        <div className="mx-auto max-w-4xl px-5 sm:px-8 text-center relative z-10">
+          {/* Eyebrow Pill matching Voxt's [NEW] Voice input app -> */}
+          <Link
+            href="/admissions?deadline=open"
+            className="apple-pill group inline-flex items-center gap-2.5 rounded-full bg-white/95 px-3.5 py-1.5 text-xs font-bold font-nunito text-sn-ink shadow-sm hover:shadow transition-all duration-200 mb-8 border border-black/[0.08]"
+          >
+            <Mascot pose="wave" size={18} />
+            <span className="rounded-full bg-sn-ink px-2 py-0.5 text-[10px] font-bold text-white uppercase tracking-wider">
+              2082 / 2026
+            </span>
+            <span>Intake deadlines &amp; board results live</span>
+            <ArrowRight className="h-3 w-3 text-sn-ink-muted group-hover:text-sn-primary group-hover:translate-x-0.5 transition-all" />
+          </Link>
 
-              <h1 className="font-baloo font-extrabold text-sn-ink leading-[1.04] mb-5 text-balance tracking-[-0.038em]" style={{ fontSize: 'clamp(2.6rem, 5.8vw, 4.1rem)' }}>
-                Decide what to study after +2, and where.
-              </h1>
+          {/* Centered Headline matching "Speak clearly. Adapt to context." */}
+          <h1
+            className="font-baloo font-extrabold text-sn-ink text-balance tracking-[-0.035em] leading-[1.06] mb-6"
+            style={{ fontSize: 'clamp(2.75rem, 6vw, 4.4rem)' }}
+          >
+            Decide what to study. Find where.
+          </h1>
 
-              <p className="mb-8 max-w-xl text-lg leading-relaxed font-nunito text-sn-ink-soft md:text-xl">
-                Verified colleges, courses and career pathways for +2 and university in Nepal. Sourced, dated and unbiased.
+          {/* Centered Subtext matching Voxt's clean body copy */}
+          <p className="mx-auto mb-10 max-w-2xl text-base sm:text-lg leading-relaxed font-nunito text-sn-ink-soft">
+            Verified colleges, courses and career pathways for +2 and university in Nepal. Sourced, dated and unbiased guidance from official boards.
+          </p>
+
+          {/* Centered Spotlight Search */}
+          <div className="mx-auto max-w-2xl mb-8 text-left">
+            <HeroSearch />
+          </div>
+
+          {/* Centered Action Button Pair matching [Star on GitHub] [ Mac Download] */}
+          <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
+            <Button.Link
+              href="/colleges"
+              variant="primary"
+              className="group rounded-full px-6 py-3 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),0_6px_20px_rgba(224,102,58,0.28)] transition-all duration-300 hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.5),0_10px_28px_rgba(224,102,58,0.36)] hover:-translate-y-0.5 active:translate-y-0 text-sm font-bold"
+            >
+              <span>Explore colleges</span>
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/20 transition-transform duration-200 group-hover:translate-x-0.5">
+                <ArrowRight className="h-3 w-3" aria-hidden="true" />
+              </span>
+            </Button.Link>
+            <Button.Link
+              href="/programs"
+              variant="secondary"
+              className="rounded-full px-6 py-3 border-black/[0.08] bg-white/80 backdrop-blur-sm shadow-[inset_0_1px_1px_rgba(255,255,255,0.95)] hover:border-black/[0.15] hover:bg-white transition-all duration-200 text-sm font-bold text-sn-ink"
+            >
+              Browse programs
+            </Button.Link>
+          </div>
+
+          {/* Social Proof Counter matching "2819+ Mac users and counting" */}
+          <div className="flex items-center justify-center gap-3 text-xs font-nunito text-sn-ink-muted">
+            <div className="flex -space-x-1.5 overflow-hidden">
+              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-sn-tint-peach text-[10px] font-bold text-sn-ink ring-2 ring-white">TU</span>
+              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-sn-tint-mint text-[10px] font-bold text-sn-ink ring-2 ring-white">KU</span>
+              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-sn-tint-butter text-[10px] font-bold text-sn-ink ring-2 ring-white">PU</span>
+              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-sn-tint-lilac text-[10px] font-bold text-sn-ink ring-2 ring-white">NEB</span>
+            </div>
+            <span>
+              <strong className="text-sn-ink font-bold">1,200+</strong> colleges &amp; <strong className="text-sn-ink font-bold">450+</strong> programs cataloged across Nepal
+            </span>
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════
+          2. FEATURE SHOWCASE 1 — Results without the chaos (Matching Image 2)
+      ════════════════════════════════════════════════════════ */}
+      <section className={`border-b border-sn-border bg-white ${SECTION_PAD}`}>
+        <div className={CONTAINER}>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+            {/* Left Column: Typography & Feature Checklist */}
+            <div className="lg:col-span-6 space-y-6">
+              <h2 className="font-baloo text-3xl sm:text-4xl font-extrabold text-sn-ink leading-[1.12] tracking-[-0.025em]">
+                Direct board results <span className="relative inline-block px-2">
+                  <span className="relative z-10">without the chaos</span>
+                  <span className="absolute inset-0 -rotate-1 rounded-full border border-sn-primary/40 bg-sn-primary-bg/35 -z-0" />
+                </span>
+              </h2>
+
+              <p className="text-base sm:text-lg font-nunito text-sn-ink-soft leading-relaxed">
+                Check published results, roll number lookups, and mark sheet records directly from official board archives without broken links or third-party ads.
               </p>
 
-              <HeroSearch />
+              <div className="space-y-3.5 pt-2">
+                {[
+                  { icon: CheckCircle2, text: 'Instant symbol and roll number lookup for TU, NEB, and CTEVT' },
+                  { icon: ShieldCheck, text: 'Official marksheet grades, division breakdowns and pass verification' },
+                  { icon: FileText, text: 'Archive records dating back to 2075 BS with published notices' },
+                  { icon: Bell, text: 'Free email notifications the moment new results are officially declared' },
+                ].map(({ icon: Icon, text }, i) => (
+                  <div key={i} className="flex items-start gap-3">
+                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-sn-tint-mint text-emerald-800">
+                      <Icon className="h-3 w-3" />
+                    </span>
+                    <span className="text-sm font-nunito text-sn-ink font-medium leading-snug">
+                      {text}
+                    </span>
+                  </div>
+                ))}
+              </div>
 
-              <div className="mt-8 flex flex-wrap items-center gap-3">
-                <Button.Link
-                  href="/colleges"
-                  variant="primary"
-                  className="group rounded-full px-6 py-3 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),0_6px_20px_rgba(224,102,58,0.28)] transition-all duration-300 hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.5),0_10px_28px_rgba(224,102,58,0.36)] hover:-translate-y-0.5 active:translate-y-0"
+              <div className="pt-2">
+                <Link
+                  href="/results"
+                  className="inline-flex items-center gap-2 text-sm font-bold font-nunito text-sn-primary hover:text-sn-primary-hover group"
                 >
-                  <span>Find your college</span>
-                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/20 transition-transform duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-0.5">
-                    <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-                  </span>
-                </Button.Link>
-                <Button.Link
-                  href="/programs"
-                  variant="secondary"
-                  className="rounded-full px-6 py-3 border-black/[0.08] bg-white/80 backdrop-blur-sm shadow-[inset_0_1px_1px_rgba(255,255,255,0.95)] hover:border-black/[0.15] hover:bg-white transition-all duration-200"
-                >
-                  Explore programs
-                </Button.Link>
+                  <span>Search published board results</span>
+                  <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
+                </Link>
               </div>
             </div>
 
-            {/* Right Column: Clean Apple Spotlight Card */}
-            <div className="hidden lg:block lg:col-span-5">
-              <div className="apple-card overflow-hidden !rounded-[24px] border border-black/[0.08] bg-white shadow-[inset_0_1px_1.5px_rgba(255,255,255,0.9),0_12px_40px_rgba(15,23,42,0.06)]">
-                {featuredCollege && (
-                  <Link
-                    href={`/colleges/${featuredCollege.slug}`}
-                    className="group relative block h-56 overflow-hidden bg-sn-surface-alt"
-                    aria-label={`View ${featuredCollege.name}`}
-                  >
-                    <Image
-                      src={featuredCollege.cover_url || CAMPUS_FALLBACK_IMAGES[0]}
-                      alt={`${featuredCollege.name} campus`}
-                      fill
-                      sizes="(min-width: 1024px) 33vw, 100vw"
-                      className="object-cover transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.03]"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent pointer-events-none" />
-
-                    <div className="absolute top-3.5 left-3.5 flex items-center gap-2">
-                      <span className="apple-glass rounded-full px-3 py-1 text-xs font-bold font-nunito text-sn-ink shadow-sm">
-                        Featured campus
-                      </span>
-                      <span className="rounded-full bg-emerald-600/90 backdrop-blur-sm px-2.5 py-1 text-[11px] font-bold text-white shadow-sm flex items-center gap-1">
-                        <ShieldCheck className="h-3 w-3" />
-                        Verified
-                      </span>
-                    </div>
-
-                    <div className="absolute inset-x-0 bottom-0 p-5 text-white">
-                      <p className="font-baloo text-xl font-bold leading-tight drop-shadow-sm group-hover:text-amber-200 transition-colors line-clamp-1">
-                        {featuredCollege.name}
-                      </p>
-                      {featuredCollege.location && (
-                        <p className="text-xs font-nunito text-white/80 mt-1 flex items-center gap-1">
-                          <MapPin className="h-3 w-3" />
-                          {featuredCollege.location}
-                        </p>
-                      )}
-                    </div>
-                  </Link>
-                )}
-
-                {/* Live updates list underneath the photo */}
-                <div className="p-4 sm:p-5 divide-y divide-black/[0.06]">
-                  {latestResult && (
-                    <Link
-                      href={`/results/${latestResult.slug}`}
-                      className="group flex items-center justify-between gap-3 py-3 transition-colors hover:text-sn-primary"
-                    >
-                      <div className="min-w-0">
-                        <span className="text-[11px] font-bold font-nunito text-amber-600 uppercase tracking-wider block mb-0.5">
-                          Latest Result Published
-                        </span>
-                        <p className="text-sm font-bold font-nunito text-sn-ink group-hover:text-sn-primary transition-colors truncate">
-                          {latestResult.title}
-                        </p>
-                      </div>
-                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-sn-surface-alt text-sn-ink group-hover:bg-sn-primary group-hover:text-white transition-all duration-200">
-                        <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-                      </span>
-                    </Link>
-                  )}
-
-                  {latestNotice && (
-                    <Link
-                      href={`/notices/${latestNotice.slug}`}
-                      className="group flex items-center justify-between gap-3 pt-3 transition-colors hover:text-sn-primary"
-                    >
-                      <div className="min-w-0">
-                        <span className="text-[11px] font-bold font-nunito text-sn-primary-hover uppercase tracking-wider block mb-0.5">
-                          University Notice
-                        </span>
-                        <p className="text-sm font-bold font-nunito text-sn-ink group-hover:text-sn-primary transition-colors truncate">
-                          {latestNotice.title}
-                        </p>
-                      </div>
-                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-sn-surface-alt text-sn-ink group-hover:bg-sn-primary group-hover:text-white transition-all duration-200">
-                        <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-                      </span>
-                    </Link>
-                  )}
+            {/* Right Column: Soft Canvas with Floating Query Bubble & Result Card */}
+            <div className="lg:col-span-6">
+              <div className="rounded-[32px] border border-black/[0.05] bg-sn-ground/70 p-6 sm:p-10 relative flex flex-col justify-center min-h-[380px] shadow-[inset_0_1px_2px_rgba(255,255,255,0.8)]">
+                {/* Floating query bubble matching Voxt's "Make it shorter and clearer" */}
+                <div className="self-start -mb-3 z-10 ml-2">
+                  <div className="apple-pill inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-bold font-nunito text-sn-ink shadow-md bg-white border border-black/[0.08]">
+                    <span className="text-amber-600">📋</span>
+                    <span>&ldquo;Check my NEB Grade 12 result&rdquo;</span>
+                  </div>
                 </div>
+
+                {/* Floating Clean Result Card matching Voxt's Semantic Rewrite card */}
+                <div className="apple-card rounded-[22px] border border-black/[0.08] bg-white p-5 sm:p-6 shadow-[0_12px_36px_rgba(15,23,42,0.06)] mt-4">
+                  <div className="flex items-center justify-between pb-3 border-b border-black/[0.06]">
+                    <div className="flex items-center gap-2">
+                      <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-sn-tint-peach text-sn-ink font-bold text-xs font-mono">
+                        NEB
+                      </span>
+                      <div>
+                        <p className="text-xs font-bold text-sn-ink font-nunito">Grade 12 Annual Examination</p>
+                        <p className="text-[11px] text-sn-ink-muted font-nunito">National Examination Board · Sanothimi</p>
+                      </div>
+                    </div>
+                    <span className="rounded-full bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 text-[10px] font-bold text-emerald-800 flex items-center gap-1">
+                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      Verified
+                    </span>
+                  </div>
+
+                  <div className="py-4 space-y-2">
+                    <div className="flex items-center justify-between text-xs font-nunito">
+                      <span className="text-sn-ink-muted">Symbol Number:</span>
+                      <span className="font-mono font-bold text-sn-ink">2401884X</span>
+                    </div>
+                    <div className="flex items-center justify-between text-xs font-nunito">
+                      <span className="text-sn-ink-muted">Academic Stream:</span>
+                      <span className="font-bold text-sn-ink">Science (Physics, Chemistry, Math)</span>
+                    </div>
+                    <div className="flex items-center justify-between text-xs font-nunito">
+                      <span className="text-sn-ink-muted">Calculated Standing:</span>
+                      <span className="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
+                        First Division with Distinction · 3.65 GPA
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Clean Filter Pills at bottom matching [Shorter] [Clearer] [Formal] in Voxt */}
+                  <div className="pt-3 border-t border-black/[0.06] flex items-center justify-between">
+                    <div className="flex gap-1.5 text-[11px] font-bold font-nunito">
+                      <span className="rounded-full bg-sn-surface-alt px-2.5 py-1 text-sn-ink">TU Balkhu</span>
+                      <span className="rounded-full bg-sn-surface-alt px-2.5 py-1 text-sn-ink">NEB</span>
+                      <span className="rounded-full bg-sn-surface-alt px-2.5 py-1 text-sn-ink">KU Dhulikhel</span>
+                    </div>
+                    <Link href="/results" className="text-xs font-bold text-sn-primary hover:underline">
+                      Verify &rarr;
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════
+          3. FEATURE SHOWCASE 2 — Intake Deadlines (Reversed Layout)
+      ════════════════════════════════════════════════════════ */}
+      <section className={`border-b border-sn-border bg-sn-ground ${SECTION_PAD}`}>
+        <div className={CONTAINER}>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+            {/* Left Column: Soft Canvas with Floating Intake Card */}
+            <div className="order-2 lg:order-1 lg:col-span-6">
+              <div className="rounded-[32px] border border-black/[0.05] bg-white p-6 sm:p-10 relative flex flex-col justify-center min-h-[380px] shadow-[inset_0_1px_2px_rgba(255,255,255,0.8)]">
+                {/* Floating query bubble */}
+                <div className="self-start -mb-3 z-10 ml-2">
+                  <div className="apple-pill inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-bold font-nunito text-sn-ink shadow-md bg-white border border-black/[0.08]">
+                    <span className="text-emerald-600">⏳</span>
+                    <span>&ldquo;When does Kathmandu University BTech close?&rdquo;</span>
+                  </div>
+                </div>
+
+                {/* Floating Admission Card */}
+                <div className="apple-card rounded-[22px] border border-black/[0.08] bg-sn-surface-alt/70 p-5 sm:p-6 shadow-[0_12px_36px_rgba(15,23,42,0.06)] mt-4">
+                  <div className="flex items-start justify-between pb-3 border-b border-black/[0.06]">
+                    <div>
+                      <span className="rounded-full bg-orange-100 border border-orange-200 px-2 py-0.5 text-[10px] font-bold text-orange-800 inline-block mb-1">
+                        Closes in 4 days
+                      </span>
+                      <h4 className="font-baloo text-base font-bold text-sn-ink">Kathmandu University</h4>
+                      <p className="text-xs font-nunito text-sn-ink-muted">School of Engineering · Dhulikhel</p>
+                    </div>
+                    <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-800">
+                      Intake Open
+                    </span>
+                  </div>
+
+                  <div className="py-3.5 space-y-2">
+                    <div className="flex items-center justify-between text-xs font-nunito">
+                      <span className="text-sn-ink-muted">Program:</span>
+                      <span className="font-bold text-sn-ink">BTech in Artificial Intelligence</span>
+                    </div>
+                    <div className="flex items-center justify-between text-xs font-nunito">
+                      <span className="text-sn-ink-muted">Eligibility:</span>
+                      <span className="font-bold text-sn-ink">Min 2.4 GPA in +2 Science</span>
+                    </div>
+                    <div className="flex items-center justify-between text-xs font-nunito">
+                      <span className="text-sn-ink-muted">Application Form:</span>
+                      <span className="font-bold text-sn-primary">Online Submission Available</span>
+                    </div>
+                  </div>
+
+                  <div className="pt-3 border-t border-black/[0.06] flex items-center justify-between">
+                    <span className="text-xs font-nunito text-sn-ink-muted">Verified notice attached</span>
+                    <Link
+                      href="/admissions"
+                      className="rounded-full bg-sn-primary px-3 py-1 text-xs font-bold text-white hover:bg-sn-primary-hover transition-colors"
+                    >
+                      View Deadline
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column: Typography & Checklist */}
+            <div className="order-1 lg:order-2 lg:col-span-6 space-y-6">
+              <h2 className="font-baloo text-3xl sm:text-4xl font-extrabold text-sn-ink leading-[1.12] tracking-[-0.025em]">
+                Track intake deadlines <span className="relative inline-block px-2">
+                  <span className="relative z-10">before they close</span>
+                  <span className="absolute inset-0 1 rounded-full border border-emerald-500/40 bg-emerald-50/50 -z-0" />
+                </span>
+              </h2>
+
+              <p className="text-base sm:text-lg font-nunito text-sn-ink-soft leading-relaxed">
+                Fees, quotas, and entrance requirements change frequently. Every college profile and intake notice is dated so you never submit to expired deadlines.
+              </p>
+
+              <div className="space-y-3.5 pt-2">
+                {[
+                  { icon: Clock, text: 'Real application deadline countdowns with entrance dates' },
+                  { icon: GraduationCap, text: 'Constituent government campuses vs private affiliated seat quotas' },
+                  { icon: FileText, text: 'Entrance exam syllabus, question patterns and eligibility guidelines' },
+                  { icon: CheckCircle2, text: 'Sourced fees with last-checked verification date' },
+                ].map(({ icon: Icon, text }, i) => (
+                  <div key={i} className="flex items-start gap-3">
+                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-sn-tint-peach text-sn-primary">
+                      <Icon className="h-3 w-3" />
+                    </span>
+                    <span className="text-sm font-nunito text-sn-ink font-medium leading-snug">
+                      {text}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="pt-2">
+                <Link
+                  href="/admissions"
+                  className="inline-flex items-center gap-2 text-sm font-bold font-nunito text-sn-primary hover:text-sn-primary-hover group"
+                >
+                  <span>Explore all active admissions</span>
+                  <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
+                </Link>
               </div>
             </div>
           </div>
