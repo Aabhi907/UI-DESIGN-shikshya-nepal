@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils'
 
 const controlClass =
-  'w-full rounded-sn-control border border-sn-border-strong bg-sn-surface px-3.5 py-2.5 text-sm font-nunito text-sn-ink placeholder:text-sn-ink-muted focus:outline-none focus:ring-2 focus:ring-sn-primary/40 focus:border-sn-primary'
+  'w-full rounded-sn-control border border-sn-border-strong bg-sn-surface px-3.5 py-2.5 text-sm font-nunito text-sn-ink placeholder:text-sn-ink-muted focus:outline-none focus:ring-2 focus:ring-sn-primary/40 focus:border-sn-primary transition-colors duration-150 motion-control'
 
 export function Label({ children, htmlFor }: { children: React.ReactNode; htmlFor?: string }) {
   return (

@@ -50,14 +50,14 @@ export default function SearchBar({
           className={`w-full rounded-xl border border-[#d4d1ca] bg-white pl-12 pr-32 text-ink shadow-[0_1px_2px_rgba(15,22,41,0.04)] placeholder:text-slate-500 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 ${sizeClasses[size]}`}
         />
         {query && (
-          <button type="button" onClick={() => setQuery('')} aria-label="Clear search" className="absolute right-[5.75rem] top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-lg text-slate-500 hover:bg-[#f3f1eb] hover:text-ink">
+          <button type="button" onClick={() => setQuery('')} aria-label="Clear search" className="absolute right-[5.75rem] top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-lg text-slate-500 hover:bg-[#f3f1eb] hover:text-ink motion-control">
             <X className="h-4 w-4" aria-hidden="true" />
           </button>
         )}
         <button
           type="submit"
           aria-label="Submit search"
-          className="absolute right-2 top-1/2 min-h-11 -translate-y-1/2 rounded-lg bg-primary px-5 py-2 text-sm font-bold text-white hover:bg-primary-600"
+          className="absolute right-2 top-1/2 min-h-11 -translate-y-1/2 rounded-lg bg-primary px-5 py-2 text-sm font-bold text-white transition-colors hover:bg-primary-600 motion-control"
         >
           Search
         </button>

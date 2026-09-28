@@ -63,13 +63,13 @@ export default function EmailSubscribe() {
             value={email}
             onChange={(e) => { setEmail(e.target.value); if (state === 'error') setState('idle') }}
             placeholder="your@email.com"
-            className="w-full rounded-sn-control border border-white/30 bg-white/15 pl-9 pr-3 py-3 text-sm font-nunito text-white placeholder-white/60 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-white/50"
+            className="w-full rounded-sn-control border border-white/30 bg-white/15 pl-9 pr-3 py-3 text-sm font-nunito text-white placeholder-white/60 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-white/50 transition-colors duration-150"
           />
         </div>
         <button
           type="submit"
           disabled={state === 'loading'}
-          className="flex items-center gap-2 whitespace-nowrap rounded-sn-control bg-white px-5 py-3 text-sm font-bold font-nunito text-sn-primary-hover transition-colors hover:bg-sn-primary-bg disabled:opacity-60"
+          className="flex min-h-11 items-center gap-2 whitespace-nowrap rounded-sn-control bg-white px-5 py-3 text-sm font-bold font-nunito text-sn-primary-hover transition-colors hover:bg-sn-primary-bg disabled:opacity-60 motion-control"
         >
           {state === 'loading' ? (
             <><Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" /> Subscribing…</>

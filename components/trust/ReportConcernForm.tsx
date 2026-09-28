@@ -81,7 +81,7 @@ export default function ReportConcernForm({
             </p>
           )}
 
-          <button type="submit" className="min-h-11 w-full rounded-xl bg-primary px-4 py-3 text-sm font-bold text-white">
+          <button type="submit" className="min-h-11 w-full rounded-xl bg-primary px-4 py-3 text-sm font-bold text-white hover:bg-primary-600 transition-colors motion-control">
             Send report
           </button>
         </form>

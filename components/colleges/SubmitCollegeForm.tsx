@@ -241,7 +241,7 @@ export default function SubmitCollegeForm() {
                 key={prog}
                 type="button"
                 onClick={() => toggleProgram(prog)}
-                className={`px-4 py-2 rounded-xl border text-sm font-semibold transition-[color,background-color,border-color,box-shadow,transform] ${
+                className={`px-4 py-2 rounded-xl border text-sm font-semibold transition-[color,background-color,border-color,box-shadow,transform] motion-control ${
                   active
                     ? 'bg-[#1847c4] border-[#1847c4] text-white'
                     : 'bg-white border-gray-200 text-gray-600 hover:border-[#1847c4] hover:text-[#1847c4]'
@@ -330,9 +330,9 @@ export default function SubmitCollegeForm() {
       <button
         type="submit"
         disabled={loading}
-        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5
+        className="w-full sm:w-auto inline-flex min-h-11 items-center justify-center gap-2 px-8 py-3.5
                    bg-[#1847c4] text-white text-sm font-semibold rounded-xl
-                   hover:bg-[#1340b0] disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+                   hover:bg-[#1340b0] disabled:opacity-60 disabled:cursor-not-allowed transition-colors motion-control"
       >
         {loading && <Loader2 className="w-4 h-4 animate-spin" />}
         {loading ? 'Submitting…' : 'Submit College'}
