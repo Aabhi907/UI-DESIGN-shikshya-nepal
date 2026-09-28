@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
+import Image from 'next/image'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import { FACULTIES } from '@/lib/utils'
 import HeroSearch from '@/components/ui/HeroSearch'
@@ -14,7 +15,7 @@ import Card from '@/components/design-system/Card'
 import IconTile from '@/components/design-system/IconTile'
 import SectionHeader from '@/components/design-system/SectionHeader'
 import Button from '@/components/design-system/Button'
-import FeaturedCollegeCard from '@/components/design-system/FeaturedCollegeCard'
+import FeaturedCollegeCard, { CAMPUS_FALLBACK_IMAGES } from '@/components/design-system/FeaturedCollegeCard'
 import {
   Building2,
   FileText,
@@ -437,6 +438,69 @@ export default async function HomePage() {
                 </Link>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════════════════
+          4. EDITORIAL STATEMENT — Typographic Art Banner (Matching Screenshot)
+      ════════════════════════════════════════════════════════ */}
+      <section className="relative border-b border-sn-border bg-[#FBF9F4] py-24 sm:py-32 overflow-hidden text-center">
+        <div className="mx-auto max-w-5xl px-5 sm:px-8">
+          {/* Top Micro-label matching "Live camera cutouts, decorated mats." */}
+          <p className="font-nunito text-xs sm:text-sm font-semibold text-sn-ink-muted mb-8 tracking-wide flex items-center justify-center gap-2">
+            <span>🏛️</span>
+            <span>Live campus cutouts, verified admissions.</span>
+          </p>
+
+          {/* Editorial Headline with Inline Image Cutouts & Chips */}
+          <h2
+            className="font-baloo font-extrabold text-[#0D2619] leading-[1.28] tracking-[-0.035em] text-balance max-w-4xl mx-auto"
+            style={{ fontSize: 'clamp(2.35rem, 5.2vw, 4.4rem)' }}
+          >
+            the independent{' '}
+            <span className="inline-flex items-center gap-1.5 align-middle mx-1 px-3 py-1 rounded-xl bg-amber-100/90 border border-amber-300/70 shadow-sm text-sm sm:text-base font-bold font-nunito text-amber-900 -rotate-2">
+              <span>🏛️</span>
+              <span>Campus</span>
+            </span>{' '}
+            where your{' '}
+            <span className="inline-block w-14 h-8 sm:w-20 sm:h-11 rounded-xl align-middle mx-1.5 overflow-hidden shadow-sm border border-black/[0.1] relative -translate-y-0.5">
+              <Image
+                src={CAMPUS_FALLBACK_IMAGES[0]}
+                alt="Campus thumbnail"
+                fill
+                sizes="80px"
+                className="object-cover"
+              />
+            </span>{' '}
+            academic{' '}
+            <span className="inline-flex items-center gap-1.5 align-middle mx-1 px-3 py-1 rounded-xl bg-emerald-100/90 border border-emerald-300/70 shadow-sm text-sm sm:text-base font-bold font-nunito text-emerald-900 rotate-2">
+              <span>🎓</span>
+              <span>dreams</span>
+            </span>{' '}
+            live on your{' '}
+            <span className="inline-flex items-center gap-1.5 align-middle mx-1 px-3.5 py-1 rounded-xl bg-orange-100 border border-sn-primary/30 shadow-sm text-sm sm:text-base font-bold font-nunito text-sn-primary -rotate-1">
+              <Mascot pose="wave" size={20} />
+              <span>screen</span>
+            </span>
+          </h2>
+
+          {/* CTA Button matching "Download for iOS 🍎" */}
+          <div className="mt-10 sm:mt-12 flex justify-center">
+            <Link
+              href="/colleges"
+              className="inline-flex items-center gap-2 rounded-full bg-[#00875A] px-7 py-3.5 text-sm font-bold font-nunito text-white shadow-[0_4px_16px_rgba(0,135,90,0.32)] hover:bg-[#00704A] hover:shadow-[0_6px_22px_rgba(0,135,90,0.42)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200"
+            >
+              <span>Explore for Students</span>
+              <span>🎓</span>
+            </Link>
+          </div>
+
+          {/* Laurel Wreath Badge matching "🌿 Used by 1700+ users on Testflight 🌿" */}
+          <div className="mt-8 flex items-center justify-center gap-2 font-nunito text-xs sm:text-sm font-bold text-sn-ink-muted">
+            <span className="text-base select-none">🌿</span>
+            <span>Used by 25,000+ students across Nepal</span>
+            <span className="text-base select-none">🌿</span>
           </div>
         </div>
       </section>
