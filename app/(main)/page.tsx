@@ -1,6 +1,5 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import Image from 'next/image'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import { FACULTIES } from '@/lib/utils'
 import HeroSearch from '@/components/ui/HeroSearch'
@@ -15,12 +14,13 @@ import Card from '@/components/design-system/Card'
 import IconTile from '@/components/design-system/IconTile'
 import SectionHeader from '@/components/design-system/SectionHeader'
 import Button from '@/components/design-system/Button'
-import FeaturedCollegeCard, { CAMPUS_FALLBACK_IMAGES } from '@/components/design-system/FeaturedCollegeCard'
+import FeaturedCollegeCard from '@/components/design-system/FeaturedCollegeCard'
+import HeroAppStage from '@/components/home/HeroAppStage'
+import VoxtBentoGrid from '@/components/home/VoxtBentoGrid'
 import {
   Building2,
   FileText,
   Bell,
-  CalendarCheck2,
   CalendarClock,
   Award,
   ArrowRight,
@@ -35,7 +35,6 @@ import {
   Stethoscope,
   Sprout,
   TreePine,
-  Calculator,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
@@ -141,73 +140,6 @@ async function getHomeData() {
   }
 }
 
-// ── Hero sidebar card — Apple hardware framed live updates ──────────
-function HeroCard({
-  result, notice, college,
-}: {
-  result:  { title: string; slug: string } | null
-  notice:  { title: string; slug: string } | null
-  college: { name: string; slug: string; location?: string | null; cover_url?: string | null } | null
-}) {
-  if (!result && !notice && !college) return null
-
-  const collegeCover = college?.cover_url || (college ? CAMPUS_FALLBACK_IMAGES[0] : null)
-
-  return (
-    <aside className="apple-card overflow-hidden !rounded-[18px]">
-      {college && collegeCover && (
-        <Link href={`/colleges/${college.slug}`} className="group relative block h-48 overflow-hidden bg-sn-surface-alt" aria-label={`View ${college.name}`}>
-          <Image
-            src={collegeCover}
-            alt={`${college.name} campus`}
-            fill
-            sizes="(min-width: 1024px) 33vw, 100vw"
-            className="object-cover transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
-          <div className="absolute top-3.5 left-3.5 flex items-center gap-1.5">
-            <span className="apple-glass rounded-full px-2.5 py-1 text-[11px] font-bold font-nunito text-sn-ink shadow-sm">
-              Featured campus
-            </span>
-          </div>
-          <div className="absolute inset-x-0 bottom-0 p-4 text-white">
-            <p className="font-baloo text-base sm:text-lg font-bold leading-tight drop-shadow-sm line-clamp-1 group-hover:text-amber-200 transition-colors">
-              {college.name}
-            </p>
-            {college.location && (
-              <p className="text-xs font-nunito text-white/80 mt-0.5 line-clamp-1">{college.location}</p>
-            )}
-          </div>
-        </Link>
-      )}
-      <div className="p-4 sm:p-5 space-y-1">
-        {result && (
-          <Link href={`/results/${result.slug}`} className="group flex items-start justify-between gap-3 p-3 rounded-xl transition-all duration-200 hover:bg-sn-surface-alt/70">
-            <div className="min-w-0">
-              <span className="inline-block text-[11px] font-bold font-nunito text-sn-primary-hover mb-0.5">Latest result</span>
-              <p className="text-sm font-bold font-nunito leading-snug line-clamp-1 text-sn-ink group-hover:text-sn-primary transition-colors">{result.title}</p>
-            </div>
-            <span className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sn-surface-alt text-sn-ink group-hover:bg-sn-primary group-hover:text-white transition-all duration-200">
-              <ArrowRight className="h-3 w-3" aria-hidden="true" />
-            </span>
-          </Link>
-        )}
-        {notice && (
-          <Link href={`/notices/${notice.slug}`} className="group flex items-start justify-between gap-3 p-3 rounded-xl transition-all duration-200 hover:bg-sn-surface-alt/70">
-            <div className="min-w-0">
-              <span className="inline-block text-[11px] font-bold font-nunito text-sn-primary-hover mb-0.5">Latest notice</span>
-              <p className="text-sm font-bold font-nunito leading-snug line-clamp-1 text-sn-ink group-hover:text-sn-primary transition-colors">{notice.title}</p>
-            </div>
-            <span className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-sn-surface-alt text-sn-ink group-hover:bg-sn-primary group-hover:text-white transition-all duration-200">
-              <ArrowRight className="h-3 w-3" aria-hidden="true" />
-            </span>
-          </Link>
-        )}
-      </div>
-    </aside>
-  )
-}
-
 export default async function HomePage() {
   const { admissions, results, notices, featuredColleges, heroStats, universityCounts } = await getHomeData()
 
@@ -219,9 +151,9 @@ export default async function HomePage() {
   return (
     <div>
       {/* ════════════════════════════════════════════════════════
-          1. HERO — Apple Clean Minimal Architecture
+          1. HERO — Apple Clean Minimal Architecture & Voxt App Stage
       ════════════════════════════════════════════════════════ */}
-      <section className={`relative border-b border-sn-border bg-sn-ground overflow-hidden ${SECTION_PAD}`}>
+      <section className={`relative border-b border-sn-border bg-sn-ground bg-dot-grid overflow-hidden ${SECTION_PAD}`}>
         {/* Apple radial ambient glow */}
         <div className="pointer-events-none absolute -top-48 left-1/2 h-[580px] w-[900px] -translate-x-1/2 rounded-full bg-gradient-to-b from-orange-200/35 via-amber-100/20 to-transparent blur-3xl" aria-hidden="true" />
 
@@ -265,11 +197,13 @@ export default async function HomePage() {
               </div>
             </div>
 
-            {/* Right Column: Hardware-Framed Live Showcase Card */}
-            <div className="hidden lg:block lg:col-span-5">
-              <div className="apple-shell">
-                <HeroCard result={latestResult ?? null} notice={latestNotice ?? null} college={featuredCollege} />
-              </div>
+            {/* Right Column: Voxt-inspired macOS Interactive App Stage */}
+            <div className="lg:col-span-5">
+              <HeroAppStage
+                featuredCollege={featuredCollege}
+                latestResult={latestResult ?? null}
+                latestNotice={latestNotice ?? null}
+              />
             </div>
           </div>
         </div>
@@ -306,80 +240,37 @@ export default async function HomePage() {
       )}
 
       {/* ════════════════════════════════════════════════════════
-          3. WHAT DO YOU NEED TODAY — asymmetric bento path-in
+          3. WHAT DO YOU NEED TODAY — Voxt Blueprint Crosshair Bento Grid
       ════════════════════════════════════════════════════════ */}
-      <section className={`border-b border-sn-border bg-sn-surface-alt ${SECTION_PAD}`}>
+      <section className={`border-b border-sn-border bg-sn-surface-alt/70 ${SECTION_PAD}`}>
         <div className={CONTAINER}>
           <SectionHeader
             title="What do you need today?"
+            description="Four high-precision portals engineered for student exploration across Nepal."
             action={<Link href="/search" className="text-sm font-bold font-nunito text-sn-primary hover:text-sn-primary-hover">Search everything →</Link>}
           />
-          <div className="mt-8 lg:mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 lg:gap-5">
-            {/* Focal Point 1: Results (wide bento) */}
-            <Link
-              href="/results"
-              className="apple-card group relative flex flex-col justify-between overflow-hidden p-6 sm:p-7 col-span-1 sm:col-span-1 lg:col-span-3 bg-gradient-to-br from-sn-tint-peach/35 via-sn-surface to-sn-surface border-sn-tint-peach/30 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
-            >
-              <div className="flex items-start justify-between gap-4">
-                <IconTile icon={FileText} tint="peach" size={40} />
-                <span className="rounded-full bg-sn-tint-peach/60 border border-sn-tint-peach px-2.5 py-1 text-xs font-bold font-nunito text-sn-ink">
-                  TU · KU · NEB
-                </span>
-              </div>
-              <div className="mt-6">
-                <div className="flex items-center gap-1.5">
-                  <h3 className="font-baloo text-xl font-bold text-sn-ink group-hover:text-sn-primary transition-colors">
-                    Check results
-                  </h3>
-                  <ArrowRight className="h-4 w-4 motion-arrow text-sn-primary opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
-                </div>
-                <p className="mt-1.5 text-sm font-nunito text-sn-ink-soft leading-relaxed">
-                  Search published board results, roll number lookups, and mark sheet archives.
-                </p>
-              </div>
-            </Link>
+          <div className="mt-8 lg:mt-10">
+            <VoxtBentoGrid />
+          </div>
 
-            {/* Focal Point 2: Admissions (wide bento) */}
-            <Link
-              href="/admissions?deadline=open"
-              className="apple-card group relative flex flex-col justify-between overflow-hidden p-6 sm:p-7 col-span-1 sm:col-span-1 lg:col-span-3 bg-gradient-to-br from-sn-tint-mint/35 via-sn-surface to-sn-surface border-sn-tint-mint/30 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
-            >
-              <div className="flex items-start justify-between gap-4">
-                <IconTile icon={CalendarCheck2} tint="mint" size={40} />
-                <span className="rounded-full bg-sn-tint-mint/60 border border-sn-tint-mint px-2.5 py-1 text-xs font-bold font-nunito text-sn-ink">
-                  Live &amp; open
-                </span>
-              </div>
-              <div className="mt-6">
-                <div className="flex items-center gap-1.5">
-                  <h3 className="font-baloo text-xl font-bold text-sn-ink group-hover:text-sn-primary transition-colors">
-                    Admissions
-                  </h3>
-                  <ArrowRight className="h-4 w-4 motion-arrow text-sn-primary opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true" />
-                </div>
-                <p className="mt-1.5 text-sm font-nunito text-sn-ink-soft leading-relaxed">
-                  Active college intake deadlines, entrance eligibility, and application guidelines.
-                </p>
-              </div>
-            </Link>
-
-            {/* 6 Supporting Bento Cards */}
+          {/* Quick utility pill strip for instant access */}
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             {[
-              { href: '/colleges', label: 'Find a college', text: '+2 and university level', Icon: GraduationCap, tint: 'lilac' as const },
-              { href: '/scholarships', label: 'Scholarships', text: 'Government & merit funding', Icon: Award, tint: 'peach' as const },
-              { href: '/entrance-exams', label: 'Entrance exams', text: 'Eligibility & syllabus', Icon: CalendarClock, tint: 'mint' as const },
-              { href: '/tools/gpa-calculator', label: 'GPA calculator', text: 'SEE, +2 & university scales', Icon: Calculator, tint: 'butter' as const },
-              { href: '/study-resources', label: 'Study resources', text: 'Past papers & notes', Icon: BookOpen, tint: 'butter' as const },
-              { href: '/notices', label: 'Latest notices', text: 'Direct official updates', Icon: Bell, tint: 'lilac' as const },
-            ].map(({ href, label, text, Icon, tint }) => (
+              { href: '/scholarships', label: 'Scholarships', icon: Award },
+              { href: '/entrance-exams', label: 'Entrance exams', icon: CalendarClock },
+              { href: '/study-resources', label: 'Study resources', icon: BookOpen },
+              { href: '/notices', label: 'University notices', icon: Bell },
+            ].map(({ href, label, icon: Icon }) => (
               <Link
                 key={href}
                 href={href}
-                className="apple-card group p-5 col-span-1 sm:col-span-1 lg:col-span-2 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm"
+                className="apple-pill group flex items-center gap-2 rounded-full px-4 py-2 hover:bg-white hover:border-black/[0.15] transition-all duration-200"
               >
-                <IconTile icon={Icon} tint={tint} size={32} />
-                <p className="mt-3.5 text-sm font-bold font-nunito text-sn-ink group-hover:text-sn-primary transition-colors">{label}</p>
-                <p className="mt-1 text-xs font-nunito text-sn-ink-muted">{text}</p>
+                <Icon className="h-3.5 w-3.5 text-sn-primary" />
+                <span className="text-xs font-bold font-nunito text-sn-ink group-hover:text-sn-primary transition-colors">
+                  {label}
+                </span>
+                <ArrowRight className="h-3 w-3 text-sn-ink-muted group-hover:text-sn-primary group-hover:translate-x-0.5 transition-all" />
               </Link>
             ))}
           </div>
