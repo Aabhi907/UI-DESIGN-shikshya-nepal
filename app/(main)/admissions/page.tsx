@@ -81,10 +81,10 @@ export default async function AdmissionsPage({ searchParams }: { searchParams: A
       </section>
       <div className="mx-auto max-w-sn px-5 py-8 sm:px-8 lg:px-12">
         <nav aria-label="Admission status" className="mb-6 flex gap-2 overflow-x-auto pb-1">
-          <Link href="/admissions" aria-current={!params.deadline ? 'page' : undefined} className={`min-h-11 whitespace-nowrap rounded-sn-control border px-4 py-3 text-sm font-bold font-nunito ${!params.deadline ? 'border-sn-primary bg-sn-primary text-white' : 'border-sn-border-strong bg-sn-surface text-sn-ink-soft'}`}>All admissions</Link>
-          <Link href="/admissions?deadline=open" aria-current={params.deadline === 'open' ? 'page' : undefined} className={`min-h-11 whitespace-nowrap rounded-sn-control border px-4 py-3 text-sm font-bold font-nunito ${params.deadline === 'open' ? 'border-sn-primary bg-sn-primary text-white' : 'border-sn-border-strong bg-sn-surface text-sn-ink-soft'}`}>Open now</Link>
-          <Link href="/admissions?deadline=7" aria-current={params.deadline === '7' ? 'page' : undefined} className={`min-h-11 whitespace-nowrap rounded-sn-control border px-4 py-3 text-sm font-bold font-nunito ${params.deadline === '7' ? 'border-sn-primary bg-sn-primary text-white' : 'border-sn-border-strong bg-sn-surface text-sn-ink-soft'}`}>Closing in 7 days</Link>
-          <Link href="/admissions/planner" className="min-h-11 whitespace-nowrap rounded-sn-control border border-sn-border-strong bg-sn-surface px-4 py-3 text-sm font-bold font-nunito text-sn-ink-soft">My planner</Link>
+          <Link href="/admissions" aria-current={!params.deadline ? 'page' : undefined} className={`min-h-11 whitespace-nowrap rounded-sn-control border px-4 py-3 text-sm font-bold font-nunito transition-colors motion-control ${!params.deadline ? 'border-sn-primary bg-sn-primary text-white' : 'border-sn-border-strong bg-sn-surface text-sn-ink-soft'}`}>All admissions</Link>
+          <Link href="/admissions?deadline=open" aria-current={params.deadline === 'open' ? 'page' : undefined} className={`min-h-11 whitespace-nowrap rounded-sn-control border px-4 py-3 text-sm font-bold font-nunito transition-colors motion-control ${params.deadline === 'open' ? 'border-sn-primary bg-sn-primary text-white' : 'border-sn-border-strong bg-sn-surface text-sn-ink-soft'}`}>Open now</Link>
+          <Link href="/admissions?deadline=7" aria-current={params.deadline === '7' ? 'page' : undefined} className={`min-h-11 whitespace-nowrap rounded-sn-control border px-4 py-3 text-sm font-bold font-nunito transition-colors motion-control ${params.deadline === '7' ? 'border-sn-primary bg-sn-primary text-white' : 'border-sn-border-strong bg-sn-surface text-sn-ink-soft'}`}>Closing in 7 days</Link>
+          <Link href="/admissions/planner" className="min-h-11 whitespace-nowrap rounded-sn-control border border-sn-border-strong bg-sn-surface px-4 py-3 text-sm font-bold font-nunito text-sn-ink-soft transition-colors motion-control hover:border-sn-primary hover:text-sn-primary">My planner</Link>
         </nav>
         {!loadError && <div className="mb-6 grid grid-cols-3 gap-3">
           {[{ Icon: CalendarCheck2, value: open, label: 'Open' }, { Icon: Clock3, value: soon, label: 'Closing soon' }, { Icon: CheckCircle2, value: verified, label: 'Verified' }].map(({ Icon, value, label }) => (
@@ -101,7 +101,7 @@ export default async function AdmissionsPage({ searchParams }: { searchParams: A
             <AlertTriangle className="mx-auto h-8 w-8" aria-hidden="true" />
             <h2 className="mt-3 font-baloo text-xl font-bold">Admissions could not be loaded</h2>
             <p className="mt-2 text-sm">This is a temporary problem, not an empty list. Your filters are safe — please try again.</p>
-            <a href={retryUrl} className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-sn-control bg-sn-ink px-4 text-sm font-bold text-white"><RefreshCcw className="h-4 w-4" aria-hidden="true" />Try again</a>
+            <a href={retryUrl} className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-sn-control bg-sn-ink px-4 text-sm font-bold text-white motion-control hover:bg-sn-ink/90"><RefreshCcw className="h-4 w-4" aria-hidden="true" />Try again</a>
           </div>
         ) : <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
           <AdmissionFilters searchParams={params} count={admissions.length} />
@@ -113,7 +113,7 @@ export default async function AdmissionsPage({ searchParams }: { searchParams: A
                 <Mascot pose="point" size={72} className="mx-auto mb-4" />
                 <h2 className="font-baloo text-xl font-bold text-sn-ink">No matching admissions</h2>
                 <p className="mt-2 text-sm text-sn-ink-soft">Try clearing a filter or return soon for newly verified openings.</p>
-                <Link href="/admissions" className="mt-5 inline-block rounded-sn-control bg-sn-primary px-5 py-2.5 text-sm font-bold text-white hover:bg-sn-primary-hover">View all</Link>
+                <Link href="/admissions" className="mt-5 inline-block min-h-11 rounded-sn-control bg-sn-primary px-5 py-2.5 text-sm font-bold text-white hover:bg-sn-primary-hover motion-control">View all</Link>
               </div>
             )}
           </main>

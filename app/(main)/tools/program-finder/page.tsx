@@ -87,15 +87,15 @@ export default function ProgramFinderPage() {
                   key={value}
                   onClick={() => choose(questions[step].key, value)}
                   aria-pressed={answers[questions[step].key] === value}
-                  className="flex min-h-14 items-center justify-between gap-3 rounded-sn-control border border-sn-border-strong p-4 text-left text-sm font-bold text-sn-ink-soft transition-colors hover:border-sn-primary hover:bg-sn-primary-bg hover:text-sn-primary-hover"
+                  className="group flex min-h-14 items-center justify-between gap-3 rounded-sn-control border border-sn-border-strong p-4 text-left text-sm font-bold text-sn-ink-soft transition-colors hover:border-sn-primary hover:bg-sn-primary-bg hover:text-sn-primary-hover motion-control"
                 >
                   <span>{label}</span>
-                  <ArrowRight className="h-4 w-4 shrink-0 opacity-50" aria-hidden="true" />
+                  <ArrowRight className="h-4 w-4 shrink-0 opacity-50 transition-transform duration-200 group-hover:translate-x-1 group-hover:opacity-100 motion-arrow" aria-hidden="true" />
                 </button>
               ))}
             </div>
             {step > 0 && (
-              <button type="button" onClick={() => setStep(current => Math.max(0, current - 1))} className="mt-6 inline-flex min-h-11 items-center gap-1.5 text-sm font-bold text-sn-ink-muted hover:text-sn-primary">
+              <button type="button" onClick={() => setStep(current => Math.max(0, current - 1))} className="mt-6 inline-flex min-h-11 items-center gap-1.5 text-sm font-bold text-sn-ink-muted hover:text-sn-primary transition-colors motion-control">
                 <ArrowLeft className="h-4 w-4" aria-hidden="true" />Back
               </button>
             )}
@@ -109,7 +109,7 @@ export default function ProgramFinderPage() {
             <p className="mt-2 text-sm leading-6 text-sn-ink-soft">These are ranked from your answers. A close second or third result can be just as suitable after checking subjects, cost and career goals.</p>
             <div className="mt-5 space-y-4">
               {results.map(result => (
-                <article key={result.area} className={`rounded-sn-card border p-5 sm:p-6 ${result.rank === 1 ? 'border-sn-primary/30 bg-sn-ink text-white' : 'border-sn-border bg-sn-surface text-sn-ink'}`}>
+                <article key={result.area} className={`rounded-sn-card border p-5 sm:p-6 motion-interactive-card ${result.rank === 1 ? 'border-sn-primary/30 bg-sn-ink text-white' : 'border-sn-border bg-sn-surface text-sn-ink'}`}>
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <p className={`text-xs font-bold uppercase tracking-[0.08em] ${result.rank === 1 ? 'text-white/70' : 'text-sn-primary-hover'}`}>{result.rank === 1 ? 'Strongest match' : `Alternative ${result.rank - 1}`}</p>
@@ -120,14 +120,14 @@ export default function ProgramFinderPage() {
                   <p className={`mt-3 text-sm leading-6 ${result.rank === 1 ? 'text-white/80' : 'text-sn-ink-soft'}`}>{result.description}</p>
                   <p className={`mt-3 text-xs leading-5 ${result.rank === 1 ? 'text-white/70' : 'text-sn-ink-muted'}`}><strong>Why:</strong> {result.reason.join(' and ')}.</p>
                   <p className={`mt-2 text-xs leading-5 ${result.rank === 1 ? 'text-amber-200' : 'text-sn-confirm-ink'}`}><strong>Check first:</strong> {result.caution}</p>
-                  <Button.Link href={`/colleges?level=bachelor&faculty=${encodeURIComponent(result.area)}`} variant={result.rank === 1 ? 'secondary' : 'primary'} className={`mt-5 ${result.rank === 1 ? '!bg-white !text-sn-primary !border-white' : ''}`}>
+                  <Button.Link href={`/colleges?level=bachelor&faculty=${encodeURIComponent(result.area)}`} variant={result.rank === 1 ? 'secondary' : 'primary'} className={`mt-5 motion-control ${result.rank === 1 ? '!bg-white !text-sn-primary !border-white' : ''}`}>
                     <Compass className="h-4 w-4" aria-hidden="true" />Explore matching colleges
                   </Button.Link>
                 </article>
               ))}
             </div>
             <p className="mt-5 text-xs leading-5 text-sn-ink-muted">This transparent preference matcher is not a career assessment or eligibility decision. Confirm subjects, GPA, entrance rules, fees and official notices before applying.</p>
-            <button type="button" onClick={startOver} className="mt-6 inline-flex min-h-11 items-center gap-1.5 text-sm font-bold text-sn-ink-muted hover:text-sn-primary">
+            <button type="button" onClick={startOver} className="mt-6 inline-flex min-h-11 items-center gap-1.5 text-sm font-bold text-sn-ink-muted hover:text-sn-primary transition-colors motion-control">
               <RotateCcw className="h-4 w-4" aria-hidden="true" />Start again
             </button>
           </section>

@@ -268,7 +268,7 @@ export default async function CollegeProfilePage({
             <h1 className="max-w-4xl font-baloo text-[clamp(1.75rem,4.6vw,2.4rem)] font-extrabold leading-[1.1] tracking-[-0.015em] text-sn-ink">
               {college.name}
             </h1>
-            <div className="mt-3 flex flex-wrap gap-2"><SaveCollegeButton collegeId={college.id} /><Link href={`/compare?college1=${encodeURIComponent(college.slug)}`} className="inline-flex min-h-11 items-center gap-2 rounded-sn-control border border-sn-border-strong bg-sn-surface px-4 py-2.5 text-sm font-bold font-nunito text-sn-ink-soft transition-colors hover:border-sn-primary hover:bg-sn-primary-bg hover:text-sn-primary-hover"><GitCompare className="h-4 w-4" aria-hidden="true" />Compare</Link><ShareButton title={`${college.name} | SikshyaNepal`} /></div>
+            <div className="mt-3 flex flex-wrap gap-2"><SaveCollegeButton collegeId={college.id} /><Link href={`/compare?college1=${encodeURIComponent(college.slug)}`} className="inline-flex min-h-11 items-center gap-2 rounded-sn-control border border-sn-border-strong bg-sn-surface px-4 py-2.5 text-sm font-bold font-nunito text-sn-ink-soft transition-colors hover:border-sn-primary hover:bg-sn-primary-bg hover:text-sn-primary-hover motion-control"><GitCompare className="h-4 w-4" aria-hidden="true" />Compare</Link><ShareButton title={`${college.name} | SikshyaNepal`} /></div>
             <div className="mt-3 flex flex-wrap items-center gap-2.5">
               <VerificationBadge status={college.verification_status} />
               {displayAffiliation && <Pill tone="primary">{displayAffiliation}</Pill>}
@@ -291,22 +291,22 @@ export default async function CollegeProfilePage({
           {/* Official contact actions */}
           <div className="grid grid-cols-2 gap-2 text-sm sm:flex sm:flex-wrap">
             {displayLocation && (
-              <a href={directionsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-sn-control border border-sn-border bg-sn-surface px-3 font-bold font-nunito text-sn-primary hover:border-sn-primary" aria-label={`Get directions to ${college.name}`}>
+              <a href={directionsUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-sn-control border border-sn-border bg-sn-surface px-3 font-bold font-nunito text-sn-primary hover:border-sn-primary transition-colors motion-control" aria-label={`Get directions to ${college.name}`}>
                 <MapPin aria-hidden="true" className="h-4 w-4" /> Directions<ExternalLink aria-hidden="true" className="h-3 w-3" />
               </a>
             )}
             {phoneHref && (
-              <a href={phoneHref} className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-sn-control border border-sn-border bg-sn-surface px-3 font-bold font-nunito text-sn-ink-soft hover:border-sn-primary hover:text-sn-primary">
+              <a href={phoneHref} className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-sn-control border border-sn-border bg-sn-surface px-3 font-bold font-nunito text-sn-ink-soft hover:border-sn-primary hover:text-sn-primary transition-colors motion-control">
                 <Phone aria-hidden="true" className="h-4 w-4 text-sn-primary" /> Call college
               </a>
             )}
             {emailAddress && (
-              <a href={`mailto:${emailAddress}`} className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-sn-control border border-sn-border bg-sn-surface px-3 font-bold font-nunito text-sn-ink-soft hover:border-sn-primary hover:text-sn-primary">
+              <a href={`mailto:${emailAddress}`} className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-sn-control border border-sn-border bg-sn-surface px-3 font-bold font-nunito text-sn-ink-soft hover:border-sn-primary hover:text-sn-primary transition-colors motion-control">
                 <Mail aria-hidden="true" className="h-4 w-4 text-sn-primary" /> Email college
               </a>
             )}
             {websiteUrl && (
-              <a href={websiteUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-sn-control border border-sn-border bg-sn-surface px-3 font-bold font-nunito text-sn-ink-soft hover:border-sn-primary hover:text-sn-primary">
+              <a href={websiteUrl} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-sn-control border border-sn-border bg-sn-surface px-3 font-bold font-nunito text-sn-ink-soft hover:border-sn-primary hover:text-sn-primary transition-colors motion-control">
                 <Globe aria-hidden="true" className="h-4 w-4 text-sn-primary" /> Official website<ExternalLink aria-hidden="true" className="h-3 w-3" />
               </a>
             )}
@@ -327,8 +327,8 @@ export default async function CollegeProfilePage({
             {admissions.length > 0 && <Pill tone="verified">{admissions.length} open</Pill>}
           </div>
           <ApplyNowButton collegeName={college.name} collegeId={college.id} isSponsored={isSponsored} programs={enquiryPrograms} />
-          <Link href={`/admissions/planner?college=${encodeURIComponent(college.name)}`} className="mt-3 flex min-h-11 items-center justify-center rounded-sn-control border border-sn-border-strong bg-sn-primary-bg text-sm font-bold font-nunito text-sn-primary-hover">Add to admission plan</Link>
-          {phoneHref && <a href={phoneHref} className="mt-3 flex min-h-11 items-center justify-center gap-2 rounded-sn-control border border-sn-border-strong text-sm font-bold font-nunito text-sn-ink-soft"><Phone className="h-4 w-4" aria-hidden="true" />Call official number</a>}
+          <Link href={`/admissions/planner?college=${encodeURIComponent(college.name)}`} className="mt-3 flex min-h-11 items-center justify-center rounded-sn-control border border-sn-border-strong bg-sn-primary-bg text-sm font-bold font-nunito text-sn-primary-hover hover:bg-sn-primary-bg/80 transition-colors motion-control">Add to admission plan</Link>
+          {phoneHref && <a href={phoneHref} className="mt-3 flex min-h-11 items-center justify-center gap-2 rounded-sn-control border border-sn-border-strong text-sm font-bold font-nunito text-sn-ink-soft hover:border-sn-primary hover:text-sn-primary transition-colors motion-control"><Phone className="h-4 w-4" aria-hidden="true" />Call official number</a>}
         </Card>
       </section>
 

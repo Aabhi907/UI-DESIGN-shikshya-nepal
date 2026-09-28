@@ -140,7 +140,7 @@ export default async function AdmissionPage({ params }: { params: { slug: string
                 <EvidenceChip state="confirm" label="Confirm dates with the institution" />
               )}
             </div>
-            {item.application_deadline && <a href={`/api/admissions/${item.id}/calendar`} className="mt-5 flex min-h-11 items-center justify-center gap-2 rounded-sn-control border border-sn-border-strong px-4 text-sm font-bold font-nunito text-sn-ink"><CalendarPlus className="h-4 w-4 text-sn-primary" />Add deadline to calendar</a>}
+            {item.application_deadline && <a href={`/api/admissions/${item.id}/calendar`} className="mt-5 flex min-h-11 items-center justify-center gap-2 rounded-sn-control border border-sn-border-strong px-4 text-sm font-bold font-nunito text-sn-ink hover:border-sn-primary hover:text-sn-primary transition-colors motion-control"><CalendarPlus className="h-4 w-4 text-sn-primary" />Add deadline to calendar</a>}
           </Card>
 
           <Card>
@@ -166,14 +166,14 @@ export default async function AdmissionPage({ params }: { params: { slug: string
                 {item.college_id ? (
                   <ApplyNowButton collegeName={item.institution_name} collegeId={item.college_id} isSponsored={item.is_sponsored} programs={(item.programs.length ? item.programs : ['Not sure yet']).map((name) => ({ name }))} />
                 ) : item.application_url ? (
-                  <a href={item.application_url} target="_blank" rel="noopener noreferrer" className="mt-3 flex min-h-11 items-center justify-center gap-2 rounded-sn-control bg-sn-primary px-4 py-3 text-sm font-bold font-nunito text-white shadow-sn-button hover:bg-sn-primary-hover">Apply on official website <ExternalLink className="h-4 w-4" /></a>
+                  <a href={item.application_url} target="_blank" rel="noopener noreferrer" className="mt-3 flex min-h-11 items-center justify-center gap-2 rounded-sn-control bg-sn-primary px-4 py-3 text-sm font-bold font-nunito text-white shadow-sn-button hover:bg-sn-primary-hover motion-control">Apply on official website <ExternalLink className="h-4 w-4" /></a>
                 ) : (
                   <p className="mt-3 text-sm font-nunito text-sn-ink-soft">Contact the institution using the details below.</p>
                 )}
               </>
             )}
-            {item.contact_phone && <a href={`tel:${item.contact_phone}`} className="mt-3 flex items-center gap-2 text-sm font-bold font-nunito text-sn-ink-soft"><Phone className="h-4 w-4 text-sn-primary" />{item.contact_phone}</a>}
-            {item.contact_email && <a href={`mailto:${item.contact_email}`} className="mt-2 flex items-center gap-2 text-sm font-bold font-nunito text-sn-ink-soft"><Mail className="h-4 w-4 text-sn-primary" />{item.contact_email}</a>}
+            {item.contact_phone && <a href={`tel:${item.contact_phone}`} className="mt-3 flex items-center gap-2 text-sm font-bold font-nunito text-sn-ink-soft hover:text-sn-primary transition-colors"><Phone className="h-4 w-4 text-sn-primary" />{item.contact_phone}</a>}
+            {item.contact_email && <a href={`mailto:${item.contact_email}`} className="mt-2 flex items-center gap-2 text-sm font-bold font-nunito text-sn-ink-soft hover:text-sn-primary transition-colors"><Mail className="h-4 w-4 text-sn-primary" />{item.contact_email}</a>}
           </Card>
 
           <div className="rounded-sn-card border border-sn-primary/20 bg-sn-primary-bg p-5 text-sm font-nunito text-sn-primary-hover">
