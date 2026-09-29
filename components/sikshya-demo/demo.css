@@ -14,23 +14,23 @@
   align-items: center;
   justify-content: center;
   padding: 5rem 1rem 5.5rem;
-  background-color: #E3E7EA;
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  background-color: var(--ground);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
 }
 
 .dark .sikshya-demo-section {
-  background-color: #0E1013;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background-color: var(--ground);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
 }
 
 .sikshya-demo-bg {
-  background-color: #E3E7EA;
+  background-color: var(--ground);
 }
 
 .dark .sikshya-demo-bg {
-  background-color: #0E1013;
+  background-color: var(--ground);
 }
 
 /* --------------------------------------------------------------------------

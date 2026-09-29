@@ -208,7 +208,7 @@ export default async function HomePage() {
             <Button.Link
               href="/programs"
               variant="secondary"
-              className="rounded-full px-6 py-3 border-white/[0.1] bg-white/[0.04] backdrop-blur-sm shadow-[inset_0_1px_1px_rgba(255,255,255,0.06)] hover:border-white/[0.2] hover:bg-white/[0.08] transition-all duration-200 text-sm font-bold text-white"
+              className="rounded-full px-6 py-3 border-black/[0.12] dark:border-white/[0.1] bg-black/[0.03] dark:bg-white/[0.04] backdrop-blur-sm shadow-sm hover:border-black/[0.2] dark:hover:border-white/[0.2] hover:bg-black/[0.06] dark:hover:bg-white/[0.08] transition-all duration-200 text-sm font-bold text-slate-800 dark:text-white"
             >
               Browse programs
             </Button.Link>
@@ -883,13 +883,13 @@ export default async function HomePage() {
               <Link
                 key={href}
                 href={href}
-                className="apple-pill group flex items-center gap-2 rounded-full px-4 py-2 hover:bg-white/[0.08] hover:border-white/[0.16] transition-all duration-200"
+                className="apple-pill group flex items-center gap-2 rounded-full px-4 py-2 hover:bg-black/[0.04] dark:hover:bg-white/[0.08] hover:border-black/[0.12] dark:hover:border-white/[0.16] transition-all duration-200"
               >
-                <Icon className="h-3.5 w-3.5 text-[#CAFFA6]" />
-                <span className="text-xs font-bold font-nunito text-sn-ink group-hover:text-[#CAFFA6] transition-colors">
+                <Icon className="h-3.5 w-3.5 text-sn-primary dark:text-[#CAFFA6]" />
+                <span className="text-xs font-bold font-nunito text-sn-ink group-hover:text-sn-primary dark:group-hover:text-[#CAFFA6] transition-colors">
                   {label}
                 </span>
-                <ArrowRight className="h-3 w-3 text-sn-ink-muted group-hover:text-[#CAFFA6] group-hover:translate-x-0.5 transition-all" />
+                <ArrowRight className="h-3 w-3 text-sn-ink-muted group-hover:text-sn-primary dark:group-hover:text-[#CAFFA6] group-hover:translate-x-0.5 transition-all" />
               </Link>
             ))}
           </div>
@@ -931,7 +931,7 @@ export default async function HomePage() {
                     <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-sn-ink shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] ${tintBg}`}>
                       <Icon className="h-3 w-3" aria-hidden="true" />
                     </span>
-                    <span className="text-sm font-bold font-nunito text-sn-ink group-hover:text-[#CAFFA6] transition-colors">
+                    <span className="text-sm font-bold font-nunito text-sn-ink group-hover:text-sn-primary dark:group-hover:text-[#CAFFA6] transition-colors">
                       {faculty.name}
                     </span>
                   </Link>
@@ -949,7 +949,7 @@ export default async function HomePage() {
             <div className="mt-4 grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4">
               {UNIVERSITY_SHOWCASE.map((u, index) => {
                 const count = universityCounts[u.short] ?? 0
-                const tint = ['bg-sn-tint-peach text-[#A9E0F1]', 'bg-sn-tint-mint text-[#CAFFA6]', 'bg-sn-tint-butter text-[#F7F9E1]', 'bg-sn-tint-lilac text-[#D9EEF7]'][index % 4]
+                const tint = ['bg-sn-tint-peach text-primary dark:text-[#A9E0F1]', 'bg-sn-tint-mint text-emerald-800 dark:text-[#CAFFA6]', 'bg-sn-tint-butter text-amber-800 dark:text-[#F7F9E1]', 'bg-sn-tint-lilac text-indigo-800 dark:text-[#D9EEF7]'][index % 4]
                 return (
                   <Link
                     key={u.short}
@@ -1156,8 +1156,8 @@ export default async function HomePage() {
                     ].map((item, idx) => {
                       const Icon = item.icon
                       return (
-                        <div key={idx} className="flex items-start gap-4 pb-4 border-b border-white/[0.08] last:border-0 last:pb-0">
-                          <span className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white/[0.06] text-[#CAFFA6] border border-white/[0.08]">
+                        <div key={idx} className="flex items-start gap-4 pb-4 border-b border-black/[0.08] dark:border-white/[0.08] last:border-0 last:pb-0">
+                          <span className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-slate-100 dark:bg-white/[0.06] text-emerald-700 dark:text-[#CAFFA6] border border-black/[0.08] dark:border-white/[0.08]">
                             <Icon className="h-4 w-4" />
                           </span>
                           <div>
@@ -1188,20 +1188,20 @@ export default async function HomePage() {
                   </Button.Link>
                   <Link
                     href="/results"
-                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/[0.12] bg-white/[0.05] px-6 py-3 text-sm font-bold font-nunito text-white transition-all hover:bg-white/[0.1] hover:border-white/[0.2] shadow-[inset_0_1px_1px_rgba(255,255,255,0.06)] motion-control"
+                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-black/[0.12] dark:border-white/[0.12] bg-black/[0.04] dark:bg-white/[0.05] px-6 py-3 text-sm font-bold font-nunito text-slate-800 dark:text-white transition-all hover:bg-black/[0.08] dark:hover:bg-white/[0.1] hover:border-black/[0.2] dark:hover:border-white/[0.2] shadow-sm motion-control"
                   >
                     Check results
                   </Link>
                 </div>
 
                 {/* Trust badge matching "Secure Stripe payment / Free for students" */}
-                <p className="mt-4 text-xs font-nunito font-semibold text-[#CAFFA6] flex items-center justify-center gap-1.5">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-[#CAFFA6]" />
+                <p className="mt-4 text-xs font-nunito font-semibold text-emerald-700 dark:text-[#CAFFA6] flex items-center justify-center gap-1.5">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700 dark:text-[#CAFFA6]" />
                   <span>100% Free Public Guide · No student registration fees</span>
                 </p>
 
                 {/* Email Alert Newsletter Form */}
-                <div className="mx-auto mt-10 max-w-md border-t border-white/[0.08] pt-8 lg:mt-12 lg:pt-10">
+                <div className="mx-auto mt-10 max-w-md border-t border-black/[0.08] dark:border-white/[0.08] pt-8 lg:mt-12 lg:pt-10">
                   <p className="font-bold font-nunito text-sm text-sn-ink flex items-center gap-2 justify-center">
                     <Bell className="w-4 h-4 text-sn-primary" aria-hidden="true" />
                     Get result alerts in your inbox

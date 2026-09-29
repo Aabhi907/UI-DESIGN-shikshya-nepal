@@ -9,47 +9,47 @@
   --accent:      #187A4B;
   --accent-light:#CAFFA6;
   --navy:        #142C35;
-  --surface:     #FFFFFF;
-  --surface-soft:#F1F4F8;
-  --page-bg:     #E6EBF0;
-  --card:        #FFFFFF;
-  --text:        #0F172A;
-  --text-secondary: #334155;
-  --text-muted:  #64748B;
-  --border:      rgba(15, 23, 42, 0.07);
-  --border-strong: rgba(15, 23, 42, 0.15);
-  --shadow-rest: 0 1px 3px rgba(15, 23, 42, 0.04), 0 6px 18px rgba(15, 23, 42, 0.03);
-  --shadow-hover: 0 12px 32px rgba(15, 23, 42, 0.07);
+  --surface:     #ffffff;
+  --surface-soft:#f5f5f7;
+  --page-bg:     #fcfeff;
+  --card:        #ffffff;
+  --text:        #1a1a1a;
+  --text-secondary: #333333;
+  --text-muted:  #5a5a5a;
+  --border:      #d3d3d3;
+  --border-strong: #a0a0a0;
+  --shadow-rest: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.03);
+  --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.07);
   --measure-reading: 68ch;
 
-  /* ── Phase 1 design system (Clean Minimal Cool-Slate & Crisp Card) ── */
-  --ground:        #E6EBF0;
-  --surface:       #FFFFFF;
-  --surface-alt:   #F1F4F8;
-  --ink:           #0F172A;
-  --ink-soft:      #334155;
-  --ink-muted:     #64748B;
+  /* ── Phase 1 design system (adithnarein.com aesthetic: #fcfeff) ── */
+  --ground:        #fcfeff;
+  --surface:       #ffffff;
+  --surface-alt:   #f1f1f1;
+  --ink:           #1a1a1a;
+  --ink-soft:      #333333;
+  --ink-muted:     #5a5a5a;
   --primary:       #204654;
   --primary-hover: #173743;
   --primary-bg:    rgba(32, 70, 84, 0.08);
   --verified:      #187A4B;
-  --verified-ink:  #FFFFFF;
+  --verified-ink:  #0e4a2d;
   --verified-bg:   rgba(24, 122, 75, 0.12);
   --confirm:       #204654;
-  --confirm-ink:   #FFFFFF;
+  --confirm-ink:   #142c35;
   --confirm-bg:    rgba(32, 70, 84, 0.1);
-  --limited:       #64748B;
-  --limited-ink:   #334155;
-  --limited-bg:    rgba(0, 0, 0, 0.05);
-  --sn-border:     rgba(15, 23, 42, 0.07);
-  --sn-border-strong: rgba(15, 23, 42, 0.15);
+  --limited:       #5a5a5a;
+  --limited-ink:   #333333;
+  --limited-bg:    rgba(0, 0, 0, 0.04);
+  --sn-border:     #e0e0e0;
+  --sn-border-strong: #b0b0b0;
   --tint-mint:     rgba(24, 122, 75, 0.08);
   --tint-peach:    rgba(32, 70, 84, 0.08);
   --tint-butter:   rgba(217, 119, 6, 0.08);
   --tint-lilac:    rgba(99, 102, 241, 0.08);
-  --sn-shadow-card:  0 10px 25px -10px rgba(15, 23, 42, 0.06);
-  --sn-shadow-float: 0 24px 64px -16px rgba(15, 23, 42, 0.08);
-  --sn-shadow-button: 0 8px 20px -8px rgba(32, 70, 84, 0.25);
+  --sn-shadow-card:  0 2px 10px rgba(0, 0, 0, 0.05);
+  --sn-shadow-float: 0 16px 40px rgba(0, 0, 0, 0.07);
+  --sn-shadow-button: 0 4px 14px rgba(32, 70, 84, 0.2);
 
   /* Restrained motion shared by both legacy and sn-* interfaces. */
   --motion-instant: 120ms;
@@ -66,9 +66,9 @@
 
   /* Specular rim and ambient shadows */
   --specular-rim: inset 0 1px 1px rgba(255, 255, 255, 0.8);
-  --shadow-apple-card: 0 1px 3px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.04);
-  --shadow-apple-card-hover: 0 4px 14px rgba(15, 23, 42, 0.06), 0 18px 40px rgba(15, 23, 42, 0.08);
-  --shadow-apple-float: 0 24px 64px -16px rgba(15, 23, 42, 0.08), 0 2px 8px rgba(15, 23, 42, 0.03);
+  --shadow-apple-card: 0 1px 3px rgba(0, 0, 0, 0.04), 0 6px 20px rgba(0, 0, 0, 0.04);
+  --shadow-apple-card-hover: 0 4px 14px rgba(0, 0, 0, 0.06), 0 16px 36px rgba(0, 0, 0, 0.08);
+  --shadow-apple-float: 0 20px 48px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.03);
 }
 
 .dark {
@@ -100,10 +100,10 @@
   --primary-hover: #295b6e;
   --primary-bg:    rgba(32, 70, 84, 0.25);
   --verified:      #CAFFA6;
-  --verified-ink:  #0E1013;
+  --verified-ink:  #CAFFA6;
   --verified-bg:   rgba(202, 255, 166, 0.14);
   --confirm:       #204654;
-  --confirm-ink:   #F8FAFC;
+  --confirm-ink:   #A9E0F1;
   --confirm-bg:    rgba(32, 70, 84, 0.25);
   --limited:       #94A3B8;
   --limited-ink:   #CBD5E1;
@@ -534,23 +534,33 @@
   }
 
   .testimonials-fade-top {
-    background: linear-gradient(to bottom, #FAFBF4, transparent);
+    background: linear-gradient(to bottom, var(--ground), transparent);
   }
   .dark .testimonials-fade-top {
-    background: linear-gradient(to bottom, #0f1012, transparent);
+    background: linear-gradient(to bottom, var(--ground), transparent);
   }
   .testimonials-fade-bottom {
-    background: linear-gradient(to top, #FAFBF4, transparent);
+    background: linear-gradient(to top, var(--ground), transparent);
   }
   .dark .testimonials-fade-bottom {
-    background: linear-gradient(to top, #0f1012, transparent);
+    background: linear-gradient(to top, var(--ground), transparent);
   }
 
   .apple-stat-card {
-    background: linear-gradient(135deg, #204654 0%, #15323d 50%, #0d2129 100%);
+    background: linear-gradient(135deg, #204654 0%, #15323d 50%, #0d2129 100%) !important;
+    color: #ffffff !important;
   }
   .dark .apple-stat-card {
-    background: linear-gradient(135deg, #173743 0%, #102630 50%, #081419 100%);
+    background: linear-gradient(135deg, #173743 0%, #102630 50%, #081419 100%) !important;
+    color: #ffffff !important;
+  }
+
+  /* Ensure elements using bg-sn-ink maintain dark background for white text in dark mode */
+  .dark .bg-sn-ink {
+    background-color: #171920;
+  }
+  .dark .border-sn-ink {
+    border-color: rgba(255, 255, 255, 0.18);
   }
 
   .apple-shell {

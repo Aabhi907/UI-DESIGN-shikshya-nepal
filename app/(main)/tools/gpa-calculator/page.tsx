@@ -29,8 +29,8 @@ export default function GpaCalculatorPage() {
       <section className="border-b border-black/[0.08] dark:border-white/[0.08] bg-white/70 dark:bg-[#151518]/70 backdrop-blur-md">
         <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
           <p className="text-xs font-bold uppercase tracking-widest text-primary dark:text-[#CAFFA6] font-mono">Student tools</p>
-          <h1 className="mt-3 font-display text-3xl font-extrabold text-slate-900 dark:text-[#f5f5f6] sm:text-4xl">SEE &amp; NEB GPA calculator</h1>
-          <p className="mt-3 max-w-2xl text-slate-600 dark:text-[#8e8e96] font-nunito leading-relaxed">
+          <h1 className="mt-3 font-display text-3xl font-extrabold text-slate-900 dark:text-white sm:text-4xl">SEE &amp; NEB GPA calculator</h1>
+          <p className="mt-3 max-w-2xl text-slate-600 dark:text-slate-300 font-nunito leading-relaxed">
             Add your subjects and grades to calculate a weighted GPA. Your data stays in this browser—it is not saved or sent anywhere.
           </p>
         </div>
@@ -40,12 +40,12 @@ export default function GpaCalculatorPage() {
         <section className="apple-card rounded-[24px] p-6 sm:p-8 backdrop-blur-md">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <h2 className="font-display text-xl font-bold text-slate-900 dark:text-[#f5f5f6]">Your subjects</h2>
-              <p className="mt-0.5 text-xs text-slate-500 dark:text-[#8e8e96] font-nunito">Enter your courses and grading marks</p>
+              <h2 className="font-display text-xl font-bold text-slate-900 dark:text-white">Your subjects</h2>
+              <p className="mt-0.5 text-xs text-slate-600 dark:text-slate-300 font-nunito">Enter your courses and grading marks</p>
             </div>
             <button
               onClick={() => setSubjects(initial())}
-              className="inline-flex min-h-10 items-center gap-1.5 rounded-full px-3.5 text-xs font-semibold text-slate-500 dark:text-[#8e8e96] bg-black/[0.03] dark:bg-white/[0.04] border border-black/[0.06] dark:border-white/[0.08] hover:bg-black/[0.06] dark:hover:bg-white/[0.08] hover:text-slate-900 dark:hover:text-[#f5f5f6] active:scale-[0.98] transition-all"
+              className="inline-flex min-h-10 items-center gap-1.5 rounded-full px-3.5 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-black/[0.04] dark:bg-white/[0.06] border border-black/[0.08] dark:border-white/[0.1] hover:bg-black/[0.08] dark:hover:bg-white/[0.1] hover:text-slate-900 dark:hover:text-white active:scale-[0.98] transition-all"
             >
               <RotateCcw className="h-3.5 w-3.5" />
               Reset
@@ -56,24 +56,24 @@ export default function GpaCalculatorPage() {
             {subjects.map((subject, index) => (
               <div
                 key={subject.id}
-                className="group/row grid gap-2.5 rounded-[18px] bg-slate-50/80 dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.06] p-3 transition-all duration-200 hover:border-black/[0.1] dark:hover:border-white/[0.12] sm:grid-cols-[1fr_130px_80px_44px] sm:items-center"
+                className="group/row grid gap-2.5 rounded-[18px] bg-slate-50/90 dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.08] p-3 transition-all duration-200 hover:border-black/[0.12] dark:hover:border-white/[0.14] sm:grid-cols-[1fr_130px_80px_44px] sm:items-center"
               >
                 <input
                   aria-label={`Subject ${index + 1} name`}
                   value={subject.name}
                   onChange={event => update(subject.id, { name: event.target.value })}
                   placeholder={`Subject ${index + 1}`}
-                  className="min-h-11 rounded-xl border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#1c1c22] px-3.5 py-2 text-sm text-slate-900 dark:text-[#f5f5f6] placeholder-slate-400 dark:placeholder-[#8e8e96] outline-none focus:border-sn-primary focus:ring-2 focus:ring-sn-primary/20 transition-all"
+                  className="min-h-11 rounded-xl border border-black/[0.1] dark:border-white/[0.1] bg-white dark:bg-[#1c1c22] px-3.5 py-2 text-sm text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 outline-none focus:border-sn-primary focus:ring-2 focus:ring-sn-primary/20 transition-all"
                 />
                 <select
                   aria-label={`Grade for ${subject.name || `subject ${index + 1}`}`}
                   value={subject.grade}
                   onChange={event => update(subject.id, { grade: event.target.value })}
-                  className="min-h-11 rounded-xl border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#1c1c22] px-3 py-2 text-sm text-slate-900 dark:text-[#f5f5f6] outline-none focus:border-sn-primary focus:ring-2 focus:ring-sn-primary/20 transition-all"
+                  className="min-h-11 rounded-xl border border-black/[0.1] dark:border-white/[0.1] bg-white dark:bg-[#1c1c22] px-3 py-2 text-sm text-slate-900 dark:text-white outline-none focus:border-sn-primary focus:ring-2 focus:ring-sn-primary/20 transition-all"
                 >
-                  <option value="" className="bg-white dark:bg-[#1c1c22] text-slate-500 dark:text-[#8e8e96]">Select grade</option>
+                  <option value="" className="bg-white dark:bg-[#1c1c22] text-slate-600 dark:text-slate-300">Select grade</option>
                   {grades.map(grade => (
-                    <option key={grade.label} value={grade.label} className="bg-white dark:bg-[#1c1c22] text-slate-900 dark:text-[#f5f5f6]">
+                    <option key={grade.label} value={grade.label} className="bg-white dark:bg-[#1c1c22] text-slate-900 dark:text-white">
                       {grade.label} — {grade.point.toFixed(1)}
                     </option>
                   ))}
@@ -85,13 +85,13 @@ export default function GpaCalculatorPage() {
                   aria-label={`Credit for ${subject.name || `subject ${index + 1}`}`}
                   value={subject.credit}
                   onChange={event => update(subject.id, { credit: Number(event.target.value) })}
-                  className="min-h-11 rounded-xl border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#1c1c22] px-3 py-2 text-sm text-slate-900 dark:text-[#f5f5f6] outline-none focus:border-sn-primary focus:ring-2 focus:ring-sn-primary/20 transition-all"
+                  className="min-h-11 rounded-xl border border-black/[0.1] dark:border-white/[0.1] bg-white dark:bg-[#1c1c22] px-3 py-2 text-sm font-medium text-slate-900 dark:text-white outline-none focus:border-sn-primary focus:ring-2 focus:ring-sn-primary/20 transition-all"
                 />
                 {subjects.length > 1 ? (
                   <button
                     onClick={() => setSubjects(all => all.filter(item => item.id !== subject.id))}
                     aria-label={`Remove ${subject.name || 'subject'}`}
-                    className="flex h-11 w-11 items-center justify-center rounded-xl text-slate-400 dark:text-[#8e8e96] hover:bg-red-500/10 hover:text-red-500 active:scale-[0.95] transition-all"
+                    className="flex h-11 w-11 items-center justify-center rounded-xl text-slate-500 dark:text-slate-400 hover:bg-red-500/10 hover:text-red-500 active:scale-[0.95] transition-all"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>
@@ -104,13 +104,13 @@ export default function GpaCalculatorPage() {
 
           <button
             onClick={add}
-            className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-xl border border-black/[0.08] dark:border-white/[0.12] bg-black/[0.03] dark:bg-white/[0.04] px-4 py-2.5 text-sm font-bold text-slate-900 dark:text-[#CAFFA6] hover:bg-black/[0.06] dark:hover:bg-white/[0.08] hover:border-black/[0.15] dark:hover:border-white/[0.2] active:scale-[0.98] transition-all"
+            className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-xl border border-black/[0.1] dark:border-white/[0.14] bg-black/[0.04] dark:bg-white/[0.06] px-4 py-2.5 text-sm font-bold text-slate-900 dark:text-[#CAFFA6] hover:bg-black/[0.08] dark:hover:bg-white/[0.1] hover:border-black/[0.18] dark:hover:border-white/[0.22] active:scale-[0.98] transition-all"
           >
             <Plus className="h-4 w-4" />
             Add subject
           </button>
 
-          <p className="mt-5 text-xs leading-5 text-slate-500 dark:text-[#8e8e96]">
+          <p className="mt-5 text-xs leading-5 text-slate-600 dark:text-slate-300">
             Use credit 1 for equal-weight subjects. For a course with theory and practical components, add them separately or use the official credit weighting.
           </p>
         </section>
