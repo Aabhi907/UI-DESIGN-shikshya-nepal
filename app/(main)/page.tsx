@@ -17,6 +17,7 @@ import Button from '@/components/design-system/Button'
 import FeaturedCollegeCard, { CAMPUS_FALLBACK_IMAGES } from '@/components/design-system/FeaturedCollegeCard'
 import TestimonialsColumns from '@/components/home/TestimonialsColumns'
 import HomeScrollMotion from '@/components/home/HomeScrollMotion'
+import SikshyaDemo from '@/components/sikshya-demo/SikshyaDemo'
 import { RevealGroup } from '@/components/motion/MotionPrimitives'
 import {
   Building2,
@@ -155,11 +156,16 @@ export default async function HomePage() {
     <div>
       <HomeScrollMotion />
       {/* ════════════════════════════════════════════════════════
+          0. SIKSHYA NEPAL AI WINDOW (4-Layer Full Viewport Interactive Experience)
+      ════════════════════════════════════════════════════════ */}
+      <SikshyaDemo />
+
+      {/* ════════════════════════════════════════════════════════
           1. HERO — Pure Centered Minimalist Architecture (Matching Image 1)
       ════════════════════════════════════════════════════════ */}
       <section data-home-motion className="relative border-b border-sn-border bg-sn-ground overflow-hidden py-20 lg:py-28">
         {/* Soft, ultra-subtle ambient glow */}
-        <div className="pointer-events-none absolute -top-44 left-1/2 h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-gradient-to-b from-[#204654]/30 via-[#CAFFA6]/10 to-transparent blur-3xl" aria-hidden="true" />
+        <div className="pointer-events-none absolute -top-44 left-1/2 h-[520px] w-[820px] -translate-x-1/2 rounded-full apple-glow blur-3xl opacity-60" aria-hidden="true" />
 
         <RevealGroup className="mx-auto max-w-4xl px-5 sm:px-8 text-center relative z-10">
           {/* Eyebrow Pill matching Voxt's [NEW] Voice input app -> */}
@@ -1080,7 +1086,7 @@ export default async function HomePage() {
           <div className="apple-shell">
             <div className="apple-card relative overflow-hidden !rounded-[20px] bg-white dark:bg-[#151518] p-8 sm:p-12 lg:p-16 text-center shadow-lg dark:shadow-[inset_0_1px_1.5px_rgba(255,255,255,0.06),0_8px_32px_rgba(0,0,0,0.5)] border border-black/[0.08] dark:border-white/[0.08]">
               {/* Subtle warm accent radial background */}
-              <div className="pointer-events-none absolute -top-24 left-1/2 h-[350px] w-[500px] -translate-x-1/2 rounded-full bg-gradient-to-b from-[#204654]/15 dark:from-[#204654]/30 via-[#CAFFA6]/10 to-transparent blur-2xl" aria-hidden="true" />
+              <div className="pointer-events-none absolute -top-24 left-1/2 h-[350px] w-[500px] -translate-x-1/2 rounded-full apple-glow blur-2xl opacity-70" aria-hidden="true" />
 
               <div className="relative">
                 <div className="max-w-2xl mx-auto mb-10 text-center">
