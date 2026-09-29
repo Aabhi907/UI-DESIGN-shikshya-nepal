@@ -54,28 +54,29 @@ export default function SikshyaDemo() {
     if (pauseTimerRef.current) clearTimeout(pauseTimerRef.current)
   }, [])
 
-  // Stream answer text progressively
+  // Stream answer text progressively with natural, steady pacing and preserved paragraph formatting
   const startStreaming = useCallback((answerText: string) => {
     setDisplayedAnswer('')
     setIsGenerating(true)
 
-    // ~350ms initial pause with blinking caret before words flow
+    // ~450ms initial pause with blinking caret before words flow
     pauseTimerRef.current = setTimeout(() => {
-      const words = answerText.trim().split(/\s+/)
-      let currentWordIndex = 0
+      // Split into words preserving original whitespace and linebreaks
+      const tokens = answerText.match(/\S+\s*/g) || []
+      let currentTokenIndex = 0
 
       streamTimerRef.current = setInterval(() => {
-        currentWordIndex += 2
-        const currentSlice = words.slice(0, currentWordIndex).join(' ')
+        currentTokenIndex += 1
+        const currentSlice = tokens.slice(0, currentTokenIndex).join('')
         setDisplayedAnswer(currentSlice)
 
-        if (currentWordIndex >= words.length) {
+        if (currentTokenIndex >= tokens.length) {
           if (streamTimerRef.current) clearInterval(streamTimerRef.current)
           setDisplayedAnswer(answerText.trim())
           setIsGenerating(false)
         }
-      }, 40)
-    }, 350)
+      }, 65)
+    }, 450)
   }, [])
 
   // Sequence triggers when section enters viewport below testimonials
