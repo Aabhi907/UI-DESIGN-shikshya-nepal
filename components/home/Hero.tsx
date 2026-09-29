@@ -4,11 +4,6 @@ import type { Admission } from '@/types'
 import RidgelineBackground from './RidgelineBackground'
 import CountdownPill from './CountdownPill'
 import AnimatedSearch from './AnimatedSearch'
-import {
-  StickyNoteCard,
-  STUDENT_NOTES,
-  MobileHeroNotes,
-} from './FloatingStudentNotes'
 import TrustStrip from './TrustStrip'
 
 interface HeroProps {
@@ -21,55 +16,12 @@ export default function Hero({ heroStats, admissions = [] }: HeroProps) {
   const programCount = heroStats.find((s) => s.label === 'Programs')?.value || 450
 
   return (
-    <section className="relative border-b border-sn-border bg-sn-ground overflow-hidden pt-10 sm:pt-14 pb-12 sm:pb-16 min-h-[660px] xl:min-h-[720px] flex flex-col justify-between">
+    <section className="relative border-b border-sn-border bg-sn-ground overflow-hidden pt-10 sm:pt-14 pb-12 sm:pb-16 min-h-[600px] flex flex-col justify-between">
       {/* 3-Layer Himalayan Ridgeline + Soft Aurora Glow */}
       <RidgelineBackground />
 
-      {/* ── DESKTOP: FAR-AWAY FLOATING CARDS (Matches Vesper Reference) ── */}
-      <div className="hidden lg:block absolute inset-0 pointer-events-none z-20 max-w-[1720px] mx-auto w-full">
-        {/* Far Left Top Card (Yellow: Where to study?) */}
-        <div className="absolute left-4 xl:left-8 2xl:left-16 top-14 xl:top-20 pointer-events-auto">
-          <StickyNoteCard
-            note={STUDENT_NOTES[0]}
-            className="w-[230px] xl:w-[255px]"
-          />
-        </div>
-
-        {/* Far Left Bottom Card (Mint: What to study?) */}
-        <div className="absolute left-8 xl:left-14 2xl:left-24 bottom-24 xl:bottom-28 pointer-events-auto">
-          <StickyNoteCard
-            note={STUDENT_NOTES[1]}
-            className="w-[230px] xl:w-[255px]"
-          />
-        </div>
-
-        {/* Far Left Ambient Sparkle Star (Reference match) */}
-        <div
-          className="absolute left-6 xl:left-10 bottom-12 text-slate-700 dark:text-slate-400 select-none text-base font-bold pointer-events-none"
-          aria-hidden="true"
-        >
-          ✦
-        </div>
-
-        {/* Far Right Top Card (Peach: Entrance Radar) */}
-        <div className="absolute right-4 xl:right-8 2xl:right-16 top-12 xl:top-18 pointer-events-auto">
-          <StickyNoteCard
-            note={STUDENT_NOTES[2]}
-            className="w-[230px] xl:w-[255px]"
-          />
-        </div>
-
-        {/* Far Right Bottom Card (Soft Sky: Scholarships) */}
-        <div className="absolute right-8 xl:right-14 2xl:right-24 bottom-20 xl:bottom-24 pointer-events-auto">
-          <StickyNoteCard
-            note={STUDENT_NOTES[3]}
-            className="w-[230px] xl:w-[255px]"
-          />
-        </div>
-      </div>
-
       {/* ── CENTER STAGE: Masthead Text + Raised Glass Search Console ── */}
-      <div className="relative z-10 mx-auto max-w-2xl px-4 sm:px-6 text-center flex-1 flex flex-col justify-center items-center py-4 sm:py-6">
+      <div className="relative z-10 mx-auto max-w-2xl px-4 sm:px-6 text-center flex-1 flex flex-col justify-center items-center py-6 sm:py-8">
         {/* 1. Live Countdown Pill */}
         <div className="mb-4 flex justify-center">
           <CountdownPill admissions={admissions} />
@@ -118,7 +70,7 @@ export default function Hero({ heroStats, admissions = [] }: HeroProps) {
         </div>
 
         {/* 4. Synced Verification Micro-Pill */}
-        <div className="flex items-center justify-center mb-6 lg:mb-0">
+        <div className="flex items-center justify-center">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/75 dark:bg-slate-900/75 border border-slate-200/80 dark:border-slate-800/80 shadow-xs text-xs font-medium text-slate-600 dark:text-slate-400 backdrop-blur-sm select-none">
             <span className="flex h-1.5 w-1.5 relative">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
@@ -128,11 +80,6 @@ export default function Hero({ heroStats, admissions = [] }: HeroProps) {
               Verified higher-education registry for Nepal • Zero sponsored listings
             </span>
           </div>
-        </div>
-
-        {/* ── MOBILE / TABLET CARDS (Visible on < lg screens) ── */}
-        <div className="w-full lg:hidden mt-8 mb-4">
-          <MobileHeroNotes />
         </div>
       </div>
 
