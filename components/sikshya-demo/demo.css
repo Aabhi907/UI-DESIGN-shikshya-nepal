@@ -1,4 +1,11 @@
-/* Sikshya Nepal AI Guidance Window - Clean Theme */
+/* ==========================================================================
+   Sikshya Nepal AI Guidance Window — Clean Minimal Reference Theme
+   Color Palette:
+   - Section Background: #E3E7EA (Light) / #0E1013 (Dark)
+   - Window Card: #FFFFFF (Light) / #171920 (Dark)
+   - Accents & Slate: Monochromatic minimalist #0F172A & #64748B
+   ========================================================================== */
+
 .sikshya-demo-section {
   position: relative;
   overflow: hidden;
@@ -6,179 +13,333 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 4.5rem 1rem 5rem;
-  background-color: var(--ground);
-  border-bottom: 1px solid var(--border);
+  padding: 5rem 1rem 5.5rem;
+  background-color: #E3E7EA;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.dark .sikshya-demo-section {
+  background-color: #0E1013;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .sikshya-demo-bg {
-  background-color: var(--ground);
+  background-color: #E3E7EA;
 }
 
-/* Section Header Intro */
+.dark .sikshya-demo-bg {
+  background-color: #0E1013;
+}
+
+/* --------------------------------------------------------------------------
+   Section Header & Typography
+   -------------------------------------------------------------------------- */
 .sikshya-demo-header {
   text-align: center;
-  max-width: 42rem;
-  margin: 0 auto 2.5rem;
+  max-width: 44rem;
+  margin: 0 auto;
   padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.sikshya-demo-tag {
+.section-title {
+  font-size: clamp(2rem, 3.5vw, 2.75rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: #0F172A;
+  margin: 0;
+  line-height: 1.15;
+}
+
+.dark .section-title {
+  color: #F8FAFC;
+}
+
+.section-subtitle {
+  font-size: 15px;
+  color: #64748B;
+  margin: 0.65rem auto 0;
+  max-width: 36rem;
+  line-height: 1.55;
+  font-weight: 400;
+}
+
+.dark .section-subtitle {
+  color: #94A3B8;
+}
+
+/* --------------------------------------------------------------------------
+   Segmented Control Pill Tabs (Reference Style)
+   -------------------------------------------------------------------------- */
+.segmented-pill-container {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  padding: 0.3rem 0.85rem;
+  background-color: rgba(0, 0, 0, 0.05);
   border-radius: 9999px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--primary);
-  background-color: rgba(32, 70, 84, 0.08);
-  border: 1px solid rgba(32, 70, 84, 0.15);
-  margin-bottom: 0.75rem;
+  padding: 3.5px;
+  gap: 2px;
+  margin-top: 1.75rem;
+  margin-bottom: 2.5rem;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
-.dark .sikshya-demo-tag {
-  color: #CAFFA6;
-  background-color: rgba(202, 255, 166, 0.1);
-  border-color: rgba(202, 255, 166, 0.2);
+.dark .segmented-pill-container {
+  background-color: rgba(255, 255, 255, 0.07);
 }
 
-/* Main Sikshya Nepal AI window */
+.segmented-pill-tab {
+  padding: 6px 18px;
+  border-radius: 9999px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #64748B;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dark .segmented-pill-tab {
+  color: #94A3B8;
+}
+
+.segmented-pill-tab:hover {
+  color: #0F172A;
+}
+
+.dark .segmented-pill-tab:hover {
+  color: #F8FAFC;
+}
+
+.segmented-pill-tab.active {
+  background-color: #FFFFFF;
+  color: #0F172A;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.dark .segmented-pill-tab.active {
+  background-color: #20242E;
+  color: #F8FAFC;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+/* --------------------------------------------------------------------------
+   Main Window Card (Clean Slack-style Minimal Container)
+   -------------------------------------------------------------------------- */
 .ai-window {
-  width: min(820px, calc(100vw - 32px));
-  height: 460px;
-  border-radius: 24px;
-  background-color: var(--surface);
-  border: 1px solid var(--border);
-  box-shadow: var(--specular-rim), 0 20px 48px -12px rgba(15, 23, 42, 0.08), 0 2px 8px rgba(15, 23, 42, 0.04);
+  width: min(780px, calc(100vw - 32px));
+  min-height: 480px;
+  max-height: 560px;
+  border-radius: 20px;
+  background-color: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 24px 64px -16px rgba(15, 23, 42, 0.08), 0 2px 8px rgba(15, 23, 42, 0.03);
   overflow: hidden;
   display: flex;
   flex-direction: column;
   position: relative;
   z-index: 10;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
 }
 
 .dark .ai-window {
-  background-color: #151518;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.08), 0 24px 60px -16px rgba(0, 0, 0, 0.65);
+  background-color: #171920;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: 0 24px 64px -16px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.05);
 }
 
-/* Window controls */
+/* Top Window Header */
 .window-header {
-  height: 56px;
-  padding: 14px 22px;
+  height: 46px;
+  padding: 0 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-shrink: 0;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid #F1F4F8;
+  background-color: #FFFFFF;
 }
 
-.header-dot {
-  width: 11px;
-  height: 11px;
+.dark .window-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background-color: #171920;
+}
+
+.window-dot {
+  width: 9.5px;
+  height: 9.5px;
   border-radius: 50%;
+  background-color: #D8DFEB;
   display: inline-block;
 }
 
-.header-button {
-  width: 32px;
-  height: 32px;
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.03);
-  display: grid;
-  place-items: center;
-  color: var(--text-muted, #64748b);
-  border: 1px solid var(--border);
-  transition: background-color 200ms ease, transform 150ms ease, color 200ms ease;
+.dark .window-dot {
+  background-color: #343946;
 }
 
-.dark .header-button {
-  background: rgba(255, 255, 255, 0.05);
-  color: #8e8e96;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.header-button:hover {
-  background: rgba(0, 0, 0, 0.06);
-  color: var(--text);
-}
-
-.dark .header-button:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #f5f5f6;
-}
-
-/* Question box */
-.question-box {
-  margin: 16px 22px 0;
-  min-height: 52px;
-  padding: 0 18px;
+/* Channel & Topic Sub-Header */
+.channel-bar {
+  padding: 12px 24px 10px;
   display: flex;
-  align-items: center;
-  border-radius: 18px;
-  background-color: var(--surface-alt, #f8fafc);
-  color: var(--text, #0f172a);
-  border: 1px solid var(--border);
-  font-size: 15px;
-  font-weight: 600;
+  flex-direction: column;
+  gap: 2px;
+  border-bottom: 1px solid #F1F4F8;
+  flex-shrink: 0;
+  background-color: #FFFFFF;
+}
+
+.dark .channel-bar {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background-color: #171920;
+}
+
+.channel-name {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #0F172A;
   letter-spacing: -0.01em;
-  flex-shrink: 0;
 }
 
-.dark .question-box {
-  background-color: #1c1c22;
-  color: #f5f5f6;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+.dark .channel-name {
+  color: #F8FAFC;
 }
 
-/* Step label line */
-.answer-label {
-  padding: 10px 24px 4px;
-  color: var(--text-muted, #64748b);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
+.channel-meta {
+  font-size: 11.5px;
+  color: #94A3B8;
+  font-weight: 500;
+}
+
+.dark .channel-meta {
+  color: #64748B;
+}
+
+/* --------------------------------------------------------------------------
+   Messages Thread Area
+   -------------------------------------------------------------------------- */
+.messages-area {
+  flex: 1;
+  padding: 20px 24px 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.message-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
   display: flex;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
   flex-shrink: 0;
 }
 
-.dark .answer-label {
-  color: #8e8e96;
+.user-avatar {
+  background-color: #E2E8F0;
+  color: #475569;
 }
 
-/* Answer area */
-.answer-container {
+.dark .user-avatar {
+  background-color: #262A34;
+  color: #94A3B8;
+}
+
+/* Black rounded square with white checkmark matching reference */
+.ai-avatar {
+  background-color: #0F172A;
+  color: #FFFFFF;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.dark .ai-avatar {
+  background-color: #F8FAFC;
+  color: #0F172A;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+
+.message-content {
   flex: 1;
-  padding: 12px 24px 24px;
-  overflow-y: auto;
-  color: var(--text-secondary, #334155);
+  min-width: 0;
+}
+
+.message-header {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 3px;
+}
+
+.sender-name {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #0F172A;
+}
+
+.dark .sender-name {
+  color: #F8FAFC;
+}
+
+.timestamp {
+  font-size: 11.5px;
+  color: #94A3B8;
+}
+
+.dark .timestamp {
+  color: #64748B;
+}
+
+.question-text {
   font-size: 14.5px;
+  font-weight: 500;
+  color: #1E293B;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.dark .question-text {
+  color: #E2E8F0;
+}
+
+.answer-container {
+  color: #334155;
+  font-size: 14px;
   line-height: 1.68;
   white-space: pre-wrap;
   text-align: left;
 }
 
 .dark .answer-container {
-  color: #d1d1d6;
+  color: #CBD5E1;
 }
 
-/* Blinking orange AI Caret */
+/* Blinking AI Caret */
 .ai-caret {
   display: inline-block;
   width: 2px;
-  height: 16px;
+  height: 15px;
   margin-left: 3px;
-  background: #B64D12;
+  background-color: #0F172A;
   vertical-align: middle;
   animation: ai-caret-blink 0.8s infinite;
+}
+
+.dark .ai-caret {
+  background-color: #F8FAFC;
 }
 
 @keyframes ai-caret-blink {
@@ -186,21 +347,23 @@
   46%, 100% { opacity: 0; }
 }
 
-/* Layer 4: Caption / Action underneath */
+/* --------------------------------------------------------------------------
+   Caption / Action Underneath
+   -------------------------------------------------------------------------- */
 .demo-caption {
-  margin-top: 24px;
+  margin-top: 22px;
   text-align: center;
   font-size: 13px;
-  color: var(--text-muted, #64748b);
+  color: #64748B;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   z-index: 10;
 }
 
 .dark .demo-caption {
-  color: #8e8e96;
+  color: #94A3B8;
 }
 
 .try-another-button {
@@ -208,40 +371,42 @@
   align-items: center;
   gap: 6px;
   font-size: 12.5px;
-  font-weight: 700;
-  color: var(--text, #0f172a);
-  background: rgba(0, 0, 0, 0.04);
-  border: 1px solid var(--border);
-  padding: 6px 16px;
+  font-weight: 600;
+  color: #0F172A;
+  background-color: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  padding: 7px 18px;
   border-radius: 9999px;
   cursor: pointer;
   transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1), background-color 180ms ease, border-color 180ms ease, color 180ms ease;
 }
 
 .dark .try-another-button {
-  color: #f5f5f6;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #F8FAFC;
+  background-color: #1E212B;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .try-another-button:hover {
-  background: rgba(0, 0, 0, 0.08);
-  border-color: var(--border-strong);
-  color: var(--primary);
+  background-color: #F8FAFC;
+  border-color: rgba(0, 0, 0, 0.15);
   transform: translateY(-1px);
 }
 
 .dark .try-another-button:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.2);
-  color: #CAFFA6;
+  background-color: #272B38;
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
 .try-another-button:active {
   transform: translateY(0) scale(0.97);
 }
 
-/* Mobile responsive constraints */
+/* --------------------------------------------------------------------------
+   Mobile Responsive Constraints
+   -------------------------------------------------------------------------- */
 @media (max-width: 640px) {
   .sikshya-demo-section {
     padding: 3.5rem 1rem 4rem;
@@ -249,28 +414,32 @@
 
   .ai-window {
     width: calc(100vw - 24px);
-    height: min(480px, 75svh);
-    border-radius: 20px;
+    min-height: 440px;
+    max-height: 520px;
+    border-radius: 18px;
   }
 
-  .question-box {
-    margin: 12px 14px 0;
-    font-size: 14px;
-    padding: 0 14px;
-    min-height: 46px;
+  .messages-area {
+    padding: 16px 18px 20px;
+    gap: 16px;
   }
 
-  .answer-container {
-    padding: 8px 16px 20px;
-    font-size: 13.5px;
+  .channel-bar {
+    padding: 10px 18px 8px;
   }
 
-  .answer-label {
-    padding: 8px 16px 2px;
+  .segmented-pill-container {
+    margin-top: 1.25rem;
+    margin-bottom: 2rem;
+  }
+
+  .segmented-pill-tab {
+    padding: 5px 14px;
+    font-size: 12px;
   }
 }
 
-/* Reduced motion support */
+/* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .ai-caret {
     animation: none !important;

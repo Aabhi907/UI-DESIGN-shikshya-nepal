@@ -2,45 +2,25 @@
 
 import React, { useEffect, useState, useCallback, useRef } from 'react'
 import { useInView } from 'framer-motion'
-import { Sparkles } from 'lucide-react'
-import { demoQuestions, DemoQuestion } from './demoQuestions'
+import { demoQuestions, DemoQuestion, DemoQuestionCategory } from './demoQuestions'
 import DemoWindow from './DemoWindow'
 import DemoCaption from './DemoCaption'
 import './demo.css'
 
-const QUEUE_STORAGE_KEY = 'sikshya-question-queue'
-
-function shuffleArray<T>(items: T[]): T[] {
-  const array = [...items]
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[array[i], array[j]] = [array[j], array[i]]
-  }
-  return array
-}
-
-function getNextDemoQuestion(): DemoQuestion {
-  try {
-    let queue: number[] = JSON.parse(
-      sessionStorage.getItem(QUEUE_STORAGE_KEY) || '[]'
-    )
-    if (!Array.isArray(queue) || queue.length === 0) {
-      queue = shuffleArray(demoQuestions.map((q) => q.id))
-    }
-    const nextId = queue.shift() ?? demoQuestions[0].id
-    sessionStorage.setItem(QUEUE_STORAGE_KEY, JSON.stringify(queue))
-    return demoQuestions.find((q) => q.id === nextId) || demoQuestions[0]
-  } catch {
-    const randomIndex = Math.floor(Math.random() * demoQuestions.length)
-    return demoQuestions[randomIndex]
-  }
-}
+const CATEGORIES: DemoQuestionCategory[] = [
+  'All',
+  'Admissions',
+  'BCA & IT',
+  'Scholarships',
+  'Results',
+]
 
 export default function SikshyaDemo() {
   const sectionRef = useRef<HTMLElement>(null)
   const isInView = useInView(sectionRef, { once: true, amount: 0.25 })
   const hasTriggeredRef = useRef(false)
 
+  const [selectedCategory, setSelectedCategory] = useState<DemoQuestionCategory>('All')
   const [demo, setDemo] = useState<DemoQuestion>(demoQuestions[0])
   const [displayedAnswer, setDisplayedAnswer] = useState('')
   const [isGenerating, setIsGenerating] = useState(false)
@@ -84,12 +64,35 @@ export default function SikshyaDemo() {
     if (!isInView || hasTriggeredRef.current) return
     hasTriggeredRef.current = true
 
-    const nextDemo = getNextDemoQuestion()
-    setDemo(nextDemo)
-    startStreaming(nextDemo.answer)
+    const initialDemo = demoQuestions[0]
+    setDemo(initialDemo)
+    startStreaming(initialDemo.answer)
 
     return () => clearTimers()
   }, [isInView, clearTimers, startStreaming])
+
+  // Select category tab: smoothly switches question to that category
+  const handleSelectCategory = useCallback(
+    (category: DemoQuestionCategory) => {
+      setSelectedCategory(category)
+      if (isTransitioning) return
+      setIsTransitioning(true)
+      clearTimers()
+
+      setTimeout(() => {
+        const pool =
+          category === 'All'
+            ? demoQuestions
+            : demoQuestions.filter((q) => q.category === category)
+        const nextDemo = pool[0] || demoQuestions[0]
+        setDemo(nextDemo)
+        setDisplayedAnswer('')
+        setIsTransitioning(false)
+        startStreaming(nextDemo.answer)
+      }, 150)
+    },
+    [clearTimers, isTransitioning, startStreaming]
+  )
 
   // "Try another question" click sequence:
   // Card remains solid and stationary; only the inner question and answer smoothly change
@@ -98,15 +101,25 @@ export default function SikshyaDemo() {
     setIsTransitioning(true)
     clearTimers()
 
-    // 150ms inner fade -> swap question & stream new answer
+    // 150ms inner fade -> pick next question from active category -> stream new answer
     setTimeout(() => {
-      const nextDemo = getNextDemoQuestion()
+      const pool =
+        selectedCategory === 'All'
+          ? demoQuestions
+          : demoQuestions.filter((q) => q.category === selectedCategory)
+
+      const otherCandidates = pool.filter((q) => q.id !== demo.id)
+      const nextCandidates = otherCandidates.length > 0 ? otherCandidates : pool
+      const nextDemo =
+        nextCandidates[Math.floor(Math.random() * nextCandidates.length)] ||
+        demoQuestions[0]
+
       setDemo(nextDemo)
       setDisplayedAnswer('')
       setIsTransitioning(false)
       startStreaming(nextDemo.answer)
     }, 150)
-  }, [clearTimers, isTransitioning, startStreaming])
+  }, [clearTimers, demo.id, isTransitioning, selectedCategory, startStreaming])
 
   return (
     <section
@@ -114,21 +127,33 @@ export default function SikshyaDemo() {
       className="sikshya-demo-section sikshya-demo-bg"
       aria-label="Interactive Sikshya Nepal AI Guidance Demo"
     >
-      {/* Section Header */}
+      {/* Section Header matching reference typography */}
       <div className="sikshya-demo-header">
-        <span className="sikshya-demo-tag">
-          <Sparkles className="w-3.5 h-3.5" />
-          Interactive AI Advisor
-        </span>
-        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-[var(--text)]">
-          Ask questions, get verified answers
+        <h2 className="section-title">
+          Your education partner
         </h2>
-        <p className="mt-2 text-sm sm:text-base text-[var(--text-secondary)]">
-          Instant guidance on colleges, TU/PU/KU programs, scholarships, and career paths in Nepal.
+        <p className="section-subtitle">
+          A strategic thinking partner that helps you figure out which college to choose, compares verified fees, and answers questions.
         </p>
+
+        {/* Segmented Control Pill Tabs matching reference */}
+        <div className="segmented-pill-container" role="tablist" aria-label="Topic filter">
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat}
+              type="button"
+              role="tab"
+              aria-selected={selectedCategory === cat}
+              className={`segmented-pill-tab ${selectedCategory === cat ? 'active' : ''}`}
+              onClick={() => handleSelectCategory(cat)}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* Main Sikshya Nepal AI Window - Always mounted, zero page shifts */}
+      {/* Main Window Card - Always mounted, zero page shifts */}
       <div className="relative z-10 flex flex-col items-center justify-center">
         <DemoWindow
           demo={demo}

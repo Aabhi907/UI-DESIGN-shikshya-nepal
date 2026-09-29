@@ -1,8 +1,12 @@
+export type DemoQuestionCategory = 'All' | 'Admissions' | 'BCA & IT' | 'Scholarships' | 'Results'
+
 export type DemoQuestion = {
   id: number
   question: string
   answer: string
   stepLabel?: string
+  channel?: string
+  category: 'Admissions' | 'BCA & IT' | 'Scholarships' | 'Results'
 }
 
 export const demoQuestions: DemoQuestion[] = [
@@ -10,6 +14,8 @@ export const demoQuestions: DemoQuestion[] = [
     id: 1,
     question: 'Which colleges in Kathmandu offer BCA?',
     stepLabel: 'Sikshya answer',
+    channel: 'bca-kathmandu',
+    category: 'BCA & IT',
     answer: `Over 45 constituent and affiliated colleges offer Bachelor of Computer Applications (BCA) in Kathmandu Valley under Tribhuvan University, Pokhara University, and Purbanchal University.
 
 Key factors to compare across institutions:
@@ -24,6 +30,8 @@ Sikshya Nepal verifies official seat quotas and intake notices directly from uni
     id: 2,
     question: 'How can I compare colleges in Nepal?',
     stepLabel: 'Comparison guide',
+    channel: 'college-comparison',
+    category: 'Admissions',
     answer: `Start by comparing the factors that matter most to your educational journey:
 
 1. Program & Curriculum – Verify whether the college offers your desired specialization and syllabus revision year.
@@ -38,6 +46,8 @@ Sikshya Nepal catalogs verified data from official board notices so you can comp
     id: 3,
     question: 'What should I check before choosing a BCA college?',
     stepLabel: 'Checklist',
+    channel: 'bca-checklist',
+    category: 'BCA & IT',
     answer: `A solid BCA comparison goes far beyond prospectus marketing.
 
 Essential checkpoints before enrolling:
@@ -51,6 +61,8 @@ Essential checkpoints before enrolling:
     id: 4,
     question: 'What is the difference between BCA and BSc CSIT in Nepal?',
     stepLabel: 'Course comparison',
+    channel: 'bca-vs-csit',
+    category: 'BCA & IT',
     answer: `Both are popular 4-year computing degrees, but they differ in eligibility, focus, and faculty:
 
 • Eligibility:
@@ -67,6 +79,8 @@ Both degrees qualify graduates for software engineering roles and global Master'
     id: 5,
     question: 'What should I consider before choosing a course after +2?',
     stepLabel: 'Academic planning',
+    channel: 'course-selection',
+    category: 'Admissions',
     answer: `Start with three fundamentals: your natural problem-solving interests, subjects you genuinely enjoy, and long-term career pathways.
 
 Evaluation framework:
@@ -81,6 +95,8 @@ The best choice matches your strengths rather than following peer trends.`,
     id: 6,
     question: 'How can Sikshya Nepal help me research colleges?',
     stepLabel: 'Platform guide',
+    channel: 'platform-guide',
+    category: 'Results',
     answer: `Sikshya Nepal gathers verified academic data into one clean, distraction-free portal:
 
 • 1,200+ Constituent & Affiliated Campuses – Filter by university, district, and faculty.
@@ -93,6 +109,8 @@ The best choice matches your strengths rather than following peer trends.`,
     id: 7,
     question: 'How do scholarship quotas work for Bachelors in Nepal?',
     stepLabel: 'Scholarship notice',
+    channel: 'scholarships-nepal',
+    category: 'Scholarships',
     answer: `Higher education scholarships in Nepal are primarily governed by university central quotas and government regulations:
 
 1. Central Entrance Merit – Top ranks in TU IOE, CMAT, IOST, or KU CAT receive open merit scholarships.
@@ -106,6 +124,8 @@ Always apply through official university scholarship windows before private admi
     id: 8,
     question: 'Which courses are best suited after +2 Management?',
     stepLabel: 'Stream pathways',
+    channel: 'management-pathways',
+    category: 'Admissions',
     answer: `+2 Management graduates have diverse options across business, tech, hospitality, and law:
 
 • Business & Finance: BBA, BBS, BBM, and BBA-BI for banking, entrepreneurship, and corporate roles.
@@ -119,6 +139,8 @@ BBA offers high presentation and case-study exposure, while BBS provides flexibl
     id: 9,
     question: 'What is the fee difference between constituent and private colleges in Nepal?',
     stepLabel: 'Tuition breakdown',
+    channel: 'tuition-fees',
+    category: 'Scholarships',
     answer: `Tuition structures vary significantly depending on the college ownership model:
 
 • Constituent / Government Campuses (e.g., Patan, ASCOL, Shankar Dev, Pulchowk):
@@ -139,6 +161,8 @@ Sikshya Nepal displays the verified fee range on each college profile so familie
     id: 10,
     question: 'What are the eligibility requirements for Kathmandu University BTech?',
     stepLabel: 'KU Admission',
+    channel: 'ku-btech-admissions',
+    category: 'Admissions',
     answer: `Kathmandu University School of Engineering requires:
 
 1. Academic Standing: Minimum 2.0 GPA in +2 Science or equivalent (with minimum C in Physics, Chemistry, and Mathematics).
@@ -152,6 +176,8 @@ Admission offers are made strictly based on KU-CBT merit score rankings.`,
     id: 11,
     question: 'How does the CTEVT 3-year diploma pathway work?',
     stepLabel: 'Technical education',
+    channel: 'ctevt-pathways',
+    category: 'Results',
     answer: `CTEVT (Council for Technical Education and Vocational Training) offers 3-year technical diplomas for students completing SEE:
 
 • Key Programs: Diploma in Civil Engineering, Computer Engineering, Electrical Engineering, Pharmacy, and Agriculture.
@@ -163,6 +189,8 @@ Admission offers are made strictly based on KU-CBT merit score rankings.`,
     id: 12,
     question: 'What should I know before paying admission consultancy fees?',
     stepLabel: 'Student advisory',
+    channel: 'consultancy-advisory',
+    category: 'Admissions',
     answer: `Stay informed to avoid common admission traps:
 
 • Direct Applications: Domestic colleges in Nepal do not require third-party consultancies. You can apply directly on the college portal or campus office.
@@ -174,6 +202,8 @@ Admission offers are made strictly based on KU-CBT merit score rankings.`,
     id: 13,
     question: 'How do I check my NEB Grade 12 or SEE board results?',
     stepLabel: 'Results guide',
+    channel: 'board-results',
+    category: 'Results',
     answer: `Board results are published through official government and council servers:
 
 1. Web Verification: Visit the official NEB portal (neb.gov.np) or Nepal Telecom result site (neb.ntc.net.np).
@@ -187,6 +217,8 @@ Sikshya Nepal provides direct links to official verification portals without ads
     id: 14,
     question: 'What is BIM and how does it compare to BCA and BBA?',
     stepLabel: 'Curriculum breakdown',
+    channel: 'bim-curriculum',
+    category: 'BCA & IT',
     answer: `Bachelor of Information Management (BIM) is a 4-year TU degree run under the Faculty of Management:
 
 • BIM Formula: Roughly 60% IT / Software Engineering + 40% Business Management and Economics.
@@ -199,6 +231,8 @@ BIM is ideal for students who want tech literacy combined with corporate managem
     id: 15,
     question: 'Can students from non-science streams pursue IT degrees in Nepal?',
     stepLabel: 'Eligibility guide',
+    channel: 'it-stream-eligibility',
+    category: 'BCA & IT',
     answer: `Yes, multiple computing degree programs welcome students from Management, Humanities, or Education backgrounds:
 
 • BCA (TU, PU, Purbanchal) – Open to all streams with minimum 1.6 GPA / D+ overall.
@@ -212,6 +246,8 @@ Only BSc CSIT and BE Computer specifically mandate +2 Science with Physics and C
     id: 16,
     question: 'How do entrance examination timelines work in Nepal?',
     stepLabel: 'Annual timeline',
+    channel: 'entrance-timelines',
+    category: 'Admissions',
     answer: `Most universities follow an annual academic calendar following the publication of NEB Grade 12 results:
 
 • Shrawan – Bhadra (July – August): NEB results published; TU CMAT (BBA/BCA/BIM), IOE Engineering, and KU-CBT registration forms open.
