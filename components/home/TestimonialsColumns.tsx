@@ -19,8 +19,8 @@ export default function TestimonialsColumns() {
       <div className="grid h-full grid-cols-1 gap-5 sm:grid-cols-3">
         {columns.map((items, index) => <TestimonialColumn key={index} items={items} direction={index === 1 ? 'down' : 'up'} duration={index === 1 ? '43s' : index === 0 ? '49s' : '54s'} className={index > 0 ? 'hidden sm:block' : ''} />)}
       </div>
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-16 bg-gradient-to-b from-[#0f1012] to-transparent" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-20 bg-gradient-to-t from-[#0f1012] to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-20 bg-gradient-to-b from-[#FAFBF4] dark:from-[#0f1012] to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-24 bg-gradient-to-t from-[#FAFBF4] dark:from-[#0f1012] to-transparent" />
       <style jsx global>{`
         .testimonials-columns:hover .testimonial-track { animation-play-state: paused; }
         @media (prefers-reduced-motion: reduce) { .testimonial-track { animation: none !important; transform: none !important; } }
@@ -34,10 +34,18 @@ function TestimonialColumn({ items, direction, duration, className = '' }: { ite
   return (
     <div className={`relative overflow-hidden ${className}`}>
       <div className="testimonial-track space-y-5" style={{ animation: `testimonial-${direction} ${duration} linear infinite` }}>
-        {repeated.map((item, index) => <article key={`${item.author}-${index}`} className="rounded-2xl border border-sn-border bg-sn-surface p-5 shadow-[0_8px_22px_rgba(20,44,53,0.06)]">
-          <p className="font-nunito text-sm leading-6 text-sn-ink">“{item.quote}”</p>
-          <footer className="mt-4 border-t border-sn-border pt-3"><p className="font-nunito text-sm font-extrabold text-sn-ink">{item.author}</p><p className="mt-0.5 text-xs text-sn-ink-muted">{item.role}</p></footer>
-        </article>)}
+        {repeated.map((item, index) => (
+          <article
+            key={`${item.author}-${index}`}
+            className="rounded-2xl border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#151518] p-5 shadow-sm dark:shadow-[0_8px_22px_rgba(0,0,0,0.5)] transition-colors duration-200"
+          >
+            <p className="font-nunito text-sm leading-6 text-slate-800 dark:text-sn-ink">“{item.quote}”</p>
+            <footer className="mt-4 border-t border-black/[0.06] dark:border-white/[0.08] pt-3">
+              <p className="font-nunito text-sm font-extrabold text-slate-900 dark:text-sn-ink">{item.author}</p>
+              <p className="mt-0.5 text-xs text-slate-500 dark:text-sn-ink-muted">{item.role}</p>
+            </footer>
+          </article>
+        ))}
       </div>
       <style jsx global>{`
         @keyframes testimonial-up { from { transform: translateY(0); } to { transform: translateY(calc(-66.666% - 1.66rem)); } }
