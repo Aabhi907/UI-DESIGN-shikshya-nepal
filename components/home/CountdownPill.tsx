@@ -106,21 +106,11 @@ export default function CountdownPill({ admissions = [], variant = 'pill' }: Cou
       }`}
       aria-label={`Live deadline: ${current.name} closes in ${timeStr}`}
     >
-      <span className="flex items-center gap-1.5 font-bold">
-        <span className="relative flex h-2 w-2">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-          <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-        </span>
-      </span>
-
       <span
         className={`inline-flex items-center gap-1.5 transition-all duration-200 ${
           isFlipping ? 'opacity-0 -translate-y-1' : 'opacity-100 translate-y-0'
         }`}
       >
-        <span className="text-[10px] uppercase font-bold tracking-wider text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 dark:bg-emerald-400/10 px-1.5 py-0.5 rounded border border-emerald-500/20 dark:border-emerald-400/20">
-          Live Radar
-        </span>
         <strong className="font-bold text-slate-900 dark:text-white">{current.name}</strong>
         <span className="text-slate-400 dark:text-slate-500">closes in</span>
         <span className="font-mono font-bold text-primary dark:text-[#F5A524]">{timeStr}</span>
