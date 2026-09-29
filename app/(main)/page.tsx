@@ -165,13 +165,13 @@ export default async function HomePage() {
           {/* Eyebrow Pill matching Voxt's [NEW] Voice input app -> */}
           <Link
             href="/admissions?deadline=open"
-            className="apple-pill group inline-flex items-center gap-2.5 rounded-full bg-white/[0.05] px-3.5 py-1.5 text-xs font-bold font-nunito text-sn-ink shadow-sm hover:shadow transition-all duration-200 mb-8 border border-white/[0.1]"
+            className="apple-pill group inline-flex items-center gap-2.5 rounded-full bg-black/[0.04] dark:bg-white/[0.06] px-3.5 py-1.5 text-xs font-bold font-nunito text-slate-800 dark:text-sn-ink shadow-sm hover:shadow transition-all duration-200 mb-8 border border-black/[0.08] dark:border-white/[0.12]"
           >
-            <span className="rounded-full bg-white/[0.1] px-2 py-0.5 text-[10px] font-bold text-[#CAFFA6] uppercase tracking-wider">
+            <span className="rounded-full bg-primary/10 dark:bg-[#CAFFA6]/15 px-2.5 py-0.5 text-[10px] font-bold text-primary dark:text-[#CAFFA6] uppercase tracking-wider border border-primary/20 dark:border-[#CAFFA6]/30">
               2082 / 2026
             </span>
             <span>Intake deadlines &amp; board results live</span>
-            <ArrowRight className="h-3 w-3 text-sn-ink-muted group-hover:text-[#CAFFA6] group-hover:translate-x-0.5 transition-all" />
+            <ArrowRight className="h-3.5 w-3.5 text-slate-400 dark:text-sn-ink-muted group-hover:text-primary dark:group-hover:text-[#CAFFA6] group-hover:translate-x-0.5 transition-all" />
           </Link>
 
           {/* Centered Headline matching "Speak clearly. Adapt to context." */}
@@ -246,10 +246,10 @@ export default async function HomePage() {
                 </div>
               ))}
               <div className="text-center sm:px-6">
-                <p className="font-baloo text-3xl sm:text-4xl font-extrabold text-[#CAFFA6] tabular-nums tracking-tight">
+                <p className="font-baloo text-3xl sm:text-4xl font-extrabold text-primary dark:text-[#CAFFA6] tabular-nums tracking-tight">
                   100%
                 </p>
-                <p className="mt-1 font-nunito text-xs sm:text-sm font-bold text-sn-ink-muted">
+                <p className="mt-1 font-nunito text-xs sm:text-sm font-bold text-slate-500 dark:text-sn-ink-muted">
                   Independent student guidance
                 </p>
               </div>
@@ -1084,8 +1084,8 @@ export default async function HomePage() {
 
               <div className="relative">
                 <div className="max-w-2xl mx-auto mb-10 text-center">
-                  <span className="apple-pill inline-flex items-center gap-2 rounded-full px-3.5 py-1 text-xs font-bold font-nunito text-sn-ink bg-white/[0.06] border border-white/[0.12] shadow-sm mb-4">
-                    <span className="h-1.5 w-1.5 rounded-full bg-[#CAFFA6]" />
+                  <span className="apple-pill inline-flex items-center gap-2 rounded-full px-3.5 py-1 text-xs font-bold font-nunito text-slate-800 dark:text-sn-ink bg-black/[0.04] dark:bg-white/[0.06] border border-black/[0.08] dark:border-white/[0.12] shadow-sm mb-4">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-600 dark:bg-[#CAFFA6]" />
                     <span>Updated for 2082 / 2026 Academic Session</span>
                   </span>
                   <h2 className="font-baloo font-extrabold text-sn-ink text-3xl sm:text-4xl lg:text-5xl mb-3 tracking-[-0.025em]">
