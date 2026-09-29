@@ -29,12 +29,12 @@ export default function HeroSearch() {
     <div className="w-full">
       {/* ── Search bar ─────────────────────────────────── */}
       <form onSubmit={handleSubmit} role="search" aria-label="Search ShikshyaXNepal">
-        <div className="flex items-stretch rounded-sn-card border border-white/[0.1] bg-[#151518]/95 overflow-hidden
-                        shadow-[inset_0_1px_1.5px_rgba(255,255,255,0.06),0_4px_24px_rgba(0,0,0,0.4)]
-                        focus-within:border-sn-primary focus-within:shadow-[0_0_0_1px_rgba(32,70,84,0.6),0_8px_32px_rgba(0,0,0,0.5)]
+        <div className="flex items-stretch rounded-sn-card border border-black/[0.1] dark:border-white/[0.1] bg-white dark:bg-[#151518]/95 overflow-hidden
+                        shadow-[0_4px_24px_rgba(0,0,0,0.06)] dark:shadow-[inset_0_1px_1.5px_rgba(255,255,255,0.06),0_4px_24px_rgba(0,0,0,0.4)]
+                        focus-within:border-sn-primary focus-within:shadow-[0_0_0_1px_rgba(32,70,84,0.6),0_8px_32px_rgba(0,0,0,0.1)] dark:focus-within:shadow-[0_0_0_1px_rgba(32,70,84,0.6),0_8px_32px_rgba(0,0,0,0.5)]
                         transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]">
           <div className="relative flex-1 flex items-center">
-            <Search className="absolute left-4 w-5 h-5 text-sn-ink-muted pointer-events-none" aria-hidden="true" />
+            <Search className="absolute left-4 w-5 h-5 text-slate-400 dark:text-sn-ink-muted pointer-events-none" aria-hidden="true" />
             <input
               type="text"
               value={query}
@@ -45,33 +45,33 @@ export default function HeroSearch() {
               autoComplete="off"
               enterKeyHint="search"
               inputMode="search"
-              className="h-14 w-full min-w-0 bg-transparent pl-11 pr-11 text-sm font-nunito text-[#f5f5f6] placeholder:text-[#8e8e96] focus:outline-none sm:pl-12 sm:pr-12"
+              className="h-14 w-full min-w-0 bg-transparent pl-11 pr-11 text-sm font-nunito text-slate-900 dark:text-[#f5f5f6] placeholder:text-slate-400 dark:placeholder:text-[#8e8e96] focus:outline-none sm:pl-12 sm:pr-12"
             />
-            {query && <button type="button" onClick={() => setQuery('')} aria-label="Clear search" className="motion-control focus-ring absolute right-1 flex h-11 w-11 items-center justify-center rounded-sn-control text-sn-ink-muted hover:bg-white/[0.06] hover:text-[#f5f5f6]"><X className="h-4 w-4" /></button>}
+            {query && <button type="button" onClick={() => setQuery('')} aria-label="Clear search" className="motion-control focus-ring absolute right-1 flex h-11 w-11 items-center justify-center rounded-sn-control text-slate-400 dark:text-sn-ink-muted hover:bg-black/[0.05] dark:hover:bg-white/[0.06] hover:text-slate-900 dark:hover:text-[#f5f5f6]"><X className="h-4 w-4" /></button>}
           </div>
           <button
             type="submit"
-            className="motion-control focus-ring m-1.5 flex-shrink-0 rounded-sn-control bg-sn-primary px-5 text-xs font-bold font-nunito text-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.25),0_4px_14px_rgba(0,0,0,0.4)] sm:px-6 hover:bg-sn-primary-hover"
+            className="motion-control focus-ring m-1.5 flex-shrink-0 rounded-sn-control bg-sn-primary px-5 text-xs font-bold font-nunito text-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.25),0_4px_14px_rgba(0,0,0,0.2)] dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.25),0_4px_14px_rgba(0,0,0,0.4)] sm:px-6 hover:bg-sn-primary-hover"
           >
             Search
           </button>
         </div>
       </form>
 
-      <p id="hero-search-help" className="mt-2.5 text-xs leading-5 font-nunito text-sn-ink-muted">
+      <p id="hero-search-help" className="mt-2.5 text-xs leading-5 font-nunito text-slate-500 dark:text-sn-ink-muted">
         Search by college, programme, city, university, result or notice.
       </p>
 
       {/* ── Trending tags ──────────────────────────────── */}
       <div className="flex flex-wrap items-center gap-2 mt-4">
-        <span className="text-xs font-nunito font-semibold text-sn-ink-muted">Trending:</span>
+        <span className="text-xs font-nunito font-semibold text-slate-500 dark:text-sn-ink-muted">Trending:</span>
         {TRENDING.map((tag) => (
           <Link
             key={tag.label}
             href={tag.href}
-            className="motion-control inline-flex min-h-11 items-center px-3.5 rounded-full text-xs font-nunito font-semibold text-sn-ink-soft
-                       border border-white/[0.08] bg-white/[0.04] backdrop-blur-md shadow-[inset_0_1px_1px_rgba(255,255,255,0.05),0_1px_3px_rgba(0,0,0,0.3)]
-                       hover:border-sn-primary/60 hover:bg-sn-primary-bg hover:text-white hover:-translate-y-0.5
+            className="motion-control inline-flex min-h-11 items-center px-3.5 rounded-full text-xs font-nunito font-semibold text-slate-700 dark:text-sn-ink-soft
+                       border border-black/[0.08] dark:border-white/[0.08] bg-black/[0.02] dark:bg-white/[0.04] backdrop-blur-md shadow-sm dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.05),0_1px_3px_rgba(0,0,0,0.3)]
+                       hover:border-sn-primary/60 hover:bg-sn-primary-bg hover:text-primary dark:hover:text-white hover:-translate-y-0.5
                        transition-all duration-200"
           >
             {tag.label}

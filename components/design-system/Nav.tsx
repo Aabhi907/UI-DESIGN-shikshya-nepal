@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation'
 import { Menu, X, ChevronDown, Search, ArrowRight } from 'lucide-react'
 import SubscribeButton from '@/components/notifications/SubscribeButton'
 import AccountButton from '@/components/auth/AccountButton'
+import ThemeToggle from '@/components/theme/ThemeToggle'
 
 type NavigationItem = { label: string; href: string; group?: string; description?: string }
 type NavigationLink = { label: string; href: string; sub?: NavigationItem[] }
@@ -80,8 +81,8 @@ const navLinks: NavigationLink[] = [
 function Wordmark() {
   return (
     <Link href="/" className="flex items-center flex-shrink-0 group">
-      <span className="text-[15px] font-extrabold tracking-tight font-sans text-white leading-none">
-        ShikshyaX<span className="text-[#CAFFA6]">Nepal</span>
+      <span className="text-[15px] font-extrabold tracking-tight font-sans text-slate-900 dark:text-white leading-none transition-colors">
+        ShikshyaX<span className="text-primary dark:text-[#CAFFA6]">Nepal</span>
       </span>
     </Link>
   )
@@ -201,7 +202,11 @@ export default function Nav() {
         className="sticky top-3 z-50 mx-auto w-[calc(100%-1rem)] max-w-7xl transition-transform duration-200 ease-out motion-reduce:transform-none sm:w-[calc(100%-2rem)]"
         style={{ transform: `translateY(${navOffset}px)` }}
       >
-        <div className={`mx-auto flex h-14 items-center justify-between rounded-full border px-4 shadow-[0_8px_32px_rgba(0,0,0,0.5)] backdrop-blur-xl transition-colors duration-200 sm:px-6 lg:px-8 ${scrolled ? 'bg-[#0f1012]/92 border-white/[0.12]' : 'bg-[#0f1012]/80 border-white/[0.08]'}`}>
+        <div className={`mx-auto flex h-14 items-center justify-between rounded-full border px-4 backdrop-blur-xl transition-all duration-200 sm:px-6 lg:px-8 ${
+          scrolled
+            ? 'bg-white/95 dark:bg-[#0f1012]/92 border-black/[0.08] dark:border-white/[0.12] shadow-md dark:shadow-[0_8px_32px_rgba(0,0,0,0.5)]'
+            : 'bg-white/85 dark:bg-[#0f1012]/80 border-black/[0.06] dark:border-white/[0.08] shadow-sm dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)]'
+        }`}>
           {/* Left Cluster: Wordmark + Minimal Quiet Nav Links */}
           <div className="flex items-center gap-7 lg:gap-9">
             <Wordmark />
@@ -220,17 +225,17 @@ export default function Nav() {
                       aria-expanded={openDrop === link.label}
                       aria-controls={`sn-desktop-nav-${link.label.toLowerCase().replaceAll(' ', '-')}`}
                       className={`motion-control flex items-center gap-1 text-[13px] font-medium font-sans lowercase transition-colors duration-150 py-1 ${
-                        isActive(link.href) ? 'text-white font-semibold' : 'text-sn-ink-soft hover:text-white'
+                        isActive(link.href) ? 'text-slate-950 dark:text-white font-semibold' : 'text-slate-600 dark:text-sn-ink-soft hover:text-slate-950 dark:hover:text-white'
                       }`}
                     >
                       {link.label}
-                      <ChevronDown className={`w-3 h-3 text-sn-ink-muted transition-transform duration-200 ${openDrop === link.label ? 'rotate-180' : ''}`} />
+                      <ChevronDown className={`w-3 h-3 text-slate-400 dark:text-sn-ink-muted transition-transform duration-200 ${openDrop === link.label ? 'rotate-180' : ''}`} />
                     </button>
                   ) : (
                     <Link
                       href={link.href}
                       className={`motion-control text-[13px] font-medium font-sans lowercase transition-colors duration-150 py-1 ${
-                        isActive(link.href) ? 'text-white font-semibold' : 'text-sn-ink-soft hover:text-white'
+                        isActive(link.href) ? 'text-slate-950 dark:text-white font-semibold' : 'text-slate-600 dark:text-sn-ink-soft hover:text-slate-950 dark:hover:text-white'
                       }`}
                     >
                       {link.label}
@@ -239,15 +244,15 @@ export default function Nav() {
 
                   {link.sub && openDrop === link.label && (
                     <div className={`absolute top-full z-50 pt-2 ${link.label === 'results' ? 'right-0' : 'left-0'}`}>
-                      <div id={`sn-desktop-nav-${link.label.toLowerCase().replaceAll(' ', '-')}`} className="motion-menu-enter w-64 overflow-hidden rounded-2xl border border-white/[0.08] bg-[#151518]/95 p-1.5 backdrop-blur-2xl shadow-[0_12px_36px_rgba(0,0,0,0.7)]">
+                      <div id={`sn-desktop-nav-${link.label.toLowerCase().replaceAll(' ', '-')}`} className="motion-menu-enter w-64 overflow-hidden rounded-2xl border border-black/[0.08] dark:border-white/[0.08] bg-white/95 dark:bg-[#151518]/95 p-1.5 backdrop-blur-2xl shadow-xl dark:shadow-[0_12px_36px_rgba(0,0,0,0.7)]">
                         {link.sub.map((s, index) => (
                           <div key={s.label}>
                             {s.group && (index === 0 || link.sub![index - 1].group !== s.group) && (
-                              <p className="px-3.5 pb-1 pt-2.5 text-[10px] font-bold uppercase tracking-wider text-sn-ink-muted">{s.group}</p>
+                              <p className="px-3.5 pb-1 pt-2.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-sn-ink-muted">{s.group}</p>
                             )}
-                            <Link href={s.href} onClick={() => setOpenDrop(null)} className="motion-control block rounded-xl px-3.5 py-2 text-xs font-nunito font-semibold text-sn-ink-soft hover:bg-white/[0.06] hover:text-white">
+                            <Link href={s.href} onClick={() => setOpenDrop(null)} className="motion-control block rounded-xl px-3.5 py-2 text-xs font-nunito font-semibold text-slate-700 dark:text-sn-ink-soft hover:bg-black/[0.04] dark:hover:bg-white/[0.06] hover:text-slate-950 dark:hover:text-white">
                               {s.label}
-                              {s.description && <span className="mt-0.5 block font-normal text-sn-ink-muted">{s.description}</span>}
+                              {s.description && <span className="mt-0.5 block font-normal text-slate-500 dark:text-sn-ink-muted">{s.description}</span>}
                             </Link>
                           </div>
                         ))}
@@ -259,21 +264,24 @@ export default function Nav() {
             </nav>
           </div>
 
-          {/* Right Cluster: Search Capsule, Moon, Battery, Live Time, CTA */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          {/* Right Cluster: Search Capsule, Theme Toggle, Subscribe, Account, CTA */}
+          <div className="flex items-center gap-2 sm:gap-2.5">
             {/* Search Pill matching [ Q    ⌘K ] */}
             <button
               type="button"
               onClick={() => window.dispatchEvent(new Event('open-site-search'))}
-              className="motion-control focus-ring inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-2.5 py-1 text-xs text-sn-ink-muted hover:bg-white/[0.08] hover:border-white/[0.14] transition-all"
+              className="motion-control focus-ring inline-flex items-center gap-2 rounded-full border border-black/[0.08] dark:border-white/[0.08] bg-black/[0.03] dark:bg-white/[0.04] px-2.5 py-1 text-xs text-slate-600 dark:text-sn-ink-muted hover:bg-black/[0.06] dark:hover:bg-white/[0.08] hover:border-black/[0.12] dark:hover:border-white/[0.14] transition-all"
               aria-label="Search ShikshyaXNepal"
             >
-              <Search className="h-3 w-3 text-sn-ink-muted" />
-              <span className="hidden xl:inline text-[11px] font-mono text-sn-ink-soft">search</span>
-              <kbd className="hidden sm:inline rounded border border-white/10 bg-white/10 px-1 py-0.2 text-[9px] font-mono text-sn-ink-muted shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
+              <Search className="h-3 w-3 text-slate-500 dark:text-sn-ink-muted" />
+              <span className="hidden xl:inline text-[11px] font-mono text-slate-600 dark:text-sn-ink-soft">search</span>
+              <kbd className="hidden sm:inline rounded border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/10 px-1 py-0.2 text-[9px] font-mono text-slate-500 dark:text-sn-ink-muted shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
                 ⌘K
               </kbd>
             </button>
+
+            {/* Theme Toggle */}
+            <ThemeToggle />
 
             {/* Subtle Subscribe Icon & Account */}
             <div className="hidden sm:flex items-center gap-1.5">
@@ -281,7 +289,7 @@ export default function Nav() {
               <AccountButton />
             </div>
 
-            {/* Dark Pill CTA */}
+            {/* Pill CTA */}
             <Link
               href="/colleges"
               className={`motion-control focus-ring hidden items-center gap-1.5 overflow-hidden whitespace-nowrap rounded-full bg-[#204654] text-xs font-bold font-nunito text-white shadow-sm transition-all duration-300 hover:bg-[#295b6e] hover:shadow sm:inline-flex ${showCta ? 'max-w-48 px-4 py-1.5 opacity-100' : 'max-w-0 px-0 py-1.5 opacity-0 pointer-events-none'}`}
@@ -300,7 +308,7 @@ export default function Nav() {
                 if (mobileOpen) closeMobileMenu(true)
                 else { restoreMobileFocusRef.current = true; setMobileOpen(true) }
               }}
-              className="flex h-9 w-9 items-center justify-center rounded-lg text-sn-ink-soft hover:bg-sn-surface-alt lg:hidden"
+              className="flex h-9 w-9 items-center justify-center rounded-lg text-slate-700 dark:text-sn-ink-soft hover:bg-black/5 dark:hover:bg-sn-surface-alt lg:hidden"
               aria-label={mobileOpen ? 'Close navigation menu' : 'Open navigation menu'}
               aria-expanded={mobileOpen}
               aria-controls="sn-mobile-site-navigation"
@@ -314,13 +322,16 @@ export default function Nav() {
       {/* Mobile Navigation Drawer */}
       {mobileOpen && (
         <div id="sn-mobile-site-navigation" className="fixed inset-0 z-[300] lg:hidden" role="dialog" aria-modal="true" aria-label="Site navigation">
-          <div className="motion-scrim-enter absolute inset-0 bg-sn-ink/40" onClick={() => closeMobileMenu(true)} />
-          <div ref={mobileDialogRef} className="motion-drawer-enter absolute inset-y-0 right-0 flex w-[min(100%,22rem)] flex-col bg-sn-ground shadow-sn-float">
-            <div className="flex items-center justify-between px-5 h-14 border-b border-sn-border flex-shrink-0">
+          <div className="motion-scrim-enter absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => closeMobileMenu(true)} />
+          <div ref={mobileDialogRef} className="motion-drawer-enter absolute inset-y-0 right-0 flex w-[min(100%,22rem)] flex-col bg-white dark:bg-sn-ground shadow-2xl border-l border-black/[0.08] dark:border-sn-border">
+            <div className="flex items-center justify-between px-5 h-14 border-b border-black/[0.08] dark:border-sn-border flex-shrink-0">
               <Wordmark />
-              <button ref={mobileCloseRef} type="button" onClick={() => closeMobileMenu(true)} aria-label="Close navigation menu" className="flex h-9 w-9 items-center justify-center rounded-lg text-sn-ink-soft hover:bg-sn-surface-alt">
-                <X className="w-4 h-4" />
-              </button>
+              <div className="flex items-center gap-2">
+                <ThemeToggle compact />
+                <button ref={mobileCloseRef} type="button" onClick={() => closeMobileMenu(true)} aria-label="Close navigation menu" className="flex h-9 w-9 items-center justify-center rounded-lg text-slate-700 dark:text-sn-ink-soft hover:bg-black/5 dark:hover:bg-sn-surface-alt">
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
             </div>
 
             <div className="flex-1 overflow-y-auto px-4 py-4 space-y-1">

@@ -4,6 +4,7 @@ import JsonLd from '@/components/seo/JsonLd'
 import { SITE_URL } from '@/lib/seo'
 import CookieConsent from '@/components/privacy/CookieConsent'
 import ConsentScripts from '@/components/privacy/ConsentScripts'
+import { ThemeProvider } from '@/components/theme/ThemeProvider'
 import './globals.css'
 
 const notoSerif = Noto_Serif({
@@ -111,14 +112,38 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var stored = localStorage.getItem('sn-theme');
+                  if (stored === 'light') {
+                    document.documentElement.classList.remove('dark');
+                  } else if (stored === 'dark') {
+                    document.documentElement.classList.add('dark');
+                  } else {
+                    document.documentElement.classList.add('dark');
+                  }
+                } catch (e) {
+                  document.documentElement.classList.add('dark');
+                }
+              })();
+            `,
+          }}
+        />
+      </head>
       <body className={`${notoSerif.variable} ${notoSansDevanagari.variable} ${dmSans.variable} ${dmMono.variable} ${baloo2.variable} ${nunito.variable} font-sans antialiased`}>
-        <a href="#main-content" className="sr-only z-[300] rounded-lg bg-white px-4 py-3 font-bold text-primary focus:not-sr-only focus:fixed focus:left-3 focus:top-3">Skip to main content</a>
-        <JsonLd data={{ '@context': 'https://schema.org', '@graph': [{ '@type': 'WebSite', '@id': `${BASE_URL}/#website`, url: BASE_URL, name: 'ShikshyaXNepal', description: 'Source-aware education information for students and families in Nepal.', inLanguage: ['en', 'ne'], publisher: { '@id': `${BASE_URL}/#organization` }, potentialAction: { '@type': 'SearchAction', target: `${BASE_URL}/search?q={search_term_string}`, 'query-input': 'required name=search_term_string' } }, { '@type': 'Organization', '@id': `${BASE_URL}/#organization`, name: 'ShikshyaXNepal', url: BASE_URL, logo: { '@type': 'ImageObject', url: `${BASE_URL}/opengraph-image` }, areaServed: { '@type': 'Country', name: 'Nepal' }, knowsAbout: ['Colleges in Nepal', 'Nepal education admissions', 'University programs in Nepal', 'Scholarships in Nepal', 'Nepal examination results'] }] }} />
-        {children}
+        <ThemeProvider>
+          <a href="#main-content" className="sr-only z-[300] rounded-lg bg-white px-4 py-3 font-bold text-primary focus:not-sr-only focus:fixed focus:left-3 focus:top-3">Skip to main content</a>
+          <JsonLd data={{ '@context': 'https://schema.org', '@graph': [{ '@type': 'WebSite', '@id': `${BASE_URL}/#website`, url: BASE_URL, name: 'ShikshyaXNepal', description: 'Source-aware education information for students and families in Nepal.', inLanguage: ['en', 'ne'], publisher: { '@id': `${BASE_URL}/#organization` }, potentialAction: { '@type': 'SearchAction', target: `${BASE_URL}/search?q={search_term_string}`, 'query-input': 'required name=search_term_string' } }, { '@type': 'Organization', '@id': `${BASE_URL}/#organization`, name: 'ShikshyaXNepal', url: BASE_URL, logo: { '@type': 'ImageObject', url: `${BASE_URL}/opengraph-image` }, areaServed: { '@type': 'Country', name: 'Nepal' }, knowsAbout: ['Colleges in Nepal', 'Nepal education admissions', 'University programs in Nepal', 'Scholarships in Nepal', 'Nepal examination results'] }] }} />
+          {children}
 
-        <ConsentScripts />
-        <CookieConsent />
+          <ConsentScripts />
+          <CookieConsent />
+        </ThemeProvider>
       </body>
     </html>
   )

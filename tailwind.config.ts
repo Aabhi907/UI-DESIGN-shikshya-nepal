@@ -1,6 +1,7 @@
 import type { Config } from 'tailwindcss'
 
 const config: Config = {
+  darkMode: 'class',
   content: [
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
@@ -68,21 +69,21 @@ const config: Config = {
           600: '#9de76d',
         },
         // ── Dark sections ─────────────────────────────
-        navy: '#0a0b0d',
+        navy: 'var(--navy)',
         // ── Surfaces & cards ─────────────────────────
-        card:    '#151518',
-        surface: '#151518',
+        card:    'var(--card)',
+        surface: 'var(--surface)',
         // ── Text ─────────────────────────────────────
         ink: {
-          DEFAULT:   '#f5f5f6',
-          secondary: '#c4c4cc',
-          muted:     '#8e8e96',
+          DEFAULT:   'var(--ink)',
+          secondary: 'var(--ink-soft)',
+          muted:     'var(--ink-muted)',
         },
         // ── Borders ──────────────────────────────────
         border: {
-          DEFAULT: 'rgba(255, 255, 255, 0.08)',
-          strong:  'rgba(255, 255, 255, 0.14)',
-          subtle:  'rgba(255, 255, 255, 0.04)',
+          DEFAULT: 'var(--border)',
+          strong:  'var(--border-strong)',
+          subtle:  'var(--border-subtle)',
         },
         // ── Brand alias (backward compat) ────────────
         brand: {

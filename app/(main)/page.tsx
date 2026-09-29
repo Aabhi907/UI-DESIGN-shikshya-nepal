@@ -214,15 +214,15 @@ export default async function HomePage() {
           </div>
 
           {/* Social Proof Counter matching "2819+ Mac users and counting" */}
-          <div className="flex items-center justify-center gap-3 text-xs font-nunito text-sn-ink-muted">
+          <div className="flex items-center justify-center gap-3 text-xs font-nunito text-slate-500 dark:text-sn-ink-muted">
             <div className="flex -space-x-1.5 overflow-hidden">
-              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-sn-tint-peach text-[10px] font-bold text-[#CAFFA6] ring-2 ring-[#0f1012]">TU</span>
-              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-sn-tint-mint text-[10px] font-bold text-[#CAFFA6] ring-2 ring-[#0f1012]">KU</span>
-              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-sn-tint-butter text-[10px] font-bold text-[#CAFFA6] ring-2 ring-[#0f1012]">PU</span>
-              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-sn-tint-lilac text-[10px] font-bold text-[#CAFFA6] ring-2 ring-[#0f1012]">NEB</span>
+              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-sn-tint-peach text-[10px] font-bold text-primary dark:text-[#CAFFA6] ring-2 ring-white dark:ring-[#0f1012]">TU</span>
+              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-sn-tint-mint text-[10px] font-bold text-primary dark:text-[#CAFFA6] ring-2 ring-white dark:ring-[#0f1012]">KU</span>
+              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-sn-tint-butter text-[10px] font-bold text-amber-700 dark:text-[#CAFFA6] ring-2 ring-white dark:ring-[#0f1012]">PU</span>
+              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-sn-tint-lilac text-[10px] font-bold text-indigo-700 dark:text-[#CAFFA6] ring-2 ring-white dark:ring-[#0f1012]">NEB</span>
             </div>
             <span>
-              <strong className="text-sn-ink font-bold">1,200+</strong> colleges &amp; <strong className="text-sn-ink font-bold">450+</strong> programs cataloged across Nepal
+              <strong className="text-slate-900 dark:text-sn-ink font-bold">1,200+</strong> colleges &amp; <strong className="text-slate-900 dark:text-sn-ink font-bold">450+</strong> programs cataloged across Nepal
             </span>
           </div>
         </RevealGroup>
@@ -232,15 +232,15 @@ export default async function HomePage() {
           2. STATS STRIP — Luminous verification ribbon
       ════════════════════════════════════════════════════════ */}
       {heroStats.length > 0 && (
-        <section data-home-motion className="border-b border-white/[0.08] bg-[#151518]/60 backdrop-blur-md py-8 lg:py-10">
+        <section data-home-motion className="border-b border-black/[0.08] dark:border-white/[0.08] bg-white/60 dark:bg-[#151518]/60 backdrop-blur-md py-8 lg:py-10">
           <div className={CONTAINER}>
-            <div className="grid grid-cols-2 gap-6 sm:grid-cols-4 sm:divide-x sm:divide-white/[0.08]">
+            <div className="grid grid-cols-2 gap-6 sm:grid-cols-4 sm:divide-x sm:divide-black/[0.08] dark:sm:divide-white/[0.08]">
               {heroStats.map((stat) => (
                 <div key={stat.label} className="text-center sm:px-6">
-                  <p className="font-baloo text-3xl sm:text-4xl font-extrabold text-sn-ink tabular-nums tracking-tight">
+                  <p className="font-baloo text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-sn-ink tabular-nums tracking-tight">
                     {stat.value.toLocaleString()}
                   </p>
-                  <p className="mt-1 font-nunito text-xs sm:text-sm font-bold text-sn-ink-muted">
+                  <p className="mt-1 font-nunito text-xs sm:text-sm font-bold text-slate-500 dark:text-sn-ink-muted">
                     {stat.label} cataloged &amp; dated
                   </p>
                 </div>
@@ -276,46 +276,46 @@ export default async function HomePage() {
           </div>
 
           <div className="apple-feature-grid grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
-            <article className="apple-feature-card group relative min-h-[248px] overflow-hidden rounded-[24px] border border-white/[0.08] bg-[#151518]/90 p-6 text-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.06),0_4px_18px_rgba(0,0,0,0.4)] backdrop-blur-sm sm:text-left">
-              <span className="absolute right-5 top-5 text-[10px] font-bold tracking-[0.14em] text-sn-ink-muted/60">01</span>
-              <div className="relative inline-flex h-12 w-12 items-center justify-center rounded-[18px] bg-sn-tint-mint text-[#CAFFA6] shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_4px_10px_rgba(0,0,0,0.3)] transition-transform duration-300 group-hover:scale-[1.04]">
+            <article className="apple-feature-card group relative min-h-[248px] overflow-hidden rounded-[24px] border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#151518]/90 p-6 text-center shadow-sm dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.06),0_4px_18px_rgba(0,0,0,0.4)] backdrop-blur-sm sm:text-left">
+              <span className="absolute right-5 top-5 text-[10px] font-bold tracking-[0.14em] text-slate-400 dark:text-sn-ink-muted/60">01</span>
+              <div className="relative inline-flex h-12 w-12 items-center justify-center rounded-[18px] bg-sn-tint-mint text-primary dark:text-[#CAFFA6] shadow-sm dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_4px_10px_rgba(0,0,0,0.3)] transition-transform duration-300 group-hover:scale-[1.04]">
                 <ShieldCheck className="h-5 w-5" />
               </div>
-              <h3 className="relative mt-5 font-baloo text-xl font-bold text-sn-ink">Zero paid rankings</h3>
-              <p className="relative mt-2.5 text-sm font-nunito leading-6 text-sn-ink-soft">
+              <h3 className="relative mt-5 font-baloo text-xl font-bold text-slate-900 dark:text-sn-ink">Zero paid rankings</h3>
+              <p className="relative mt-2.5 text-sm font-nunito leading-6 text-slate-600 dark:text-sn-ink-soft">
                 Colleges cannot pay for higher placement or skewed reviews. Real affiliation &amp; merit data always comes first.
               </p>
             </article>
 
-            <article className="apple-feature-card group relative min-h-[248px] overflow-hidden rounded-[24px] border border-white/[0.08] bg-[#151518]/90 p-6 text-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.06),0_4px_18px_rgba(0,0,0,0.4)] backdrop-blur-sm sm:text-left">
-              <span className="absolute right-5 top-5 text-[10px] font-bold tracking-[0.14em] text-sn-ink-muted/60">02</span>
-              <div className="relative inline-flex h-12 w-12 items-center justify-center rounded-[18px] bg-sn-tint-peach text-[#A9E0F1] shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_4px_10px_rgba(0,0,0,0.3)] transition-transform duration-300 group-hover:scale-[1.04]">
+            <article className="apple-feature-card group relative min-h-[248px] overflow-hidden rounded-[24px] border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#151518]/90 p-6 text-center shadow-sm dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.06),0_4px_18px_rgba(0,0,0,0.4)] backdrop-blur-sm sm:text-left">
+              <span className="absolute right-5 top-5 text-[10px] font-bold tracking-[0.14em] text-slate-400 dark:text-sn-ink-muted/60">02</span>
+              <div className="relative inline-flex h-12 w-12 items-center justify-center rounded-[18px] bg-sn-tint-peach text-primary dark:text-[#A9E0F1] shadow-sm dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_4px_10px_rgba(0,0,0,0.3)] transition-transform duration-300 group-hover:scale-[1.04]">
                 <Clock className="h-5 w-5" />
               </div>
-              <h3 className="relative mt-5 font-baloo text-xl font-bold text-sn-ink">Dated &amp; sourced</h3>
-              <p className="relative mt-2.5 text-sm font-nunito leading-6 text-sn-ink-soft">
+              <h3 className="relative mt-5 font-baloo text-xl font-bold text-slate-900 dark:text-sn-ink">Dated &amp; sourced</h3>
+              <p className="relative mt-2.5 text-sm font-nunito leading-6 text-slate-600 dark:text-sn-ink-soft">
                 Every fee figure, seat quota, and deadline displays the exact date it was checked against official notices.
               </p>
             </article>
 
-            <article className="apple-feature-card group relative min-h-[248px] overflow-hidden rounded-[24px] border border-white/[0.08] bg-[#151518]/90 p-6 text-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.06),0_4px_18px_rgba(0,0,0,0.4)] backdrop-blur-sm sm:text-left">
-              <span className="absolute right-5 top-5 text-[10px] font-bold tracking-[0.14em] text-sn-ink-muted/60">03</span>
-              <div className="relative inline-flex h-12 w-12 items-center justify-center rounded-[18px] bg-sn-tint-butter text-[#F7F9E1] shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_4px_10px_rgba(0,0,0,0.3)] transition-transform duration-300 group-hover:scale-[1.04]">
+            <article className="apple-feature-card group relative min-h-[248px] overflow-hidden rounded-[24px] border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#151518]/90 p-6 text-center shadow-sm dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.06),0_4px_18px_rgba(0,0,0,0.4)] backdrop-blur-sm sm:text-left">
+              <span className="absolute right-5 top-5 text-[10px] font-bold tracking-[0.14em] text-slate-400 dark:text-sn-ink-muted/60">03</span>
+              <div className="relative inline-flex h-12 w-12 items-center justify-center rounded-[18px] bg-sn-tint-butter text-amber-700 dark:text-[#F7F9E1] shadow-sm dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_4px_10px_rgba(0,0,0,0.3)] transition-transform duration-300 group-hover:scale-[1.04]">
                 <FileText className="h-5 w-5" />
               </div>
-              <h3 className="relative mt-5 font-baloo text-xl font-bold text-sn-ink">Official gazette links</h3>
-              <p className="relative mt-2.5 text-sm font-nunito leading-6 text-sn-ink-soft">
+              <h3 className="relative mt-5 font-baloo text-xl font-bold text-slate-900 dark:text-sn-ink">Official gazette links</h3>
+              <p className="relative mt-2.5 text-sm font-nunito leading-6 text-slate-600 dark:text-sn-ink-soft">
                 Direct verification links to TU, KU, Pokhara, NEB and CTEVT portals without confusing redirects or ads.
               </p>
             </article>
 
-            <article className="apple-feature-card group relative min-h-[248px] overflow-hidden rounded-[24px] border border-white/[0.08] bg-[#151518]/90 p-6 text-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.06),0_4px_18px_rgba(0,0,0,0.4)] backdrop-blur-sm sm:text-left">
-              <span className="absolute right-5 top-5 text-[10px] font-bold tracking-[0.14em] text-sn-ink-muted/60">04</span>
-              <div className="relative inline-flex h-12 w-12 items-center justify-center rounded-[18px] bg-sn-tint-lilac text-[#D9EEF7] shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_4px_10px_rgba(0,0,0,0.3)] transition-transform duration-300 group-hover:scale-[1.04]">
+            <article className="apple-feature-card group relative min-h-[248px] overflow-hidden rounded-[24px] border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#151518]/90 p-6 text-center shadow-sm dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.06),0_4px_18px_rgba(0,0,0,0.4)] backdrop-blur-sm sm:text-left">
+              <span className="absolute right-5 top-5 text-[10px] font-bold tracking-[0.14em] text-slate-400 dark:text-sn-ink-muted/60">04</span>
+              <div className="relative inline-flex h-12 w-12 items-center justify-center rounded-[18px] bg-sn-tint-lilac text-indigo-700 dark:text-[#D9EEF7] shadow-sm dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_4px_10px_rgba(0,0,0,0.3)] transition-transform duration-300 group-hover:scale-[1.04]">
                 <GraduationCap className="h-5 w-5" />
               </div>
-              <h3 className="relative mt-5 font-baloo text-xl font-bold text-sn-ink">100% Free for students</h3>
-              <p className="relative mt-2.5 text-sm font-nunito leading-6 text-sn-ink-soft">
+              <h3 className="relative mt-5 font-baloo text-xl font-bold text-slate-900 dark:text-sn-ink">100% Free for students</h3>
+              <p className="relative mt-2.5 text-sm font-nunito leading-6 text-slate-600 dark:text-sn-ink-soft">
                 No subscription, no paywalled GPA calculators, and no gated guides. Public access for every student in Nepal.
               </p>
             </article>
@@ -373,53 +373,53 @@ export default async function HomePage() {
 
             {/* Right Column: Soft Canvas with Floating Query Bubble & Result Card */}
             <div className="lg:col-span-6">
-              <div className="rounded-[32px] border border-white/[0.08] bg-[#151518]/60 p-6 sm:p-10 relative flex flex-col justify-center min-h-[380px] shadow-[inset_0_1px_2px_rgba(255,255,255,0.04)]">
+              <div className="rounded-[32px] border border-black/[0.08] dark:border-white/[0.08] bg-slate-100/70 dark:bg-[#151518]/60 p-6 sm:p-10 relative flex flex-col justify-center min-h-[380px] shadow-sm dark:shadow-[inset_0_1px_2px_rgba(255,255,255,0.04)]">
                 {/* Floating query bubble matching Voxt's "Make it shorter and clearer" */}
                 <div className="self-start -mb-3 z-10 ml-2">
-                  <div className="apple-pill inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-bold font-nunito text-sn-ink shadow-md bg-white/[0.06] border border-white/[0.12]">
+                  <div className="apple-pill inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-bold font-nunito text-slate-800 dark:text-sn-ink shadow-md bg-white/80 dark:bg-white/[0.06] border border-black/[0.08] dark:border-white/[0.12]">
                     <span>&ldquo;Check my NEB Grade 12 result&rdquo;</span>
                   </div>
                 </div>
 
                 {/* Floating Clean Result Card matching Voxt's Semantic Rewrite card */}
-                <div className="apple-card rounded-[22px] border border-white/[0.08] bg-[#151518] p-5 sm:p-6 shadow-[0_12px_36px_rgba(0,0,0,0.5)] mt-4">
-                  <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
+                <div className="apple-card rounded-[22px] border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#151518] p-5 sm:p-6 shadow-md dark:shadow-[0_12px_36px_rgba(0,0,0,0.5)] mt-4">
+                  <div className="flex items-center justify-between pb-3 border-b border-black/[0.08] dark:border-white/[0.08]">
                     <div className="flex items-center gap-2">
-                      <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-sn-tint-peach text-[#A9E0F1] font-bold text-xs font-mono">
+                      <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-sn-tint-peach text-primary dark:text-[#A9E0F1] font-bold text-xs font-mono">
                         NEB
                       </span>
                       <div>
-                        <p className="text-xs font-bold text-sn-ink font-nunito">Grade 12 Annual Examination</p>
-                        <p className="text-[11px] text-sn-ink-muted font-nunito">National Examination Board · Sanothimi</p>
+                        <p className="text-xs font-bold text-slate-900 dark:text-sn-ink font-nunito">Grade 12 Annual Examination</p>
+                        <p className="text-[11px] text-slate-500 dark:text-sn-ink-muted font-nunito">National Examination Board · Sanothimi</p>
                       </div>
                     </div>
                   </div>
 
                   <div className="py-4 space-y-2">
                     <div className="flex items-center justify-between text-xs font-nunito">
-                      <span className="text-sn-ink-muted">Symbol Number:</span>
-                      <span className="font-mono font-bold text-sn-ink">2401884X</span>
+                      <span className="text-slate-500 dark:text-sn-ink-muted">Symbol Number:</span>
+                      <span className="font-mono font-bold text-slate-900 dark:text-sn-ink">2401884X</span>
                     </div>
                     <div className="flex items-center justify-between text-xs font-nunito">
-                      <span className="text-sn-ink-muted">Academic Stream:</span>
-                      <span className="font-bold text-sn-ink">Science (Physics, Chemistry, Math)</span>
+                      <span className="text-slate-500 dark:text-sn-ink-muted">Academic Stream:</span>
+                      <span className="font-bold text-slate-900 dark:text-sn-ink">Science (Physics, Chemistry, Math)</span>
                     </div>
                     <div className="flex items-center justify-between text-xs font-nunito">
-                      <span className="text-sn-ink-muted">Calculated Standing:</span>
-                      <span className="font-bold text-[#CAFFA6] bg-[#CAFFA6]/10 border border-[#CAFFA6]/20 px-2 py-0.5 rounded">
+                      <span className="text-slate-500 dark:text-sn-ink-muted">Calculated Standing:</span>
+                      <span className="font-bold text-emerald-800 dark:text-[#CAFFA6] bg-emerald-500/10 dark:bg-[#CAFFA6]/10 border border-emerald-500/20 dark:border-[#CAFFA6]/20 px-2 py-0.5 rounded">
                         First Division with Distinction · 3.65 GPA
                       </span>
                     </div>
                   </div>
 
                   {/* Clean Filter Pills at bottom matching [Shorter] [Clearer] [Formal] in Voxt */}
-                  <div className="pt-3 border-t border-white/[0.08] flex items-center justify-between">
+                  <div className="pt-3 border-t border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between">
                     <div className="flex gap-1.5 text-[11px] font-bold font-nunito">
-                      <span className="rounded-full bg-white/[0.06] border border-white/[0.08] px-2.5 py-1 text-sn-ink">TU Balkhu</span>
-                      <span className="rounded-full bg-white/[0.06] border border-white/[0.08] px-2.5 py-1 text-sn-ink">NEB</span>
-                      <span className="rounded-full bg-white/[0.06] border border-white/[0.08] px-2.5 py-1 text-sn-ink">KU Dhulikhel</span>
+                      <span className="rounded-full bg-black/[0.04] dark:bg-white/[0.06] border border-black/[0.08] dark:border-white/[0.08] px-2.5 py-1 text-slate-800 dark:text-sn-ink">TU Balkhu</span>
+                      <span className="rounded-full bg-black/[0.04] dark:bg-white/[0.06] border border-black/[0.08] dark:border-white/[0.08] px-2.5 py-1 text-slate-800 dark:text-sn-ink">NEB</span>
+                      <span className="rounded-full bg-black/[0.04] dark:bg-white/[0.06] border border-black/[0.08] dark:border-white/[0.08] px-2.5 py-1 text-slate-800 dark:text-sn-ink">KU Dhulikhel</span>
                     </div>
-                    <Link href="/results" className="text-xs font-bold text-[#CAFFA6] hover:underline">
+                    <Link href="/results" className="text-xs font-bold text-primary dark:text-[#CAFFA6] hover:underline">
                       Verify &rarr;
                     </Link>
                   </div>
@@ -438,30 +438,30 @@ export default async function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             {/* Left Column: Soft Canvas with Floating Intake Card */}
             <div className="order-2 lg:order-1 lg:col-span-6">
-              <div className="rounded-[32px] border border-white/[0.08] bg-[#151518]/60 p-6 sm:p-10 relative flex flex-col justify-center min-h-[380px] shadow-[inset_0_1px_2px_rgba(255,255,255,0.04)]">
+              <div className="rounded-[32px] border border-black/[0.08] dark:border-white/[0.08] bg-slate-100/70 dark:bg-[#151518]/60 p-6 sm:p-10 relative flex flex-col justify-center min-h-[380px] shadow-sm dark:shadow-[inset_0_1px_2px_rgba(255,255,255,0.04)]">
                 {/* Floating query bubble */}
                 <div className="self-start -mb-3 z-10 ml-2">
-                  <div className="apple-pill inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-bold font-nunito text-sn-ink shadow-md bg-white/[0.06] border border-white/[0.12]">
+                  <div className="apple-pill inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-bold font-nunito text-slate-800 dark:text-sn-ink shadow-md bg-white/80 dark:bg-white/[0.06] border border-black/[0.08] dark:border-white/[0.12]">
                     <span>&ldquo;When does Kathmandu University BTech close?&rdquo;</span>
                   </div>
                 </div>
 
                 {/* Floating Admission Card */}
-                <div className="apple-card rounded-[22px] border border-white/[0.08] bg-[#151518] p-5 sm:p-6 shadow-[0_12px_36px_rgba(0,0,0,0.5)] mt-4">
-                  <div className="flex items-start justify-between pb-3 border-b border-white/[0.08]">
+                <div className="apple-card rounded-[22px] border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#151518] p-5 sm:p-6 shadow-md dark:shadow-[0_12px_36px_rgba(0,0,0,0.5)] mt-4">
+                  <div className="flex items-start justify-between pb-3 border-b border-black/[0.08] dark:border-white/[0.08]">
                     <div>
-                      <span className="rounded-full bg-[#A9E0F1]/20 border border-[#A9E0F1]/40 px-2 py-0.5 text-[10px] font-bold text-[#A9E0F1] inline-block mb-1">
+                      <span className="rounded-full bg-[#A9E0F1]/20 border border-[#A9E0F1]/40 px-2 py-0.5 text-[10px] font-bold text-primary dark:text-[#A9E0F1] inline-block mb-1">
                         Closes in 4 days
                       </span>
-                      <h4 className="font-baloo text-base font-bold text-sn-ink">Kathmandu University</h4>
-                      <p className="text-xs font-nunito text-sn-ink-muted">School of Engineering · Dhulikhel</p>
+                      <h4 className="font-baloo text-base font-bold text-slate-900 dark:text-sn-ink">Kathmandu University</h4>
+                      <p className="text-xs font-nunito text-slate-500 dark:text-sn-ink-muted">School of Engineering · Dhulikhel</p>
                     </div>
                   </div>
 
                   <div className="py-3.5 space-y-2">
                     <div className="flex items-center justify-between text-xs font-nunito">
-                      <span className="text-sn-ink-muted">Program:</span>
-                      <span className="font-bold text-sn-ink">BTech in Artificial Intelligence</span>
+                      <span className="text-slate-500 dark:text-sn-ink-muted">Program:</span>
+                      <span className="font-bold text-slate-900 dark:text-sn-ink">BTech in Artificial Intelligence</span>
                     </div>
                     <div className="flex items-center justify-between text-xs font-nunito">
                       <span className="text-sn-ink-muted">Eligibility:</span>
@@ -666,18 +666,18 @@ export default async function HomePage() {
       {/* Student perspective retained from the former pathway section. */}
       <section data-home-motion className="border-b border-sn-border bg-sn-ground py-16 sm:py-20">
         <div className={CONTAINER}>
-          <figure className="mx-auto max-w-3xl overflow-hidden rounded-[28px] border border-white/[0.08] bg-[#151518] px-7 py-9 text-center shadow-[0_10px_30px_rgba(0,0,0,0.5)] sm:px-12 sm:py-12">
-            <div className="mx-auto mb-5 flex h-10 w-10 items-center justify-center rounded-full bg-[#1c1c22] font-serif text-3xl font-bold leading-none text-[#CAFFA6] shadow-[0_4px_14px_rgba(0,0,0,0.3)]" aria-hidden="true">“</div>
-            <blockquote className="font-baloo text-xl font-bold leading-[1.45] text-sn-ink sm:text-2xl lg:text-3xl">
+          <figure className="mx-auto max-w-3xl overflow-hidden rounded-[28px] border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#151518] px-7 py-9 text-center shadow-md dark:shadow-[0_10px_30px_rgba(0,0,0,0.5)] sm:px-12 sm:py-12">
+            <div className="mx-auto mb-5 flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 dark:bg-[#1c1c22] font-serif text-3xl font-bold leading-none text-primary dark:text-[#CAFFA6] shadow-sm dark:shadow-[0_4px_14px_rgba(0,0,0,0.3)]" aria-hidden="true">“</div>
+            <blockquote className="font-baloo text-xl font-bold leading-[1.45] text-slate-900 dark:text-sn-ink sm:text-2xl lg:text-3xl">
               I spent weeks asking coaching institutes. ShikshyaXNepal gave me the{' '}
-              <span className="font-extrabold text-[#CAFFA6] underline decoration-[#CAFFA6]/40 decoration-4 underline-offset-4">exact eligibility and official dates</span>{' '}
+              <span className="font-extrabold text-primary dark:text-[#CAFFA6] underline decoration-primary/40 dark:decoration-[#CAFFA6]/40 decoration-4 underline-offset-4">exact eligibility and official dates</span>{' '}
               in under two minutes.
             </blockquote>
             <figcaption className="mt-6 flex items-center justify-center gap-3">
               <span className="flex h-10 w-10 items-center justify-center rounded-full bg-sn-primary text-sm font-bold text-white shadow-[0_4px_12px_rgba(0,0,0,0.3)]">AS</span>
               <span className="text-left font-nunito text-xs leading-5">
-                <span className="block font-bold text-sn-ink">Ayush Shrestha</span>
-                <span className="block text-sn-ink-muted">Pulchowk Campus Aspirant · Lalitpur</span>
+                <span className="block font-bold text-slate-900 dark:text-sn-ink">Ayush Shrestha</span>
+                <span className="block text-slate-500 dark:text-sn-ink-muted">Pulchowk Campus Aspirant · Lalitpur</span>
               </span>
             </figcaption>
           </figure>
@@ -692,17 +692,17 @@ export default async function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             {/* Left Column: The Editorial Story */}
             <div className="lg:col-span-7 space-y-6">
-              <h2 className="font-baloo text-3xl sm:text-4xl lg:text-5xl font-extrabold text-sn-ink leading-[1.1] tracking-[-0.03em]">
+              <h2 className="font-baloo text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-sn-ink leading-[1.1] tracking-[-0.03em]">
                 Top students choose with data, not consultancy promises.
               </h2>
-              <div className="space-y-4 font-nunito text-base sm:text-lg text-sn-ink-soft leading-relaxed">
+              <div className="space-y-4 font-nunito text-base sm:text-lg text-slate-600 dark:text-sn-ink-soft leading-relaxed">
                 <p>
                   Every academic year in Nepal, over 400,000 students graduate from SEE and +2 facing high-pressure decisions. Too often, they are guided by sponsored billboards, consultancy sales agents, or unverified social media claims.
                 </p>
                 <p>
                   Constituent campus vs private quota fees can differ by over 800,000 NPR for the exact same syllabus. Knowing the entrance date, seat allocation, and scholarship quota in advance changes your career trajectory.
                 </p>
-                <p className="font-bold text-sn-ink">
+                <p className="font-bold text-slate-900 dark:text-sn-ink">
                   Shikshya Nepal exists to give every student in Nepal the clear, dated, official truth — free, always.
                 </p>
               </div>
@@ -713,7 +713,7 @@ export default async function HomePage() {
                 </Button.Link>
                 <Link
                   href="/news"
-                  className="font-bold font-nunito text-sm text-sn-ink hover:text-[#CAFFA6] flex items-center gap-1.5 transition-colors"
+                  className="font-bold font-nunito text-sm text-slate-800 dark:text-sn-ink hover:text-primary dark:hover:text-[#CAFFA6] flex items-center gap-1.5 transition-colors"
                 >
                   <span>Read our verification policy</span>
                   <ArrowRight className="w-4 h-4" />
@@ -730,7 +730,7 @@ export default async function HomePage() {
                 </div>
 
                 {/* Polaroid / Photographic Card */}
-                <div className="apple-card rounded-2xl bg-[#151518] p-4 pb-6 shadow-[0_20px_50px_rgba(0,0,0,0.6)] border border-white/[0.08] max-w-[340px] sm:max-w-[380px]">
+                <div className="apple-card rounded-2xl bg-white dark:bg-[#151518] p-4 pb-6 shadow-xl dark:shadow-[0_20px_50px_rgba(0,0,0,0.6)] border border-black/[0.08] dark:border-white/[0.08] max-w-[340px] sm:max-w-[380px]">
                   <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-slate-900">
                     <Image
                       src={CAMPUS_FALLBACK_IMAGES[1]}
@@ -1078,9 +1078,9 @@ export default async function HomePage() {
       <section data-home-motion className={`border-t border-sn-border bg-sn-ground ${SECTION_PAD}`}>
         <div className={CONTAINER}>
           <div className="apple-shell">
-            <div className="apple-card relative overflow-hidden !rounded-[20px] bg-[#151518] p-8 sm:p-12 lg:p-16 text-center shadow-[inset_0_1px_1.5px_rgba(255,255,255,0.06),0_8px_32px_rgba(0,0,0,0.5)] border border-white/[0.08]">
+            <div className="apple-card relative overflow-hidden !rounded-[20px] bg-white dark:bg-[#151518] p-8 sm:p-12 lg:p-16 text-center shadow-lg dark:shadow-[inset_0_1px_1.5px_rgba(255,255,255,0.06),0_8px_32px_rgba(0,0,0,0.5)] border border-black/[0.08] dark:border-white/[0.08]">
               {/* Subtle warm accent radial background */}
-              <div className="pointer-events-none absolute -top-24 left-1/2 h-[350px] w-[500px] -translate-x-1/2 rounded-full bg-gradient-to-b from-[#204654]/30 via-[#CAFFA6]/10 to-transparent blur-2xl" aria-hidden="true" />
+              <div className="pointer-events-none absolute -top-24 left-1/2 h-[350px] w-[500px] -translate-x-1/2 rounded-full bg-gradient-to-b from-[#204654]/15 dark:from-[#204654]/30 via-[#CAFFA6]/10 to-transparent blur-2xl" aria-hidden="true" />
 
               <div className="relative">
                 <div className="max-w-2xl mx-auto mb-10 text-center">
