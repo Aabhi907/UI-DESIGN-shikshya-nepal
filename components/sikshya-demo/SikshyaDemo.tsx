@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState, useCallback, useRef } from 'react'
-import { motion, AnimatePresence, useInView } from 'framer-motion'
+import { useInView } from 'framer-motion'
 import { Sparkles } from 'lucide-react'
 import { demoQuestions, DemoQuestion } from './demoQuestions'
 import DemoWindow from './DemoWindow'
@@ -41,20 +41,17 @@ export default function SikshyaDemo() {
   const isInView = useInView(sectionRef, { once: true, amount: 0.25 })
   const hasTriggeredRef = useRef(false)
 
-  const [demo, setDemo] = useState<DemoQuestion | null>(null)
-  const [sceneVisible, setSceneVisible] = useState(false)
+  const [demo, setDemo] = useState<DemoQuestion>(demoQuestions[0])
   const [displayedAnswer, setDisplayedAnswer] = useState('')
   const [isGenerating, setIsGenerating] = useState(false)
   const [isTransitioning, setIsTransitioning] = useState(false)
 
   const streamTimerRef = useRef<NodeJS.Timeout | null>(null)
   const pauseTimerRef = useRef<NodeJS.Timeout | null>(null)
-  const mountTimerRef = useRef<NodeJS.Timeout | null>(null)
 
   const clearTimers = useCallback(() => {
     if (streamTimerRef.current) clearInterval(streamTimerRef.current)
     if (pauseTimerRef.current) clearTimeout(pauseTimerRef.current)
-    if (mountTimerRef.current) clearTimeout(mountTimerRef.current)
   }, [])
 
   // Stream answer text progressively
@@ -62,7 +59,7 @@ export default function SikshyaDemo() {
     setDisplayedAnswer('')
     setIsGenerating(true)
 
-    // ~600ms initial pause with blinking caret before words flow
+    // ~350ms initial pause with blinking caret before words flow
     pauseTimerRef.current = setTimeout(() => {
       const words = answerText.trim().split(/\s+/)
       let currentWordIndex = 0
@@ -74,12 +71,11 @@ export default function SikshyaDemo() {
 
         if (currentWordIndex >= words.length) {
           if (streamTimerRef.current) clearInterval(streamTimerRef.current)
-          // Ensure full final text formatting is cleanly assigned
           setDisplayedAnswer(answerText.trim())
           setIsGenerating(false)
         }
-      }, 45)
-    }, 600)
+      }, 40)
+    }, 350)
   }, [])
 
   // Sequence triggers when section enters viewport below testimonials
@@ -88,35 +84,27 @@ export default function SikshyaDemo() {
     hasTriggeredRef.current = true
 
     const nextDemo = getNextDemoQuestion()
-
-    mountTimerRef.current = setTimeout(() => {
-      setDemo(nextDemo)
-      setSceneVisible(true)
-      startStreaming(nextDemo.answer)
-    }, 350)
+    setDemo(nextDemo)
+    startStreaming(nextDemo.answer)
 
     return () => clearTimers()
   }, [isInView, clearTimers, startStreaming])
 
-  // "Try another question" click sequence: fade out -> 300ms -> pick next -> fade in -> stream
+  // "Try another question" click sequence:
+  // Card remains solid and stationary; only the inner question and answer smoothly change
   const handleNextQuestion = useCallback(() => {
     if (isTransitioning) return
     setIsTransitioning(true)
     clearTimers()
 
-    // 1. Fade window + pattern out to reveal warm background
-    setSceneVisible(false)
-
-    // 2. Wait ~300ms, pick next question from queue, and fade back in
+    // 150ms inner fade -> swap question & stream new answer
     setTimeout(() => {
       const nextDemo = getNextDemoQuestion()
       setDemo(nextDemo)
       setDisplayedAnswer('')
-      setSceneVisible(true)
       setIsTransitioning(false)
-
       startStreaming(nextDemo.answer)
-    }, 320)
+    }, 150)
   }, [clearTimers, isTransitioning, startStreaming])
 
   return (
@@ -139,42 +127,16 @@ export default function SikshyaDemo() {
         </p>
       </div>
 
-      {/* Main Sikshya Nepal AI Window */}
+      {/* Main Sikshya Nepal AI Window - Always mounted, zero page shifts */}
       <div className="relative z-10 flex flex-col items-center justify-center">
-        <AnimatePresence mode="wait">
-          {sceneVisible && demo && (
-            <motion.div
-              key={demo.id}
-              initial={{
-                opacity: 0,
-                scale: 0.985,
-                filter: 'blur(5px)',
-              }}
-              animate={{
-                opacity: 1,
-                scale: 1,
-                filter: 'blur(0px)',
-              }}
-              exit={{
-                opacity: 0,
-                scale: 0.99,
-                filter: 'blur(4px)',
-              }}
-              transition={{
-                duration: 0.22,
-                ease: [0.16, 1, 0.3, 1],
-              }}
-            >
-              <DemoWindow
-                demo={demo}
-                displayedAnswer={displayedAnswer}
-                isGenerating={isGenerating}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <DemoWindow
+          demo={demo}
+          displayedAnswer={displayedAnswer}
+          isGenerating={isGenerating}
+          isTransitioning={isTransitioning}
+        />
 
-        {/* Layer 4: Caption / Action underneath */}
+        {/* Caption / Action underneath */}
         <DemoCaption
           onNextQuestion={handleNextQuestion}
           isTransitioning={isTransitioning}

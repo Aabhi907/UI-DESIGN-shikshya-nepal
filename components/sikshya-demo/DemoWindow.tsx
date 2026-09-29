@@ -5,33 +5,38 @@ import type { DemoQuestion } from './demoQuestions'
 import WindowControls from './WindowControls'
 import QuestionHeader from './QuestionHeader'
 import StreamingAnswer from './StreamingAnswer'
-import AskBar from './AskBar'
 
 export default function DemoWindow({
   demo,
   displayedAnswer,
   isGenerating,
+  isTransitioning = false,
 }: {
   demo: DemoQuestion
   displayedAnswer: string
   isGenerating: boolean
+  isTransitioning?: boolean
 }) {
   return (
     <article className="ai-window" aria-label="Sikshya Nepal AI Guidance Window">
       {/* Top browser/window controls */}
       <WindowControls title="Ask Sikshya Nepal" />
 
-      {/* Pill question container */}
-      <QuestionHeader question={demo.question} stepLabel={demo.stepLabel} />
+      {/* Question & Answer Content: smoothly transitions without unmounting the window or shifting layout */}
+      <div
+        className={`flex-1 flex flex-col min-h-0 transition-opacity duration-150 ease-out ${
+          isTransitioning ? 'opacity-20' : 'opacity-100'
+        }`}
+      >
+        {/* Pill question container */}
+        <QuestionHeader question={demo.question} stepLabel={demo.stepLabel} />
 
-      {/* Scrollable document-like answer area */}
-      <StreamingAnswer
-        displayedAnswer={displayedAnswer}
-        isGenerating={isGenerating}
-      />
-
-      {/* Fixed bottom ask bar */}
-      <AskBar />
+        {/* Scrollable document-like answer area */}
+        <StreamingAnswer
+          displayedAnswer={displayedAnswer}
+          isGenerating={isGenerating}
+        />
+      </div>
     </article>
   )
 }

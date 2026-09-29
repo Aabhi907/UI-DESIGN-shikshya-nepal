@@ -48,7 +48,7 @@
 /* Main Sikshya Nepal AI window */
 .ai-window {
   width: min(820px, calc(100vw - 32px));
-  height: 500px;
+  height: 460px;
   border-radius: 24px;
   background-color: var(--surface);
   border: 1px solid var(--border);
@@ -157,7 +157,7 @@
 /* Answer area */
 .answer-container {
   flex: 1;
-  padding: 8px 24px 14px;
+  padding: 12px 24px 24px;
   overflow-y: auto;
   color: var(--text-secondary, #334155);
   font-size: 14.5px;
@@ -184,71 +184,6 @@
 @keyframes ai-caret-blink {
   0%, 45% { opacity: 1; }
   46%, 100% { opacity: 0; }
-}
-
-/* Bottom fixed ask bar */
-.ask-bar {
-  margin: 8px 22px 18px;
-  height: 48px;
-  border-radius: 9999px;
-  background-color: var(--surface-alt, #f8fafc);
-  border: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-left: 16px;
-  padding-right: 5px;
-  flex-shrink: 0;
-}
-
-.dark .ask-bar {
-  background-color: #1c1c22;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.ask-bar-input {
-  background: transparent;
-  border: none;
-  outline: none;
-  font-size: 13.5px;
-  color: var(--text, #0f172a);
-  width: 100%;
-}
-
-.dark .ask-bar-input {
-  color: #f5f5f6;
-}
-
-.ask-bar-input::placeholder {
-  color: var(--text-muted, #94a3b8);
-}
-
-.dark .ask-bar-input::placeholder {
-  color: #726A64;
-}
-
-.send-button {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: var(--primary, #204654);
-  color: #FFFFFF;
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  border: none;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(32, 70, 84, 0.25);
-  transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1), background-color 180ms ease;
-}
-
-.send-button:hover {
-  background: #173743;
-  transform: scale(1.05);
-}
-
-.send-button:active {
-  transform: scale(0.95);
 }
 
 /* Layer 4: Caption / Action underneath */
@@ -314,7 +249,7 @@
 
   .ai-window {
     width: calc(100vw - 24px);
-    height: min(540px, 75svh);
+    height: min(480px, 75svh);
     border-radius: 20px;
   }
 
@@ -325,12 +260,8 @@
     min-height: 46px;
   }
 
-  .ask-bar {
-    margin: 6px 14px 14px;
-  }
-
   .answer-container {
-    padding: 6px 16px 10px;
+    padding: 8px 16px 20px;
     font-size: 13.5px;
   }
 
