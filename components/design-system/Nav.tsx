@@ -3,12 +3,11 @@
 import Link from 'next/link'
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { usePathname } from 'next/navigation'
-import { Menu, X, ChevronDown, Search, Moon } from 'lucide-react'
+import { Menu, X, ChevronDown, Search, ArrowRight } from 'lucide-react'
 import SubscribeButton from '@/components/notifications/SubscribeButton'
 import AccountButton from '@/components/auth/AccountButton'
-import Mascot from '@/components/design-system/Mascot'
 
-type NavigationItem = { label: string; href: string; group?: string }
+type NavigationItem = { label: string; href: string; group?: string; description?: string }
 type NavigationLink = { label: string; href: string; sub?: NavigationItem[] }
 
 const navLinks: NavigationLink[] = [
@@ -76,42 +75,13 @@ const navLinks: NavigationLink[] = [
   },
 ]
 
-function BatteryIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} width="18" height="10" viewBox="0 0 22 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-      <rect x="0.5" y="0.5" width="18" height="11" rx="2.5" stroke="currentColor" strokeWidth="1.2" />
-      <path d="M20.5 4.5V7.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-      <rect x="2.5" y="2.5" width="13" height="7" rx="1.5" fill="currentColor" />
-    </svg>
-  )
-}
 
-function LiveClock() {
-  const [time, setTime] = useState<string>('6:51 PM')
-
-  useEffect(() => {
-    const updateTime = () => {
-      const now = new Date()
-      setTime(now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }))
-    }
-    updateTime()
-    const interval = setInterval(updateTime, 30000)
-    return () => clearInterval(interval)
-  }, [])
-
-  return (
-    <span className="hidden xl:inline text-[11px] font-mono font-medium text-sn-ink-muted tabular-nums select-none">
-      {time}
-    </span>
-  )
-}
 
 function Wordmark() {
   return (
-    <Link href="/" className="flex items-center gap-2 flex-shrink-0 group">
-      <Mascot pose="wave" size={24} />
+    <Link href="/" className="flex items-center flex-shrink-0 group">
       <span className="text-[15px] font-extrabold tracking-tight font-sans text-sn-ink leading-none">
-        sikshya<span className="text-sn-primary">nepal</span>
+        ShikshyaX<span className="text-sn-primary">Nepal</span>
       </span>
     </Link>
   )
@@ -121,6 +91,8 @@ export default function Nav() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [openDrop, setOpenDrop] = useState<string | null>(null)
   const [scrolled, setScrolled] = useState(false)
+  const [showCta, setShowCta] = useState(false)
+  const [navOffset, setNavOffset] = useState(0)
   const mobileTriggerRef = useRef<HTMLButtonElement>(null)
   const mobileDialogRef = useRef<HTMLDivElement>(null)
   const mobileCloseRef = useRef<HTMLButtonElement>(null)
@@ -139,9 +111,30 @@ export default function Nav() {
   }, [pathname])
 
   useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 4)
+    let lastY = window.scrollY
+    let lastTime = performance.now()
+    let settleTimer: ReturnType<typeof window.setTimeout>
+
+    const fn = () => {
+      const now = performance.now()
+      const nextY = window.scrollY
+      const velocity = (nextY - lastY) / Math.max(now - lastTime, 1)
+      setScrolled(nextY > 4)
+      setShowCta(nextY > 80)
+      // A small, bounded nudge makes the pill feel responsive to a fast scroll
+      // without shifting content or making navigation hard to target.
+      setNavOffset(Math.max(-12, Math.min(12, velocity * 8)))
+      window.clearTimeout(settleTimer)
+      settleTimer = window.setTimeout(() => setNavOffset(0), 120)
+      lastY = nextY
+      lastTime = now
+    }
     window.addEventListener('scroll', fn, { passive: true })
-    return () => window.removeEventListener('scroll', fn)
+    fn()
+    return () => {
+      window.removeEventListener('scroll', fn)
+      window.clearTimeout(settleTimer)
+    }
   }, [])
 
   useEffect(() => {
@@ -204,15 +197,23 @@ export default function Nav() {
 
   return (
     <>
-      <header className={`sticky top-0 z-50 w-full border-b border-black/[0.06] bg-white/80 backdrop-blur-xl transition-all duration-200 ${scrolled ? 'bg-white/95 shadow-sm' : ''}`}>
-        <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+      <header
+        className="sticky top-3 z-50 mx-auto w-[calc(100%-1rem)] max-w-7xl transition-transform duration-200 ease-out motion-reduce:transform-none sm:w-[calc(100%-2rem)]"
+        style={{ transform: `translateY(${navOffset}px)` }}
+      >
+        <div className={`mx-auto flex h-14 items-center justify-between rounded-full border border-black/[0.08] px-4 shadow-[0_8px_32px_rgba(15,23,42,0.09)] backdrop-blur-xl transition-colors duration-200 sm:px-6 lg:px-8 ${scrolled ? 'bg-white/95' : 'bg-white/80'}`}>
           {/* Left Cluster: Wordmark + Minimal Quiet Nav Links */}
           <div className="flex items-center gap-7 lg:gap-9">
             <Wordmark />
 
             <nav className="hidden lg:flex items-center gap-5 xl:gap-6" aria-label="Main Navigation">
               {navLinks.map((link) => (
-                <div key={link.label} className="relative sn-nav-dropdown">
+                <div
+                  key={link.label}
+                  className="relative sn-nav-dropdown"
+                  onMouseEnter={() => setOpenDrop(link.label)}
+                  onMouseLeave={() => setOpenDrop(null)}
+                >
                   {link.sub ? (
                     <button
                       onClick={() => setOpenDrop(openDrop === link.label ? null : link.label)}
@@ -246,6 +247,7 @@ export default function Nav() {
                             )}
                             <Link href={s.href} onClick={() => setOpenDrop(null)} className="motion-control block rounded-xl px-3.5 py-2 text-xs font-nunito font-semibold text-sn-ink-soft hover:bg-sn-surface-alt hover:text-sn-ink">
                               {s.label}
+                              {s.description && <span className="mt-0.5 block font-normal text-sn-ink-muted">{s.description}</span>}
                             </Link>
                           </div>
                         ))}
@@ -264,7 +266,7 @@ export default function Nav() {
               type="button"
               onClick={() => window.dispatchEvent(new Event('open-site-search'))}
               className="motion-control focus-ring inline-flex items-center gap-2 rounded-full border border-black/[0.08] bg-black/[0.03] px-2.5 py-1 text-xs text-sn-ink-muted hover:bg-black/[0.06] hover:border-black/[0.12] transition-all"
-              aria-label="Search SikshyaNepal"
+              aria-label="Search ShikshyaXNepal"
             >
               <Search className="h-3 w-3 text-sn-ink-muted" />
               <span className="hidden xl:inline text-[11px] font-mono text-sn-ink-soft">search</span>
@@ -273,34 +275,21 @@ export default function Nav() {
               </kbd>
             </button>
 
-            {/* Moon Icon */}
-            <div className="hidden sm:flex items-center text-sn-ink-muted">
-              <span className="flex h-7 w-7 items-center justify-center rounded-full hover:bg-black/[0.04] transition-colors cursor-pointer" title="System Theme">
-                <Moon className="h-3.5 w-3.5" />
-              </span>
-            </div>
-
-            {/* Battery Icon */}
-            <div className="hidden md:flex items-center text-sn-ink-muted" title="Live System">
-              <BatteryIcon className="text-sn-ink-muted" />
-            </div>
-
-            {/* Live Clock */}
-            <LiveClock />
-
             {/* Subtle Subscribe Icon & Account */}
-            <div className="hidden xl:flex items-center gap-1.5 pl-1">
+            <div className="hidden sm:flex items-center gap-1.5">
               <SubscribeButton variant="header" />
               <AccountButton />
             </div>
 
-            {/* Dark Pill CTA matching [ 🌙 book a demo ] */}
+            {/* Dark Pill CTA */}
             <Link
               href="/colleges"
-              className="motion-control focus-ring inline-flex items-center gap-1.5 rounded-full bg-[#142C35] px-3.5 py-1.5 text-xs font-bold font-nunito text-white shadow-sm hover:bg-[#204654] hover:shadow transition-all duration-200"
+              className={`motion-control focus-ring hidden items-center gap-1.5 overflow-hidden whitespace-nowrap rounded-full bg-[#142C35] text-xs font-bold font-nunito text-white shadow-sm transition-all duration-300 hover:bg-[#204654] hover:shadow sm:inline-flex ${showCta ? 'max-w-48 px-4 py-1.5 opacity-100' : 'max-w-0 px-0 py-1.5 opacity-0 pointer-events-none'}`}
+              aria-hidden={!showCta}
+              tabIndex={showCta ? 0 : -1}
             >
-              <Moon className="h-3 w-3 text-[#CAFFA6]" />
               <span>explore colleges</span>
+              <ArrowRight className="h-3 w-3 text-white/80" />
             </Link>
 
             {/* Mobile hamburger */}
@@ -374,8 +363,8 @@ export default function Nav() {
             <div className="p-4 border-t border-sn-border space-y-2 flex-shrink-0">
               <AccountButton mobile onNavigate={() => closeMobileMenu(false)} />
               <Link href="/colleges" onClick={() => closeMobileMenu(false)} className="flex min-h-10 items-center justify-center gap-1.5 w-full py-2.5 rounded-full bg-[#142C35] text-xs font-bold font-nunito text-white shadow-sm hover:bg-[#204654] transition-colors">
-                <Moon className="h-3 w-3 text-[#CAFFA6]" />
                 <span>explore colleges</span>
+                <ArrowRight className="h-3 w-3 text-white/80" />
               </Link>
               <Link href="/results" onClick={() => closeMobileMenu(false)} className="flex min-h-10 items-center justify-center gap-2 w-full py-2.5 rounded-full border border-sn-border-strong text-xs font-bold font-nunito text-sn-ink hover:border-sn-primary hover:text-sn-primary transition-colors">
                 Check Results
