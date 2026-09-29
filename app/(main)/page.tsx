@@ -156,11 +156,6 @@ export default async function HomePage() {
     <div>
       <HomeScrollMotion />
       {/* ════════════════════════════════════════════════════════
-          0. SIKSHYA NEPAL AI WINDOW (4-Layer Full Viewport Interactive Experience)
-      ════════════════════════════════════════════════════════ */}
-      <SikshyaDemo />
-
-      {/* ════════════════════════════════════════════════════════
           1. HERO — Pure Centered Minimalist Architecture (Matching Image 1)
       ════════════════════════════════════════════════════════ */}
       <section data-home-motion className="relative border-b border-sn-border bg-sn-ground overflow-hidden py-20 lg:py-28">
@@ -1077,6 +1072,11 @@ export default async function HomePage() {
           <TestimonialsColumns />
         </div>
       </section>
+
+      {/* ════════════════════════════════════════════════════════
+          5. SIKSHYA NEPAL AI WINDOW (4-Layer Interactive Experience Below Testimonials)
+      ════════════════════════════════════════════════════════ */}
+      <SikshyaDemo />
 
       {/* ════════════════════════════════════════════════════════
           6. GET STARTED — Apple Verification & Alert Center

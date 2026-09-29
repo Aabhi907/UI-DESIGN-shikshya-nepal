@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState, useCallback, useRef } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, useInView } from 'framer-motion'
 import { demoQuestions, DemoQuestion } from './demoQuestions'
 import FloatingPattern from './FloatingPattern'
 import DemoWindow from './DemoWindow'
@@ -37,6 +37,10 @@ function getNextDemoQuestion(): DemoQuestion {
 }
 
 export default function SikshyaDemo() {
+  const sectionRef = useRef<HTMLElement>(null)
+  const isInView = useInView(sectionRef, { once: true, amount: 0.25 })
+  const hasTriggeredRef = useRef(false)
+
   const [demo, setDemo] = useState<DemoQuestion | null>(null)
   const [sceneVisible, setSceneVisible] = useState(false)
   const [displayedAnswer, setDisplayedAnswer] = useState('')
@@ -78,8 +82,11 @@ export default function SikshyaDemo() {
     }, 600)
   }, [])
 
-  // Mount sequence: 350ms blank warm screen -> reveal window & keys -> stream answer
+  // Sequence triggers when section enters viewport below testimonials
   useEffect(() => {
+    if (!isInView || hasTriggeredRef.current) return
+    hasTriggeredRef.current = true
+
     const nextDemo = getNextDemoQuestion()
 
     mountTimerRef.current = setTimeout(() => {
@@ -89,7 +96,7 @@ export default function SikshyaDemo() {
     }, 350)
 
     return () => clearTimers()
-  }, [clearTimers, startStreaming])
+  }, [isInView, clearTimers, startStreaming])
 
   // "Try another question" click sequence: fade out -> 300ms -> pick next -> fade in -> stream
   const handleNextQuestion = useCallback(() => {
@@ -114,6 +121,7 @@ export default function SikshyaDemo() {
 
   return (
     <section
+      ref={sectionRef}
       className="sikshya-demo-section sikshya-demo-bg"
       aria-label="Interactive Sikshya Nepal AI Guidance Demo"
     >
