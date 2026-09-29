@@ -55,7 +55,7 @@ export default function DemoWindow({
           </div>
           <div className="message-content">
             <div className="message-header">
-              <span className="sender-name">Sikshya AI</span>
+              <span className="sender-name">ShikshyaXNepal</span>
               <span className="timestamp">just now</span>
             </div>
             <StreamingAnswer
