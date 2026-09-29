@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import { Mail, MapPin } from 'lucide-react'
 import CookieSettingsButton from '@/components/privacy/CookieSettingsButton'
-import Mascot from '@/components/design-system/Mascot'
 import LanguageSwitch from '@/components/design-system/LanguageSwitch'
 
 // Phase 1 design system footer. Same links as components/layout/Footer.tsx —
@@ -41,7 +40,6 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8">
           <div>
             <Link href="/" className="inline-flex items-center gap-2 mb-5">
-              <Mascot pose="wave" size={28} />
               <span className="font-baloo font-extrabold text-[17px] leading-none tracking-tight">
                 <span className="text-white">Sikshya</span>
                 <span className="text-sn-primary">Nepal</span>
@@ -103,7 +101,7 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-white/10 mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs font-nunito text-white/40">© {new Date().getFullYear()} SikshyaNepal. All rights reserved.</p>
+          <p className="text-xs font-nunito text-white/40">© {new Date().getFullYear()} ShikshyaXNepal. All rights reserved.</p>
           <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-3 text-xs font-nunito text-white/40 sm:justify-end">
             <Link href="/about/editorial-policy" className="inline-flex min-h-11 items-center hover:text-white transition-colors duration-150">Editorial policy</Link>
             <Link href="/privacy" className="inline-flex min-h-11 items-center hover:text-white transition-colors duration-150">Privacy</Link>
@@ -117,6 +115,13 @@ export default function Footer() {
             <Link href="/contact" className="inline-flex min-h-11 items-center hover:text-white transition-colors duration-150">Contact</Link>
             <LanguageSwitch />
           </div>
+        </div>
+
+        {/* Giant Cropped Voxt-Style Wordmark */}
+        <div className="overflow-hidden select-none pointer-events-none mt-16 -mb-8 text-center" aria-hidden="true">
+          <p className="font-baloo font-extrabold tracking-[0.045em] text-white/[0.05] text-[clamp(3.5rem,13vw,12rem)] leading-[0.74] uppercase">
+            SIKSHYA NEPAL
+          </p>
         </div>
       </div>
     </footer>

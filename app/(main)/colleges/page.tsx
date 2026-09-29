@@ -6,7 +6,6 @@ import CollegeFilters from '@/components/colleges/CollegeFilters'
 import CollegeSort from '@/components/colleges/CollegeSort'
 import SearchField from '@/components/design-system/SearchField'
 import ProgramFinderBanner from '@/components/design-system/ProgramFinderBanner'
-import Mascot from '@/components/design-system/Mascot'
 import type { College, CollegeProgram, Review } from '@/types'
 import { AlertCircle, Building2 } from 'lucide-react'
 import AdUnit from '@/components/ads/AdUnit'
@@ -439,7 +438,6 @@ export default async function CollegesPage({
         </>
       ) : (
         <div className="rounded-sn-card border border-sn-border bg-sn-surface px-6 py-16 text-center">
-          <Mascot pose="point" size={72} className="mx-auto mb-4" />
           <h3 className="mb-2 font-baloo text-lg font-bold text-sn-ink">{hasSearch ? 'No college matches that search' : 'No colleges match these filters'}</h3>
           <p className="mx-auto mb-5 max-w-xs text-sm leading-6 text-sn-ink-soft">
             {hasSearch ? 'Try a shorter name, programme, district or affiliation. You can also browse the full directory.' : 'No listing matches every selected option. Remove one filter or browse the full directory.'}

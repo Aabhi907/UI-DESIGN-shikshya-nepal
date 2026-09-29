@@ -53,10 +53,10 @@ export default function GlobalSearch() {
 
   return (
     <div className="motion-scrim-enter fixed inset-0 z-[400] flex items-start justify-center bg-sn-ink/45 p-4 pt-[12vh] backdrop-blur-sm" onMouseDown={(event) => { if (event.target === event.currentTarget) setOpen(false) }}>
-      <div ref={dialogRef} className="motion-dialog-enter w-full max-w-xl overflow-hidden rounded-sn-card border border-sn-border bg-sn-surface shadow-sn-float" role="dialog" aria-modal="true" aria-label="Search SikshyaNepal">
+      <div ref={dialogRef} className="motion-dialog-enter w-full max-w-xl overflow-hidden rounded-sn-card border border-sn-border bg-sn-surface shadow-sn-float" role="dialog" aria-modal="true" aria-label="Search ShikshyaXNepal">
         <form onSubmit={submit} className="flex items-center gap-3 border-b border-sn-border px-4">
           <Search className="h-5 w-5 shrink-0 text-sn-primary" aria-hidden="true" />
-          <input ref={inputRef} value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search colleges, results, notices…" aria-label="Search SikshyaNepal" className="h-14 min-w-0 flex-1 bg-transparent text-sm text-sn-ink outline-none placeholder:text-sn-ink-muted" />
+          <input ref={inputRef} value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search colleges, results, notices…" aria-label="Search ShikshyaXNepal" className="h-14 min-w-0 flex-1 bg-transparent text-sm text-sn-ink outline-none placeholder:text-sn-ink-muted" />
           <button type="button" onClick={() => setOpen(false)} className="motion-control flex h-11 w-11 shrink-0 items-center justify-center rounded-sn-control text-sn-ink-muted hover:bg-sn-surface-alt hover:text-sn-ink" aria-label="Close search"><X className="h-5 w-5" aria-hidden="true" /></button>
         </form>
         <div className="p-3">
@@ -66,7 +66,7 @@ export default function GlobalSearch() {
           </div>
         </div>
         <div className="flex items-center justify-between gap-3 border-t border-sn-border px-4 py-2.5 text-[11px] text-sn-ink-muted">
-          <span>Search uses SikshyaNepal&apos;s sourced information.</span>
+          <span>Search uses ShikshyaXNepal&apos;s sourced information.</span>
           <span className="inline-flex shrink-0 items-center gap-1"><Command className="h-3 w-3" aria-hidden="true" />K</span>
         </div>
       </div>

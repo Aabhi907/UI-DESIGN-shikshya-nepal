@@ -53,8 +53,19 @@ export default function AccountButton({ mobile = false, onNavigate }: { mobile?:
     }
   }
 
-  if (!ready) return <span aria-hidden="true" className={`inline-flex min-h-11 shrink-0 items-center justify-center rounded-lg ${mobile ? 'w-full' : 'w-24'}`}/>
-  if (!email) return <Link href="/account/login" onClick={onNavigate} className={`inline-flex min-h-11 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg border border-primary bg-white px-4 text-sm font-bold text-primary shadow-sm transition hover:bg-primary hover:text-white ${mobile ? 'w-full' : ''}`}><UserRound className="h-4 w-4"/>Sign in</Link>
+  if (!ready) return <span aria-hidden="true" className={`inline-flex min-h-11 shrink-0 animate-pulse items-center justify-center rounded-full bg-sn-surface-alt ${mobile ? 'w-full' : 'w-28'}`}/>
+  if (!email) return (
+    <Link
+      href="/account/login"
+      onClick={onNavigate}
+      className={`motion-control focus-ring inline-flex min-h-11 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-full border border-sn-primary/25 bg-white/80 py-1.5 pl-2 pr-4 text-sm font-extrabold font-nunito text-sn-primary shadow-[0_2px_10px_rgba(20,44,53,0.08)] backdrop-blur-sm transition-[background-color,border-color,box-shadow,transform] duration-200 hover:-translate-y-px hover:border-sn-primary/45 hover:bg-sn-primary-bg hover:shadow-[0_7px_18px_rgba(20,44,53,0.14)] active:translate-y-0 ${mobile ? 'w-full' : ''}`}
+    >
+      <span className="flex h-7 w-7 items-center justify-center rounded-full bg-sn-primary text-white shadow-sm">
+        <UserRound className="h-3.5 w-3.5" aria-hidden="true" />
+      </span>
+      <span>Sign in</span>
+    </Link>
+  )
 
   if (mobile) return (
     <div className="rounded-xl border border-gray-200 bg-gray-50 p-3">

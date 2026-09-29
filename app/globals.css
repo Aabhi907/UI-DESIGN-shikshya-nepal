@@ -32,22 +32,22 @@
   --primary-bg:    #E6F4F8;
   --verified:      #1C6B4F;
   --verified-ink:  #0F4431;
-  --verified-bg:   #CAFFA6;
+  --verified-bg:   #E3EEE2;
   --confirm:       #204654;
   --confirm-ink:   #142C35;
-  --confirm-bg:    #CAFFA6;
+  --confirm-bg:    #E3EEE2;
   --limited:       #6D8690;
   --limited-ink:   #4A6570;
   --limited-bg:    #E7EEF0;
   --sn-border:     #E1E8DC;
   --sn-border-strong:#CBD6C3;
-  --tint-mint:     #CAFFA6;
+  --tint-mint:     #E3EEE2;
   --tint-peach:    #A9E0F1;
   --tint-butter:   #F7F9E1;
   --tint-lilac:    #D9EEF7;
-  --sn-shadow-card:  0 6px 18px rgba(32, 70, 84, 0.05);
-  --sn-shadow-float: 0 10px 26px rgba(32, 70, 84, 0.10);
-  --sn-shadow-button: 0 8px 18px rgba(32, 70, 84, 0.22);
+  --sn-shadow-card:  0 18px 40px -28px rgba(20, 44, 53, 0.12);
+  --sn-shadow-float: 0 24px 60px -36px rgba(20, 44, 53, 0.18);
+  --sn-shadow-button: 0 16px 36px -20px rgba(32, 70, 84, 0.28);
 
   /* Restrained motion shared by both legacy and sn-* interfaces. */
   --motion-instant: 120ms;
@@ -90,7 +90,7 @@
   }
 
   ::selection {
-    background: #CAFFA6;
+    background: #E3EEE2;
     color: #142C35;
   }
 
@@ -345,6 +345,37 @@
   .motion-reveal-group[data-motion-ready="true"] > *:nth-child(4) { transition-delay: 150ms; }
   .motion-reveal-group[data-motion-ready="true"] > *:nth-child(5) { transition-delay: 200ms; }
   .motion-reveal-group[data-motion-ready="true"] > *:nth-child(6) { transition-delay: 250ms; }
+
+  /* A restrained, tactile feature rail for the Shikshya Standard. */
+  .apple-feature-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(135deg, rgba(255,255,255,.7), transparent 38%), radial-gradient(circle at 100% 100%, rgba(32,70,84,.045), transparent 42%);
+  }
+  .apple-feature-card {
+    transition: transform 320ms var(--ease-apple), box-shadow 320ms var(--ease-apple), border-color 320ms var(--ease-apple);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .apple-feature-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(32,70,84,.15);
+      box-shadow: inset 0 1px 1px rgba(255,255,255,1), 0 14px 34px rgba(20,44,53,.10);
+    }
+  }
+
+  /* Homepage sections reveal once as they enter the reading flow. Content is
+     never hidden before hydration, so slow connections retain a stable page. */
+  [data-home-motion][data-home-ready="true"] > :not([aria-hidden="true"]) {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 500ms var(--ease-enter), transform 500ms var(--ease-enter);
+  }
+  [data-home-motion][data-home-visible="true"] > :not([aria-hidden="true"]) {
+    opacity: 1;
+    transform: translateY(0);
+  }
   .motion-interactive-card {
     box-shadow: var(--shadow-apple-card);
     transition: border-color 280ms var(--ease-apple), box-shadow 280ms var(--ease-apple), background-color 280ms var(--ease-apple), transform 280ms var(--ease-apple);
@@ -357,13 +388,15 @@
   .motion-drawer-enter { animation: motion-drawer-enter var(--motion-dialog) var(--ease-enter) both; }
   .motion-sheet-enter { animation: motion-sheet-enter var(--motion-dialog) var(--ease-enter) both; }
 
-  /* ── Apple Physical Specular Classes ── */
   .apple-card {
-    border-radius: 16px;
+    border-radius: 18px;
     border: 1px solid rgba(0, 0, 0, 0.07);
     background-color: #ffffff;
-    box-shadow: var(--shadow-apple-card);
-    transition: transform 280ms var(--ease-apple), box-shadow 280ms var(--ease-apple), border-color 280ms var(--ease-apple);
+    box-shadow: 0 18px 40px -28px rgba(20, 44, 53, 0.12);
+    transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1), border-color 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .apple-card:hover {
+    box-shadow: 0 24px 60px -36px rgba(20, 44, 53, 0.18);
   }
 
   .apple-control {

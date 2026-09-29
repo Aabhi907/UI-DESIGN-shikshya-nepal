@@ -137,7 +137,7 @@ export default function AdminReviewsPage() {
         <div className="space-y-4">
           {filtered.length === 0 ? (
             <div className="text-center py-16 bg-gray-800 rounded-xl border border-gray-700 text-gray-500">
-              {filter === 'pending' ? 'No pending reviews 🎉' : 'No reviews found'}
+              {filter === 'pending' ? 'No pending reviews' : 'No reviews found'}
             </div>
           ) : (
             filtered.map((review) => (

@@ -162,7 +162,7 @@ export async function sendResultNotification(results: ResultNotification[]): Pro
     return { sent: 0, errors: 0, recipients: 0 }
   }
 
-  const subject = `📢 ${results.length} New Result${results.length > 1 ? 's' : ''} Published on SikshyaNepal`
+  const subject = `${results.length} New Result${results.length > 1 ? 's' : ''} Published on ShikshyaXNepal`
   const htmlBase = buildEmailHtml(results)
 
   let sent   = 0

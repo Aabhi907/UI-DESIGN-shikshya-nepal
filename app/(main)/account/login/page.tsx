@@ -73,7 +73,7 @@ export default function AccountAccessPage() {
   const field = 'mt-1 w-full rounded-lg border border-[#d9d6cf] bg-white px-3 py-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-blue-100 disabled:bg-gray-50'
 
   return <main id="main-content" className="min-h-screen bg-[#f8f7f3] px-4 py-12 sm:py-16"><section className="mx-auto max-w-md rounded-xl border border-[#e6e4df] bg-white p-6 shadow-sm sm:p-8">
-    <p className="text-xs font-bold uppercase tracking-[.14em] text-[#9a302c]">SikshyaNepal account</p>
+    <p className="text-xs font-bold uppercase tracking-[.14em] text-[#9a302c]">ShikshyaXNepal account</p>
     <h1 className="mt-3 font-display text-3xl font-bold text-ink">{mode === 'signin' ? 'Welcome back' : 'Create your account'}</h1>
     <p className="mt-2 text-sm leading-6 text-slate-600">{mode === 'signin' ? 'Access your saved institutions, admission plans and personal study path.' : 'Save your shortlist, build a private study plan and track applications in one place.'}</p>
     <div className="mt-6 grid grid-cols-2 rounded-xl bg-slate-100 p-1" role="tablist" aria-label="Account access">

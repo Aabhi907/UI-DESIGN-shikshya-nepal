@@ -18,7 +18,7 @@ export default function GlobalError({
             </div>
             <h1 className="text-xl font-bold text-gray-900 mb-2">Something went wrong</h1>
             <p className="text-gray-500 text-sm mb-6">
-              SikshyaNepal encountered an unexpected error. Please try again.
+              ShikshyaXNepal encountered an unexpected error. Please try again.
             </p>
             <button
               onClick={reset}

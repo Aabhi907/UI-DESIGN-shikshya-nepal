@@ -21,7 +21,6 @@ import type { LucideIcon } from 'lucide-react'
 import Pill from '@/components/design-system/Pill'
 import SearchField from '@/components/design-system/SearchField'
 import ProgramFinderBanner from '@/components/design-system/ProgramFinderBanner'
-import Mascot from '@/components/design-system/Mascot'
 import { AlertCircle } from 'lucide-react'
 
 const FACULTY_ICONS: Record<string, LucideIcon> = {
@@ -214,7 +213,6 @@ export default async function ProgramsPage({ searchParams }: { searchParams: { f
         </div>
       ) : (
         <div className="rounded-sn-card border border-sn-border bg-sn-surface py-16 text-center">
-          <Mascot pose="point" size={72} className="mx-auto mb-3" />
           <h3 className="mb-1 font-baloo font-bold text-sn-ink">No programs found</h3>
           <p className="mt-2 text-sm text-sn-ink-soft">Try a shorter name or remove one filter.</p>
           <Link href="/programs" className="mt-4 inline-flex min-h-11 items-center rounded-sn-control bg-sn-primary px-4 py-2 text-sm font-bold text-white hover:bg-sn-primary-hover motion-control">Clear search and filters</Link>

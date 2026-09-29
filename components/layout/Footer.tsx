@@ -120,7 +120,7 @@ export default function Footer() {
         {/* ── Bottom bar ───────────────────────────────── */}
         <div className="border-t border-white/10 mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-slate-500">
-            © {new Date().getFullYear()} SikshyaNepal. All rights reserved.
+            © {new Date().getFullYear()} ShikshyaXNepal. All rights reserved.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-3 text-xs text-slate-500 sm:justify-end">
             <Link href="/about/editorial-policy" className="inline-flex min-h-11 items-center hover:text-white transition-colors duration-150">Editorial policy</Link>

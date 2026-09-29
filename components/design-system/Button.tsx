@@ -8,12 +8,12 @@ type Common = {
   children: React.ReactNode
 }
 
-const base = 'motion-control inline-flex min-h-11 items-center justify-center gap-2 rounded-sn-control px-5 py-2.5 text-sm font-bold font-nunito focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sn-primary disabled:cursor-not-allowed disabled:opacity-60'
+const base = 'motion-control inline-flex min-h-11 items-center justify-center gap-2 rounded-[22px] px-6 py-2.5 text-sm font-bold font-nunito transition-all duration-150 ease-out hover:scale-[1.02] active:translate-y-px focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sn-primary disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:scale-100 disabled:active:translate-y-0'
 
 const variants: Record<Variant, string> = {
-  primary: 'bg-sn-primary text-white shadow-sn-button hover:bg-sn-primary-hover',
+  primary: 'border border-transparent bg-sn-primary text-white shadow-sn-button hover:bg-sn-primary-hover',
   secondary: 'border border-sn-border-strong bg-sn-surface text-sn-ink hover:border-sn-primary hover:text-sn-primary',
-  ghost: 'text-sn-ink-soft hover:bg-sn-surface-alt hover:text-sn-ink',
+  ghost: 'border border-transparent text-sn-ink-soft hover:bg-sn-surface-alt hover:text-sn-ink',
 }
 
 // A plain <button>. For navigation, use <Button.Link href="...">.

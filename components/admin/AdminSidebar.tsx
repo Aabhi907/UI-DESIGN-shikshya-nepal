@@ -84,7 +84,7 @@ export default function AdminSidebar() {
             <GraduationCap className="w-4 h-4 text-white" />
           </div>
           <div>
-            <p className="text-sm font-bold text-white">SikshyaNepal</p>
+            <p className="text-sm font-bold text-white">ShikshyaXNepal</p>
             <p className="text-xs text-gray-400">Admin Panel</p>
           </div>
         </Link>

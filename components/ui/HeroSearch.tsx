@@ -28,7 +28,7 @@ export default function HeroSearch() {
   return (
     <div className="w-full">
       {/* ── Search bar ─────────────────────────────────── */}
-      <form onSubmit={handleSubmit} role="search" aria-label="Search SikshyaNepal">
+      <form onSubmit={handleSubmit} role="search" aria-label="Search ShikshyaXNepal">
         <div className="flex items-stretch rounded-sn-card border border-black/[0.08] bg-white/95 overflow-hidden
                         shadow-[inset_0_1px_1.5px_rgba(255,255,255,0.95),0_4px_24px_rgba(15,23,42,0.04)]
                         focus-within:border-sn-primary/80 focus-within:shadow-[inset_0_1px_1.5px_rgba(255,255,255,1),0_8px_32px_rgba(32,70,84,0.14)]

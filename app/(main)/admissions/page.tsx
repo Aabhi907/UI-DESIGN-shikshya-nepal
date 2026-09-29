@@ -4,7 +4,6 @@ import { AlertTriangle, CalendarCheck2, CheckCircle2, Clock3, RefreshCcw } from 
 import { createServerSupabaseClient } from '@/lib/supabase'
 import AdmissionCard from '@/components/admissions/AdmissionCard'
 import AdmissionFilters, { type AdmissionSearchParams } from '@/components/admissions/AdmissionFilters'
-import Mascot from '@/components/design-system/Mascot'
 import { addDaysToDateOnly, deadlineState, nepalDateOnly } from '@/lib/admissions'
 import type { Admission } from '@/types'
 import { publicListState } from '@/lib/public-list-state'
@@ -110,7 +109,6 @@ export default async function AdmissionsPage({ searchParams }: { searchParams: A
               <div className="grid gap-5 md:grid-cols-2">{admissions.map((item) => <AdmissionCard key={item.id} admission={item} />)}</div>
             ) : (
               <div className="rounded-sn-card border border-sn-border bg-sn-surface py-20 text-center">
-                <Mascot pose="point" size={72} className="mx-auto mb-4" />
                 <h2 className="font-baloo text-xl font-bold text-sn-ink">No matching admissions</h2>
                 <p className="mt-2 text-sm text-sn-ink-soft">Try clearing a filter or return soon for newly verified openings.</p>
                 <Link href="/admissions" className="mt-5 inline-block min-h-11 rounded-sn-control bg-sn-primary px-5 py-2.5 text-sm font-bold text-white hover:bg-sn-primary-hover motion-control">View all</Link>

@@ -71,7 +71,7 @@ export default async function AdminDashboard() {
     <div className="p-8 text-gray-100">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-white">Dashboard</h1>
-        <p className="text-gray-400 mt-1">Welcome back to SikshyaNepal admin</p>
+        <p className="text-gray-400 mt-1">Welcome back to ShikshyaXNepal admin</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 mb-10">

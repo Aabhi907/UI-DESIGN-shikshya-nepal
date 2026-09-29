@@ -10,12 +10,14 @@ import EmailSubscribe from '@/components/notifications/EmailSubscribe'
 import type { Result, Notice, College } from '@/types'
 import type { Admission } from '@/types'
 import AdmissionCard from '@/components/admissions/AdmissionCard'
-import Mascot from '@/components/design-system/Mascot'
 import Card from '@/components/design-system/Card'
 import IconTile from '@/components/design-system/IconTile'
 import SectionHeader from '@/components/design-system/SectionHeader'
 import Button from '@/components/design-system/Button'
 import FeaturedCollegeCard, { CAMPUS_FALLBACK_IMAGES } from '@/components/design-system/FeaturedCollegeCard'
+import TestimonialsColumns from '@/components/home/TestimonialsColumns'
+import HomeScrollMotion from '@/components/home/HomeScrollMotion'
+import { RevealGroup } from '@/components/motion/MotionPrimitives'
 import {
   Building2,
   FileText,
@@ -63,7 +65,7 @@ export const dynamic   = 'force-dynamic'
 export const revalidate = 0
 
 export const metadata: Metadata = {
-  title: { absolute: 'SikshyaNepal: Decide What to Study After +2, and Where' },
+  title: { absolute: 'ShikshyaXNepal: Decide What to Study After +2, and Where' },
   description:
     'Verified colleges, courses and career pathways for +2 and university in Nepal. Every fact sourced and dated. No fake reviews, no guesswork.',
   alternates: { canonical: '/' },
@@ -151,20 +153,20 @@ export default async function HomePage() {
 
   return (
     <div>
+      <HomeScrollMotion />
       {/* ════════════════════════════════════════════════════════
           1. HERO — Pure Centered Minimalist Architecture (Matching Image 1)
       ════════════════════════════════════════════════════════ */}
-      <section className="relative border-b border-sn-border bg-sn-ground overflow-hidden py-20 lg:py-28">
+      <section data-home-motion className="relative border-b border-sn-border bg-sn-ground overflow-hidden py-20 lg:py-28">
         {/* Soft, ultra-subtle ambient glow */}
-        <div className="pointer-events-none absolute -top-44 left-1/2 h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-gradient-to-b from-[#A9E0F1]/20 via-[#CAFFA6]/10 to-transparent blur-3xl" aria-hidden="true" />
+        <div className="pointer-events-none absolute -top-44 left-1/2 h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-gradient-to-b from-[#A9E0F1]/20 via-[#E3EEE2]/18 to-transparent blur-3xl" aria-hidden="true" />
 
-        <div className="mx-auto max-w-4xl px-5 sm:px-8 text-center relative z-10">
+        <RevealGroup className="mx-auto max-w-4xl px-5 sm:px-8 text-center relative z-10">
           {/* Eyebrow Pill matching Voxt's [NEW] Voice input app -> */}
           <Link
             href="/admissions?deadline=open"
             className="apple-pill group inline-flex items-center gap-2.5 rounded-full bg-white/95 px-3.5 py-1.5 text-xs font-bold font-nunito text-sn-ink shadow-sm hover:shadow transition-all duration-200 mb-8 border border-black/[0.08]"
           >
-            <Mascot pose="wave" size={18} />
             <span className="rounded-full bg-sn-ink px-2 py-0.5 text-[10px] font-bold text-white uppercase tracking-wider">
               2082 / 2026
             </span>
@@ -223,14 +225,14 @@ export default async function HomePage() {
               <strong className="text-sn-ink font-bold">1,200+</strong> colleges &amp; <strong className="text-sn-ink font-bold">450+</strong> programs cataloged across Nepal
             </span>
           </div>
-        </div>
+        </RevealGroup>
       </section>
 
       {/* ════════════════════════════════════════════════════════
           2. STATS STRIP — Luminous verification ribbon
       ════════════════════════════════════════════════════════ */}
       {heroStats.length > 0 && (
-        <section className="border-b border-black/[0.06] bg-white/80 backdrop-blur-md py-8 lg:py-10">
+        <section data-home-motion className="border-b border-black/[0.06] bg-white/80 backdrop-blur-md py-8 lg:py-10">
           <div className={CONTAINER}>
             <div className="grid grid-cols-2 gap-6 sm:grid-cols-4 sm:divide-x sm:divide-black/[0.06]">
               {heroStats.map((stat) => (
@@ -259,60 +261,64 @@ export default async function HomePage() {
       {/* ════════════════════════════════════════════════════════
           3. WHAT MAKES OUR GUIDE DIFFERENT — 4-Column Strip (Matching Image 2)
       ════════════════════════════════════════════════════════ */}
-      <section className={`border-b border-sn-border bg-white ${SECTION_PAD}`}>
+      <section data-home-motion className={`border-b border-sn-border bg-sn-ground ${SECTION_PAD}`}>
         <div className={CONTAINER}>
-          <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
-            <p className="text-xs font-bold uppercase tracking-wider text-sn-ink-muted font-nunito mb-2">
+          <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-12">
+            <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-sn-ink-muted font-nunito mb-2.5">
               The Shikshya Standard
             </p>
-            <h2 className="font-baloo text-3xl sm:text-4xl font-extrabold text-sn-ink tracking-tight">
+            <h2 className="font-baloo text-3xl sm:text-[2.55rem] font-extrabold text-sn-ink tracking-tight">
               What makes our guide different
             </h2>
-            <p className="mt-2 text-sm sm:text-base font-nunito text-sn-ink-soft">
+            <p className="mt-3 text-sm sm:text-base font-nunito text-sn-ink-soft">
               Every detail is calibrated for the student, not the marketing department.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-            <div className="text-center sm:text-left space-y-3">
-              <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-sn-tint-mint text-[#142C35] shadow-sm">
+          <div className="apple-feature-grid grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
+            <article className="apple-feature-card group relative min-h-[248px] overflow-hidden rounded-[24px] border border-black/[0.06] bg-white/85 p-6 text-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.95),0_4px_18px_rgba(20,44,53,0.035)] backdrop-blur-sm sm:text-left">
+              <span className="absolute right-5 top-5 text-[10px] font-bold tracking-[0.14em] text-sn-ink-muted/60">01</span>
+              <div className="relative inline-flex h-12 w-12 items-center justify-center rounded-[18px] bg-sn-tint-mint text-[#142C35] shadow-[inset_0_1px_1px_rgba(255,255,255,0.9),0_4px_10px_rgba(20,44,53,0.06)] transition-transform duration-300 group-hover:scale-[1.04]">
                 <ShieldCheck className="h-5 w-5" />
               </div>
-              <h3 className="font-baloo text-lg font-bold text-sn-ink">Zero paid rankings</h3>
-              <p className="text-sm font-nunito text-sn-ink-soft leading-relaxed">
+              <h3 className="relative mt-5 font-baloo text-xl font-bold text-sn-ink">Zero paid rankings</h3>
+              <p className="relative mt-2.5 text-sm font-nunito leading-6 text-sn-ink-soft">
                 Colleges cannot pay for higher placement or skewed reviews. Real affiliation &amp; merit data always comes first.
               </p>
-            </div>
+            </article>
 
-            <div className="text-center sm:text-left space-y-3">
-              <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-sn-tint-peach text-sn-ink shadow-sm">
+            <article className="apple-feature-card group relative min-h-[248px] overflow-hidden rounded-[24px] border border-black/[0.06] bg-white/85 p-6 text-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.95),0_4px_18px_rgba(20,44,53,0.035)] backdrop-blur-sm sm:text-left">
+              <span className="absolute right-5 top-5 text-[10px] font-bold tracking-[0.14em] text-sn-ink-muted/60">02</span>
+              <div className="relative inline-flex h-12 w-12 items-center justify-center rounded-[18px] bg-sn-tint-peach text-sn-ink shadow-[inset_0_1px_1px_rgba(255,255,255,0.9),0_4px_10px_rgba(20,44,53,0.06)] transition-transform duration-300 group-hover:scale-[1.04]">
                 <Clock className="h-5 w-5" />
               </div>
-              <h3 className="font-baloo text-lg font-bold text-sn-ink">Dated &amp; sourced</h3>
-              <p className="text-sm font-nunito text-sn-ink-soft leading-relaxed">
+              <h3 className="relative mt-5 font-baloo text-xl font-bold text-sn-ink">Dated &amp; sourced</h3>
+              <p className="relative mt-2.5 text-sm font-nunito leading-6 text-sn-ink-soft">
                 Every fee figure, seat quota, and deadline displays the exact date it was checked against official notices.
               </p>
-            </div>
+            </article>
 
-            <div className="text-center sm:text-left space-y-3">
-              <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-sn-tint-butter text-sn-ink shadow-sm">
+            <article className="apple-feature-card group relative min-h-[248px] overflow-hidden rounded-[24px] border border-black/[0.06] bg-white/85 p-6 text-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.95),0_4px_18px_rgba(20,44,53,0.035)] backdrop-blur-sm sm:text-left">
+              <span className="absolute right-5 top-5 text-[10px] font-bold tracking-[0.14em] text-sn-ink-muted/60">03</span>
+              <div className="relative inline-flex h-12 w-12 items-center justify-center rounded-[18px] bg-sn-tint-butter text-sn-ink shadow-[inset_0_1px_1px_rgba(255,255,255,0.9),0_4px_10px_rgba(20,44,53,0.06)] transition-transform duration-300 group-hover:scale-[1.04]">
                 <FileText className="h-5 w-5" />
               </div>
-              <h3 className="font-baloo text-lg font-bold text-sn-ink">Official gazette links</h3>
-              <p className="text-sm font-nunito text-sn-ink-soft leading-relaxed">
+              <h3 className="relative mt-5 font-baloo text-xl font-bold text-sn-ink">Official gazette links</h3>
+              <p className="relative mt-2.5 text-sm font-nunito leading-6 text-sn-ink-soft">
                 Direct verification links to TU, KU, Pokhara, NEB and CTEVT portals without confusing redirects or ads.
               </p>
-            </div>
+            </article>
 
-            <div className="text-center sm:text-left space-y-3">
-              <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-sn-tint-lilac text-sn-ink shadow-sm">
+            <article className="apple-feature-card group relative min-h-[248px] overflow-hidden rounded-[24px] border border-black/[0.06] bg-white/85 p-6 text-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.95),0_4px_18px_rgba(20,44,53,0.035)] backdrop-blur-sm sm:text-left">
+              <span className="absolute right-5 top-5 text-[10px] font-bold tracking-[0.14em] text-sn-ink-muted/60">04</span>
+              <div className="relative inline-flex h-12 w-12 items-center justify-center rounded-[18px] bg-sn-tint-lilac text-sn-ink shadow-[inset_0_1px_1px_rgba(255,255,255,0.9),0_4px_10px_rgba(20,44,53,0.06)] transition-transform duration-300 group-hover:scale-[1.04]">
                 <GraduationCap className="h-5 w-5" />
               </div>
-              <h3 className="font-baloo text-lg font-bold text-sn-ink">100% Free for students</h3>
-              <p className="text-sm font-nunito text-sn-ink-soft leading-relaxed">
+              <h3 className="relative mt-5 font-baloo text-xl font-bold text-sn-ink">100% Free for students</h3>
+              <p className="relative mt-2.5 text-sm font-nunito leading-6 text-sn-ink-soft">
                 No subscription, no paywalled GPA calculators, and no gated guides. Public access for every student in Nepal.
               </p>
-            </div>
+            </article>
           </div>
         </div>
       </section>
@@ -320,7 +326,7 @@ export default async function HomePage() {
       {/* ════════════════════════════════════════════════════════
           4. FEATURE SHOWCASE 1 — Results without the chaos (TinyShots Rhythm)
       ════════════════════════════════════════════════════════ */}
-      <section className={`border-b border-sn-border bg-sn-ground ${SECTION_PAD}`}>
+      <section data-home-motion className={`border-b border-sn-border bg-sn-ground ${SECTION_PAD}`}>
         <div className={CONTAINER}>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             {/* Left Column: Typography & Feature Checklist */}
@@ -371,7 +377,6 @@ export default async function HomePage() {
                 {/* Floating query bubble matching Voxt's "Make it shorter and clearer" */}
                 <div className="self-start -mb-3 z-10 ml-2">
                   <div className="apple-pill inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-bold font-nunito text-sn-ink shadow-md bg-white border border-black/[0.08]">
-                    <span className="text-amber-600">📋</span>
                     <span>&ldquo;Check my NEB Grade 12 result&rdquo;</span>
                   </div>
                 </div>
@@ -388,10 +393,6 @@ export default async function HomePage() {
                         <p className="text-[11px] text-sn-ink-muted font-nunito">National Examination Board · Sanothimi</p>
                       </div>
                     </div>
-                    <span className="rounded-full bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 text-[10px] font-bold text-emerald-800 flex items-center gap-1">
-                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                      Verified
-                    </span>
                   </div>
 
                   <div className="py-4 space-y-2">
@@ -432,7 +433,7 @@ export default async function HomePage() {
       {/* ════════════════════════════════════════════════════════
           3. FEATURE SHOWCASE 2 — Intake Deadlines (Reversed Layout)
       ════════════════════════════════════════════════════════ */}
-      <section className={`border-b border-sn-border bg-sn-ground ${SECTION_PAD}`}>
+      <section data-home-motion className={`border-b border-sn-border bg-sn-ground ${SECTION_PAD}`}>
         <div className={CONTAINER}>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             {/* Left Column: Soft Canvas with Floating Intake Card */}
@@ -441,7 +442,6 @@ export default async function HomePage() {
                 {/* Floating query bubble */}
                 <div className="self-start -mb-3 z-10 ml-2">
                   <div className="apple-pill inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-bold font-nunito text-sn-ink shadow-md bg-white border border-black/[0.08]">
-                    <span className="text-emerald-600">⏳</span>
                     <span>&ldquo;When does Kathmandu University BTech close?&rdquo;</span>
                   </div>
                 </div>
@@ -456,9 +456,6 @@ export default async function HomePage() {
                       <h4 className="font-baloo text-base font-bold text-sn-ink">Kathmandu University</h4>
                       <p className="text-xs font-nunito text-sn-ink-muted">School of Engineering · Dhulikhel</p>
                     </div>
-                    <span className="rounded-full bg-[#CAFFA6]/70 border border-[#CAFFA6] px-2 py-0.5 text-[10px] font-bold text-[#142C35]">
-                      Intake Open
-                    </span>
                   </div>
 
                   <div className="py-3.5 space-y-2">
@@ -477,7 +474,6 @@ export default async function HomePage() {
                   </div>
 
                   <div className="pt-3 border-t border-black/[0.06] flex items-center justify-between">
-                    <span className="text-xs font-nunito text-sn-ink-muted">Verified notice attached</span>
                     <Link
                       href="/admissions"
                       className="rounded-full bg-sn-primary px-3 py-1 text-xs font-bold text-white hover:bg-sn-primary-hover transition-colors"
@@ -534,19 +530,16 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ════════════════════════════════════════════════════════
-          6. INTERACTIVE PATHWAY EXPLORER — Deep Teal Waters (Matching Image 4)
-      ════════════════════════════════════════════════════════ */}
-      <section className="border-b border-sn-border bg-[#204654] text-white py-20 lg:py-28 overflow-hidden relative">
+      {false && <section data-home-motion className="border-b border-sn-border bg-[#204654] text-white py-20 lg:py-28 overflow-hidden relative">
         {/* Subtle atmospheric glow */}
-        <div className="pointer-events-none absolute -top-40 right-0 h-[480px] w-[480px] rounded-full bg-[#CAFFA6]/10 blur-3xl" aria-hidden="true" />
+        <div className="pointer-events-none absolute -top-40 right-0 h-[480px] w-[480px] rounded-full bg-[#E3EEE2]/12 blur-3xl" aria-hidden="true" />
         <div className="pointer-events-none absolute -bottom-40 left-0 h-[480px] w-[480px] rounded-full bg-[#A9E0F1]/10 blur-3xl" aria-hidden="true" />
 
         <div className={CONTAINER}>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             {/* Left Column: Heading + Command jumps */}
             <div className="lg:col-span-6 space-y-6">
-              <p className="text-xs font-bold uppercase tracking-widest text-[#CAFFA6] font-nunito">
+              <p className="text-xs font-bold uppercase tracking-widest text-[#E3EEE2] font-nunito">
                 PATHWAY INTELLIGENCE
               </p>
               <h2 className="font-baloo text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-[1.08] tracking-[-0.03em]">
@@ -560,25 +553,25 @@ export default async function HomePage() {
               <div className="pt-2 space-y-2.5 font-mono text-xs sm:text-sm">
                 <Link
                   href="/programs?faculty=it"
-                  className="group flex items-center gap-2 text-white/90 hover:text-[#CAFFA6] transition-colors"
+                  className="group flex items-center gap-2 text-white/90 hover:text-[#E3EEE2] transition-colors"
                 >
-                  <span className="text-[#CAFFA6]">/explore-it</span>
+                  <span className="text-[#E3EEE2]">/explore-it</span>
                   <span className="text-white/60">→</span>
                   <span className="font-nunito text-white/80 group-hover:text-white">BSc CSIT vs BIT vs BCA fee &amp; cutoff</span>
                 </Link>
                 <Link
                   href="/programs?faculty=engineering"
-                  className="group flex items-center gap-2 text-white/90 hover:text-[#CAFFA6] transition-colors"
+                  className="group flex items-center gap-2 text-white/90 hover:text-[#E3EEE2] transition-colors"
                 >
-                  <span className="text-[#CAFFA6]">/ioe-entrance</span>
+                  <span className="text-[#E3EEE2]">/ioe-entrance</span>
                   <span className="text-white/60">→</span>
                   <span className="font-nunito text-white/80 group-hover:text-white">Pulchowk &amp; affiliated engineering quotas</span>
                 </Link>
                 <Link
                   href="/tools/gpa-calculator"
-                  className="group flex items-center gap-2 text-white/90 hover:text-[#CAFFA6] transition-colors"
+                  className="group flex items-center gap-2 text-white/90 hover:text-[#E3EEE2] transition-colors"
                 >
-                  <span className="text-[#CAFFA6]">/check-eligibility</span>
+                  <span className="text-[#E3EEE2]">/check-eligibility</span>
                   <span className="text-white/60">→</span>
                   <span className="font-nunito text-white/80 group-hover:text-white">Verify your SEE or +2 GPA for medical/tech</span>
                 </Link>
@@ -590,7 +583,7 @@ export default async function HomePage() {
               <div className="rounded-[28px] bg-[#142C35]/90 border border-white/15 p-6 sm:p-8 backdrop-blur-xl shadow-2xl relative">
                 <div className="flex items-center justify-between pb-4 border-b border-white/10 text-xs font-nunito text-white/70">
                   <div className="flex items-center gap-2">
-                    <span className="h-2 w-2 rounded-full bg-[#CAFFA6] animate-pulse" />
+                    <span className="h-2 w-2 rounded-full bg-[#A9E0F1]" />
                     <span className="font-bold text-white">Live Pathway Simulator</span>
                   </div>
                   <span className="text-white/50 font-mono">Nepal Curriculum 2082</span>
@@ -624,7 +617,7 @@ export default async function HomePage() {
 
                 {/* Instant verification result box */}
                 <div className="mt-4 rounded-xl bg-white/10 border border-white/15 p-4 text-xs font-nunito text-white/90 space-y-1.5">
-                  <p className="flex items-center gap-2 font-bold text-[#CAFFA6]">
+                  <p className="flex items-center gap-2 font-bold text-[#E3EEE2]">
                     <CheckCircle2 className="w-4 h-4" />
                     <span>Official Tribhuvan University Requirement Met:</span>
                   </p>
@@ -636,27 +629,29 @@ export default async function HomePage() {
             </div>
           </div>
 
-          {/* Logo Ticker Bar matching Image 4 */}
-          <div className="mt-16 pt-10 border-t border-white/10 flex flex-wrap items-center justify-center gap-8 sm:gap-14 text-xs uppercase font-bold tracking-widest text-white/60">
-            <span>Tribhuvan University</span>
-            <span>Kathmandu University</span>
-            <span>Pokhara University</span>
-            <span>Purbanchal</span>
-            <span>NEB Sanothimi</span>
-            <span>CTEVT</span>
+          {/* Logo Ticker Bar with Voxt edge-fade mask */}
+          <div className="mt-16 pt-10 border-t border-white/10 [mask-image:linear-gradient(90deg,transparent,#000_12%,#000_88%,transparent)] overflow-hidden">
+            <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-14 text-xs uppercase font-bold tracking-widest text-white/60">
+              <span>Tribhuvan University</span>
+              <span>Kathmandu University</span>
+              <span>Pokhara University</span>
+              <span>Purbanchal</span>
+              <span>NEB Sanothimi</span>
+              <span>CTEVT</span>
+            </div>
           </div>
 
           {/* Giant Highlight Quote matching Image 4 */}
           <div className="mt-16 text-center max-w-3xl mx-auto">
             <blockquote className="font-baloo text-2xl sm:text-3xl lg:text-4xl font-bold leading-snug text-white">
               &ldquo;I spent weeks asking coaching institutes. Shikshya Nepal gave me the{' '}
-              <span className="bg-[#CAFFA6] text-[#142C35] px-2.5 py-0.5 rounded-lg inline-block my-1 font-extrabold">
+              <span className="bg-[#E3EEE2] text-[#142C35] px-2.5 py-0.5 rounded-lg inline-block my-1 font-extrabold">
                 exact eligibility and official dates
               </span>{' '}
               in under two minutes.&rdquo;
             </blockquote>
             <div className="mt-6 flex items-center justify-center gap-3">
-              <div className="h-10 w-10 rounded-full bg-white/20 border border-white/30 flex items-center justify-center text-sm font-bold text-[#CAFFA6]">
+              <div className="h-10 w-10 rounded-full bg-white/20 border border-white/30 flex items-center justify-center text-sm font-bold text-[#E3EEE2]">
                 AS
               </div>
               <div className="text-left font-nunito text-xs">
@@ -666,12 +661,33 @@ export default async function HomePage() {
             </div>
           </div>
         </div>
+      </section>}
+
+      {/* Student perspective retained from the former pathway section. */}
+      <section data-home-motion className="border-b border-sn-border bg-white py-16 sm:py-20">
+        <div className={CONTAINER}>
+          <figure className="mx-auto max-w-3xl overflow-hidden rounded-[28px] border border-black/[0.06] bg-[#f6f8f3] px-7 py-9 text-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.95),0_10px_30px_rgba(20,44,53,0.055)] sm:px-12 sm:py-12">
+            <div className="mx-auto mb-5 flex h-10 w-10 items-center justify-center rounded-full bg-white font-serif text-3xl font-bold leading-none text-sn-primary shadow-[0_4px_14px_rgba(20,44,53,0.08)]" aria-hidden="true">“</div>
+            <blockquote className="font-baloo text-xl font-bold leading-[1.45] text-sn-ink sm:text-2xl lg:text-3xl">
+              I spent weeks asking coaching institutes. ShikshyaXNepal gave me the{' '}
+              <span className="font-extrabold text-sn-primary underline decoration-sn-tint-mint decoration-4 underline-offset-4">exact eligibility and official dates</span>{' '}
+              in under two minutes.
+            </blockquote>
+            <figcaption className="mt-6 flex items-center justify-center gap-3">
+              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-sn-primary text-sm font-bold text-white shadow-[0_4px_12px_rgba(32,70,84,0.18)]">AS</span>
+              <span className="text-left font-nunito text-xs leading-5">
+                <span className="block font-bold text-sn-ink">Ayush Shrestha</span>
+                <span className="block text-sn-ink-muted">Pulchowk Campus Aspirant · Lalitpur</span>
+              </span>
+            </figcaption>
+          </figure>
+        </div>
       </section>
 
       {/* ════════════════════════════════════════════════════════
           7. EDITORIAL STORY — Paperclip & Polaroid (Matching Image 3 & 1)
       ════════════════════════════════════════════════════════ */}
-      <section className={`border-b border-sn-border bg-sn-ground ${SECTION_PAD}`}>
+      <section data-home-motion className={`border-b border-sn-border bg-sn-ground ${SECTION_PAD}`}>
         <div className={CONTAINER}>
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             {/* Left Column: The Editorial Story */}
@@ -746,7 +762,7 @@ export default async function HomePage() {
       {/* ════════════════════════════════════════════════════════
           3. WHAT DO YOU NEED TODAY — Clean Minimal 4-Grid
       ════════════════════════════════════════════════════════ */}
-      <section className={`border-b border-sn-border bg-sn-surface-alt/60 ${SECTION_PAD}`}>
+      <section data-home-motion className={`border-b border-sn-border bg-sn-surface-alt/60 ${SECTION_PAD}`}>
         <div className={CONTAINER}>
           <SectionHeader
             title="What do you need today?"
@@ -882,7 +898,7 @@ export default async function HomePage() {
       {/* ════════════════════════════════════════════════════════
           4. BROWSE — capsule pill-strip & elevated metrics
       ════════════════════════════════════════════════════════ */}
-      <section className={`border-b border-sn-border bg-sn-ground ${SECTION_PAD}`}>
+      <section data-home-motion className={`border-b border-sn-border bg-sn-ground ${SECTION_PAD}`}>
         <div className={CONTAINER}>
           <SectionHeader title="Browse by program or university" />
 
@@ -971,7 +987,7 @@ export default async function HomePage() {
           they have real content.
       ════════════════════════════════════════════════════════ */}
       {hasProofContent && (
-        <section className={`border-b border-sn-border bg-sn-surface ${SECTION_PAD}`}>
+        <section data-home-motion className={`border-b border-sn-border bg-sn-surface ${SECTION_PAD}`}>
           <div className={CONTAINER}>
             <SectionHeader title="See it in action" description="A sample of what's live on the platform right now. Sourced and dated, not a static list." />
 
@@ -1040,90 +1056,36 @@ export default async function HomePage() {
       {/* ════════════════════════════════════════════════════════
           WHAT STUDENTS SAY — Clean 5-Star Testimonials (Matching Image 2)
       ════════════════════════════════════════════════════════ */}
-      <section className={`border-b border-sn-border bg-white ${SECTION_PAD}`}>
+      <section data-home-motion className={`border-b border-sn-border bg-white ${SECTION_PAD}`}>
         <div className={CONTAINER}>
           <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
-            <p className="text-xs font-bold uppercase tracking-wider text-sn-ink-muted font-nunito mb-2">
-              Verified Student Voice
-            </p>
+            <p className="text-xs font-bold uppercase tracking-wider text-sn-ink-muted font-nunito mb-2">Student perspectives</p>
             <h2 className="font-baloo text-3xl sm:text-4xl font-extrabold text-sn-ink tracking-tight">
               What students and counselors say
             </h2>
             <p className="mt-2 text-sm sm:text-base font-nunito text-sn-ink-soft">
-              Real feedback from students who planned their admissions with Shikshya Nepal.
+              Feedback from students and counselors who use ShikshyaXNepal to plan their next step.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-            {[
-              {
-                quote: "Found the real fee structure for KU BTech before paying any consultancy consultation fee. Unbelievably clean and trustworthy.",
-                author: "Suman Thapa",
-                role: "Engineering Aspirant, Kathmandu"
-              },
-              {
-                quote: "No confusing ads or popup scams. Just the exact roll number lookup and syllabus breakdown for IOE entrance.",
-                author: "Pooja Shrestha",
-                role: "IOE Pulchowk Campus student"
-              },
-              {
-                quote: "Checked the CTEVT diploma college affiliation list in 2 minutes. Saved our family from choosing an unaccredited institute.",
-                author: "Bikash Adhikari",
-                role: "+2 Graduate, Pokhara"
-              },
-              {
-                quote: "The GPA calculator is the only one in Nepal that handles the exact NEB theory and practical grade boundaries correctly.",
-                author: "Rohan Gautam",
-                role: "Class 12 Student, Butwal"
-              },
-              {
-                quote: "I recommend this to all my students instead of glossy admission brochures. The verified date on notices is priceless.",
-                author: "Sarita Khadka",
-                role: "Academic Counselor, Dharan"
-              },
-              {
-                quote: "Super easy to compare TU vs PU Bachelor programs without opening 15 different broken university websites.",
-                author: "Anish Manandhar",
-                role: "BIM Graduate, Lalitpur"
-              }
-            ].map((t, idx) => (
-              <div
-                key={idx}
-                className="apple-card rounded-2xl bg-sn-ground/70 p-6 sm:p-7 border border-black/[0.06] shadow-sm flex flex-col justify-between"
-              >
-                <div>
-                  {/* 5 Green Stars matching Image 2 */}
-                  <div className="flex items-center gap-1 text-emerald-600 text-sm mb-3">
-                    {'★★★★★'}
-                  </div>
-                  <p className="font-nunito text-sm sm:text-base text-sn-ink font-medium leading-relaxed">
-                    &ldquo;{t.quote}&rdquo;
-                  </p>
-                </div>
-                <div className="mt-5 pt-4 border-t border-black/[0.05]">
-                  <p className="font-baloo text-sm font-bold text-sn-ink">{t.author}</p>
-                  <p className="font-nunito text-xs text-sn-ink-muted">{t.role}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+          <TestimonialsColumns />
         </div>
       </section>
 
       {/* ════════════════════════════════════════════════════════
           6. GET STARTED — Apple Verification & Alert Center
       ════════════════════════════════════════════════════════ */}
-      <section className={`border-t border-sn-border bg-sn-ground ${SECTION_PAD}`}>
+      <section data-home-motion className={`border-t border-sn-border bg-sn-ground ${SECTION_PAD}`}>
         <div className={CONTAINER}>
           <div className="apple-shell">
             <div className="apple-card relative overflow-hidden !rounded-[20px] bg-white p-8 sm:p-12 lg:p-16 text-center shadow-[inset_0_1px_1.5px_rgba(255,255,255,0.9),0_8px_32px_rgba(15,23,42,0.06)]">
               {/* Subtle warm accent radial background */}
-              <div className="pointer-events-none absolute -top-24 left-1/2 h-[350px] w-[500px] -translate-x-1/2 rounded-full bg-gradient-to-b from-[#A9E0F1]/25 via-[#CAFFA6]/15 to-transparent blur-2xl" aria-hidden="true" />
+              <div className="pointer-events-none absolute -top-24 left-1/2 h-[350px] w-[500px] -translate-x-1/2 rounded-full bg-gradient-to-b from-[#A9E0F1]/25 via-[#E3EEE2]/20 to-transparent blur-2xl" aria-hidden="true" />
 
               <div className="relative">
                 <div className="max-w-2xl mx-auto mb-10 text-center">
                   <span className="apple-pill inline-flex items-center gap-2 rounded-full px-3.5 py-1 text-xs font-bold font-nunito text-sn-ink bg-white border border-black/[0.08] shadow-sm mb-4">
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="h-1.5 w-1.5 rounded-full bg-sn-primary" />
                     <span>Updated for 2082 / 2026 Academic Session</span>
                   </span>
                   <h2 className="font-baloo font-extrabold text-sn-ink text-3xl sm:text-4xl lg:text-5xl mb-3 tracking-[-0.025em]">
@@ -1143,7 +1105,7 @@ export default async function HomePage() {
                       <div className="absolute top-0 bottom-0 left-0 w-3 bg-white/10" />
                       
                       <div>
-                        <div className="flex items-center justify-between text-xs font-mono text-[#CAFFA6] pb-3 border-b border-white/10">
+                        <div className="flex items-center justify-between text-xs font-mono text-[#E3EEE2] pb-3 border-b border-white/10">
                           <span>OFFICIAL GUIDE</span>
                           <span>2082 BS</span>
                         </div>
@@ -1157,7 +1119,7 @@ export default async function HomePage() {
 
                       <div className="pt-6 border-t border-white/10 flex items-center justify-between text-[11px] font-nunito text-white/60">
                         <span>Free Public Edition</span>
-                        <span className="text-[#CAFFA6] font-bold">1,200+ Campuses</span>
+                        <span className="text-[#E3EEE2] font-bold">1,200+ Campuses</span>
                       </div>
                     </div>
                   </div>

@@ -4,7 +4,6 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { LocateFixed, MapPin, ShieldCheck } from 'lucide-react'
 import { cleanCollegeText } from '@/lib/college-display'
-import Mascot from '@/components/design-system/Mascot'
 import Button from '@/components/design-system/Button'
 
 type College = { id: string; name: string; slug: string; location: string; district: string | null; province: string | null; affiliation: string | null; verification_status: string; education_levels: string[]; distance_km: number }
@@ -70,7 +69,6 @@ export default function NearbyCollegesPage() {
         )}
         {!items.length && !loading && !error && (
           <div className="rounded-sn-card border border-dashed border-sn-border bg-sn-surface p-12 text-center">
-            <Mascot pose="point" size={72} className="mx-auto mb-4" />
             <h2 className="font-baloo text-xl font-bold text-sn-ink">Find colleges around you</h2>
             <p className="mt-2 text-sm text-sn-ink-soft">Allow location access to sort colleges with available map coordinates by distance.</p>
           </div>

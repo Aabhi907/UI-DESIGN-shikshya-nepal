@@ -8,6 +8,7 @@ import SiteAnnouncement from '@/components/layout/SiteAnnouncement'
 import Nav from '@/components/design-system/Nav'
 import DesignSystemFooter from '@/components/design-system/Footer'
 import QuickNav from '@/components/design-system/QuickNav'
+import LandingReveal from '@/components/layout/LandingReveal'
 
 const AUTH_PAGES = ['/account/login', '/account/register', '/account/signup']
 
@@ -55,6 +56,7 @@ export default function MainChrome({ children }: { children: React.ReactNode }) 
       {converted ? <DesignSystemFooter /> : <Footer />}
       {converted ? <QuickNav /> : <MobileQuickNav />}
       <GlobalSearch />
+      <LandingReveal enabled={pathname === '/'} />
     </>
   )
 }

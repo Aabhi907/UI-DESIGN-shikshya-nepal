@@ -39,7 +39,6 @@ import Card from "@/components/design-system/Card";
 import Pill from "@/components/design-system/Pill";
 import EvidenceChip from "@/components/design-system/EvidenceChip";
 import IconTile from "@/components/design-system/IconTile";
-import Mascot from "@/components/design-system/Mascot";
 
 const BASE_URL = SITE_URL;
 
@@ -337,7 +336,6 @@ export default async function CollegeProfilePage({
         <div className="lg:col-span-2 space-y-8 lg:space-y-10">
           <section aria-labelledby="college-at-a-glance">
             <div className="mb-3 flex items-start gap-3">
-              <Mascot pose="read" size={40} />
               <div>
                 <h2 id="college-at-a-glance" className="text-xl font-baloo font-bold text-sn-ink">What students should know</h2>
                 <p className="mt-2 max-w-2xl text-sm leading-6 font-nunito text-sn-ink-soft">{answerSummary}</p>

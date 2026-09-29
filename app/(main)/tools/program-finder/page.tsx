@@ -3,7 +3,6 @@
 import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import { ArrowLeft, ArrowRight, CheckCircle2, Compass, RotateCcw } from 'lucide-react'
-import Mascot from '@/components/design-system/Mascot'
 import Button from '@/components/design-system/Button'
 import Pill from '@/components/design-system/Pill'
 
@@ -59,7 +58,6 @@ export default function ProgramFinderPage() {
       <section className="border-b border-sn-border bg-sn-surface">
         <div className="mx-auto max-w-2xl px-5 py-10 sm:px-8 sm:py-12">
           <div className="flex items-start gap-4">
-            <Mascot pose={done ? 'point' : 'wave'} size={64} className="hidden shrink-0 sm:block" />
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.08em] text-sn-primary-hover">Student tools</p>
               <h1 className="mt-2 font-baloo text-3xl font-extrabold text-sn-ink sm:text-4xl">What should I study?</h1>
