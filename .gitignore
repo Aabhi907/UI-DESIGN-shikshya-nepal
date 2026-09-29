@@ -46,3 +46,7 @@ next-env.d.ts
 # Regenerated from the public CEHRD IEMIS source; keep bulk exports out of Git.
 data/imports/*.csv
 data/imports/*-rejected.json
+.claude/
+agent/
+data/skills/
+

@@ -204,8 +204,8 @@ export default function Nav() {
       >
         <div className={`mx-auto flex h-14 items-center justify-between rounded-full border px-4 backdrop-blur-xl transition-all duration-200 sm:px-6 lg:px-8 ${
           scrolled
-            ? 'bg-white/95 dark:bg-[#0f1012]/92 border-black/[0.08] dark:border-white/[0.12] shadow-md dark:shadow-[0_8px_32px_rgba(0,0,0,0.5)]'
-            : 'bg-white/85 dark:bg-[#0f1012]/80 border-black/[0.06] dark:border-white/[0.08] shadow-sm dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)]'
+            ? 'bg-white/95 dark:bg-[#0E1013]/92 border-black/[0.08] dark:border-white/[0.12] shadow-md dark:shadow-[0_8px_32px_rgba(0,0,0,0.5)]'
+            : 'bg-white/85 dark:bg-[#0E1013]/80 border-black/[0.06] dark:border-white/[0.08] shadow-sm dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)]'
         }`}>
           {/* Left Cluster: Wordmark + Minimal Quiet Nav Links */}
           <div className="flex items-center gap-7 lg:gap-9">
@@ -244,7 +244,7 @@ export default function Nav() {
 
                   {link.sub && openDrop === link.label && (
                     <div className={`absolute top-full z-50 pt-2 ${link.label === 'results' ? 'right-0' : 'left-0'}`}>
-                      <div id={`sn-desktop-nav-${link.label.toLowerCase().replaceAll(' ', '-')}`} className="motion-menu-enter w-64 overflow-hidden rounded-2xl border border-black/[0.1] dark:border-white/[0.08] bg-white dark:bg-[#151518]/95 p-1.5 backdrop-blur-2xl shadow-xl dark:shadow-[0_12px_36px_rgba(0,0,0,0.7)]">
+                      <div id={`sn-desktop-nav-${link.label.toLowerCase().replaceAll(' ', '-')}`} className="motion-menu-enter w-64 overflow-hidden rounded-2xl border border-black/[0.1] dark:border-white/[0.08] bg-white dark:bg-[#171920]/95 p-1.5 backdrop-blur-2xl shadow-xl dark:shadow-[0_12px_36px_rgba(0,0,0,0.7)]">
                         {link.sub.map((s, index) => (
                           <div key={s.label}>
                             {s.group && (index === 0 || link.sub![index - 1].group !== s.group) && (

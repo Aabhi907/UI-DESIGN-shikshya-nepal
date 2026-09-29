@@ -88,5 +88,12 @@ export default function CommunityOrbit() {
 }
 
 function Initials({ initials }: { initials: string }) {
-  return <span className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-white/90 bg-gradient-to-br from-[#6a9dad] to-[#245968] text-[11px] font-extrabold text-white shadow-[0_5px_16px_rgba(20,44,53,0.16)]">{initials}</span>
+  return (
+    <span
+      className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-white/90 text-[11px] font-extrabold text-white shadow-[0_5px_16px_rgba(20,44,53,0.16)]"
+      style={{ background: 'linear-gradient(135deg, #6a9dad 0%, #245968 100%)' }}
+    >
+      {initials}
+    </span>
+  )
 }
