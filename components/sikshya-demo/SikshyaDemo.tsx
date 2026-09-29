@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState, useCallback, useRef } from 'react'
 import { motion, AnimatePresence, useInView } from 'framer-motion'
+import { Sparkles } from 'lucide-react'
 import { demoQuestions, DemoQuestion } from './demoQuestions'
-import FloatingPattern from './FloatingPattern'
 import DemoWindow from './DemoWindow'
 import DemoCaption from './DemoCaption'
 import './demo.css'
@@ -125,13 +125,22 @@ export default function SikshyaDemo() {
       className="sikshya-demo-section sikshya-demo-bg"
       aria-label="Interactive Sikshya Nepal AI Guidance Demo"
     >
-      {/* Layer 1: Radial light is in the background CSS (.sikshya-demo-bg) */}
+      {/* Section Header */}
+      <div className="sikshya-demo-header">
+        <span className="sikshya-demo-tag">
+          <Sparkles className="w-3.5 h-3.5" />
+          Interactive AI Advisor
+        </span>
+        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-[var(--text)]">
+          Ask questions, get verified answers
+        </h2>
+        <p className="mt-2 text-sm sm:text-base text-[var(--text-secondary)]">
+          Instant guidance on colleges, TU/PU/KU programs, scholarships, and career paths in Nepal.
+        </p>
+      </div>
 
-      {/* Layer 2: Scattered 3D physical keys */}
-      <FloatingPattern visible={sceneVisible} />
-
-      {/* Layer 3: Main Sikshya Nepal AI Window */}
-      <div className="relative z-10 flex flex-col items-center justify-center -translate-y-2 sm:-translate-y-4">
+      {/* Main Sikshya Nepal AI Window */}
+      <div className="relative z-10 flex flex-col items-center justify-center">
         <AnimatePresence mode="wait">
           {sceneVisible && demo && (
             <motion.div
