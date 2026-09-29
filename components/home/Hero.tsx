@@ -2,7 +2,9 @@
 
 import type { Admission } from '@/types'
 import RidgelineBackground from './RidgelineBackground'
-import CommandCockpit from './CommandCockpit'
+import CountdownPill from './CountdownPill'
+import AnimatedSearch from './AnimatedSearch'
+import HeroQuestionCards from './HeroQuestionCards'
 import TrustStrip from './TrustStrip'
 
 interface HeroProps {
@@ -15,20 +17,25 @@ export default function Hero({ heroStats, admissions = [] }: HeroProps) {
   const programCount = heroStats.find((s) => s.label === 'Programs')?.value || 450
 
   return (
-    <section className="relative border-b border-sn-border bg-sn-ground overflow-hidden pt-12 sm:pt-16 pb-12 sm:pb-16 min-h-[580px] sm:min-h-[640px] flex flex-col justify-between">
+    <section className="relative border-b border-sn-border bg-sn-ground overflow-hidden pt-10 sm:pt-14 pb-10 sm:pb-14 min-h-[620px] flex flex-col justify-between">
       {/* 3-Layer Himalayan Ridgeline + Soft Aurora Glow */}
       <RidgelineBackground />
 
-      <div className="relative z-10 mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 text-center flex-1 flex flex-col justify-center">
-        {/* ── 1. Masthead: Devanagari Accent + Headline + Subline ─ */}
-        <div className="mb-7 sm:mb-9">
-          <p className="text-xs sm:text-sm font-semibold tracking-widest text-slate-400 dark:text-slate-400 mb-2 font-noto-devanagari select-none">
+      <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 text-center flex-1 flex flex-col justify-center">
+        {/* ── 1. Live Countdown Pill ──────────────────────────── */}
+        <div className="mb-4 flex justify-center">
+          <CountdownPill admissions={admissions} />
+        </div>
+
+        {/* ── 2. Masthead: Devanagari Accent + Headline + Subline ─ */}
+        <div className="mb-6 sm:mb-8">
+          <p className="text-xs sm:text-sm font-semibold tracking-widest text-slate-400 dark:text-slate-400 mb-1.5 font-noto-devanagari select-none">
             शिक्षा, स्पष्ट रूपमा।
           </p>
 
           <h1
-            className="font-baloo font-extrabold text-slate-900 dark:text-white tracking-[-0.03em] leading-[1.05] text-balance mb-3"
-            style={{ fontSize: 'clamp(2.75rem, 6.5vw, 5.25rem)' }}
+            className="font-baloo font-extrabold text-slate-900 dark:text-white tracking-[-0.03em] leading-[1.05] text-balance mb-2.5"
+            style={{ fontSize: 'clamp(2.5rem, 5.5vw, 4.5rem)' }}
           >
             Decide what to study.{' '}
             <span className="relative inline-block whitespace-nowrap">
@@ -52,14 +59,19 @@ export default function Hero({ heroStats, admissions = [] }: HeroProps) {
             </span>
           </h1>
 
-          <p className="font-nunito text-base sm:text-lg font-medium text-slate-600 dark:text-slate-300 max-w-xl mx-auto text-balance">
+          <p className="font-nunito text-sm sm:text-base font-medium text-slate-600 dark:text-slate-300 max-w-xl mx-auto text-balance">
             Verified, dated, unbiased. No paid rankings.
           </p>
         </div>
 
-        {/* ── 2. The Integrated Command Cockpit Hardware Island ── */}
-        <div className="w-full mb-6">
-          <CommandCockpit admissions={admissions} />
+        {/* ── 3. Big Raised Glass Search Console ───────────────── */}
+        <div className="w-full max-w-2xl mx-auto mb-7 sm:mb-9">
+          <AnimatedSearch />
+        </div>
+
+        {/* ── 4. Core Question Cards ("What to study?", "Where to study?", etc.) ── */}
+        <div className="w-full mb-8">
+          <HeroQuestionCards admissions={admissions} />
         </div>
       </div>
 
