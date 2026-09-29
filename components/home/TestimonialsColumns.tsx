@@ -19,8 +19,8 @@ export default function TestimonialsColumns() {
       <div className="grid h-full grid-cols-1 gap-5 sm:grid-cols-3">
         {columns.map((items, index) => <TestimonialColumn key={index} items={items} direction={index === 1 ? 'down' : 'up'} duration={index === 1 ? '43s' : index === 0 ? '49s' : '54s'} className={index > 0 ? 'hidden sm:block' : ''} />)}
       </div>
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-16 bg-gradient-to-b from-white to-transparent" />
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-20 bg-gradient-to-t from-white to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-16 bg-gradient-to-b from-[#0f1012] to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-20 bg-gradient-to-t from-[#0f1012] to-transparent" />
       <style jsx global>{`
         .testimonials-columns:hover .testimonial-track { animation-play-state: paused; }
         @media (prefers-reduced-motion: reduce) { .testimonial-track { animation: none !important; transform: none !important; } }

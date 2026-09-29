@@ -4,10 +4,10 @@ import { cn } from '@/lib/utils'
 type Tint = 'mint' | 'peach' | 'butter' | 'lilac'
 
 const tints: Record<Tint, string> = {
-  mint: 'bg-sn-tint-mint',
-  peach: 'bg-sn-tint-peach',
-  butter: 'bg-sn-tint-butter',
-  lilac: 'bg-sn-tint-lilac',
+  mint: 'bg-sn-tint-mint text-[#CAFFA6]',
+  peach: 'bg-sn-tint-peach text-[#A9E0F1]',
+  butter: 'bg-sn-tint-butter text-[#F7F9E1]',
+  lilac: 'bg-sn-tint-lilac text-[#D9EEF7]',
 }
 
 export default function IconTile({
@@ -23,7 +23,7 @@ export default function IconTile({
 }) {
   return (
     <span
-      className={cn('inline-flex shrink-0 items-center justify-center rounded-sn-control text-sn-ink', tints[tint], className)}
+      className={cn('inline-flex shrink-0 items-center justify-center rounded-sn-control border border-white/[0.08] shadow-[inset_0_1px_1px_rgba(255,255,255,0.08)]', tints[tint], className)}
       style={{ width: size, height: size }}
       aria-hidden="true"
     >

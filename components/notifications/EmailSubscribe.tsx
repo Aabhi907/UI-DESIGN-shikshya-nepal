@@ -42,9 +42,9 @@ export default function EmailSubscribe() {
 
   if (state === 'success') {
     return (
-      <div className="flex items-center justify-center gap-3 py-4 px-6 bg-white rounded-sn-card border border-sn-verified max-w-md mx-auto">
-        <CheckCircle className="w-5 h-5 text-sn-verified flex-shrink-0" aria-hidden="true" />
-        <p className="text-sm font-bold font-nunito text-sn-verified-ink">
+      <div className="flex items-center justify-center gap-3 py-4 px-6 bg-[#151518] rounded-sn-card border border-[#CAFFA6]/30 max-w-md mx-auto">
+        <CheckCircle className="w-5 h-5 text-[#CAFFA6] flex-shrink-0" aria-hidden="true" />
+        <p className="text-sm font-bold font-nunito text-[#CAFFA6]">
           You&apos;ll be notified when results drop
         </p>
       </div>
@@ -63,7 +63,7 @@ export default function EmailSubscribe() {
             value={email}
             onChange={(e) => { setEmail(e.target.value); if (state === 'error') setState('idle') }}
             placeholder="your@email.com"
-            className="w-full rounded-sn-control border border-sn-border-strong bg-white pl-9 pr-3 py-3 text-sm font-nunito text-sn-ink placeholder-sn-ink-muted focus:outline-none focus:ring-2 focus:ring-sn-primary/30 transition-colors shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)]"
+            className="w-full rounded-sn-control border border-white/[0.1] bg-[#151518] pl-9 pr-3 py-3 text-sm font-nunito text-[#f5f5f6] placeholder-sn-ink-muted focus:outline-none focus:ring-2 focus:ring-sn-primary/40 transition-colors shadow-[inset_0_1px_2px_rgba(0,0,0,0.3)]"
           />
         </div>
         <button

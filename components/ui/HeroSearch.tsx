@@ -29,9 +29,9 @@ export default function HeroSearch() {
     <div className="w-full">
       {/* ── Search bar ─────────────────────────────────── */}
       <form onSubmit={handleSubmit} role="search" aria-label="Search ShikshyaXNepal">
-        <div className="flex items-stretch rounded-sn-card border border-black/[0.08] bg-white/95 overflow-hidden
-                        shadow-[inset_0_1px_1.5px_rgba(255,255,255,0.95),0_4px_24px_rgba(15,23,42,0.04)]
-                        focus-within:border-sn-primary/80 focus-within:shadow-[inset_0_1px_1.5px_rgba(255,255,255,1),0_8px_32px_rgba(32,70,84,0.14)]
+        <div className="flex items-stretch rounded-sn-card border border-white/[0.1] bg-[#151518]/95 overflow-hidden
+                        shadow-[inset_0_1px_1.5px_rgba(255,255,255,0.06),0_4px_24px_rgba(0,0,0,0.4)]
+                        focus-within:border-sn-primary focus-within:shadow-[0_0_0_1px_rgba(32,70,84,0.6),0_8px_32px_rgba(0,0,0,0.5)]
                         transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]">
           <div className="relative flex-1 flex items-center">
             <Search className="absolute left-4 w-5 h-5 text-sn-ink-muted pointer-events-none" aria-hidden="true" />
@@ -45,13 +45,13 @@ export default function HeroSearch() {
               autoComplete="off"
               enterKeyHint="search"
               inputMode="search"
-              className="h-14 w-full min-w-0 bg-transparent pl-11 pr-11 text-sm font-nunito text-sn-ink placeholder:text-sn-ink-muted focus:outline-none sm:pl-12 sm:pr-12"
+              className="h-14 w-full min-w-0 bg-transparent pl-11 pr-11 text-sm font-nunito text-[#f5f5f6] placeholder:text-[#8e8e96] focus:outline-none sm:pl-12 sm:pr-12"
             />
-            {query && <button type="button" onClick={() => setQuery('')} aria-label="Clear search" className="motion-control focus-ring absolute right-1 flex h-11 w-11 items-center justify-center rounded-sn-control text-sn-ink-muted hover:bg-sn-surface-alt hover:text-sn-ink"><X className="h-4 w-4" /></button>}
+            {query && <button type="button" onClick={() => setQuery('')} aria-label="Clear search" className="motion-control focus-ring absolute right-1 flex h-11 w-11 items-center justify-center rounded-sn-control text-sn-ink-muted hover:bg-white/[0.06] hover:text-[#f5f5f6]"><X className="h-4 w-4" /></button>}
           </div>
           <button
             type="submit"
-            className="motion-control focus-ring m-1.5 flex-shrink-0 rounded-sn-control bg-sn-primary px-5 text-xs font-bold font-nunito text-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.35),0_4px_14px_rgba(32,70,84,0.25)] sm:px-6 hover:bg-sn-primary-hover"
+            className="motion-control focus-ring m-1.5 flex-shrink-0 rounded-sn-control bg-sn-primary px-5 text-xs font-bold font-nunito text-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.25),0_4px_14px_rgba(0,0,0,0.4)] sm:px-6 hover:bg-sn-primary-hover"
           >
             Search
           </button>
@@ -70,8 +70,8 @@ export default function HeroSearch() {
             key={tag.label}
             href={tag.href}
             className="motion-control inline-flex min-h-11 items-center px-3.5 rounded-full text-xs font-nunito font-semibold text-sn-ink-soft
-                       border border-black/[0.06] bg-white/75 backdrop-blur-md shadow-[inset_0_1px_1px_rgba(255,255,255,0.95),0_1px_3px_rgba(0,0,0,0.02)]
-                       hover:border-sn-primary/60 hover:bg-sn-primary-bg hover:text-sn-primary-hover hover:-translate-y-0.5
+                       border border-white/[0.08] bg-white/[0.04] backdrop-blur-md shadow-[inset_0_1px_1px_rgba(255,255,255,0.05),0_1px_3px_rgba(0,0,0,0.3)]
+                       hover:border-sn-primary/60 hover:bg-sn-primary-bg hover:text-white hover:-translate-y-0.5
                        transition-all duration-200"
           >
             {tag.label}

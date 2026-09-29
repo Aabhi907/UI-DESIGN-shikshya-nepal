@@ -35,14 +35,14 @@ const universityLinks = [
 
 export default function Footer() {
   return (
-    <footer className="border-t border-sn-border-strong bg-sn-ink text-white">
+    <footer className="border-t border-white/[0.08] bg-[#0a0b0d] text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8">
           <div>
             <Link href="/" className="inline-flex items-center gap-2 mb-5">
               <span className="font-baloo font-extrabold text-[17px] leading-none tracking-tight">
                 <span className="text-white">Sikshya</span>
-                <span className="text-sn-primary">Nepal</span>
+                <span className="text-[#CAFFA6]">Nepal</span>
               </span>
             </Link>
             <p className="text-sm font-nunito text-white/60 leading-relaxed mb-6 max-w-xs">
@@ -50,11 +50,11 @@ export default function Footer() {
             </p>
             <div className="space-y-2.5">
               <Link href="/contact" className="flex items-center gap-2.5 text-sm font-nunito text-white/60 hover:text-white transition-colors duration-150">
-                <Mail className="w-4 h-4 text-sn-primary flex-shrink-0" />
+                <Mail className="w-4 h-4 text-[#CAFFA6] flex-shrink-0" />
                 Contact us
               </Link>
               <div className="flex items-center gap-2.5 text-sm font-nunito text-white/60">
-                <MapPin className="w-4 h-4 text-sn-primary flex-shrink-0" />
+                <MapPin className="w-4 h-4 text-[#CAFFA6] flex-shrink-0" />
                 Kathmandu, Nepal
               </div>
             </div>

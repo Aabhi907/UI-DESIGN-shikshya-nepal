@@ -159,19 +159,19 @@ export default async function HomePage() {
       ════════════════════════════════════════════════════════ */}
       <section data-home-motion className="relative border-b border-sn-border bg-sn-ground overflow-hidden py-20 lg:py-28">
         {/* Soft, ultra-subtle ambient glow */}
-        <div className="pointer-events-none absolute -top-44 left-1/2 h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-gradient-to-b from-[#A9E0F1]/20 via-[#E3EEE2]/18 to-transparent blur-3xl" aria-hidden="true" />
+        <div className="pointer-events-none absolute -top-44 left-1/2 h-[520px] w-[820px] -translate-x-1/2 rounded-full bg-gradient-to-b from-[#204654]/30 via-[#CAFFA6]/10 to-transparent blur-3xl" aria-hidden="true" />
 
         <RevealGroup className="mx-auto max-w-4xl px-5 sm:px-8 text-center relative z-10">
           {/* Eyebrow Pill matching Voxt's [NEW] Voice input app -> */}
           <Link
             href="/admissions?deadline=open"
-            className="apple-pill group inline-flex items-center gap-2.5 rounded-full bg-white/95 px-3.5 py-1.5 text-xs font-bold font-nunito text-sn-ink shadow-sm hover:shadow transition-all duration-200 mb-8 border border-black/[0.08]"
+            className="apple-pill group inline-flex items-center gap-2.5 rounded-full bg-white/[0.05] px-3.5 py-1.5 text-xs font-bold font-nunito text-sn-ink shadow-sm hover:shadow transition-all duration-200 mb-8 border border-white/[0.1]"
           >
-            <span className="rounded-full bg-sn-ink px-2 py-0.5 text-[10px] font-bold text-white uppercase tracking-wider">
+            <span className="rounded-full bg-white/[0.1] px-2 py-0.5 text-[10px] font-bold text-[#CAFFA6] uppercase tracking-wider">
               2082 / 2026
             </span>
             <span>Intake deadlines &amp; board results live</span>
-            <ArrowRight className="h-3 w-3 text-sn-ink-muted group-hover:text-sn-primary group-hover:translate-x-0.5 transition-all" />
+            <ArrowRight className="h-3 w-3 text-sn-ink-muted group-hover:text-[#CAFFA6] group-hover:translate-x-0.5 transition-all" />
           </Link>
 
           {/* Centered Headline matching "Speak clearly. Adapt to context." */}
@@ -197,7 +197,7 @@ export default async function HomePage() {
             <Button.Link
               href="/colleges"
               variant="primary"
-              className="group rounded-full px-6 py-3 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),0_6px_20px_rgba(32,70,84,0.24)] transition-all duration-300 hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.5),0_10px_28px_rgba(32,70,84,0.32)] hover:-translate-y-0.5 active:translate-y-0 text-sm font-bold"
+              className="group rounded-full px-6 py-3 shadow-[inset_0_1px_1px_rgba(255,255,255,0.25),0_6px_20px_rgba(0,0,0,0.4)] transition-all duration-300 hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.35),0_10px_28px_rgba(0,0,0,0.5)] hover:-translate-y-0.5 active:translate-y-0 text-sm font-bold"
             >
               <span>Explore colleges</span>
               <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/20 transition-transform duration-200 group-hover:translate-x-0.5">
@@ -207,7 +207,7 @@ export default async function HomePage() {
             <Button.Link
               href="/programs"
               variant="secondary"
-              className="rounded-full px-6 py-3 border-black/[0.08] bg-white/80 backdrop-blur-sm shadow-[inset_0_1px_1px_rgba(255,255,255,0.95)] hover:border-black/[0.15] hover:bg-white transition-all duration-200 text-sm font-bold text-sn-ink"
+              className="rounded-full px-6 py-3 border-white/[0.1] bg-white/[0.04] backdrop-blur-sm shadow-[inset_0_1px_1px_rgba(255,255,255,0.06)] hover:border-white/[0.2] hover:bg-white/[0.08] transition-all duration-200 text-sm font-bold text-white"
             >
               Browse programs
             </Button.Link>
@@ -216,10 +216,10 @@ export default async function HomePage() {
           {/* Social Proof Counter matching "2819+ Mac users and counting" */}
           <div className="flex items-center justify-center gap-3 text-xs font-nunito text-sn-ink-muted">
             <div className="flex -space-x-1.5 overflow-hidden">
-              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-sn-tint-peach text-[10px] font-bold text-sn-ink ring-2 ring-white">TU</span>
-              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-sn-tint-mint text-[10px] font-bold text-sn-ink ring-2 ring-white">KU</span>
-              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-sn-tint-butter text-[10px] font-bold text-sn-ink ring-2 ring-white">PU</span>
-              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-sn-tint-lilac text-[10px] font-bold text-sn-ink ring-2 ring-white">NEB</span>
+              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-sn-tint-peach text-[10px] font-bold text-[#CAFFA6] ring-2 ring-[#0f1012]">TU</span>
+              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-sn-tint-mint text-[10px] font-bold text-[#CAFFA6] ring-2 ring-[#0f1012]">KU</span>
+              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-sn-tint-butter text-[10px] font-bold text-[#CAFFA6] ring-2 ring-[#0f1012]">PU</span>
+              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-sn-tint-lilac text-[10px] font-bold text-[#CAFFA6] ring-2 ring-[#0f1012]">NEB</span>
             </div>
             <span>
               <strong className="text-sn-ink font-bold">1,200+</strong> colleges &amp; <strong className="text-sn-ink font-bold">450+</strong> programs cataloged across Nepal
@@ -232,9 +232,9 @@ export default async function HomePage() {
           2. STATS STRIP — Luminous verification ribbon
       ════════════════════════════════════════════════════════ */}
       {heroStats.length > 0 && (
-        <section data-home-motion className="border-b border-black/[0.06] bg-white/80 backdrop-blur-md py-8 lg:py-10">
+        <section data-home-motion className="border-b border-white/[0.08] bg-[#151518]/60 backdrop-blur-md py-8 lg:py-10">
           <div className={CONTAINER}>
-            <div className="grid grid-cols-2 gap-6 sm:grid-cols-4 sm:divide-x sm:divide-black/[0.06]">
+            <div className="grid grid-cols-2 gap-6 sm:grid-cols-4 sm:divide-x sm:divide-white/[0.08]">
               {heroStats.map((stat) => (
                 <div key={stat.label} className="text-center sm:px-6">
                   <p className="font-baloo text-3xl sm:text-4xl font-extrabold text-sn-ink tabular-nums tracking-tight">
@@ -246,7 +246,7 @@ export default async function HomePage() {
                 </div>
               ))}
               <div className="text-center sm:px-6">
-                <p className="font-baloo text-3xl sm:text-4xl font-extrabold text-sn-primary tabular-nums tracking-tight">
+                <p className="font-baloo text-3xl sm:text-4xl font-extrabold text-[#CAFFA6] tabular-nums tracking-tight">
                   100%
                 </p>
                 <p className="mt-1 font-nunito text-xs sm:text-sm font-bold text-sn-ink-muted">
@@ -276,9 +276,9 @@ export default async function HomePage() {
           </div>
 
           <div className="apple-feature-grid grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
-            <article className="apple-feature-card group relative min-h-[248px] overflow-hidden rounded-[24px] border border-black/[0.06] bg-white/85 p-6 text-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.95),0_4px_18px_rgba(20,44,53,0.035)] backdrop-blur-sm sm:text-left">
+            <article className="apple-feature-card group relative min-h-[248px] overflow-hidden rounded-[24px] border border-white/[0.08] bg-[#151518]/90 p-6 text-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.06),0_4px_18px_rgba(0,0,0,0.4)] backdrop-blur-sm sm:text-left">
               <span className="absolute right-5 top-5 text-[10px] font-bold tracking-[0.14em] text-sn-ink-muted/60">01</span>
-              <div className="relative inline-flex h-12 w-12 items-center justify-center rounded-[18px] bg-sn-tint-mint text-[#142C35] shadow-[inset_0_1px_1px_rgba(255,255,255,0.9),0_4px_10px_rgba(20,44,53,0.06)] transition-transform duration-300 group-hover:scale-[1.04]">
+              <div className="relative inline-flex h-12 w-12 items-center justify-center rounded-[18px] bg-sn-tint-mint text-[#CAFFA6] shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_4px_10px_rgba(0,0,0,0.3)] transition-transform duration-300 group-hover:scale-[1.04]">
                 <ShieldCheck className="h-5 w-5" />
               </div>
               <h3 className="relative mt-5 font-baloo text-xl font-bold text-sn-ink">Zero paid rankings</h3>
@@ -287,9 +287,9 @@ export default async function HomePage() {
               </p>
             </article>
 
-            <article className="apple-feature-card group relative min-h-[248px] overflow-hidden rounded-[24px] border border-black/[0.06] bg-white/85 p-6 text-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.95),0_4px_18px_rgba(20,44,53,0.035)] backdrop-blur-sm sm:text-left">
+            <article className="apple-feature-card group relative min-h-[248px] overflow-hidden rounded-[24px] border border-white/[0.08] bg-[#151518]/90 p-6 text-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.06),0_4px_18px_rgba(0,0,0,0.4)] backdrop-blur-sm sm:text-left">
               <span className="absolute right-5 top-5 text-[10px] font-bold tracking-[0.14em] text-sn-ink-muted/60">02</span>
-              <div className="relative inline-flex h-12 w-12 items-center justify-center rounded-[18px] bg-sn-tint-peach text-sn-ink shadow-[inset_0_1px_1px_rgba(255,255,255,0.9),0_4px_10px_rgba(20,44,53,0.06)] transition-transform duration-300 group-hover:scale-[1.04]">
+              <div className="relative inline-flex h-12 w-12 items-center justify-center rounded-[18px] bg-sn-tint-peach text-[#A9E0F1] shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_4px_10px_rgba(0,0,0,0.3)] transition-transform duration-300 group-hover:scale-[1.04]">
                 <Clock className="h-5 w-5" />
               </div>
               <h3 className="relative mt-5 font-baloo text-xl font-bold text-sn-ink">Dated &amp; sourced</h3>
@@ -298,9 +298,9 @@ export default async function HomePage() {
               </p>
             </article>
 
-            <article className="apple-feature-card group relative min-h-[248px] overflow-hidden rounded-[24px] border border-black/[0.06] bg-white/85 p-6 text-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.95),0_4px_18px_rgba(20,44,53,0.035)] backdrop-blur-sm sm:text-left">
+            <article className="apple-feature-card group relative min-h-[248px] overflow-hidden rounded-[24px] border border-white/[0.08] bg-[#151518]/90 p-6 text-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.06),0_4px_18px_rgba(0,0,0,0.4)] backdrop-blur-sm sm:text-left">
               <span className="absolute right-5 top-5 text-[10px] font-bold tracking-[0.14em] text-sn-ink-muted/60">03</span>
-              <div className="relative inline-flex h-12 w-12 items-center justify-center rounded-[18px] bg-sn-tint-butter text-sn-ink shadow-[inset_0_1px_1px_rgba(255,255,255,0.9),0_4px_10px_rgba(20,44,53,0.06)] transition-transform duration-300 group-hover:scale-[1.04]">
+              <div className="relative inline-flex h-12 w-12 items-center justify-center rounded-[18px] bg-sn-tint-butter text-[#F7F9E1] shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_4px_10px_rgba(0,0,0,0.3)] transition-transform duration-300 group-hover:scale-[1.04]">
                 <FileText className="h-5 w-5" />
               </div>
               <h3 className="relative mt-5 font-baloo text-xl font-bold text-sn-ink">Official gazette links</h3>
@@ -309,9 +309,9 @@ export default async function HomePage() {
               </p>
             </article>
 
-            <article className="apple-feature-card group relative min-h-[248px] overflow-hidden rounded-[24px] border border-black/[0.06] bg-white/85 p-6 text-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.95),0_4px_18px_rgba(20,44,53,0.035)] backdrop-blur-sm sm:text-left">
+            <article className="apple-feature-card group relative min-h-[248px] overflow-hidden rounded-[24px] border border-white/[0.08] bg-[#151518]/90 p-6 text-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.06),0_4px_18px_rgba(0,0,0,0.4)] backdrop-blur-sm sm:text-left">
               <span className="absolute right-5 top-5 text-[10px] font-bold tracking-[0.14em] text-sn-ink-muted/60">04</span>
-              <div className="relative inline-flex h-12 w-12 items-center justify-center rounded-[18px] bg-sn-tint-lilac text-sn-ink shadow-[inset_0_1px_1px_rgba(255,255,255,0.9),0_4px_10px_rgba(20,44,53,0.06)] transition-transform duration-300 group-hover:scale-[1.04]">
+              <div className="relative inline-flex h-12 w-12 items-center justify-center rounded-[18px] bg-sn-tint-lilac text-[#D9EEF7] shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_4px_10px_rgba(0,0,0,0.3)] transition-transform duration-300 group-hover:scale-[1.04]">
                 <GraduationCap className="h-5 w-5" />
               </div>
               <h3 className="relative mt-5 font-baloo text-xl font-bold text-sn-ink">100% Free for students</h3>
@@ -373,19 +373,19 @@ export default async function HomePage() {
 
             {/* Right Column: Soft Canvas with Floating Query Bubble & Result Card */}
             <div className="lg:col-span-6">
-              <div className="rounded-[32px] border border-black/[0.05] bg-sn-ground/70 p-6 sm:p-10 relative flex flex-col justify-center min-h-[380px] shadow-[inset_0_1px_2px_rgba(255,255,255,0.8)]">
+              <div className="rounded-[32px] border border-white/[0.08] bg-[#151518]/60 p-6 sm:p-10 relative flex flex-col justify-center min-h-[380px] shadow-[inset_0_1px_2px_rgba(255,255,255,0.04)]">
                 {/* Floating query bubble matching Voxt's "Make it shorter and clearer" */}
                 <div className="self-start -mb-3 z-10 ml-2">
-                  <div className="apple-pill inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-bold font-nunito text-sn-ink shadow-md bg-white border border-black/[0.08]">
+                  <div className="apple-pill inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-bold font-nunito text-sn-ink shadow-md bg-white/[0.06] border border-white/[0.12]">
                     <span>&ldquo;Check my NEB Grade 12 result&rdquo;</span>
                   </div>
                 </div>
 
                 {/* Floating Clean Result Card matching Voxt's Semantic Rewrite card */}
-                <div className="apple-card rounded-[22px] border border-black/[0.08] bg-white p-5 sm:p-6 shadow-[0_12px_36px_rgba(15,23,42,0.06)] mt-4">
-                  <div className="flex items-center justify-between pb-3 border-b border-black/[0.06]">
+                <div className="apple-card rounded-[22px] border border-white/[0.08] bg-[#151518] p-5 sm:p-6 shadow-[0_12px_36px_rgba(0,0,0,0.5)] mt-4">
+                  <div className="flex items-center justify-between pb-3 border-b border-white/[0.08]">
                     <div className="flex items-center gap-2">
-                      <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-sn-tint-peach text-sn-ink font-bold text-xs font-mono">
+                      <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-sn-tint-peach text-[#A9E0F1] font-bold text-xs font-mono">
                         NEB
                       </span>
                       <div>
@@ -406,20 +406,20 @@ export default async function HomePage() {
                     </div>
                     <div className="flex items-center justify-between text-xs font-nunito">
                       <span className="text-sn-ink-muted">Calculated Standing:</span>
-                      <span className="font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
+                      <span className="font-bold text-[#CAFFA6] bg-[#CAFFA6]/10 border border-[#CAFFA6]/20 px-2 py-0.5 rounded">
                         First Division with Distinction · 3.65 GPA
                       </span>
                     </div>
                   </div>
 
                   {/* Clean Filter Pills at bottom matching [Shorter] [Clearer] [Formal] in Voxt */}
-                  <div className="pt-3 border-t border-black/[0.06] flex items-center justify-between">
+                  <div className="pt-3 border-t border-white/[0.08] flex items-center justify-between">
                     <div className="flex gap-1.5 text-[11px] font-bold font-nunito">
-                      <span className="rounded-full bg-sn-surface-alt px-2.5 py-1 text-sn-ink">TU Balkhu</span>
-                      <span className="rounded-full bg-sn-surface-alt px-2.5 py-1 text-sn-ink">NEB</span>
-                      <span className="rounded-full bg-sn-surface-alt px-2.5 py-1 text-sn-ink">KU Dhulikhel</span>
+                      <span className="rounded-full bg-white/[0.06] border border-white/[0.08] px-2.5 py-1 text-sn-ink">TU Balkhu</span>
+                      <span className="rounded-full bg-white/[0.06] border border-white/[0.08] px-2.5 py-1 text-sn-ink">NEB</span>
+                      <span className="rounded-full bg-white/[0.06] border border-white/[0.08] px-2.5 py-1 text-sn-ink">KU Dhulikhel</span>
                     </div>
-                    <Link href="/results" className="text-xs font-bold text-sn-primary hover:underline">
+                    <Link href="/results" className="text-xs font-bold text-[#CAFFA6] hover:underline">
                       Verify &rarr;
                     </Link>
                   </div>
@@ -438,19 +438,19 @@ export default async function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             {/* Left Column: Soft Canvas with Floating Intake Card */}
             <div className="order-2 lg:order-1 lg:col-span-6">
-              <div className="rounded-[32px] border border-black/[0.05] bg-white p-6 sm:p-10 relative flex flex-col justify-center min-h-[380px] shadow-[inset_0_1px_2px_rgba(255,255,255,0.8)]">
+              <div className="rounded-[32px] border border-white/[0.08] bg-[#151518]/60 p-6 sm:p-10 relative flex flex-col justify-center min-h-[380px] shadow-[inset_0_1px_2px_rgba(255,255,255,0.04)]">
                 {/* Floating query bubble */}
                 <div className="self-start -mb-3 z-10 ml-2">
-                  <div className="apple-pill inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-bold font-nunito text-sn-ink shadow-md bg-white border border-black/[0.08]">
+                  <div className="apple-pill inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-bold font-nunito text-sn-ink shadow-md bg-white/[0.06] border border-white/[0.12]">
                     <span>&ldquo;When does Kathmandu University BTech close?&rdquo;</span>
                   </div>
                 </div>
 
                 {/* Floating Admission Card */}
-                <div className="apple-card rounded-[22px] border border-black/[0.08] bg-sn-surface-alt/70 p-5 sm:p-6 shadow-[0_12px_36px_rgba(15,23,42,0.06)] mt-4">
-                  <div className="flex items-start justify-between pb-3 border-b border-black/[0.06]">
+                <div className="apple-card rounded-[22px] border border-white/[0.08] bg-[#151518] p-5 sm:p-6 shadow-[0_12px_36px_rgba(0,0,0,0.5)] mt-4">
+                  <div className="flex items-start justify-between pb-3 border-b border-white/[0.08]">
                     <div>
-                      <span className="rounded-full bg-[#A9E0F1]/40 border border-[#A9E0F1] px-2 py-0.5 text-[10px] font-bold text-[#142C35] inline-block mb-1">
+                      <span className="rounded-full bg-[#A9E0F1]/20 border border-[#A9E0F1]/40 px-2 py-0.5 text-[10px] font-bold text-[#A9E0F1] inline-block mb-1">
                         Closes in 4 days
                       </span>
                       <h4 className="font-baloo text-base font-bold text-sn-ink">Kathmandu University</h4>
@@ -469,14 +469,14 @@ export default async function HomePage() {
                     </div>
                     <div className="flex items-center justify-between text-xs font-nunito">
                       <span className="text-sn-ink-muted">Application Form:</span>
-                      <span className="font-bold text-sn-primary">Online Submission Available</span>
+                      <span className="font-bold text-[#CAFFA6]">Online Submission Available</span>
                     </div>
                   </div>
 
-                  <div className="pt-3 border-t border-black/[0.06] flex items-center justify-between">
+                  <div className="pt-3 border-t border-white/[0.08] flex items-center justify-between">
                     <Link
                       href="/admissions"
-                      className="rounded-full bg-sn-primary px-3 py-1 text-xs font-bold text-white hover:bg-sn-primary-hover transition-colors"
+                      className="rounded-full bg-sn-primary px-3.5 py-1.5 text-xs font-bold text-white hover:bg-sn-primary-hover transition-colors"
                     >
                       View Deadline
                     </Link>
@@ -590,35 +590,35 @@ export default async function HomePage() {
                 </div>
 
                 {/* Input Card Container */}
-                <div className="mt-5 rounded-2xl bg-white p-4 sm:p-5 text-sn-ink shadow-lg">
+                <div className="mt-5 rounded-2xl bg-[#151518] p-4 sm:p-5 text-sn-ink shadow-lg border border-white/[0.08]">
                   <div className="flex items-center justify-between text-xs font-nunito text-sn-ink-muted mb-2">
                     <span>Target criteria query</span>
-                    <span className="text-[10px] bg-sn-tint-mint font-bold px-2 py-0.5 rounded text-[#142C35]">Instant verify</span>
+                    <span className="text-[10px] bg-[#CAFFA6]/15 font-bold px-2 py-0.5 rounded text-[#CAFFA6]">Instant verify</span>
                   </div>
                   <p className="font-nunito text-sm sm:text-base font-bold text-sn-ink leading-snug">
                     &ldquo;Can I study BSc CSIT with a C+ in Mathematics in +2?&rdquo;
                   </p>
 
-                  <div className="mt-4 pt-3 border-t border-black/[0.06] flex items-center justify-between">
+                  <div className="mt-4 pt-3 border-t border-white/[0.08] flex items-center justify-between">
                     {/* Attached file pill matching Image 4's Product-Design-Playbook.pdf */}
-                    <div className="inline-flex items-center gap-1.5 rounded-full bg-sn-surface-alt px-3 py-1 text-xs font-nunito font-semibold text-sn-ink-soft border border-black/[0.06]">
-                      <FileText className="w-3.5 h-3.5 text-sn-primary" />
+                    <div className="inline-flex items-center gap-1.5 rounded-full bg-white/[0.06] px-3 py-1 text-xs font-nunito font-semibold text-sn-ink-soft border border-white/[0.08]">
+                      <FileText className="w-3.5 h-3.5 text-[#CAFFA6]" />
                       <span>TU-CSIT-Ordinance-2082.pdf</span>
                     </div>
                     <Link
                       href="/programs?faculty=it"
-                      className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#204654] text-white hover:bg-[#173743] transition-colors"
+                      className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#204654] text-white hover:bg-[#295b6e] transition-colors"
                       aria-label="View verified response"
                     >
-                      <ArrowRight className="w-4 h-4" />
+                      <ArrowRight className="w-4 h-4 text-[#CAFFA6]" />
                     </Link>
                   </div>
                 </div>
 
                 {/* Instant verification result box */}
                 <div className="mt-4 rounded-xl bg-white/10 border border-white/15 p-4 text-xs font-nunito text-white/90 space-y-1.5">
-                  <p className="flex items-center gap-2 font-bold text-[#E3EEE2]">
-                    <CheckCircle2 className="w-4 h-4" />
+                  <p className="flex items-center gap-2 font-bold text-[#CAFFA6]">
+                    <CheckCircle2 className="w-4 h-4 text-[#CAFFA6]" />
                     <span>Official Tribhuvan University Requirement Met:</span>
                   </p>
                   <p className="text-white/80 leading-relaxed pl-6">
@@ -645,13 +645,13 @@ export default async function HomePage() {
           <div className="mt-16 text-center max-w-3xl mx-auto">
             <blockquote className="font-baloo text-2xl sm:text-3xl lg:text-4xl font-bold leading-snug text-white">
               &ldquo;I spent weeks asking coaching institutes. Shikshya Nepal gave me the{' '}
-              <span className="bg-[#E3EEE2] text-[#142C35] px-2.5 py-0.5 rounded-lg inline-block my-1 font-extrabold">
+              <span className="bg-[#CAFFA6]/20 text-[#CAFFA6] border border-[#CAFFA6]/30 px-2.5 py-0.5 rounded-lg inline-block my-1 font-extrabold">
                 exact eligibility and official dates
               </span>{' '}
               in under two minutes.&rdquo;
             </blockquote>
             <div className="mt-6 flex items-center justify-center gap-3">
-              <div className="h-10 w-10 rounded-full bg-white/20 border border-white/30 flex items-center justify-center text-sm font-bold text-[#E3EEE2]">
+              <div className="h-10 w-10 rounded-full bg-white/20 border border-white/30 flex items-center justify-center text-sm font-bold text-[#CAFFA6]">
                 AS
               </div>
               <div className="text-left font-nunito text-xs">
@@ -664,17 +664,17 @@ export default async function HomePage() {
       </section>}
 
       {/* Student perspective retained from the former pathway section. */}
-      <section data-home-motion className="border-b border-sn-border bg-white py-16 sm:py-20">
+      <section data-home-motion className="border-b border-sn-border bg-sn-ground py-16 sm:py-20">
         <div className={CONTAINER}>
-          <figure className="mx-auto max-w-3xl overflow-hidden rounded-[28px] border border-black/[0.06] bg-[#f6f8f3] px-7 py-9 text-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.95),0_10px_30px_rgba(20,44,53,0.055)] sm:px-12 sm:py-12">
-            <div className="mx-auto mb-5 flex h-10 w-10 items-center justify-center rounded-full bg-white font-serif text-3xl font-bold leading-none text-sn-primary shadow-[0_4px_14px_rgba(20,44,53,0.08)]" aria-hidden="true">“</div>
+          <figure className="mx-auto max-w-3xl overflow-hidden rounded-[28px] border border-white/[0.08] bg-[#151518] px-7 py-9 text-center shadow-[0_10px_30px_rgba(0,0,0,0.5)] sm:px-12 sm:py-12">
+            <div className="mx-auto mb-5 flex h-10 w-10 items-center justify-center rounded-full bg-[#1c1c22] font-serif text-3xl font-bold leading-none text-[#CAFFA6] shadow-[0_4px_14px_rgba(0,0,0,0.3)]" aria-hidden="true">“</div>
             <blockquote className="font-baloo text-xl font-bold leading-[1.45] text-sn-ink sm:text-2xl lg:text-3xl">
               I spent weeks asking coaching institutes. ShikshyaXNepal gave me the{' '}
-              <span className="font-extrabold text-sn-primary underline decoration-sn-tint-mint decoration-4 underline-offset-4">exact eligibility and official dates</span>{' '}
+              <span className="font-extrabold text-[#CAFFA6] underline decoration-[#CAFFA6]/40 decoration-4 underline-offset-4">exact eligibility and official dates</span>{' '}
               in under two minutes.
             </blockquote>
             <figcaption className="mt-6 flex items-center justify-center gap-3">
-              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-sn-primary text-sm font-bold text-white shadow-[0_4px_12px_rgba(32,70,84,0.18)]">AS</span>
+              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-sn-primary text-sm font-bold text-white shadow-[0_4px_12px_rgba(0,0,0,0.3)]">AS</span>
               <span className="text-left font-nunito text-xs leading-5">
                 <span className="block font-bold text-sn-ink">Ayush Shrestha</span>
                 <span className="block text-sn-ink-muted">Pulchowk Campus Aspirant · Lalitpur</span>
@@ -713,7 +713,7 @@ export default async function HomePage() {
                 </Button.Link>
                 <Link
                   href="/news"
-                  className="font-bold font-nunito text-sm text-sn-ink hover:text-sn-primary flex items-center gap-1.5 transition-colors"
+                  className="font-bold font-nunito text-sm text-sn-ink hover:text-[#CAFFA6] flex items-center gap-1.5 transition-colors"
                 >
                   <span>Read our verification policy</span>
                   <ArrowRight className="w-4 h-4" />
@@ -726,12 +726,12 @@ export default async function HomePage() {
               <div className="relative rotate-2 hover:rotate-0 transition-transform duration-300">
                 {/* Paperclip matching Image 3 */}
                 <div className="absolute -top-5 right-10 z-20 drop-shadow-md">
-                  <Paperclip className="w-10 h-10 -rotate-12 stroke-[2.2] text-slate-600" />
+                  <Paperclip className="w-10 h-10 -rotate-12 stroke-[2.2] text-slate-400" />
                 </div>
 
-                {/* White border Polaroid / Photographic Card */}
-                <div className="apple-card rounded-2xl bg-white p-4 pb-6 shadow-[0_20px_50px_rgba(15,23,42,0.12)] border border-black/[0.08] max-w-[340px] sm:max-w-[380px]">
-                  <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-slate-100">
+                {/* Polaroid / Photographic Card */}
+                <div className="apple-card rounded-2xl bg-[#151518] p-4 pb-6 shadow-[0_20px_50px_rgba(0,0,0,0.6)] border border-white/[0.08] max-w-[340px] sm:max-w-[380px]">
+                  <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-slate-900">
                     <Image
                       src={CAMPUS_FALLBACK_IMAGES[1]}
                       alt="Student studying on campus in Nepal"
@@ -882,13 +882,13 @@ export default async function HomePage() {
               <Link
                 key={href}
                 href={href}
-                className="apple-pill group flex items-center gap-2 rounded-full px-4 py-2 hover:bg-white hover:border-black/[0.15] transition-all duration-200"
+                className="apple-pill group flex items-center gap-2 rounded-full px-4 py-2 hover:bg-white/[0.08] hover:border-white/[0.16] transition-all duration-200"
               >
-                <Icon className="h-3.5 w-3.5 text-sn-primary" />
-                <span className="text-xs font-bold font-nunito text-sn-ink group-hover:text-sn-primary transition-colors">
+                <Icon className="h-3.5 w-3.5 text-[#CAFFA6]" />
+                <span className="text-xs font-bold font-nunito text-sn-ink group-hover:text-[#CAFFA6] transition-colors">
                   {label}
                 </span>
-                <ArrowRight className="h-3 w-3 text-sn-ink-muted group-hover:text-sn-primary group-hover:translate-x-0.5 transition-all" />
+                <ArrowRight className="h-3 w-3 text-sn-ink-muted group-hover:text-[#CAFFA6] group-hover:translate-x-0.5 transition-all" />
               </Link>
             ))}
           </div>
@@ -925,12 +925,12 @@ export default async function HomePage() {
                   <Link
                     key={faculty.slug}
                     href={href}
-                    className="apple-pill group flex items-center gap-2.5 rounded-full px-3.5 py-2 transition-all duration-200 hover:border-sn-ink/20 hover:bg-sn-surface hover:shadow-sm"
+                    className="apple-pill group flex items-center gap-2.5 rounded-full px-3.5 py-2 transition-all duration-200 hover:border-white/[0.18] hover:bg-white/[0.06] hover:shadow-sm"
                   >
-                    <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-sn-ink shadow-[inset_0_1px_1px_rgba(255,255,255,0.7)] ${tintBg}`}>
+                    <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-sn-ink shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] ${tintBg}`}>
                       <Icon className="h-3 w-3" aria-hidden="true" />
                     </span>
-                    <span className="text-sm font-bold font-nunito text-sn-ink group-hover:text-sn-primary transition-colors">
+                    <span className="text-sm font-bold font-nunito text-sn-ink group-hover:text-[#CAFFA6] transition-colors">
                       {faculty.name}
                     </span>
                   </Link>
@@ -948,7 +948,7 @@ export default async function HomePage() {
             <div className="mt-4 grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4">
               {UNIVERSITY_SHOWCASE.map((u, index) => {
                 const count = universityCounts[u.short] ?? 0
-                const tint = ['bg-sn-tint-peach', 'bg-sn-tint-mint', 'bg-sn-tint-butter', 'bg-sn-tint-lilac'][index % 4]
+                const tint = ['bg-sn-tint-peach text-[#A9E0F1]', 'bg-sn-tint-mint text-[#CAFFA6]', 'bg-sn-tint-butter text-[#F7F9E1]', 'bg-sn-tint-lilac text-[#D9EEF7]'][index % 4]
                 return (
                   <Link
                     key={u.short}
@@ -956,11 +956,11 @@ export default async function HomePage() {
                     className="apple-card group flex items-center justify-between gap-3.5 p-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
                   >
                     <div className="flex items-center gap-3 min-w-0">
-                      <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl font-baloo text-base font-bold text-sn-ink shadow-[inset_0_1px_1px_rgba(255,255,255,0.8)] border border-black/[0.04] ${tint}`}>
+                      <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl font-baloo text-base font-bold shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] border border-white/[0.08] ${tint}`}>
                         {u.short}
                       </span>
                       <div className="min-w-0">
-                        <p className="text-sm font-bold font-nunito leading-snug text-sn-ink group-hover:text-sn-primary transition-colors truncate">
+                        <p className="text-sm font-bold font-nunito leading-snug text-sn-ink group-hover:text-[#CAFFA6] transition-colors truncate">
                           {u.label}
                         </p>
                         <p className="text-xs font-nunito text-sn-ink-muted truncate">
@@ -969,7 +969,7 @@ export default async function HomePage() {
                       </div>
                     </div>
                     {count > 0 && (
-                      <span className="shrink-0 rounded-full border border-black/[0.08] bg-sn-surface-alt px-2.5 py-1 text-xs font-bold font-nunito tabular-nums text-sn-ink shadow-[inset_0_1px_1px_rgba(255,255,255,0.7)] group-hover:border-sn-primary/30 group-hover:text-sn-primary transition-colors">
+                      <span className="shrink-0 rounded-full border border-white/[0.1] bg-white/[0.06] px-2.5 py-1 text-xs font-bold font-nunito tabular-nums text-sn-ink shadow-[inset_0_1px_1px_rgba(255,255,255,0.08)] group-hover:border-[#CAFFA6]/30 group-hover:text-[#CAFFA6] transition-colors">
                         {count}
                       </span>
                     )}
@@ -1056,7 +1056,7 @@ export default async function HomePage() {
       {/* ════════════════════════════════════════════════════════
           WHAT STUDENTS SAY — Clean 5-Star Testimonials (Matching Image 2)
       ════════════════════════════════════════════════════════ */}
-      <section data-home-motion className={`border-b border-sn-border bg-white ${SECTION_PAD}`}>
+      <section data-home-motion className={`border-b border-sn-border bg-sn-ground ${SECTION_PAD}`}>
         <div className={CONTAINER}>
           <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
             <p className="text-xs font-bold uppercase tracking-wider text-sn-ink-muted font-nunito mb-2">Student perspectives</p>
@@ -1078,14 +1078,14 @@ export default async function HomePage() {
       <section data-home-motion className={`border-t border-sn-border bg-sn-ground ${SECTION_PAD}`}>
         <div className={CONTAINER}>
           <div className="apple-shell">
-            <div className="apple-card relative overflow-hidden !rounded-[20px] bg-white p-8 sm:p-12 lg:p-16 text-center shadow-[inset_0_1px_1.5px_rgba(255,255,255,0.9),0_8px_32px_rgba(15,23,42,0.06)]">
+            <div className="apple-card relative overflow-hidden !rounded-[20px] bg-[#151518] p-8 sm:p-12 lg:p-16 text-center shadow-[inset_0_1px_1.5px_rgba(255,255,255,0.06),0_8px_32px_rgba(0,0,0,0.5)] border border-white/[0.08]">
               {/* Subtle warm accent radial background */}
-              <div className="pointer-events-none absolute -top-24 left-1/2 h-[350px] w-[500px] -translate-x-1/2 rounded-full bg-gradient-to-b from-[#A9E0F1]/25 via-[#E3EEE2]/20 to-transparent blur-2xl" aria-hidden="true" />
+              <div className="pointer-events-none absolute -top-24 left-1/2 h-[350px] w-[500px] -translate-x-1/2 rounded-full bg-gradient-to-b from-[#204654]/30 via-[#CAFFA6]/10 to-transparent blur-2xl" aria-hidden="true" />
 
               <div className="relative">
                 <div className="max-w-2xl mx-auto mb-10 text-center">
-                  <span className="apple-pill inline-flex items-center gap-2 rounded-full px-3.5 py-1 text-xs font-bold font-nunito text-sn-ink bg-white border border-black/[0.08] shadow-sm mb-4">
-                    <span className="h-1.5 w-1.5 rounded-full bg-sn-primary" />
+                  <span className="apple-pill inline-flex items-center gap-2 rounded-full px-3.5 py-1 text-xs font-bold font-nunito text-sn-ink bg-white/[0.06] border border-white/[0.12] shadow-sm mb-4">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#CAFFA6]" />
                     <span>Updated for 2082 / 2026 Academic Session</span>
                   </span>
                   <h2 className="font-baloo font-extrabold text-sn-ink text-3xl sm:text-4xl lg:text-5xl mb-3 tracking-[-0.025em]">
@@ -1100,12 +1100,12 @@ export default async function HomePage() {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center text-left mb-12">
                   {/* Left: 3D Guide Book Card */}
                   <div className="lg:col-span-5 flex justify-center">
-                    <div className="w-full max-w-[280px] sm:max-w-[320px] rounded-2xl bg-[#142C35] text-white p-7 sm:p-8 shadow-[0_24px_50px_rgba(20,44,53,0.25)] border border-white/10 relative overflow-hidden flex flex-col justify-between min-h-[360px]">
+                    <div className="w-full max-w-[280px] sm:max-w-[320px] rounded-2xl bg-[#0a0b0d] text-white p-7 sm:p-8 shadow-[0_24px_50px_rgba(0,0,0,0.6)] border border-white/10 relative overflow-hidden flex flex-col justify-between min-h-[360px]">
                       {/* Spine highlight */}
                       <div className="absolute top-0 bottom-0 left-0 w-3 bg-white/10" />
                       
                       <div>
-                        <div className="flex items-center justify-between text-xs font-mono text-[#E3EEE2] pb-3 border-b border-white/10">
+                        <div className="flex items-center justify-between text-xs font-mono text-[#CAFFA6] pb-3 border-b border-white/10">
                           <span>OFFICIAL GUIDE</span>
                           <span>2082 BS</span>
                         </div>
@@ -1119,7 +1119,7 @@ export default async function HomePage() {
 
                       <div className="pt-6 border-t border-white/10 flex items-center justify-between text-[11px] font-nunito text-white/60">
                         <span>Free Public Edition</span>
-                        <span className="text-[#E3EEE2] font-bold">1,200+ Campuses</span>
+                        <span className="text-[#CAFFA6] font-bold">1,200+ Campuses</span>
                       </div>
                     </div>
                   </div>
@@ -1150,8 +1150,8 @@ export default async function HomePage() {
                     ].map((item, idx) => {
                       const Icon = item.icon
                       return (
-                        <div key={idx} className="flex items-start gap-4 pb-4 border-b border-black/[0.06] last:border-0 last:pb-0">
-                          <span className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-sn-surface-alt text-sn-primary border border-black/[0.05]">
+                        <div key={idx} className="flex items-start gap-4 pb-4 border-b border-white/[0.08] last:border-0 last:pb-0">
+                          <span className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-white/[0.06] text-[#CAFFA6] border border-white/[0.08]">
                             <Icon className="h-4 w-4" />
                           </span>
                           <div>
@@ -1173,7 +1173,7 @@ export default async function HomePage() {
                   <Button.Link
                     href="/colleges"
                     variant="primary"
-                    className="group rounded-full px-7 py-3.5 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),0_6px_20px_rgba(32,70,84,0.24)] transition-all duration-300 hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.5),0_10px_28px_rgba(32,70,84,0.32)] hover:-translate-y-0.5 active:translate-y-0 text-sm font-bold"
+                    className="group rounded-full px-7 py-3.5 shadow-[inset_0_1px_1px_rgba(255,255,255,0.25),0_6px_20px_rgba(0,0,0,0.4)] transition-all duration-300 hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.35),0_10px_28px_rgba(0,0,0,0.5)] hover:-translate-y-0.5 active:translate-y-0 text-sm font-bold"
                   >
                     <span>Search all institutions</span>
                     <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white/20 transition-transform duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-0.5">
@@ -1182,20 +1182,20 @@ export default async function HomePage() {
                   </Button.Link>
                   <Link
                     href="/results"
-                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-black/[0.08] bg-white/80 px-6 py-3 text-sm font-bold font-nunito text-sn-ink transition-all hover:bg-white hover:border-black/[0.15] shadow-[inset_0_1px_1px_rgba(255,255,255,0.9)] motion-control"
+                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/[0.12] bg-white/[0.05] px-6 py-3 text-sm font-bold font-nunito text-white transition-all hover:bg-white/[0.1] hover:border-white/[0.2] shadow-[inset_0_1px_1px_rgba(255,255,255,0.06)] motion-control"
                   >
                     Check results
                   </Link>
                 </div>
 
                 {/* Trust badge matching "Secure Stripe payment / Free for students" */}
-                <p className="mt-4 text-xs font-nunito font-semibold text-emerald-800 flex items-center justify-center gap-1.5">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                <p className="mt-4 text-xs font-nunito font-semibold text-[#CAFFA6] flex items-center justify-center gap-1.5">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#CAFFA6]" />
                   <span>100% Free Public Guide · No student registration fees</span>
                 </p>
 
                 {/* Email Alert Newsletter Form */}
-                <div className="mx-auto mt-10 max-w-md border-t border-black/[0.06] pt-8 lg:mt-12 lg:pt-10">
+                <div className="mx-auto mt-10 max-w-md border-t border-white/[0.08] pt-8 lg:mt-12 lg:pt-10">
                   <p className="font-bold font-nunito text-sm text-sn-ink flex items-center gap-2 justify-center">
                     <Bell className="w-4 h-4 text-sn-primary" aria-hidden="true" />
                     Get result alerts in your inbox

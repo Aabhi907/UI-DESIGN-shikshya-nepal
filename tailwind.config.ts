@@ -68,21 +68,21 @@ const config: Config = {
           600: '#9de76d',
         },
         // ── Dark sections ─────────────────────────────
-        navy: '#142C35',
+        navy: '#0a0b0d',
         // ── Surfaces & cards ─────────────────────────
-        card:    '#ffffff',
-        surface: '#ffffff',
+        card:    '#151518',
+        surface: '#151518',
         // ── Text ─────────────────────────────────────
         ink: {
-          DEFAULT:   '#142C35',
-          secondary: '#3D5963',
-          muted:     '#6D8690',
+          DEFAULT:   '#f5f5f6',
+          secondary: '#c4c4cc',
+          muted:     '#8e8e96',
         },
         // ── Borders ──────────────────────────────────
         border: {
-          DEFAULT: '#E1E8DC',
-          strong:  '#CBD6C3',
-          subtle:  '#FAFBF4',
+          DEFAULT: 'rgba(255, 255, 255, 0.08)',
+          strong:  'rgba(255, 255, 255, 0.14)',
+          subtle:  'rgba(255, 255, 255, 0.04)',
         },
         // ── Brand alias (backward compat) ────────────
         brand: {
