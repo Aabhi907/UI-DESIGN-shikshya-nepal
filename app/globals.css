@@ -22,6 +22,16 @@
   --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.07);
   --measure-reading: 68ch;
 
+  /* ── Himalayan Calm Palette ────────────────────────────────── */
+  --sn-himalaya-bg:      #F7FAF9;
+  --sn-himalaya-card:    #FFFFFF;
+  --sn-teal-deep:        #0B2B33;
+  --sn-teal-mid:         #1F4E5F;
+  --sn-saffron:          #F5A524;
+  --sn-crimson:          #D7263D;
+  --sn-sky-1:            #BFE3F0;
+  --sn-sky-2:            #E6F2F5;
+
   /* ── Phase 1 design system (adithnarein.com aesthetic: #fcfeff) ── */
   --ground:        #fcfeff;
   --surface:       #ffffff;
@@ -88,6 +98,16 @@
   --border-strong: rgba(255, 255, 255, 0.14);
   --shadow-rest: 0 1px 3px rgba(0, 0, 0, 0.5), 0 8px 24px rgba(0, 0, 0, 0.3);
   --shadow-hover: 0 16px 40px rgba(0, 0, 0, 0.6);
+
+  /* ── Himalayan Calm Dark Palette ────────────────────────────── */
+  --sn-himalaya-bg:      #061519;
+  --sn-himalaya-card:    #0C2229;
+  --sn-teal-deep:        #E6F2F5;
+  --sn-teal-mid:         #BFE3F0;
+  --sn-saffron:          #F5A524;
+  --sn-crimson:          #D7263D;
+  --sn-sky-1:            rgba(191, 227, 240, 0.15);
+  --sn-sky-2:            rgba(31, 78, 95, 0.2);
 
   /* ── Phase 1 design system (Clean Minimal Dark Slate) ── */
   --ground:        #0E1013;
@@ -633,3 +653,132 @@
 @keyframes motion-dialog-enter { from { opacity: 0; transform: translateY(10px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
 @keyframes motion-drawer-enter { from { transform: translateX(100%); } to { transform: translateX(0); } }
 @keyframes motion-sheet-enter { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── Himalayan Calm Hero Utilities & Keyframes ─────────────── */
+@keyframes hero-aurora-drift {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.45;
+  }
+  33% {
+    transform: translate(25px, -18px) scale(1.08);
+    opacity: 0.6;
+  }
+  66% {
+    transform: translate(-20px, 12px) scale(0.96);
+    opacity: 0.4;
+  }
+}
+
+@keyframes hero-shimmer-loop {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes hero-underline-draw {
+  from {
+    stroke-dashoffset: 140;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes hero-search-border-spin {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.hero-aurora-glow-1 {
+  animation: hero-aurora-drift 24s ease-in-out infinite;
+}
+
+.hero-aurora-glow-2 {
+  animation: hero-aurora-drift 32s ease-in-out infinite reverse;
+}
+
+.hero-text-shimmer {
+  background: linear-gradient(
+    90deg,
+    #0B2B33 0%,
+    #1F4E5F 25%,
+    #F5A524 50%,
+    #1F4E5F 75%,
+    #0B2B33 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: hero-shimmer-loop 6s linear infinite;
+}
+
+.dark .hero-text-shimmer {
+  background: linear-gradient(
+    90deg,
+    #BFE3F0 0%,
+    #E6F2F5 25%,
+    #F5A524 50%,
+    #E6F2F5 75%,
+    #BFE3F0 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: hero-shimmer-loop 6s linear infinite;
+}
+
+.hero-underline-path {
+  stroke-dasharray: 140;
+  stroke-dashoffset: 0;
+  animation: hero-underline-draw 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.5s backwards;
+}
+
+.hero-search-gradient-border {
+  position: relative;
+}
+
+.hero-search-gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: -1.5px;
+  border-radius: 22px;
+  padding: 1.5px;
+  background: linear-gradient(135deg, #1F4E5F, #BFE3F0, #F5A524, #1F4E5F);
+  background-size: 300% 300%;
+  animation: hero-search-border-spin 4s ease infinite;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* Hide scrollbar for mobile trending chips */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-aurora-glow-1,
+  .hero-aurora-glow-2,
+  .hero-text-shimmer,
+  .hero-underline-path,
+  .hero-search-gradient-border::before {
+    animation: none !important;
+  }
+}
+

@@ -3,7 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import { FACULTIES } from '@/lib/utils'
-import HeroSearch from '@/components/ui/HeroSearch'
+import Hero from '@/components/home/Hero'
 import ResultCard from '@/components/results/ResultCard'
 import NoticeCard from '@/components/notices/NoticeCard'
 import EmailSubscribe from '@/components/notifications/EmailSubscribe'
@@ -18,7 +18,6 @@ import FeaturedCollegeCard, { CAMPUS_FALLBACK_IMAGES } from '@/components/design
 import TestimonialsColumns from '@/components/home/TestimonialsColumns'
 import HomeScrollMotion from '@/components/home/HomeScrollMotion'
 import SikshyaDemo from '@/components/sikshya-demo/SikshyaDemo'
-import { RevealGroup } from '@/components/motion/MotionPrimitives'
 import {
   Building2,
   FileText,
@@ -156,108 +155,9 @@ export default async function HomePage() {
     <div>
       <HomeScrollMotion />
       {/* ════════════════════════════════════════════════════════
-          1. HERO — Pure Centered Minimalist Architecture (Matching Image 1)
+          1. HERO — Himalayan Calm, Single Focused Action
       ════════════════════════════════════════════════════════ */}
-      <section data-home-motion className="relative border-b border-sn-border bg-sn-ground overflow-hidden py-20 lg:py-28">
-        {/* Soft, ultra-subtle ambient glow */}
-        <div className="pointer-events-none absolute -top-44 left-1/2 h-[520px] w-[820px] -translate-x-1/2 rounded-full apple-glow blur-3xl opacity-60" aria-hidden="true" />
-
-        <RevealGroup className="mx-auto max-w-4xl px-5 sm:px-8 text-center relative z-10">
-          {/* Eyebrow Pill matching Voxt's [NEW] Voice input app -> */}
-          <Link
-            href="/admissions?deadline=open"
-            className="apple-pill group inline-flex items-center gap-2.5 rounded-full bg-black/[0.04] dark:bg-white/[0.06] px-3.5 py-1.5 text-xs font-bold font-nunito text-slate-800 dark:text-sn-ink shadow-sm hover:shadow transition-all duration-200 mb-8 border border-black/[0.08] dark:border-white/[0.12]"
-          >
-            <span className="rounded-full bg-primary/10 dark:bg-[#CAFFA6]/15 px-2.5 py-0.5 text-[10px] font-bold text-primary dark:text-[#CAFFA6] uppercase tracking-wider border border-primary/20 dark:border-[#CAFFA6]/30">
-              2082 / 2026
-            </span>
-            <span>Intake deadlines &amp; board results live</span>
-            <ArrowRight className="h-3.5 w-3.5 text-slate-400 dark:text-sn-ink-muted group-hover:text-primary dark:group-hover:text-[#CAFFA6] group-hover:translate-x-0.5 transition-all" />
-          </Link>
-
-          {/* Centered Headline matching "Speak clearly. Adapt to context." */}
-          <h1
-            className="font-baloo font-extrabold text-sn-ink text-balance tracking-[-0.035em] leading-[1.06] mb-6"
-            style={{ fontSize: 'clamp(2.75rem, 6vw, 4.4rem)' }}
-          >
-            Decide what to study. Find where.
-          </h1>
-
-          {/* Centered Subtext matching Voxt's clean body copy */}
-          <p className="mx-auto mb-10 max-w-2xl text-base sm:text-lg leading-relaxed font-nunito text-sn-ink-soft">
-            Verified colleges, courses and career pathways for +2 and university in Nepal. Sourced, dated and unbiased guidance from official boards.
-          </p>
-
-          {/* Centered Spotlight Search */}
-          <div className="mx-auto max-w-2xl mb-8 text-left">
-            <HeroSearch />
-          </div>
-
-          {/* Centered Action Button Pair matching [Star on GitHub] [ Mac Download] */}
-          <div className="flex flex-wrap items-center justify-center gap-3 mb-10">
-            <Button.Link
-              href="/colleges"
-              variant="primary"
-              className="group rounded-full px-6 py-3 shadow-[inset_0_1px_1px_rgba(255,255,255,0.25),0_6px_20px_rgba(0,0,0,0.4)] transition-all duration-300 hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.35),0_10px_28px_rgba(0,0,0,0.5)] hover:-translate-y-0.5 active:translate-y-0 text-sm font-bold"
-            >
-              <span>Explore colleges</span>
-              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/20 transition-transform duration-200 group-hover:translate-x-0.5">
-                <ArrowRight className="h-3 w-3" aria-hidden="true" />
-              </span>
-            </Button.Link>
-            <Button.Link
-              href="/programs"
-              variant="secondary"
-              className="rounded-full px-6 py-3 border-black/[0.12] dark:border-white/[0.1] bg-black/[0.03] dark:bg-white/[0.04] backdrop-blur-sm shadow-sm hover:border-black/[0.2] dark:hover:border-white/[0.2] hover:bg-black/[0.06] dark:hover:bg-white/[0.08] transition-all duration-200 text-sm font-bold text-slate-800 dark:text-white"
-            >
-              Browse programs
-            </Button.Link>
-          </div>
-
-          {/* Social Proof Counter matching "2819+ Mac users and counting" */}
-          <div className="flex items-center justify-center gap-3 text-xs font-nunito text-slate-500 dark:text-sn-ink-muted">
-            <div className="flex -space-x-1.5 overflow-hidden">
-              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-sn-tint-peach text-[10px] font-bold text-primary dark:text-[#CAFFA6] ring-2 ring-white dark:ring-[#0f1012]">TU</span>
-              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-sn-tint-mint text-[10px] font-bold text-primary dark:text-[#CAFFA6] ring-2 ring-white dark:ring-[#0f1012]">KU</span>
-              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-sn-tint-butter text-[10px] font-bold text-amber-700 dark:text-[#CAFFA6] ring-2 ring-white dark:ring-[#0f1012]">PU</span>
-              <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-sn-tint-lilac text-[10px] font-bold text-indigo-700 dark:text-[#CAFFA6] ring-2 ring-white dark:ring-[#0f1012]">NEB</span>
-            </div>
-            <span>
-              <strong className="text-slate-900 dark:text-sn-ink font-bold">1,200+</strong> colleges &amp; <strong className="text-slate-900 dark:text-sn-ink font-bold">450+</strong> programs cataloged across Nepal
-            </span>
-          </div>
-        </RevealGroup>
-      </section>
-
-      {/* ════════════════════════════════════════════════════════
-          2. STATS STRIP — Luminous verification ribbon
-      ════════════════════════════════════════════════════════ */}
-      {heroStats.length > 0 && (
-        <section data-home-motion className="border-b border-black/[0.08] dark:border-white/[0.08] bg-white/60 dark:bg-[#151518]/60 backdrop-blur-md py-8 lg:py-10">
-          <div className={CONTAINER}>
-            <div className="grid grid-cols-2 gap-6 sm:grid-cols-4 sm:divide-x sm:divide-black/[0.08] dark:sm:divide-white/[0.08]">
-              {heroStats.map((stat) => (
-                <div key={stat.label} className="text-center sm:px-6">
-                  <p className="font-baloo text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-sn-ink tabular-nums tracking-tight">
-                    {stat.value.toLocaleString()}
-                  </p>
-                  <p className="mt-1 font-nunito text-xs sm:text-sm font-bold text-slate-500 dark:text-sn-ink-muted">
-                    {stat.label} cataloged &amp; dated
-                  </p>
-                </div>
-              ))}
-              <div className="text-center sm:px-6">
-                <p className="font-baloo text-3xl sm:text-4xl font-extrabold text-primary dark:text-[#CAFFA6] tabular-nums tracking-tight">
-                  100%
-                </p>
-                <p className="mt-1 font-nunito text-xs sm:text-sm font-bold text-slate-500 dark:text-sn-ink-muted">
-                  Independent student guidance
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
+      <Hero heroStats={heroStats} admissions={admissions} />
 
       {/* ════════════════════════════════════════════════════════
           3. WHAT MAKES OUR GUIDE DIFFERENT — 4-Column Strip (Matching Image 2)

@@ -13,7 +13,7 @@ type NavigationLink = { label: string; href: string; sub?: NavigationItem[] }
 
 const navLinks: NavigationLink[] = [
   {
-    label: 'colleges',
+    label: 'Colleges',
     href: '/colleges',
     sub: [
       { label: 'All colleges', href: '/colleges' },
@@ -25,7 +25,7 @@ const navLinks: NavigationLink[] = [
     ],
   },
   {
-    label: 'programs',
+    label: 'Programs',
     href: '/programs',
     sub: [
       { label: 'All programs', href: '/programs' },
@@ -37,7 +37,7 @@ const navLinks: NavigationLink[] = [
     ],
   },
   {
-    label: 'admissions',
+    label: 'Admissions',
     href: '/admissions',
     sub: [
       { label: 'Open admissions', href: '/admissions?deadline=open' },
@@ -47,7 +47,7 @@ const navLinks: NavigationLink[] = [
     ],
   },
   {
-    label: 'scholarships',
+    label: 'Scholarships',
     href: '/scholarships',
     sub: [
       { label: 'Scholarships', href: '/scholarships' },
@@ -55,23 +55,23 @@ const navLinks: NavigationLink[] = [
     ],
   },
   {
-    label: 'guidance',
-    href: '/my-path',
-    sub: [
-      { label: 'My Path', href: '/my-path' },
-      { label: 'Career Explorer', href: '/careers' },
-      { label: 'GPA calculator', href: '/tools/gpa-calculator' },
-      { label: 'Study resources', href: '/study-resources' },
-      { label: 'Student wellbeing', href: '/wellbeing' },
-    ],
-  },
-  {
-    label: 'results',
+    label: 'Results',
     href: '/results',
     sub: [
       { label: 'Board results', href: '/results' },
       { label: 'University notices', href: '/notices' },
       { label: 'News & guides', href: '/news' },
+    ],
+  },
+  {
+    label: 'More',
+    href: '/my-path',
+    sub: [
+      { label: 'My Path', href: '/my-path', description: 'Student checklist & shortlists' },
+      { label: 'Career Explorer', href: '/careers', description: 'Degree pathways & jobs' },
+      { label: 'GPA Calculator', href: '/tools/gpa-calculator', description: 'NEB Grade 12 & SEE conversion' },
+      { label: 'Study Resources', href: '/study-resources', description: 'Syllabus & past papers' },
+      { label: 'Student Wellbeing', href: '/wellbeing', description: 'Mental health & guidance' },
     ],
   },
 ]
@@ -202,45 +202,51 @@ export default function Nav() {
         className="sticky top-3 z-50 mx-auto w-[calc(100%-1rem)] max-w-7xl transition-transform duration-200 ease-out motion-reduce:transform-none sm:w-[calc(100%-2rem)]"
         style={{ transform: `translateY(${navOffset}px)` }}
       >
-        <div className={`mx-auto flex h-14 items-center justify-between rounded-full border px-4 backdrop-blur-xl transition-all duration-200 sm:px-6 lg:px-8 ${
+        <div className={`mx-auto flex h-14 items-center justify-between rounded-full border px-4 backdrop-blur-xl transition-all duration-300 sm:px-6 lg:px-8 ${
           scrolled
-            ? 'bg-white/95 dark:bg-[#0E1013]/92 border-black/[0.08] dark:border-white/[0.12] shadow-md dark:shadow-[0_8px_32px_rgba(0,0,0,0.5)]'
-            : 'bg-white/85 dark:bg-[#0E1013]/80 border-black/[0.06] dark:border-white/[0.08] shadow-sm dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)]'
+            ? 'bg-white/95 dark:bg-[#061519]/95 border-black/[0.1] dark:border-white/[0.14] shadow-[0_12px_36px_rgba(11,43,51,0.1)] dark:shadow-[0_12px_36px_rgba(0,0,0,0.7)] backdrop-blur-2xl'
+            : 'bg-white/80 dark:bg-[#061519]/80 border-black/[0.06] dark:border-white/[0.08] shadow-[0_4px_16px_rgba(0,0,0,0.04)] backdrop-blur-xl'
         }`}>
           {/* Left Cluster: Wordmark + Minimal Quiet Nav Links */}
-          <div className="flex items-center gap-7 lg:gap-9">
+          <div className="flex items-center gap-6 lg:gap-8">
             <Wordmark />
 
-            <nav className="hidden lg:flex items-center gap-5 xl:gap-6" aria-label="Main Navigation">
-              {navLinks.map((link) => (
-                <div
-                  key={link.label}
-                  className="relative sn-nav-dropdown"
-                  onMouseEnter={() => setOpenDrop(link.label)}
-                  onMouseLeave={() => setOpenDrop(null)}
-                >
-                  {link.sub ? (
-                    <button
-                      onClick={() => setOpenDrop(openDrop === link.label ? null : link.label)}
-                      aria-expanded={openDrop === link.label}
-                      aria-controls={`sn-desktop-nav-${link.label.toLowerCase().replaceAll(' ', '-')}`}
-                      className={`motion-control flex items-center gap-1 text-[13px] font-sans lowercase transition-colors duration-150 py-1 ${
-                        isActive(link.href) ? 'text-slate-950 dark:text-white font-bold' : 'text-slate-700 dark:text-sn-ink-soft font-semibold dark:font-medium hover:text-slate-950 dark:hover:text-white'
-                      }`}
-                    >
-                      {link.label}
-                      <ChevronDown className={`w-3 h-3 text-slate-500 dark:text-sn-ink-muted transition-transform duration-200 ${openDrop === link.label ? 'rotate-180' : ''}`} />
-                    </button>
-                  ) : (
-                    <Link
-                      href={link.href}
-                      className={`motion-control text-[13px] font-sans lowercase transition-colors duration-150 py-1 ${
-                        isActive(link.href) ? 'text-slate-950 dark:text-white font-bold' : 'text-slate-700 dark:text-sn-ink-soft font-semibold dark:font-medium hover:text-slate-950 dark:hover:text-white'
-                      }`}
-                    >
-                      {link.label}
-                    </Link>
-                  )}
+            <nav className="hidden lg:flex items-center gap-1 xl:gap-1.5" aria-label="Main Navigation">
+              {navLinks.map((link) => {
+                const active = isActive(link.href)
+                return (
+                  <div
+                    key={link.label}
+                    className="relative sn-nav-dropdown"
+                    onMouseEnter={() => setOpenDrop(link.label)}
+                    onMouseLeave={() => setOpenDrop(null)}
+                  >
+                    {link.sub ? (
+                      <button
+                        onClick={() => setOpenDrop(openDrop === link.label ? null : link.label)}
+                        aria-expanded={openDrop === link.label}
+                        aria-controls={`sn-desktop-nav-${link.label.toLowerCase().replaceAll(' ', '-')}`}
+                        className={`motion-control flex items-center gap-1 text-[13px] font-nunito tracking-tight transition-all duration-150 px-3 py-1.5 rounded-full ${
+                          active
+                            ? 'text-slate-950 dark:text-white bg-black/[0.05] dark:bg-white/[0.08] font-bold shadow-sm'
+                            : 'text-slate-600 dark:text-slate-300 font-semibold hover:text-slate-950 dark:hover:text-white hover:bg-black/[0.03] dark:hover:bg-white/[0.05]'
+                        }`}
+                      >
+                        {link.label}
+                        <ChevronDown className={`w-3 h-3 text-slate-400 dark:text-slate-500 transition-transform duration-200 ${openDrop === link.label ? 'rotate-180' : ''}`} />
+                      </button>
+                    ) : (
+                      <Link
+                        href={link.href}
+                        className={`motion-control inline-block text-[13px] font-nunito tracking-tight transition-all duration-150 px-3 py-1.5 rounded-full ${
+                          active
+                            ? 'text-slate-950 dark:text-white bg-black/[0.05] dark:bg-white/[0.08] font-bold shadow-sm'
+                            : 'text-slate-600 dark:text-slate-300 font-semibold hover:text-slate-950 dark:hover:text-white hover:bg-black/[0.03] dark:hover:bg-white/[0.05]'
+                        }`}
+                      >
+                        {link.label}
+                      </Link>
+                    )}
 
                   {link.sub && openDrop === link.label && (
                     <div className={`absolute top-full z-50 pt-2 ${link.label === 'results' ? 'right-0' : 'left-0'}`}>
@@ -260,7 +266,8 @@ export default function Nav() {
                     </div>
                   )}
                 </div>
-              ))}
+              )
+            })}
             </nav>
           </div>
 
