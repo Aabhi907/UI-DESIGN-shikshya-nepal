@@ -37,33 +37,39 @@ export default function GpaCalculatorPage() {
       </section>
 
       <main className="mx-auto grid max-w-4xl gap-6 px-4 py-8 sm:px-6 lg:grid-cols-[1fr_280px]">
-        <section className="rounded-2xl border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#151518] p-5 sm:p-7 shadow-sm dark:shadow-[0_18px_40px_-28px_rgba(0,0,0,0.5)]">
+        <section className="apple-card rounded-[24px] p-6 sm:p-8 backdrop-blur-md">
           <div className="flex items-center justify-between gap-3">
-            <h2 className="font-display text-xl font-bold text-slate-900 dark:text-[#f5f5f6]">Your subjects</h2>
+            <div>
+              <h2 className="font-display text-xl font-bold text-slate-900 dark:text-[#f5f5f6]">Your subjects</h2>
+              <p className="mt-0.5 text-xs text-slate-500 dark:text-[#8e8e96] font-nunito">Enter your courses and grading marks</p>
+            </div>
             <button
               onClick={() => setSubjects(initial())}
-              className="inline-flex min-h-11 items-center gap-1.5 rounded-lg px-3 text-sm font-semibold text-slate-500 dark:text-[#8e8e96] hover:bg-black/[0.05] dark:hover:bg-white/[0.06] hover:text-slate-900 dark:hover:text-[#f5f5f6] motion-control transition-colors"
+              className="inline-flex min-h-10 items-center gap-1.5 rounded-full px-3.5 text-xs font-semibold text-slate-500 dark:text-[#8e8e96] bg-black/[0.03] dark:bg-white/[0.04] border border-black/[0.06] dark:border-white/[0.08] hover:bg-black/[0.06] dark:hover:bg-white/[0.08] hover:text-slate-900 dark:hover:text-[#f5f5f6] active:scale-[0.98] transition-all"
             >
-              <RotateCcw className="h-4 w-4" />
+              <RotateCcw className="h-3.5 w-3.5" />
               Reset
             </button>
           </div>
 
-          <div className="mt-5 space-y-3">
+          <div className="mt-6 space-y-3">
             {subjects.map((subject, index) => (
-              <div key={subject.id} className="grid gap-2 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06] p-3 sm:grid-cols-[1fr_130px_80px_44px] sm:items-center">
+              <div
+                key={subject.id}
+                className="group/row grid gap-2.5 rounded-[18px] bg-slate-50/80 dark:bg-white/[0.03] border border-black/[0.05] dark:border-white/[0.06] p-3 transition-all duration-200 hover:border-black/[0.1] dark:hover:border-white/[0.12] sm:grid-cols-[1fr_130px_80px_44px] sm:items-center"
+              >
                 <input
                   aria-label={`Subject ${index + 1} name`}
                   value={subject.name}
                   onChange={event => update(subject.id, { name: event.target.value })}
                   placeholder={`Subject ${index + 1}`}
-                  className="min-h-11 rounded-lg border border-black/[0.1] dark:border-white/[0.1] bg-white dark:bg-[#1c1c22] px-3 py-2 text-sm text-slate-900 dark:text-[#f5f5f6] placeholder-slate-400 dark:placeholder-[#8e8e96] outline-none focus:border-sn-primary focus:ring-1 focus:ring-sn-primary transition-all"
+                  className="min-h-11 rounded-xl border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#1c1c22] px-3.5 py-2 text-sm text-slate-900 dark:text-[#f5f5f6] placeholder-slate-400 dark:placeholder-[#8e8e96] outline-none focus:border-sn-primary focus:ring-2 focus:ring-sn-primary/20 transition-all"
                 />
                 <select
                   aria-label={`Grade for ${subject.name || `subject ${index + 1}`}`}
                   value={subject.grade}
                   onChange={event => update(subject.id, { grade: event.target.value })}
-                  className="min-h-11 rounded-lg border border-black/[0.1] dark:border-white/[0.1] bg-white dark:bg-[#1c1c22] px-3 py-2 text-sm text-slate-900 dark:text-[#f5f5f6] outline-none focus:border-sn-primary focus:ring-1 focus:ring-sn-primary transition-all"
+                  className="min-h-11 rounded-xl border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#1c1c22] px-3 py-2 text-sm text-slate-900 dark:text-[#f5f5f6] outline-none focus:border-sn-primary focus:ring-2 focus:ring-sn-primary/20 transition-all"
                 >
                   <option value="" className="bg-white dark:bg-[#1c1c22] text-slate-500 dark:text-[#8e8e96]">Select grade</option>
                   {grades.map(grade => (
@@ -79,13 +85,13 @@ export default function GpaCalculatorPage() {
                   aria-label={`Credit for ${subject.name || `subject ${index + 1}`}`}
                   value={subject.credit}
                   onChange={event => update(subject.id, { credit: Number(event.target.value) })}
-                  className="min-h-11 rounded-lg border border-black/[0.1] dark:border-white/[0.1] bg-white dark:bg-[#1c1c22] px-3 py-2 text-sm text-slate-900 dark:text-[#f5f5f6] outline-none focus:border-sn-primary focus:ring-1 focus:ring-sn-primary transition-all"
+                  className="min-h-11 rounded-xl border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#1c1c22] px-3 py-2 text-sm text-slate-900 dark:text-[#f5f5f6] outline-none focus:border-sn-primary focus:ring-2 focus:ring-sn-primary/20 transition-all"
                 />
                 {subjects.length > 1 ? (
                   <button
                     onClick={() => setSubjects(all => all.filter(item => item.id !== subject.id))}
                     aria-label={`Remove ${subject.name || 'subject'}`}
-                    className="flex h-11 w-11 items-center justify-center rounded-lg text-slate-400 dark:text-[#8e8e96] hover:bg-red-500/10 hover:text-red-500 motion-control transition-colors"
+                    className="flex h-11 w-11 items-center justify-center rounded-xl text-slate-400 dark:text-[#8e8e96] hover:bg-red-500/10 hover:text-red-500 active:scale-[0.95] transition-all"
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>
@@ -98,7 +104,7 @@ export default function GpaCalculatorPage() {
 
           <button
             onClick={add}
-            className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-xl border border-black/[0.1] dark:border-white/[0.15] bg-black/[0.03] dark:bg-white/[0.05] px-4 py-2.5 text-sm font-bold text-primary dark:text-[#CAFFA6] hover:bg-black/[0.06] dark:hover:bg-white/[0.08] hover:border-black/[0.18] dark:hover:border-white/[0.25] transition-all motion-control"
+            className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-xl border border-black/[0.08] dark:border-white/[0.12] bg-black/[0.03] dark:bg-white/[0.04] px-4 py-2.5 text-sm font-bold text-slate-900 dark:text-[#CAFFA6] hover:bg-black/[0.06] dark:hover:bg-white/[0.08] hover:border-black/[0.15] dark:hover:border-white/[0.2] active:scale-[0.98] transition-all"
           >
             <Plus className="h-4 w-4" />
             Add subject
@@ -110,18 +116,23 @@ export default function GpaCalculatorPage() {
         </section>
 
         <aside className="space-y-5">
-          <section className="rounded-2xl bg-gradient-to-br from-[#204654] to-[#102933] dark:from-[#173743] dark:to-[#0a0b0d] p-6 text-white border border-white/[0.08] shadow-md dark:shadow-[0_18px_40px_-28px_rgba(0,0,0,0.7)]">
-            <Calculator className="h-6 w-6 text-[#CAFFA6]" />
-            <p className="mt-5 text-sm font-semibold text-white/70">Calculated GPA</p>
-            <p className="mt-1 font-mono text-5xl font-extrabold text-[#CAFFA6] tracking-tight">
+          <section className="apple-card apple-stat-card relative overflow-hidden rounded-[24px] p-6 text-white border border-white/[0.12] shadow-xl">
+            <div className="flex items-center justify-between">
+              <Calculator className="h-6 w-6 text-[#CAFFA6]" />
+              <span className="rounded-full bg-white/[0.1] px-2.5 py-0.5 text-[11px] font-mono font-semibold text-white/80">
+                Official scale
+              </span>
+            </div>
+            <p className="mt-5 text-xs font-semibold uppercase tracking-wider text-white/70">Calculated GPA</p>
+            <p className="mt-1 font-mono text-5xl font-extrabold text-[#CAFFA6] tracking-tight transition-transform duration-200">
               {result.gpa === null ? '—' : result.gpa.toFixed(2)}
             </p>
-            <p className="mt-3 text-sm text-white/80">
-              {result.completed} subject{result.completed === 1 ? '' : 's'} graded
+            <p className="mt-3 text-xs text-white/80">
+              {result.completed} of {subjects.length} subject{subjects.length === 1 ? '' : 's'} graded
             </p>
           </section>
 
-          <section className="rounded-2xl border border-amber-600/20 dark:border-amber-500/20 bg-amber-50 dark:bg-amber-500/10 p-5 text-sm leading-6 text-amber-900 dark:text-amber-200/90">
+          <section className="apple-card rounded-[22px] border border-amber-600/20 dark:border-amber-500/20 bg-amber-500/[0.06] dark:bg-amber-500/[0.08] p-5 text-sm leading-6 text-amber-900 dark:text-amber-200/90">
             <h2 className="font-bold text-amber-900 dark:text-amber-300">Important</h2>
             <p className="mt-2 text-xs sm:text-sm text-amber-800 dark:text-amber-200/80 leading-relaxed">
               This is an estimate based on entered grades and credits. Colleges may use their own eligibility rules, subject requirements, or entrance examinations. Confirm with the official admission notice.
@@ -130,7 +141,7 @@ export default function GpaCalculatorPage() {
 
           <Link
             href="/colleges"
-            className="block min-h-11 rounded-xl bg-sn-primary px-4 py-3 text-center text-sm font-bold text-white hover:bg-sn-primary-hover shadow-sm transition-all motion-control"
+            className="apple-control block min-h-12 rounded-[18px] bg-sn-primary px-4 py-3 text-center text-sm font-bold text-white shadow-sm hover:bg-sn-primary-hover hover:scale-[1.01] active:scale-[0.99] transition-all text-center flex items-center justify-center"
           >
             Explore colleges and programs
           </Link>

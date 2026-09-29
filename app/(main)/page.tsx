@@ -276,46 +276,46 @@ export default async function HomePage() {
           </div>
 
           <div className="apple-feature-grid grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
-            <article className="apple-feature-card group relative min-h-[248px] overflow-hidden rounded-[24px] border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#151518]/90 p-6 text-center shadow-sm dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.06),0_4px_18px_rgba(0,0,0,0.4)] backdrop-blur-sm sm:text-left">
-              <span className="absolute right-5 top-5 text-[10px] font-bold tracking-[0.14em] text-slate-400 dark:text-sn-ink-muted/60">01</span>
-              <div className="relative inline-flex h-12 w-12 items-center justify-center rounded-[18px] bg-sn-tint-mint text-primary dark:text-[#CAFFA6] shadow-sm dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_4px_10px_rgba(0,0,0,0.3)] transition-transform duration-300 group-hover:scale-[1.04]">
+            <article className="apple-feature-card group relative min-h-[240px] rounded-[22px] p-6 text-center backdrop-blur-md sm:text-left cursor-default">
+              <span className="absolute right-5 top-5 text-[11px] font-mono font-semibold tracking-wider text-slate-400 dark:text-sn-ink-muted/50">01</span>
+              <div className="relative inline-flex h-12 w-12 items-center justify-center rounded-[16px] bg-sn-tint-mint text-primary dark:text-[#CAFFA6] transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06] group-hover:-translate-y-0.5">
                 <ShieldCheck className="h-5 w-5" />
               </div>
               <h3 className="relative mt-5 font-baloo text-xl font-bold text-slate-900 dark:text-sn-ink">Zero paid rankings</h3>
-              <p className="relative mt-2.5 text-sm font-nunito leading-6 text-slate-600 dark:text-sn-ink-soft">
+              <p className="relative mt-2 text-sm font-nunito leading-relaxed text-slate-600 dark:text-sn-ink-soft">
                 Colleges cannot pay for higher placement or skewed reviews. Real affiliation &amp; merit data always comes first.
               </p>
             </article>
 
-            <article className="apple-feature-card group relative min-h-[248px] overflow-hidden rounded-[24px] border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#151518]/90 p-6 text-center shadow-sm dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.06),0_4px_18px_rgba(0,0,0,0.4)] backdrop-blur-sm sm:text-left">
-              <span className="absolute right-5 top-5 text-[10px] font-bold tracking-[0.14em] text-slate-400 dark:text-sn-ink-muted/60">02</span>
-              <div className="relative inline-flex h-12 w-12 items-center justify-center rounded-[18px] bg-sn-tint-peach text-primary dark:text-[#A9E0F1] shadow-sm dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_4px_10px_rgba(0,0,0,0.3)] transition-transform duration-300 group-hover:scale-[1.04]">
+            <article className="apple-feature-card group relative min-h-[240px] rounded-[22px] p-6 text-center backdrop-blur-md sm:text-left cursor-default">
+              <span className="absolute right-5 top-5 text-[11px] font-mono font-semibold tracking-wider text-slate-400 dark:text-sn-ink-muted/50">02</span>
+              <div className="relative inline-flex h-12 w-12 items-center justify-center rounded-[16px] bg-sn-tint-peach text-primary dark:text-[#A9E0F1] transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06] group-hover:-translate-y-0.5">
                 <Clock className="h-5 w-5" />
               </div>
               <h3 className="relative mt-5 font-baloo text-xl font-bold text-slate-900 dark:text-sn-ink">Dated &amp; sourced</h3>
-              <p className="relative mt-2.5 text-sm font-nunito leading-6 text-slate-600 dark:text-sn-ink-soft">
+              <p className="relative mt-2 text-sm font-nunito leading-relaxed text-slate-600 dark:text-sn-ink-soft">
                 Every fee figure, seat quota, and deadline displays the exact date it was checked against official notices.
               </p>
             </article>
 
-            <article className="apple-feature-card group relative min-h-[248px] overflow-hidden rounded-[24px] border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#151518]/90 p-6 text-center shadow-sm dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.06),0_4px_18px_rgba(0,0,0,0.4)] backdrop-blur-sm sm:text-left">
-              <span className="absolute right-5 top-5 text-[10px] font-bold tracking-[0.14em] text-slate-400 dark:text-sn-ink-muted/60">03</span>
-              <div className="relative inline-flex h-12 w-12 items-center justify-center rounded-[18px] bg-sn-tint-butter text-amber-700 dark:text-[#F7F9E1] shadow-sm dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_4px_10px_rgba(0,0,0,0.3)] transition-transform duration-300 group-hover:scale-[1.04]">
+            <article className="apple-feature-card group relative min-h-[240px] rounded-[22px] p-6 text-center backdrop-blur-md sm:text-left cursor-default">
+              <span className="absolute right-5 top-5 text-[11px] font-mono font-semibold tracking-wider text-slate-400 dark:text-sn-ink-muted/50">03</span>
+              <div className="relative inline-flex h-12 w-12 items-center justify-center rounded-[16px] bg-sn-tint-butter text-amber-700 dark:text-[#F7F9E1] transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06] group-hover:-translate-y-0.5">
                 <FileText className="h-5 w-5" />
               </div>
               <h3 className="relative mt-5 font-baloo text-xl font-bold text-slate-900 dark:text-sn-ink">Official gazette links</h3>
-              <p className="relative mt-2.5 text-sm font-nunito leading-6 text-slate-600 dark:text-sn-ink-soft">
+              <p className="relative mt-2 text-sm font-nunito leading-relaxed text-slate-600 dark:text-sn-ink-soft">
                 Direct verification links to TU, KU, Pokhara, NEB and CTEVT portals without confusing redirects or ads.
               </p>
             </article>
 
-            <article className="apple-feature-card group relative min-h-[248px] overflow-hidden rounded-[24px] border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#151518]/90 p-6 text-center shadow-sm dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.06),0_4px_18px_rgba(0,0,0,0.4)] backdrop-blur-sm sm:text-left">
-              <span className="absolute right-5 top-5 text-[10px] font-bold tracking-[0.14em] text-slate-400 dark:text-sn-ink-muted/60">04</span>
-              <div className="relative inline-flex h-12 w-12 items-center justify-center rounded-[18px] bg-sn-tint-lilac text-indigo-700 dark:text-[#D9EEF7] shadow-sm dark:shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),0_4px_10px_rgba(0,0,0,0.3)] transition-transform duration-300 group-hover:scale-[1.04]">
+            <article className="apple-feature-card group relative min-h-[240px] rounded-[22px] p-6 text-center backdrop-blur-md sm:text-left cursor-default">
+              <span className="absolute right-5 top-5 text-[11px] font-mono font-semibold tracking-wider text-slate-400 dark:text-sn-ink-muted/50">04</span>
+              <div className="relative inline-flex h-12 w-12 items-center justify-center rounded-[16px] bg-sn-tint-lilac text-indigo-700 dark:text-[#D9EEF7] transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06] group-hover:-translate-y-0.5">
                 <GraduationCap className="h-5 w-5" />
               </div>
               <h3 className="relative mt-5 font-baloo text-xl font-bold text-slate-900 dark:text-sn-ink">100% Free for students</h3>
-              <p className="relative mt-2.5 text-sm font-nunito leading-6 text-slate-600 dark:text-sn-ink-soft">
+              <p className="relative mt-2 text-sm font-nunito leading-relaxed text-slate-600 dark:text-sn-ink-soft">
                 No subscription, no paywalled GPA calculators, and no gated guides. Public access for every student in Nepal.
               </p>
             </article>
@@ -382,10 +382,10 @@ export default async function HomePage() {
                 </div>
 
                 {/* Floating Clean Result Card matching Voxt's Semantic Rewrite card */}
-                <div className="apple-card rounded-[22px] border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#151518] p-5 sm:p-6 shadow-md dark:shadow-[0_12px_36px_rgba(0,0,0,0.5)] mt-4">
-                  <div className="flex items-center justify-between pb-3 border-b border-black/[0.08] dark:border-white/[0.08]">
-                    <div className="flex items-center gap-2">
-                      <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-sn-tint-peach text-primary dark:text-[#A9E0F1] font-bold text-xs font-mono">
+                <div className="apple-card rounded-[22px] p-5 sm:p-6 mt-4 backdrop-blur-md">
+                  <div className="flex items-center justify-between pb-3.5 border-b border-black/[0.06] dark:border-white/[0.08]">
+                    <div className="flex items-center gap-2.5">
+                      <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-sn-tint-peach text-primary dark:text-[#A9E0F1] font-bold text-xs font-mono">
                         NEB
                       </span>
                       <div>
@@ -395,7 +395,7 @@ export default async function HomePage() {
                     </div>
                   </div>
 
-                  <div className="py-4 space-y-2">
+                  <div className="py-4 space-y-2.5">
                     <div className="flex items-center justify-between text-xs font-nunito">
                       <span className="text-slate-500 dark:text-sn-ink-muted">Symbol Number:</span>
                       <span className="font-mono font-bold text-slate-900 dark:text-sn-ink">2401884X</span>
@@ -406,18 +406,18 @@ export default async function HomePage() {
                     </div>
                     <div className="flex items-center justify-between text-xs font-nunito">
                       <span className="text-slate-500 dark:text-sn-ink-muted">Calculated Standing:</span>
-                      <span className="font-bold text-emerald-800 dark:text-[#CAFFA6] bg-emerald-500/10 dark:bg-[#CAFFA6]/10 border border-emerald-500/20 dark:border-[#CAFFA6]/20 px-2 py-0.5 rounded">
+                      <span className="font-bold text-emerald-800 dark:text-[#CAFFA6] bg-emerald-500/10 dark:bg-[#CAFFA6]/10 border border-emerald-500/20 dark:border-[#CAFFA6]/20 px-2 py-0.5 rounded-lg">
                         First Division with Distinction · 3.65 GPA
                       </span>
                     </div>
                   </div>
 
                   {/* Clean Filter Pills at bottom matching [Shorter] [Clearer] [Formal] in Voxt */}
-                  <div className="pt-3 border-t border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between">
+                  <div className="pt-3.5 border-t border-black/[0.06] dark:border-white/[0.08] flex items-center justify-between">
                     <div className="flex gap-1.5 text-[11px] font-bold font-nunito">
-                      <span className="rounded-full bg-black/[0.04] dark:bg-white/[0.06] border border-black/[0.08] dark:border-white/[0.08] px-2.5 py-1 text-slate-800 dark:text-sn-ink">TU Balkhu</span>
-                      <span className="rounded-full bg-black/[0.04] dark:bg-white/[0.06] border border-black/[0.08] dark:border-white/[0.08] px-2.5 py-1 text-slate-800 dark:text-sn-ink">NEB</span>
-                      <span className="rounded-full bg-black/[0.04] dark:bg-white/[0.06] border border-black/[0.08] dark:border-white/[0.08] px-2.5 py-1 text-slate-800 dark:text-sn-ink">KU Dhulikhel</span>
+                      <span className="rounded-full bg-black/[0.04] dark:bg-white/[0.06] border border-black/[0.06] dark:border-white/[0.08] px-2.5 py-1 text-slate-800 dark:text-sn-ink">TU Balkhu</span>
+                      <span className="rounded-full bg-black/[0.04] dark:bg-white/[0.06] border border-black/[0.06] dark:border-white/[0.08] px-2.5 py-1 text-slate-800 dark:text-sn-ink">NEB</span>
+                      <span className="rounded-full bg-black/[0.04] dark:bg-white/[0.06] border border-black/[0.06] dark:border-white/[0.08] px-2.5 py-1 text-slate-800 dark:text-sn-ink">KU Dhulikhel</span>
                     </div>
                     <Link href="/results" className="text-xs font-bold text-primary dark:text-[#CAFFA6] hover:underline">
                       Verify &rarr;
@@ -447,10 +447,10 @@ export default async function HomePage() {
                 </div>
 
                 {/* Floating Admission Card */}
-                <div className="apple-card rounded-[22px] border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#151518] p-5 sm:p-6 shadow-md dark:shadow-[0_12px_36px_rgba(0,0,0,0.5)] mt-4">
-                  <div className="flex items-start justify-between pb-3 border-b border-black/[0.08] dark:border-white/[0.08]">
+                <div className="apple-card rounded-[22px] p-5 sm:p-6 mt-4 backdrop-blur-md">
+                  <div className="flex items-start justify-between pb-3.5 border-b border-black/[0.06] dark:border-white/[0.08]">
                     <div>
-                      <span className="rounded-full bg-[#A9E0F1]/20 border border-[#A9E0F1]/40 px-2 py-0.5 text-[10px] font-bold text-primary dark:text-[#A9E0F1] inline-block mb-1">
+                      <span className="rounded-full bg-[#A9E0F1]/20 border border-[#A9E0F1]/40 px-2.5 py-0.5 text-[10px] font-bold text-primary dark:text-[#A9E0F1] inline-block mb-1.5">
                         Closes in 4 days
                       </span>
                       <h4 className="font-baloo text-base font-bold text-slate-900 dark:text-sn-ink">Kathmandu University</h4>
@@ -458,25 +458,25 @@ export default async function HomePage() {
                     </div>
                   </div>
 
-                  <div className="py-3.5 space-y-2">
+                  <div className="py-3.5 space-y-2.5">
                     <div className="flex items-center justify-between text-xs font-nunito">
                       <span className="text-slate-500 dark:text-sn-ink-muted">Program:</span>
                       <span className="font-bold text-slate-900 dark:text-sn-ink">BTech in Artificial Intelligence</span>
                     </div>
                     <div className="flex items-center justify-between text-xs font-nunito">
-                      <span className="text-sn-ink-muted">Eligibility:</span>
-                      <span className="font-bold text-sn-ink">Min 2.4 GPA in +2 Science</span>
+                      <span className="text-slate-500 dark:text-sn-ink-muted">Eligibility:</span>
+                      <span className="font-bold text-slate-900 dark:text-sn-ink">Min 2.4 GPA in +2 Science</span>
                     </div>
                     <div className="flex items-center justify-between text-xs font-nunito">
-                      <span className="text-sn-ink-muted">Application Form:</span>
-                      <span className="font-bold text-[#CAFFA6]">Online Submission Available</span>
+                      <span className="text-slate-500 dark:text-sn-ink-muted">Application Form:</span>
+                      <span className="font-bold text-emerald-800 dark:text-[#CAFFA6]">Online Submission Available</span>
                     </div>
                   </div>
 
-                  <div className="pt-3 border-t border-white/[0.08] flex items-center justify-between">
+                  <div className="pt-3.5 border-t border-black/[0.06] dark:border-white/[0.08] flex items-center justify-between">
                     <Link
                       href="/admissions"
-                      className="rounded-full bg-sn-primary px-3.5 py-1.5 text-xs font-bold text-white hover:bg-sn-primary-hover transition-colors"
+                      className="apple-control rounded-full bg-sn-primary px-4 py-1.5 text-xs font-bold text-white hover:bg-sn-primary-hover active:scale-[0.98] transition-all"
                     >
                       View Deadline
                     </Link>
@@ -773,19 +773,19 @@ export default async function HomePage() {
             {/* Card 1: Check Results */}
             <Link
               href="/results"
-              className="apple-card group flex flex-col justify-between p-6 sm:p-7 !rounded-[20px] transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
+              className="apple-card group flex flex-col justify-between p-6 sm:p-7 rounded-[22px] backdrop-blur-md cursor-pointer"
             >
               <div>
                 <div className="flex items-center justify-between mb-5">
                   <IconTile icon={FileText} tint="peach" size={38} />
-                  <span className="rounded-full bg-sn-tint-peach/80 px-2.5 py-0.5 text-[11px] font-bold font-nunito text-sn-ink">
+                  <span className="rounded-full bg-sn-tint-peach/80 px-2.5 py-0.5 text-[11px] font-bold font-nunito text-slate-800 dark:text-sn-ink">
                     TU · KU · NEB
                   </span>
                 </div>
-                <h3 className="font-baloo text-xl font-bold text-sn-ink group-hover:text-sn-primary transition-colors">
+                <h3 className="font-baloo text-xl font-bold text-slate-900 dark:text-sn-ink group-hover:text-sn-primary transition-colors">
                   Board results
                 </h3>
-                <p className="mt-2 text-sm font-nunito text-sn-ink-soft leading-relaxed">
+                <p className="mt-2 text-sm font-nunito text-slate-600 dark:text-sn-ink-soft leading-relaxed">
                   Published examination results, mark sheet archives, and roll number lookup guides.
                 </p>
               </div>
@@ -798,19 +798,19 @@ export default async function HomePage() {
             {/* Card 2: Admissions */}
             <Link
               href="/admissions?deadline=open"
-              className="apple-card group flex flex-col justify-between p-6 sm:p-7 !rounded-[20px] transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
+              className="apple-card group flex flex-col justify-between p-6 sm:p-7 rounded-[22px] backdrop-blur-md cursor-pointer"
             >
               <div>
                 <div className="flex items-center justify-between mb-5">
                   <IconTile icon={CalendarClock} tint="mint" size={38} />
-                  <span className="rounded-full bg-sn-tint-mint/80 px-2.5 py-0.5 text-[11px] font-bold font-nunito text-sn-ink">
+                  <span className="rounded-full bg-sn-tint-mint/80 px-2.5 py-0.5 text-[11px] font-bold font-nunito text-slate-800 dark:text-sn-ink">
                     Live &amp; open
                   </span>
                 </div>
-                <h3 className="font-baloo text-xl font-bold text-sn-ink group-hover:text-sn-primary transition-colors">
+                <h3 className="font-baloo text-xl font-bold text-slate-900 dark:text-sn-ink group-hover:text-sn-primary transition-colors">
                   College admissions
                 </h3>
-                <p className="mt-2 text-sm font-nunito text-sn-ink-soft leading-relaxed">
+                <p className="mt-2 text-sm font-nunito text-slate-600 dark:text-sn-ink-soft leading-relaxed">
                   Active college intake deadlines, entrance eligibility, and application guidelines.
                 </p>
               </div>
@@ -823,19 +823,19 @@ export default async function HomePage() {
             {/* Card 3: Find Colleges */}
             <Link
               href="/colleges"
-              className="apple-card group flex flex-col justify-between p-6 sm:p-7 !rounded-[20px] transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
+              className="apple-card group flex flex-col justify-between p-6 sm:p-7 rounded-[22px] backdrop-blur-md cursor-pointer"
             >
               <div>
                 <div className="flex items-center justify-between mb-5">
                   <IconTile icon={GraduationCap} tint="lilac" size={38} />
-                  <span className="rounded-full bg-sn-tint-lilac/80 px-2.5 py-0.5 text-[11px] font-bold font-nunito text-sn-ink">
+                  <span className="rounded-full bg-sn-tint-lilac/80 px-2.5 py-0.5 text-[11px] font-bold font-nunito text-slate-800 dark:text-sn-ink">
                     1,200+ campuses
                   </span>
                 </div>
-                <h3 className="font-baloo text-xl font-bold text-sn-ink group-hover:text-sn-primary transition-colors">
+                <h3 className="font-baloo text-xl font-bold text-slate-900 dark:text-sn-ink group-hover:text-sn-primary transition-colors">
                   Find colleges
                 </h3>
-                <p className="mt-2 text-sm font-nunito text-sn-ink-soft leading-relaxed">
+                <p className="mt-2 text-sm font-nunito text-slate-600 dark:text-sn-ink-soft leading-relaxed">
                   Constituent and affiliated institutions across Nepal with verified fees and faculties.
                 </p>
               </div>
@@ -848,19 +848,19 @@ export default async function HomePage() {
             {/* Card 4: GPA Calculator */}
             <Link
               href="/tools/gpa-calculator"
-              className="apple-card group flex flex-col justify-between p-6 sm:p-7 !rounded-[20px] transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
+              className="apple-card group flex flex-col justify-between p-6 sm:p-7 rounded-[22px] backdrop-blur-md cursor-pointer"
             >
               <div>
                 <div className="flex items-center justify-between mb-5">
                   <IconTile icon={Calculator} tint="butter" size={38} />
-                  <span className="rounded-full bg-sn-tint-butter/80 px-2.5 py-0.5 text-[11px] font-bold font-nunito text-sn-ink">
+                  <span className="rounded-full bg-sn-tint-butter/80 px-2.5 py-0.5 text-[11px] font-bold font-nunito text-slate-800 dark:text-sn-ink">
                     SEE &amp; +2 scale
                   </span>
                 </div>
-                <h3 className="font-baloo text-xl font-bold text-sn-ink group-hover:text-sn-primary transition-colors">
+                <h3 className="font-baloo text-xl font-bold text-slate-900 dark:text-sn-ink group-hover:text-sn-primary transition-colors">
                   GPA calculator
                 </h3>
-                <p className="mt-2 text-sm font-nunito text-sn-ink-soft leading-relaxed">
+                <p className="mt-2 text-sm font-nunito text-slate-600 dark:text-sn-ink-soft leading-relaxed">
                   Instant GPA and percentage conversion calibrated specifically to Nepal curriculum.
                 </p>
               </div>
@@ -953,23 +953,23 @@ export default async function HomePage() {
                   <Link
                     key={u.short}
                     href={`/colleges?affiliation=${encodeURIComponent(u.affiliation)}`}
-                    className="apple-card group flex items-center justify-between gap-3.5 p-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+                    className="apple-card group flex items-center justify-between gap-3.5 p-4 rounded-[20px] backdrop-blur-md cursor-pointer"
                   >
                     <div className="flex items-center gap-3 min-w-0">
-                      <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl font-baloo text-base font-bold shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] border border-white/[0.08] ${tint}`}>
+                      <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl font-baloo text-base font-bold shadow-sm border border-black/[0.06] dark:border-white/[0.08] ${tint} transition-transform duration-300 group-hover:scale-[1.05]`}>
                         {u.short}
                       </span>
                       <div className="min-w-0">
-                        <p className="text-sm font-bold font-nunito leading-snug text-sn-ink group-hover:text-[#CAFFA6] transition-colors truncate">
+                        <p className="text-sm font-bold font-nunito leading-snug text-slate-900 dark:text-sn-ink group-hover:text-sn-primary dark:group-hover:text-[#CAFFA6] transition-colors truncate">
                           {u.label}
                         </p>
-                        <p className="text-xs font-nunito text-sn-ink-muted truncate">
+                        <p className="text-xs font-nunito text-slate-500 dark:text-sn-ink-muted truncate">
                           {u.affiliation}
                         </p>
                       </div>
                     </div>
                     {count > 0 && (
-                      <span className="shrink-0 rounded-full border border-white/[0.1] bg-white/[0.06] px-2.5 py-1 text-xs font-bold font-nunito tabular-nums text-sn-ink shadow-[inset_0_1px_1px_rgba(255,255,255,0.08)] group-hover:border-[#CAFFA6]/30 group-hover:text-[#CAFFA6] transition-colors">
+                      <span className="shrink-0 rounded-full border border-black/[0.08] dark:border-white/[0.1] bg-black/[0.04] dark:bg-white/[0.06] px-2.5 py-1 text-xs font-bold font-nunito tabular-nums text-slate-700 dark:text-sn-ink shadow-sm group-hover:border-sn-primary/30 dark:group-hover:border-[#CAFFA6]/30 group-hover:text-sn-primary dark:group-hover:text-[#CAFFA6] transition-colors">
                         {count}
                       </span>
                     )}
