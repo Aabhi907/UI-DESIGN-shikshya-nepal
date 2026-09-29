@@ -112,7 +112,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className="dark" suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -122,8 +122,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   var stored = localStorage.getItem('sn-theme');
                   if (stored === 'light') {
                     document.documentElement.classList.remove('dark');
-                  } else if (stored === 'dark') {
-                    document.documentElement.classList.add('dark');
                   } else {
                     document.documentElement.classList.add('dark');
                   }

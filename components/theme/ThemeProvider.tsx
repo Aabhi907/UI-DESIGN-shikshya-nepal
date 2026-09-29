@@ -38,6 +38,14 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     }
   }, [])
 
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
+  }, [theme])
+
   const applyTheme = useCallback((newTheme: Theme) => {
     setThemeState(newTheme)
     try {

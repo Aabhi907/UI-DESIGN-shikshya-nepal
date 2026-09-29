@@ -224,18 +224,18 @@ export default function Nav() {
                       onClick={() => setOpenDrop(openDrop === link.label ? null : link.label)}
                       aria-expanded={openDrop === link.label}
                       aria-controls={`sn-desktop-nav-${link.label.toLowerCase().replaceAll(' ', '-')}`}
-                      className={`motion-control flex items-center gap-1 text-[13px] font-medium font-sans lowercase transition-colors duration-150 py-1 ${
-                        isActive(link.href) ? 'text-slate-950 dark:text-white font-semibold' : 'text-slate-600 dark:text-sn-ink-soft hover:text-slate-950 dark:hover:text-white'
+                      className={`motion-control flex items-center gap-1 text-[13px] font-sans lowercase transition-colors duration-150 py-1 ${
+                        isActive(link.href) ? 'text-slate-950 dark:text-white font-bold' : 'text-slate-700 dark:text-sn-ink-soft font-semibold dark:font-medium hover:text-slate-950 dark:hover:text-white'
                       }`}
                     >
                       {link.label}
-                      <ChevronDown className={`w-3 h-3 text-slate-400 dark:text-sn-ink-muted transition-transform duration-200 ${openDrop === link.label ? 'rotate-180' : ''}`} />
+                      <ChevronDown className={`w-3 h-3 text-slate-500 dark:text-sn-ink-muted transition-transform duration-200 ${openDrop === link.label ? 'rotate-180' : ''}`} />
                     </button>
                   ) : (
                     <Link
                       href={link.href}
-                      className={`motion-control text-[13px] font-medium font-sans lowercase transition-colors duration-150 py-1 ${
-                        isActive(link.href) ? 'text-slate-950 dark:text-white font-semibold' : 'text-slate-600 dark:text-sn-ink-soft hover:text-slate-950 dark:hover:text-white'
+                      className={`motion-control text-[13px] font-sans lowercase transition-colors duration-150 py-1 ${
+                        isActive(link.href) ? 'text-slate-950 dark:text-white font-bold' : 'text-slate-700 dark:text-sn-ink-soft font-semibold dark:font-medium hover:text-slate-950 dark:hover:text-white'
                       }`}
                     >
                       {link.label}
@@ -244,13 +244,13 @@ export default function Nav() {
 
                   {link.sub && openDrop === link.label && (
                     <div className={`absolute top-full z-50 pt-2 ${link.label === 'results' ? 'right-0' : 'left-0'}`}>
-                      <div id={`sn-desktop-nav-${link.label.toLowerCase().replaceAll(' ', '-')}`} className="motion-menu-enter w-64 overflow-hidden rounded-2xl border border-black/[0.08] dark:border-white/[0.08] bg-white/95 dark:bg-[#151518]/95 p-1.5 backdrop-blur-2xl shadow-xl dark:shadow-[0_12px_36px_rgba(0,0,0,0.7)]">
+                      <div id={`sn-desktop-nav-${link.label.toLowerCase().replaceAll(' ', '-')}`} className="motion-menu-enter w-64 overflow-hidden rounded-2xl border border-black/[0.1] dark:border-white/[0.08] bg-white dark:bg-[#151518]/95 p-1.5 backdrop-blur-2xl shadow-xl dark:shadow-[0_12px_36px_rgba(0,0,0,0.7)]">
                         {link.sub.map((s, index) => (
                           <div key={s.label}>
                             {s.group && (index === 0 || link.sub![index - 1].group !== s.group) && (
-                              <p className="px-3.5 pb-1 pt-2.5 text-[10px] font-bold uppercase tracking-wider text-slate-400 dark:text-sn-ink-muted">{s.group}</p>
+                              <p className="px-3.5 pb-1 pt-2.5 text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-sn-ink-muted">{s.group}</p>
                             )}
-                            <Link href={s.href} onClick={() => setOpenDrop(null)} className="motion-control block rounded-xl px-3.5 py-2 text-xs font-nunito font-semibold text-slate-700 dark:text-sn-ink-soft hover:bg-black/[0.04] dark:hover:bg-white/[0.06] hover:text-slate-950 dark:hover:text-white">
+                            <Link href={s.href} onClick={() => setOpenDrop(null)} className="motion-control block rounded-xl px-3.5 py-2 text-xs font-nunito font-bold text-slate-800 dark:text-sn-ink-soft hover:bg-black/[0.05] dark:hover:bg-white/[0.06] hover:text-slate-950 dark:hover:text-white">
                               {s.label}
                               {s.description && <span className="mt-0.5 block font-normal text-slate-500 dark:text-sn-ink-muted">{s.description}</span>}
                             </Link>
@@ -270,12 +270,12 @@ export default function Nav() {
             <button
               type="button"
               onClick={() => window.dispatchEvent(new Event('open-site-search'))}
-              className="motion-control focus-ring inline-flex items-center gap-2 rounded-full border border-black/[0.08] dark:border-white/[0.08] bg-black/[0.03] dark:bg-white/[0.04] px-2.5 py-1 text-xs text-slate-600 dark:text-sn-ink-muted hover:bg-black/[0.06] dark:hover:bg-white/[0.08] hover:border-black/[0.12] dark:hover:border-white/[0.14] transition-all"
+              className="motion-control focus-ring inline-flex items-center gap-2 rounded-full border border-black/[0.12] dark:border-white/[0.08] bg-black/[0.04] dark:bg-white/[0.04] px-2.5 py-1 text-xs text-slate-700 dark:text-sn-ink-muted hover:bg-black/[0.07] dark:hover:bg-white/[0.08] hover:border-black/[0.18] dark:hover:border-white/[0.14] transition-all"
               aria-label="Search ShikshyaXNepal"
             >
-              <Search className="h-3 w-3 text-slate-500 dark:text-sn-ink-muted" />
-              <span className="hidden xl:inline text-[11px] font-mono text-slate-600 dark:text-sn-ink-soft">search</span>
-              <kbd className="hidden sm:inline rounded border border-black/10 dark:border-white/10 bg-black/5 dark:bg-white/10 px-1 py-0.2 text-[9px] font-mono text-slate-500 dark:text-sn-ink-muted shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
+              <Search className="h-3 w-3 text-slate-600 dark:text-sn-ink-muted" />
+              <span className="hidden xl:inline text-[11px] font-mono text-slate-700 dark:text-sn-ink-soft font-semibold">search</span>
+              <kbd className="hidden sm:inline rounded border border-black/15 dark:border-white/10 bg-black/5 dark:bg-white/10 px-1 py-0.2 text-[9px] font-mono text-slate-700 dark:text-sn-ink-muted shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
                 ⌘K
               </kbd>
             </button>
