@@ -4,7 +4,7 @@ import type { Admission } from '@/types'
 import RidgelineBackground from './RidgelineBackground'
 import CountdownPill from './CountdownPill'
 import AnimatedSearch from './AnimatedSearch'
-import HeroQuestionCards from './HeroQuestionCards'
+import FloatingStudentNotes from './FloatingStudentNotes'
 import TrustStrip from './TrustStrip'
 
 interface HeroProps {
@@ -69,9 +69,9 @@ export default function Hero({ heroStats, admissions = [] }: HeroProps) {
           <AnimatedSearch />
         </div>
 
-        {/* ── 4. Core Question Cards ("What to study?", "Where to study?", etc.) ── */}
+        {/* ── 4. Floating Student Query Micro-Cards (Handwriting style notes) ── */}
         <div className="w-full mb-8">
-          <HeroQuestionCards admissions={admissions} />
+          <FloatingStudentNotes admissions={admissions} />
         </div>
       </div>
 

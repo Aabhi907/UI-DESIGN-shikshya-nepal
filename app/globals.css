@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Kalam:wght@400;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -772,13 +774,76 @@
   scrollbar-width: none;
 }
 
+/* Handwriting font for floating student query notes */
+.font-handwriting {
+  font-family: 'Caveat', 'Kalam', cursive, sans-serif;
+}
+
+/* Floating micro-card animations (tilted physical feel matching reference) */
+@keyframes hero-float-note-1 {
+  0%, 100% {
+    transform: translateY(0px) rotate(-4deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(-2deg);
+  }
+}
+
+@keyframes hero-float-note-2 {
+  0%, 100% {
+    transform: translateY(0px) rotate(3deg);
+  }
+  50% {
+    transform: translateY(-7px) rotate(5deg);
+  }
+}
+
+@keyframes hero-float-note-3 {
+  0%, 100% {
+    transform: translateY(0px) rotate(-2deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(-1deg);
+  }
+}
+
+@keyframes hero-float-note-4 {
+  0%, 100% {
+    transform: translateY(0px) rotate(3deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(1deg);
+  }
+}
+
+.hero-float-note-1 {
+  animation: hero-float-note-1 7s ease-in-out infinite;
+}
+
+.hero-float-note-2 {
+  animation: hero-float-note-2 8s ease-in-out infinite 0.5s;
+}
+
+.hero-float-note-3 {
+  animation: hero-float-note-3 6.5s ease-in-out infinite 1s;
+}
+
+.hero-float-note-4 {
+  animation: hero-float-note-4 7.5s ease-in-out infinite 1.5s;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-aurora-glow-1,
   .hero-aurora-glow-2,
   .hero-text-shimmer,
   .hero-underline-path,
-  .hero-search-gradient-border::before {
+  .hero-search-gradient-border::before,
+  .hero-float-note-1,
+  .hero-float-note-2,
+  .hero-float-note-3,
+  .hero-float-note-4 {
     animation: none !important;
   }
 }
+
 
