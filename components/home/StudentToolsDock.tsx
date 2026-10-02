@@ -3,75 +3,51 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  Calculator,
-  GraduationCap,
-  Bell,
-  CalendarCheck,
   ArrowUpRight,
+  Check,
   CheckCircle2,
+  FileText,
   Clock,
-  Sparkles,
-  ShieldCheck,
-  FileCheck,
+  Building,
 } from 'lucide-react'
 import Link from 'next/link'
 
 export type ToolItem = {
-  id: string
+  id: 'gpa' | 'colleges' | 'deadlines' | 'planner'
   title: string
   subtitle: string
-  badge: string
   ctaText: string
   ctaHref: string
-  accentColor: string
-  icon: typeof Calculator
-  previewType: 'gpa' | 'colleges' | 'deadlines' | 'planner'
 }
 
 export const STUDENT_TOOLS: ToolItem[] = [
   {
     id: 'gpa',
     title: 'GPA Calculator',
-    subtitle: 'Real-time SEE & NEB weighted GPA simulation with course credits. 100% private in your browser.',
-    badge: 'SEE & NEB GRADING',
+    subtitle: 'Simulate SEE and NEB weighted grade points with credit hours. Runs 100% in your browser.',
     ctaText: 'Calculate GPA',
     ctaHref: '/tools/gpa-calculator',
-    accentColor: '#2563EB',
-    icon: Calculator,
-    previewType: 'gpa',
   },
   {
     id: 'colleges',
     title: 'Verified Campuses',
-    subtitle: '1,200+ TU, KU, Pokhara, Purbanchal, and CTEVT institutions with official gazette proof.',
-    badge: '1,200+ CAMPUSES',
+    subtitle: 'Browse 1,200+ TU, KU, Pokhara, Purbanchal, and CTEVT institutions with verified source gazettes.',
     ctaText: 'Search Campuses',
     ctaHref: '/colleges',
-    accentColor: '#059669',
-    icon: GraduationCap,
-    previewType: 'colleges',
   },
   {
     id: 'deadlines',
     title: 'Scholarship Alerts',
-    subtitle: 'Never miss government merit quotas, provincial fee waivers, or college entrance dates.',
-    badge: 'DEADLINE RADAR',
+    subtitle: 'Track official MoEST merit quotas, provincial fee waivers, and verified entrance deadlines.',
     ctaText: 'View Deadlines',
     ctaHref: '/deadlines',
-    accentColor: '#D97706',
-    icon: Bell,
-    previewType: 'deadlines',
   },
   {
     id: 'planner',
     title: 'Admission Planner',
-    subtitle: 'Track required certificates, character documents, and verified application checklists cleanly.',
-    badge: 'DOC CHECKLIST',
+    subtitle: 'Organize required certificates, transcripts, and verified college application checklists.',
     ctaText: 'Open Planner',
     ctaHref: '/admissions/planner',
-    accentColor: '#7C3AED',
-    icon: CalendarCheck,
-    previewType: 'planner',
   },
 ]
 
@@ -93,7 +69,7 @@ export default function StudentToolsDock() {
           className="w-full text-center"
         >
           <span className="font-mono text-xs uppercase tracking-widest font-semibold text-sn-primary-hover mb-2 inline-block">
-            Interactive Student Toolkit
+            Student Toolkit
           </span>
           <h2 className="font-handwriting text-3xl sm:text-4xl lg:text-5xl text-sn-ink tracking-wide font-bold">
             Student tools built for your journey :)
@@ -101,7 +77,7 @@ export default function StudentToolsDock() {
         </motion.div>
 
         {/* ════════════════════════════════════════════════════════
-            2. DOCK ROW (4 Interactive Square Icons)
+            2. DOCK ROW (4 Bespoke Tactile Tool Icons)
         ════════════════════════════════════════════════════════ */}
         <div className="relative my-auto w-full py-20 sm:py-24">
           <div
@@ -112,7 +88,6 @@ export default function StudentToolsDock() {
               const isHovered = hoveredIndex === index
               const isAnyHovered = hoveredIndex !== null
               const isBlurred = isAnyHovered && !isHovered
-              const Icon = item.icon
 
               return (
                 <div
@@ -123,60 +98,43 @@ export default function StudentToolsDock() {
                   }`}
                 >
                   {/* ───────────────────────────────────────────────
-                      FLOATING PREVIEW CARD (Layered 3D Mockup)
+                      AI-SLOP-FREE HOVER PREVIEW (Physical Card)
                   ─────────────────────────────────────────────── */}
                   <AnimatePresence>
                     {isHovered && (
                       <motion.div
-                        initial={{ opacity: 0, y: 30, scale: 0.85 }}
-                        animate={{ opacity: 1, y: -65, scale: 1 }}
-                        exit={{ opacity: 0, y: 20, scale: 0.9, transition: { duration: 0.2 } }}
-                        transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                        initial={{ opacity: 0, y: 25, scale: 0.9 }}
+                        animate={{ opacity: 1, y: -60, scale: 1 }}
+                        exit={{ opacity: 0, y: 15, scale: 0.92, transition: { duration: 0.18 } }}
+                        transition={{ type: 'spring', stiffness: 320, damping: 26 }}
                         className="absolute bottom-full mb-4 pointer-events-none select-none flex flex-col items-center"
-                        style={{ perspective: 1000 }}
                       >
-                        <ToolPreview item={item} />
+                        <ToolPreviewCard item={item} />
                       </motion.div>
                     )}
                   </AnimatePresence>
 
                   {/* ───────────────────────────────────────────────
-                      THE SQUARE DOCK ICON
+                      TACTILE PHYSICAL TOOL ICON
                   ─────────────────────────────────────────────── */}
                   <motion.button
                     type="button"
                     aria-label={item.title}
                     animate={{
                       y: isHovered ? -8 : 0,
-                      scale: isHovered ? 1.08 : isBlurred ? 0.95 : 1,
+                      scale: isHovered ? 1.06 : isBlurred ? 0.95 : 1,
                       filter: isBlurred ? 'blur(10px)' : 'blur(0px)',
                       opacity: isBlurred ? 0.35 : 1,
                     }}
                     transition={{ duration: 0.35, ease: 'easeOut' }}
-                    className="relative group flex h-20 w-20 sm:h-24 sm:w-24 md:h-28 md:w-28 items-center justify-center rounded-[22px] sm:rounded-[26px] md:rounded-[30px] shadow-[0_12px_28px_rgba(0,0,0,0.08)] dark:shadow-[0_14px_32px_rgba(0,0,0,0.4)] border border-black/[0.08] dark:border-white/[0.12] focus:outline-none transition-shadow duration-300"
+                    className="relative group flex h-20 w-20 sm:h-24 sm:w-24 md:h-28 md:w-28 items-center justify-center rounded-[22px] sm:rounded-[26px] md:rounded-[28px] focus:outline-none transition-shadow duration-300"
                     style={{
                       boxShadow: isHovered
-                        ? '0 20px 45px -10px rgba(0,0,0,0.25), 0 0 0 2px rgba(255,255,255,0.8)'
-                        : undefined,
+                        ? '0 24px 45px -10px rgba(0,0,0,0.22), 0 0 0 1.5px rgba(0,0,0,0.1)'
+                        : '0 12px 28px -6px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.04)',
                     }}
                   >
-                    <div
-                      className="w-full h-full rounded-[22px] sm:rounded-[26px] md:rounded-[30px] flex items-center justify-center p-3 text-white overflow-hidden"
-                      style={{
-                        background:
-                          item.id === 'gpa'
-                            ? 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)'
-                            : item.id === 'colleges'
-                            ? 'linear-gradient(135deg, #059669 0%, #047857 100%)'
-                            : item.id === 'deadlines'
-                            ? 'linear-gradient(135deg, #D97706 0%, #B45309 100%)'
-                            : 'linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%)',
-                      }}
-                    >
-                      <div className="relative flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-white/15 border border-white/25 shadow-inner">
-                        <Icon className="w-6 h-6 sm:w-8 sm:h-8 text-white drop-shadow-sm" />
-                      </div>
-                    </div>
+                    <BespokeToolIcon id={item.id} isHovered={isHovered} />
                   </motion.button>
 
                   {/* ───────────────────────────────────────────────
@@ -187,8 +145,8 @@ export default function StudentToolsDock() {
                       <motion.div
                         initial={{ opacity: 0, y: 15 }}
                         animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 10, transition: { duration: 0.15 } }}
-                        transition={{ duration: 0.25, delay: 0.05 }}
+                        exit={{ opacity: 0, y: 8, transition: { duration: 0.15 } }}
+                        transition={{ duration: 0.22, delay: 0.04 }}
                         className="absolute top-full mt-4 w-64 sm:w-72 text-center pointer-events-auto flex flex-col items-center"
                       >
                         <h3 className="font-baloo text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white leading-tight">
@@ -199,7 +157,7 @@ export default function StudentToolsDock() {
                         </p>
                         <Link
                           href={item.ctaHref}
-                          className="mt-3.5 inline-flex items-center gap-1.5 rounded-full px-5 py-2 text-xs sm:text-sm font-bold font-nunito bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-md hover:scale-105 active:scale-95 transition-all"
+                          className="mt-3.5 inline-flex items-center gap-1.5 rounded-full px-5 py-2 text-xs sm:text-sm font-bold font-nunito bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-sm hover:scale-105 active:scale-95 transition-all"
                         >
                           <span>{item.ctaText}</span>
                           <ArrowUpRight className="w-3.5 h-3.5" aria-hidden="true" />
@@ -234,158 +192,365 @@ export default function StudentToolsDock() {
 }
 
 // ─────────────────────────────────────────────────────────────
-// CUSTOM TOOL PREVIEW MOCKUPS
+// BESPOKE TACTILE TOOL ICONS (No Generic Squircles, No Neon)
 // ─────────────────────────────────────────────────────────────
-function ToolPreview({ item }: { item: ToolItem }) {
-  if (item.id === 'gpa') {
+function BespokeToolIcon({ id }: { id: ToolItem['id']; isHovered: boolean }) {
+  // 1. GPA CALCULATOR: Tactile mechanical pocket calculator tile
+  if (id === 'gpa') {
     return (
-      <div className="relative w-64 sm:w-72 h-44 rounded-2xl p-4 bg-white dark:bg-[#151518] border border-black/[0.1] dark:border-white/[0.15] shadow-[0_24px_50px_rgba(0,0,0,0.18)] dark:shadow-[0_24px_50px_rgba(0,0,0,0.6)] flex flex-col justify-between">
-        {/* Layered angled backdrop card */}
-        <div className="absolute -top-2.5 -left-2.5 right-2.5 bottom-2.5 -z-10 rounded-2xl bg-blue-500/20 dark:bg-blue-600/30 border border-blue-400/30 transform -rotate-3" />
+      <div className="relative w-full h-full rounded-[22px] sm:rounded-[26px] md:rounded-[28px] bg-[#16181D] border border-white/10 p-2.5 sm:p-3 flex flex-col justify-between overflow-hidden shadow-inner">
+        {/* Subtle top rim light */}
+        <div className="absolute top-0 left-0 right-0 h-[1px] bg-white/20" />
 
-        <div className="flex items-center justify-between">
-          <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
-            <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse" />
-            {item.badge}
+        {/* Recessed LCD Screen */}
+        <div className="w-full h-7 sm:h-8 rounded-lg bg-[#0D1015] border border-white/5 px-2 flex items-center justify-between shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)]">
+          <span className="font-mono text-[9px] font-bold text-slate-500 tracking-wider">NEB-12</span>
+          <span className="font-mono text-xs sm:text-sm font-bold text-[#CAFFA6] tracking-widest drop-shadow-[0_0_1px_rgba(202,255,166,0.4)]">
+            3.84
           </span>
-          <span className="text-[10px] font-mono text-slate-400">Class 10/12</span>
         </div>
 
-        {/* Live Calculation Mockup */}
-        <div className="my-auto space-y-1.5 p-2 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-black/[0.06] dark:border-white/[0.08]">
-          <div className="flex justify-between items-center text-[10px] font-nunito font-semibold text-slate-700 dark:text-slate-300">
-            <span>Compulsory English</span>
-            <span className="px-1.5 py-0.2 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 font-bold">
-              A+ (4.0)
-            </span>
+        {/* Tactile Keypad Matrix */}
+        <div className="grid grid-cols-3 gap-1.5 pt-1">
+          {['7', '8', '9', '4', '5', '6'].map((key) => (
+            <div
+              key={key}
+              className="h-3.5 sm:h-4 rounded bg-[#242832] border-t border-white/15 border-b border-black/40 flex items-center justify-center text-[9px] font-mono text-slate-300 font-semibold shadow-xs"
+            >
+              {key}
+            </div>
+          ))}
+          <div className="col-span-2 h-3.5 sm:h-4 rounded bg-[#2563EB] border-t border-blue-400 border-b border-blue-900 flex items-center justify-center text-[10px] font-mono font-bold text-white shadow-xs">
+            GPA
           </div>
-          <div className="flex justify-between items-center text-[10px] font-nunito font-semibold text-slate-700 dark:text-slate-300">
-            <span>Science &amp; Tech</span>
-            <span className="px-1.5 py-0.2 rounded bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-300 font-bold">
-              A (3.6)
-            </span>
+          <div className="h-3.5 sm:h-4 rounded bg-[#D97706] border-t border-amber-400 border-b border-amber-900 flex items-center justify-center text-[10px] font-mono font-bold text-white shadow-xs">
+            =
           </div>
-          <div className="flex justify-between items-center text-[11px] font-nunito font-extrabold pt-1 border-t border-black/[0.06] dark:border-white/[0.08] text-slate-900 dark:text-white">
-            <span>Cumulative GPA</span>
-            <span className="text-blue-600 dark:text-blue-400 font-mono text-xs">3.80 · Distinction</span>
-          </div>
-        </div>
-
-        <div className="text-[10px] font-nunito text-slate-500 flex items-center justify-between">
-          <span>Official NEB grading scale</span>
-          <span className="font-bold text-blue-600 dark:text-blue-400">Instant result</span>
         </div>
       </div>
     )
   }
 
-  if (item.id === 'colleges') {
+  // 2. VERIFIED CAMPUSES: Embossed University Archive & Colonnade Portico
+  if (id === 'colleges') {
     return (
-      <div className="relative w-64 sm:w-72 h-44 rounded-2xl p-4 bg-[#121316] text-white border border-white/15 shadow-[0_24px_50px_rgba(0,0,0,0.5)] flex flex-col justify-between">
-        {/* Layered dark green backdrop card */}
-        <div className="absolute -top-2.5 -right-2.5 left-2.5 bottom-2.5 -z-10 rounded-2xl bg-emerald-500/20 border border-emerald-500/30 transform rotate-2" />
+      <div className="relative w-full h-full rounded-[22px] sm:rounded-[26px] md:rounded-[28px] bg-[#0E1F18] border border-emerald-900/50 p-2.5 sm:p-3 flex flex-col justify-between overflow-hidden shadow-inner">
+        {/* Subtle top rim light */}
+        <div className="absolute top-0 left-0 right-0 h-[1px] bg-emerald-400/20" />
 
-        <div className="flex items-center justify-between text-xs">
-          <div className="flex items-center gap-1.5 text-emerald-400 font-mono text-[10px]">
-            <ShieldCheck className="w-3.5 h-3.5" />
-            <span>{item.badge}</span>
-          </div>
-          <span className="text-[10px] font-mono text-white/50">All 7 Provinces</span>
+        {/* Header Ribbon Stamp */}
+        <div className="flex items-center justify-between">
+          <span className="px-1.5 py-0.5 rounded bg-emerald-950/80 border border-emerald-800/60 font-mono text-[8px] font-bold text-emerald-300 tracking-wider">
+            TU · KU · PU
+          </span>
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
         </div>
 
-        {/* College card mockup */}
-        <div className="my-auto p-2.5 rounded-xl bg-white/[0.06] border border-white/10 space-y-1">
-          <div className="flex items-center justify-between">
-            <h5 className="font-baloo text-xs font-bold text-white truncate">Pulchowk Campus, IOE</h5>
-            <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-emerald-950 text-emerald-300 border border-emerald-800">
+        {/* Classical Colonnade Portico Crest */}
+        <div className="my-auto flex flex-col items-center justify-center py-1">
+          {/* Triangular Pediment */}
+          <div className="w-10 sm:w-12 h-3 border-b-2 border-emerald-300/80 flex items-center justify-center">
+            <div className="w-0 h-0 border-l-[18px] border-l-transparent border-r-[18px] border-r-transparent border-b-[9px] border-b-emerald-400/60" />
+          </div>
+          {/* 4 Classical Pillars */}
+          <div className="flex justify-between w-9 sm:w-11 pt-0.5 pb-0.5">
+            <div className="w-1 h-5 sm:h-6 bg-emerald-200/70 rounded-xs" />
+            <div className="w-1 h-5 sm:h-6 bg-emerald-200/70 rounded-xs" />
+            <div className="w-1 h-5 sm:h-6 bg-emerald-200/70 rounded-xs" />
+            <div className="w-1 h-5 sm:h-6 bg-emerald-200/70 rounded-xs" />
+          </div>
+          {/* Base Plinth */}
+          <div className="w-12 sm:w-14 h-1 bg-emerald-300/80 rounded-xs" />
+        </div>
+
+        {/* Bottom Seal Label */}
+        <div className="text-center">
+          <span className="font-mono text-[9px] font-bold text-emerald-300 tracking-widest uppercase">
+            1,200+ Verified
+          </span>
+        </div>
+      </div>
+    )
+  }
+
+  // 3. SCHOLARSHIP ALERTS: Tactile Brass Bell & Calendar Countdown Stamp
+  if (id === 'deadlines') {
+    return (
+      <div className="relative w-full h-full rounded-[22px] sm:rounded-[26px] md:rounded-[28px] bg-[#221611] border border-amber-900/50 p-2.5 sm:p-3 flex flex-col justify-between overflow-hidden shadow-inner">
+        {/* Subtle top rim light */}
+        <div className="absolute top-0 left-0 right-0 h-[1px] bg-amber-400/20" />
+
+        {/* Top Notification Bead */}
+        <div className="flex items-center justify-between">
+          <span className="px-1.5 py-0.5 rounded bg-amber-950/80 border border-amber-800/60 font-mono text-[8px] font-bold text-amber-300 tracking-wider">
+            NOTICE RADAR
+          </span>
+          <span className="w-2 h-2 rounded-full bg-rose-500 shadow-sm" />
+        </div>
+
+        {/* Tactile Brass Bell / Desk Chime Illustration */}
+        <div className="my-auto flex items-center justify-center py-1">
+          <div className="relative flex flex-col items-center">
+            {/* Top Loop */}
+            <div className="w-3.5 h-3 rounded-full border-2 border-amber-300/80 -mb-1" />
+            {/* Bell Dome */}
+            <div className="w-8 sm:w-10 h-7 sm:h-8 rounded-t-full bg-amber-500 border-t border-amber-200 flex items-end justify-center shadow-[inset_0_2px_4px_rgba(255,255,255,0.4),0_4px_8px_rgba(0,0,0,0.4)]">
+              {/* Bell Flange */}
+              <div className="w-10 sm:w-12 h-2 rounded-full bg-amber-600 border-t border-amber-300/60" />
+            </div>
+            {/* Clapper */}
+            <div className="w-2.5 h-2.5 rounded-full bg-amber-200 -mt-1 shadow-sm" />
+          </div>
+        </div>
+
+        {/* Bottom Countdown Badge */}
+        <div className="text-center">
+          <span className="font-mono text-[9px] font-bold text-amber-300 tracking-wider">
+            2082 INTAKES
+          </span>
+        </div>
+      </div>
+    )
+  }
+
+  // 4. ADMISSION PLANNER: Physical Student Pocket Clipboard & Ruled Checklist
+  return (
+    <div className="relative w-full h-full rounded-[22px] sm:rounded-[26px] md:rounded-[28px] bg-[#1E1B24] border border-purple-900/40 p-2.5 sm:p-3 flex flex-col justify-between overflow-hidden shadow-inner">
+      {/* Top Silver Metal Clip */}
+      <div className="absolute top-1.5 left-1/2 -translate-x-1/2 w-8 h-2.5 rounded-t-xs bg-slate-300 border-t border-white border-b border-slate-500 flex items-center justify-center shadow-xs">
+        <div className="w-4 h-1 rounded-full bg-slate-400" />
+      </div>
+
+      {/* Paper Surface with Ruled Lines & Checkmarks */}
+      <div className="mt-2 w-full h-full rounded-lg bg-[#FAF9F5] p-2 flex flex-col justify-between shadow-[0_2px_6px_rgba(0,0,0,0.3)]">
+        <div className="flex items-center justify-between pb-1 border-b border-slate-200">
+          <span className="font-mono text-[8px] font-bold text-slate-700 tracking-tight">DOSSIER</span>
+          <span className="font-mono text-[8px] font-bold text-purple-700">3/3 OK</span>
+        </div>
+
+        <div className="space-y-1 my-auto">
+          <div className="flex items-center gap-1.5 text-[8px] font-nunito font-bold text-slate-800">
+            <span className="w-2.5 h-2.5 rounded-xs bg-emerald-600 text-white flex items-center justify-center text-[7px] font-bold">
+              ✓
+            </span>
+            <span className="truncate">Transcript</span>
+          </div>
+          <div className="flex items-center gap-1.5 text-[8px] font-nunito font-bold text-slate-800">
+            <span className="w-2.5 h-2.5 rounded-xs bg-emerald-600 text-white flex items-center justify-center text-[7px] font-bold">
+              ✓
+            </span>
+            <span className="truncate">Character Cert</span>
+          </div>
+          <div className="flex items-center gap-1.5 text-[8px] font-nunito font-bold text-slate-800">
+            <span className="w-2.5 h-2.5 rounded-xs bg-purple-600 text-white flex items-center justify-center text-[7px] font-bold">
+              ✓
+            </span>
+            <span className="truncate">Admit Card</span>
+          </div>
+        </div>
+
+        <div className="h-0.5 w-full bg-slate-200 rounded-full" />
+      </div>
+    </div>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────
+// AI-SLOP-FREE PREVIEW CARDS (Authentic Physical Documents)
+// ─────────────────────────────────────────────────────────────
+function ToolPreviewCard({ item }: { item: ToolItem }) {
+  // 1. GPA CALCULATOR: Authentic NEB Class 12 Grade Sheet Table
+  if (item.id === 'gpa') {
+    return (
+      <div className="relative w-72 sm:w-80 rounded-2xl bg-white dark:bg-[#15161A] p-4 text-slate-900 dark:text-white border border-black/[0.1] dark:border-white/[0.12] shadow-[0_24px_45px_-12px_rgba(0,0,0,0.18)] flex flex-col justify-between">
+        {/* Document Header */}
+        <div className="flex items-center justify-between pb-2 border-b border-black/[0.08] dark:border-white/[0.08]">
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 rounded-full bg-slate-900 dark:bg-white" />
+            <span className="font-baloo text-xs font-bold text-slate-900 dark:text-white">
+              NEB Grade Simulation
+            </span>
+          </div>
+          <span className="font-mono text-[10px] text-slate-500 font-semibold">
+            Class 12 · 2082 BS
+          </span>
+        </div>
+
+        {/* Clean Structured Table (No neon, no fake gradients) */}
+        <div className="my-2.5 space-y-1.5 text-xs font-nunito">
+          <div className="flex justify-between items-center py-1 border-b border-black/[0.04] dark:border-white/[0.04] text-slate-700 dark:text-slate-300">
+            <span>Compulsory English (3.0 cr)</span>
+            <span className="font-mono font-bold text-slate-900 dark:text-white">A (3.6)</span>
+          </div>
+          <div className="flex justify-between items-center py-1 border-b border-black/[0.04] dark:border-white/[0.04] text-slate-700 dark:text-slate-300">
+            <span>Physics / Accounting (3.0 cr)</span>
+            <span className="font-mono font-bold text-slate-900 dark:text-white">A+ (4.0)</span>
+          </div>
+          <div className="flex justify-between items-center py-1 text-slate-700 dark:text-slate-300">
+            <span>Mathematics (3.0 cr)</span>
+            <span className="font-mono font-bold text-slate-900 dark:text-white">A (3.6)</span>
+          </div>
+        </div>
+
+        {/* Official Summary Footer */}
+        <div className="pt-2 border-t border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between">
+          <span className="text-[11px] font-nunito font-semibold text-slate-500">
+            Weighted GPA
+          </span>
+          <div className="flex items-center gap-1.5">
+            <span className="font-mono text-sm font-extrabold text-slate-900 dark:text-white">
+              3.73
+            </span>
+            <span className="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-100 dark:bg-white/10 text-slate-800 dark:text-slate-200">
+              Distinction
+            </span>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // 2. VERIFIED CAMPUSES: Official Gazette Affiliation Extract
+  if (item.id === 'colleges') {
+    return (
+      <div className="relative w-72 sm:w-80 rounded-2xl bg-white dark:bg-[#15161A] p-4 text-slate-900 dark:text-white border border-black/[0.1] dark:border-white/[0.12] shadow-[0_24px_45px_-12px_rgba(0,0,0,0.18)] flex flex-col justify-between">
+        {/* Header */}
+        <div className="flex items-center justify-between pb-2 border-b border-black/[0.08] dark:border-white/[0.08]">
+          <div className="flex items-center gap-1.5">
+            <Building className="w-3.5 h-3.5 text-slate-700 dark:text-slate-300" />
+            <span className="font-baloo text-xs font-bold text-slate-900 dark:text-white">
+              University Affiliation Extract
+            </span>
+          </div>
+          <span className="font-mono text-[10px] text-slate-500 font-semibold">
+            TU-GAZETTE
+          </span>
+        </div>
+
+        {/* Body Record */}
+        <div className="my-2.5 space-y-1 text-xs font-nunito">
+          <div className="flex justify-between items-start">
+            <span className="font-bold text-slate-900 dark:text-white">
+              Pulchowk Campus, IOE
+            </span>
+            <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-slate-300">
               Constituent
             </span>
           </div>
-          <p className="text-[10px] font-nunito text-white/70">Tribhuvan University · Lalitpur</p>
-          <div className="pt-1 flex items-center gap-2 text-[9px] text-emerald-400 font-mono">
-            <span>✓ Gazette Proof</span>
-            <span>✓ 2082 Fees Checked</span>
+          <p className="text-[11px] text-slate-500">
+            Tribhuvan University · Lalitpur, Bagmati Province
+          </p>
+          <div className="pt-1.5 text-[11px] text-slate-600 dark:text-slate-300 space-y-0.5">
+            <p>• Seats: 432 Regular / 216 Full-Fee</p>
+            <p>• Affiliation Status: Approved 2082/83 Intake</p>
           </div>
         </div>
 
-        <div className="text-[10px] font-nunito text-white/60 flex items-center justify-between">
-          <span>Zero paid sponsorships</span>
-          <span className="text-emerald-300 font-bold">1-Click Filter →</span>
+        {/* Verification Tag */}
+        <div className="pt-2 border-t border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between text-[11px] font-nunito text-slate-500">
+          <span className="flex items-center gap-1 font-semibold text-emerald-700 dark:text-emerald-400">
+            <CheckCircle2 className="w-3.5 h-3.5" />
+            Verified against gazette
+          </span>
+          <span className="font-mono text-[10px]">No paid rank</span>
         </div>
       </div>
     )
   }
 
+  // 3. SCHOLARSHIP ALERTS: Official MoEST Notice Brief
   if (item.id === 'deadlines') {
     return (
-      <div className="relative w-64 sm:w-72 h-44 rounded-2xl p-4 bg-white dark:bg-[#151518] border border-black/[0.1] dark:border-white/[0.15] shadow-[0_24px_50px_rgba(0,0,0,0.18)] dark:shadow-[0_24px_50px_rgba(0,0,0,0.6)] flex flex-col justify-between">
-        {/* Layered amber backdrop card */}
-        <div className="absolute -top-2.5 -left-2.5 right-2.5 bottom-2.5 -z-10 rounded-2xl bg-amber-500/20 border border-amber-400/30 transform -rotate-2" />
-
-        <div className="flex items-center justify-between text-[10px] font-mono text-amber-700 dark:text-amber-400">
-          <span className="flex items-center gap-1 font-bold">
-            <Clock className="w-3 h-3" />
-            {item.badge}
-          </span>
-          <span className="px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-950/80 font-bold">Live Alert</span>
-        </div>
-
-        {/* Deadline alert card */}
-        <div className="my-auto p-2.5 rounded-xl bg-amber-50/60 dark:bg-white/[0.04] border border-amber-200/50 dark:border-white/[0.08] space-y-1">
-          <div className="flex items-center justify-between text-[11px] font-bold font-nunito text-slate-900 dark:text-white">
-            <span className="truncate">MoEST National Merit Scheme</span>
-            <span className="px-1.5 py-0.5 rounded bg-rose-100 text-rose-700 text-[9px] font-bold">
-              4 Days Left
+      <div className="relative w-72 sm:w-80 rounded-2xl bg-white dark:bg-[#15161A] p-4 text-slate-900 dark:text-white border border-black/[0.1] dark:border-white/[0.12] shadow-[0_24px_45px_-12px_rgba(0,0,0,0.18)] flex flex-col justify-between">
+        {/* Header */}
+        <div className="flex items-center justify-between pb-2 border-b border-black/[0.08] dark:border-white/[0.08]">
+          <div className="flex items-center gap-1.5">
+            <Clock className="w-3.5 h-3.5 text-slate-700 dark:text-slate-300" />
+            <span className="font-baloo text-xs font-bold text-slate-900 dark:text-white">
+              Official Ministry Notice
             </span>
           </div>
-          <p className="text-[10px] font-nunito text-slate-600 dark:text-slate-300">
-            Full tuition waiver for Bachelor of Engineering &amp; Medicine
-          </p>
+          <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300">
+            4 Days Left
+          </span>
         </div>
 
-        <div className="flex items-center justify-between text-[10px] font-nunito text-slate-400 pt-1 border-t border-black/[0.06] dark:border-white/[0.08]">
-          <span>Verified source link</span>
-          <span className="text-amber-700 dark:text-amber-400 font-bold">Set Reminder →</span>
+        {/* Body Notice */}
+        <div className="my-2.5 space-y-1 text-xs font-nunito">
+          <p className="font-bold text-slate-900 dark:text-white leading-snug">
+            MoEST Higher Technical Education Grant
+          </p>
+          <p className="text-[11px] text-slate-500">
+            Government of Nepal · Ministry of Education, Science &amp; Tech
+          </p>
+          <div className="pt-1.5 text-[11px] text-slate-600 dark:text-slate-300 space-y-0.5">
+            <p>• Closes: 15 Kartik 2082 (17:00 NST)</p>
+            <p>• Quota: 240 Full Tuition &amp; Exam Waivers</p>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="pt-2 border-t border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between text-[11px] font-nunito text-slate-500">
+          <span>Source: moest.gov.np</span>
+          <span className="font-mono text-[10px] font-semibold text-slate-700 dark:text-slate-300">
+            Direct apply link
+          </span>
         </div>
       </div>
     )
   }
 
-  // Admission Planner Preview
+  // 4. ADMISSION PLANNER: Physical Application Dossier Checklist
   return (
-    <div className="relative w-64 sm:w-72 h-44 rounded-2xl p-4 bg-[#121316] text-white border border-white/15 shadow-[0_24px_50px_rgba(0,0,0,0.5)] flex flex-col justify-between">
-      {/* Floating sticker badge */}
-      <div className="absolute -top-3 -right-2 z-10 px-2.5 py-0.8 rounded-full bg-purple-400 text-slate-950 text-[10px] font-bold shadow transform rotate-3 flex items-center gap-1">
-        <Sparkles className="w-3 h-3" />
-        <span>Checklist Ready</span>
-      </div>
-
-      <div className="flex items-center gap-2 text-purple-300 font-mono text-[10px]">
-        <FileCheck className="w-3.5 h-3.5" />
-        <span>{item.badge}</span>
+    <div className="relative w-72 sm:w-80 rounded-2xl bg-white dark:bg-[#15161A] p-4 text-slate-900 dark:text-white border border-black/[0.1] dark:border-white/[0.12] shadow-[0_24px_45px_-12px_rgba(0,0,0,0.18)] flex flex-col justify-between">
+      {/* Header */}
+      <div className="flex items-center justify-between pb-2 border-b border-black/[0.08] dark:border-white/[0.08]">
+        <div className="flex items-center gap-1.5">
+          <FileText className="w-3.5 h-3.5 text-slate-700 dark:text-slate-300" />
+          <span className="font-baloo text-xs font-bold text-slate-900 dark:text-white">
+            Admission Document Dossier
+          </span>
+        </div>
+        <span className="font-mono text-[10px] font-bold text-emerald-700 dark:text-emerald-400">
+          2/3 Ready
+        </span>
       </div>
 
       {/* Checklist items */}
-      <div className="my-auto space-y-1.5 p-2 rounded-xl bg-white/[0.06] border border-white/10 text-[10px] font-nunito">
-        <div className="flex items-center justify-between text-white/90">
-          <span className="flex items-center gap-1.5">
-            <CheckCircle2 className="w-3 h-3 text-purple-400" />
-            Character Certificate &amp; Migration
-          </span>
-          <span className="text-[9px] font-mono text-emerald-400">Ready</span>
-        </div>
-        <div className="flex items-center justify-between text-white/90">
-          <span className="flex items-center gap-1.5">
-            <CheckCircle2 className="w-3 h-3 text-purple-400" />
+      <div className="my-2.5 space-y-1.5 text-xs font-nunito">
+        <div className="flex items-center justify-between py-0.5 text-slate-800 dark:text-slate-200">
+          <span className="flex items-center gap-2">
+            <span className="flex items-center justify-center w-3.5 h-3.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300">
+              <Check className="w-2.5 h-2.5" />
+            </span>
             SEE / NEB Official Marksheet
           </span>
-          <span className="text-[9px] font-mono text-emerald-400">Ready</span>
+          <span className="font-mono text-[10px] text-slate-400">Verified</span>
+        </div>
+        <div className="flex items-center justify-between py-0.5 text-slate-800 dark:text-slate-200">
+          <span className="flex items-center gap-2">
+            <span className="flex items-center justify-center w-3.5 h-3.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300">
+              <Check className="w-2.5 h-2.5" />
+            </span>
+            Character &amp; Transfer Certificate
+          </span>
+          <span className="font-mono text-[10px] text-slate-400">Verified</span>
+        </div>
+        <div className="flex items-center justify-between py-0.5 text-slate-500">
+          <span className="flex items-center gap-2">
+            <span className="flex items-center justify-center w-3.5 h-3.5 rounded-full border border-slate-300 dark:border-white/20" />
+            Entrance Exam Admit Card
+          </span>
+          <span className="font-mono text-[10px] text-amber-600 dark:text-amber-400">Pending</span>
         </div>
       </div>
 
-      <div className="flex items-center justify-between text-[10px] font-mono text-purple-300">
-        <span>No signup required</span>
-        <span className="underline">Download PDF</span>
+      {/* Footer */}
+      <div className="pt-2 border-t border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between text-[11px] font-nunito text-slate-500">
+        <span>Stored privately in browser</span>
+        <span className="font-mono text-[10px] font-semibold text-slate-700 dark:text-slate-300">
+          Download Checklist
+        </span>
       </div>
     </div>
   )
