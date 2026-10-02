@@ -25,8 +25,6 @@ import {
   Building2,
   FileText,
   Bell,
-  CalendarClock,
-  Award,
   ArrowRight,
   Monitor,
   BarChart3,
@@ -40,7 +38,6 @@ import {
   Sprout,
   TreePine,
   ShieldCheck,
-  Calculator,
   CheckCircle2,
   Clock,
   Paperclip,
@@ -620,141 +617,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ════════════════════════════════════════════════════════
-          3. WHAT DO YOU NEED TODAY — Clean Minimal 4-Grid
-      ════════════════════════════════════════════════════════ */}
-      <section data-home-motion className={`border-b border-sn-border bg-sn-surface-alt/60 ${SECTION_PAD}`}>
-        <div className={CONTAINER}>
-          <SectionHeader
-            title="What do you need today?"
-            description="Direct access to verified student information across Nepal."
-            action={<Link href="/search" className="text-sm font-bold font-nunito text-sn-primary hover:text-sn-primary-hover">Search everything →</Link>}
-          />
-          <div className="mt-8 lg:mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {/* Card 1: Check Results */}
-            <Link
-              href="/results"
-              className="apple-card group flex flex-col justify-between p-6 sm:p-7 rounded-[22px] backdrop-blur-md cursor-pointer"
-            >
-              <div>
-                <div className="flex items-center justify-between mb-5">
-                  <IconTile icon={FileText} tint="peach" size={38} />
-                  <span className="rounded-full bg-sn-tint-peach/80 px-2.5 py-0.5 text-[11px] font-bold font-nunito text-slate-800 dark:text-sn-ink">
-                    TU · KU · NEB
-                  </span>
-                </div>
-                <h3 className="font-baloo text-xl font-bold text-slate-900 dark:text-sn-ink group-hover:text-sn-primary transition-colors">
-                  Board results
-                </h3>
-                <p className="mt-2 text-sm font-nunito text-slate-600 dark:text-sn-ink-soft leading-relaxed">
-                  Published examination results, mark sheet archives, and roll number lookup guides.
-                </p>
-              </div>
-              <div className="mt-6 flex items-center gap-1.5 text-xs font-bold font-nunito text-sn-primary">
-                <span>Check results</span>
-                <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-1" />
-              </div>
-            </Link>
 
-            {/* Card 2: Admissions */}
-            <Link
-              href="/admissions?deadline=open"
-              className="apple-card group flex flex-col justify-between p-6 sm:p-7 rounded-[22px] backdrop-blur-md cursor-pointer"
-            >
-              <div>
-                <div className="flex items-center justify-between mb-5">
-                  <IconTile icon={CalendarClock} tint="mint" size={38} />
-                  <span className="rounded-full bg-sn-tint-mint/80 px-2.5 py-0.5 text-[11px] font-bold font-nunito text-slate-800 dark:text-sn-ink">
-                    Live &amp; open
-                  </span>
-                </div>
-                <h3 className="font-baloo text-xl font-bold text-slate-900 dark:text-sn-ink group-hover:text-sn-primary transition-colors">
-                  College admissions
-                </h3>
-                <p className="mt-2 text-sm font-nunito text-slate-600 dark:text-sn-ink-soft leading-relaxed">
-                  Active college intake deadlines, entrance eligibility, and application guidelines.
-                </p>
-              </div>
-              <div className="mt-6 flex items-center gap-1.5 text-xs font-bold font-nunito text-sn-primary">
-                <span>View open intakes</span>
-                <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-1" />
-              </div>
-            </Link>
-
-            {/* Card 3: Find Colleges */}
-            <Link
-              href="/colleges"
-              className="apple-card group flex flex-col justify-between p-6 sm:p-7 rounded-[22px] backdrop-blur-md cursor-pointer"
-            >
-              <div>
-                <div className="flex items-center justify-between mb-5">
-                  <IconTile icon={GraduationCap} tint="lilac" size={38} />
-                  <span className="rounded-full bg-sn-tint-lilac/80 px-2.5 py-0.5 text-[11px] font-bold font-nunito text-slate-800 dark:text-sn-ink">
-                    1,200+ campuses
-                  </span>
-                </div>
-                <h3 className="font-baloo text-xl font-bold text-slate-900 dark:text-sn-ink group-hover:text-sn-primary transition-colors">
-                  Find colleges
-                </h3>
-                <p className="mt-2 text-sm font-nunito text-slate-600 dark:text-sn-ink-soft leading-relaxed">
-                  Constituent and affiliated institutions across Nepal with verified fees and faculties.
-                </p>
-              </div>
-              <div className="mt-6 flex items-center gap-1.5 text-xs font-bold font-nunito text-sn-primary">
-                <span>Explore directory</span>
-                <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-1" />
-              </div>
-            </Link>
-
-            {/* Card 4: GPA Calculator */}
-            <Link
-              href="/tools/gpa-calculator"
-              className="apple-card group flex flex-col justify-between p-6 sm:p-7 rounded-[22px] backdrop-blur-md cursor-pointer"
-            >
-              <div>
-                <div className="flex items-center justify-between mb-5">
-                  <IconTile icon={Calculator} tint="butter" size={38} />
-                  <span className="rounded-full bg-sn-tint-butter/80 px-2.5 py-0.5 text-[11px] font-bold font-nunito text-slate-800 dark:text-sn-ink">
-                    SEE &amp; +2 scale
-                  </span>
-                </div>
-                <h3 className="font-baloo text-xl font-bold text-slate-900 dark:text-sn-ink group-hover:text-sn-primary transition-colors">
-                  GPA calculator
-                </h3>
-                <p className="mt-2 text-sm font-nunito text-slate-600 dark:text-sn-ink-soft leading-relaxed">
-                  Instant GPA and percentage conversion calibrated specifically to Nepal curriculum.
-                </p>
-              </div>
-              <div className="mt-6 flex items-center gap-1.5 text-xs font-bold font-nunito text-sn-primary">
-                <span>Calculate GPA</span>
-                <ArrowRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-1" />
-              </div>
-            </Link>
-          </div>
-
-          {/* Clean secondary utility pill strip */}
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            {[
-              { href: '/scholarships', label: 'Scholarships', icon: Award },
-              { href: '/entrance-exams', label: 'Entrance exams', icon: CalendarClock },
-              { href: '/study-resources', label: 'Study resources', icon: BookOpen },
-              { href: '/notices', label: 'University notices', icon: Bell },
-            ].map(({ href, label, icon: Icon }) => (
-              <Link
-                key={href}
-                href={href}
-                className="apple-pill group flex items-center gap-2 rounded-full px-4 py-2 hover:bg-black/[0.04] dark:hover:bg-white/[0.08] hover:border-black/[0.12] dark:hover:border-white/[0.16] transition-all duration-200"
-              >
-                <Icon className="h-3.5 w-3.5 text-sn-primary dark:text-[#CAFFA6]" />
-                <span className="text-xs font-bold font-nunito text-sn-ink group-hover:text-sn-primary dark:group-hover:text-[#CAFFA6] transition-colors">
-                  {label}
-                </span>
-                <ArrowRight className="h-3 w-3 text-sn-ink-muted group-hover:text-sn-primary dark:group-hover:text-[#CAFFA6] group-hover:translate-x-0.5 transition-all" />
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* ════════════════════════════════════════════════════════
           4. BROWSE — capsule pill-strip & elevated metrics
