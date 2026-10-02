@@ -12,7 +12,6 @@ import {
   MapPin,
   Plus,
   Share2,
-  Check,
   Scale,
   Lock,
 } from 'lucide-react'
@@ -81,7 +80,7 @@ export default function StudentCompanionShowcase() {
           style={{ perspective: '1200px' }}
           className="relative mx-auto w-full max-w-5xl flex items-center justify-center gap-3 sm:gap-4 lg:gap-6 xl:gap-10 pt-1 pb-2 select-none"
         >
-          {/* ── LEFT 3D FLOATING CAPSULE CARD (Desktop) ── */}
+          {/* ── LEFT CALLOUT (Fee & Quota Transparency) ── */}
           <motion.div
             initial={{ opacity: 0, x: -24, y: 10 }}
             whileInView={{ opacity: 1, x: 0, y: 0 }}
@@ -89,40 +88,21 @@ export default function StudentCompanionShowcase() {
             transition={{ duration: 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
             className="hidden lg:block flex-shrink-0 w-[215px] xl:w-[230px] z-30 pointer-events-auto"
           >
-            <div className="rounded-2xl bg-white/95 dark:bg-[#0C2229]/95 backdrop-blur-2xl border border-black/[0.08] dark:border-white/[0.12] p-3 shadow-[0_16px_32px_rgba(11,43,51,0.1)] dark:shadow-[0_20px_45px_rgba(0,0,0,0.6)] transition-transform duration-300 hover:scale-105">
-              <div className="grid grid-cols-2 divide-x divide-black/[0.06] dark:divide-white/[0.08] text-left">
-                {/* Cell 1 */}
-                <div className="pr-2">
-                  <div className="flex items-center justify-between mb-0.5">
-                    <span className="text-[8.5px] font-mono font-bold uppercase text-slate-400">
-                      Comparison
-                    </span>
-                    <ArrowLeftRight className="w-2.5 h-2.5 text-blue-500" />
-                  </div>
-                  <p className="font-baloo text-base font-extrabold text-slate-900 dark:text-white leading-none">
-                    Up to 3
-                  </p>
-                  <p className="text-[8.5px] font-semibold text-emerald-600 dark:text-emerald-400 mt-0.5">
-                    Side-by-Side
-                  </p>
+            <div className="apple-card p-3.5 rounded-2xl text-left transition-all duration-300 hover:-translate-y-0.5">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-7 h-7 rounded-lg bg-primary/10 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-[#F5A524] flex-shrink-0">
+                  <Scale className="w-3.5 h-3.5" />
                 </div>
-
-                {/* Cell 2 */}
-                <div className="pl-2">
-                  <div className="flex items-center justify-between mb-0.5">
-                    <span className="text-[8.5px] font-mono font-bold uppercase text-slate-400">
-                      Fees
-                    </span>
-                    <Check className="w-2.5 h-2.5 text-emerald-500" />
-                  </div>
-                  <p className="font-baloo text-base font-extrabold text-slate-900 dark:text-white leading-tight">
-                    Dated &amp;<br />Sourced
-                  </p>
-                  <p className="text-[8.5px] font-semibold text-sky-600 dark:text-sky-400 mt-0.5">
-                    Official Quotas
-                  </p>
-                </div>
+                <span className="text-[11px] font-bold text-slate-700 dark:text-slate-200 font-nunito tracking-tight">
+                  Transparent Fees
+                </span>
               </div>
+              <p className="font-baloo text-sm font-extrabold text-slate-900 dark:text-white leading-tight mb-1">
+                Direct College Quotas
+              </p>
+              <p className="text-[11px] text-slate-600 dark:text-slate-400 font-nunito leading-snug">
+                Compare published tuition costs, intake seats, and university affiliations side-by-side.
+              </p>
             </div>
           </motion.div>
 
@@ -322,81 +302,75 @@ export default function StudentCompanionShowcase() {
             </div>
           </motion.div>
 
-          {/* ── RIGHT 3D FLOATING CAPSULE CARD (Desktop) ── */}
+          {/* ── RIGHT CALLOUT (Unbiased Student Protection) ── */}
           <motion.div
             initial={{ opacity: 0, x: 24, y: 10 }}
             whileInView={{ opacity: 1, x: 0, y: 0 }}
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.7, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            className="hidden lg:block flex-shrink-0 w-[225px] xl:w-[240px] z-30 pointer-events-auto"
+            className="hidden lg:block flex-shrink-0 w-[215px] xl:w-[230px] z-30 pointer-events-auto"
           >
             <Link
               href="/compare"
-              className="group block rounded-2xl bg-white/95 dark:bg-[#0C2229]/95 backdrop-blur-2xl border border-black/[0.08] dark:border-white/[0.12] p-3 shadow-[0_16px_32px_rgba(11,43,51,0.1)] dark:shadow-[0_20px_45px_rgba(0,0,0,0.6)] transition-transform duration-300 hover:scale-105 text-left"
+              className="group block apple-card p-3.5 rounded-2xl text-left transition-all duration-300 hover:-translate-y-0.5"
             >
-              <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center justify-between gap-2 mb-2">
                 <div className="flex items-center gap-2 min-w-0">
-                  <div className="w-8 h-8 rounded-xl bg-emerald-500/10 dark:bg-emerald-400/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400 flex-shrink-0">
-                    <ShieldCheck className="w-4 h-4" />
+                  <div className="w-7 h-7 rounded-lg bg-emerald-500/10 dark:bg-emerald-400/15 flex items-center justify-center text-emerald-600 dark:text-emerald-400 flex-shrink-0">
+                    <ShieldCheck className="w-3.5 h-3.5" />
                   </div>
-                  <div className="min-w-0">
-                    <p className="text-[10px] font-bold text-slate-900 dark:text-white truncate">
-                      Zero Sponsored Rankings
-                    </p>
-                    <p className="text-[9px] text-slate-500 dark:text-slate-400 truncate">
-                      Moderated student reviews
-                    </p>
-                  </div>
+                  <span className="text-[11px] font-bold text-slate-700 dark:text-slate-200 font-nunito tracking-tight truncate">
+                    100% Unbiased
+                  </span>
                 </div>
-
-                <div className="w-6 h-6 rounded-full bg-black/[0.05] dark:bg-white/[0.08] flex items-center justify-center text-slate-700 dark:text-slate-200 flex-shrink-0 group-hover:bg-[#0B2B33] group-hover:text-white dark:group-hover:bg-[#F5A524] dark:group-hover:text-black transition-colors">
-                  <ArrowRight className="w-3 h-3" />
+                <div className="w-5 h-5 rounded-full bg-black/[0.04] dark:bg-white/[0.08] flex items-center justify-center text-slate-400 group-hover:text-primary dark:group-hover:text-[#F5A524] transition-colors flex-shrink-0">
+                  <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
                 </div>
               </div>
-
-              <div className="mt-2 pt-1 border-t border-black/[0.05] dark:border-white/[0.06] flex items-center justify-between text-[8px] font-mono text-slate-500 dark:text-slate-400">
-                <span>VERIFIED METRICS ONLY</span>
-                <span className="text-emerald-600 dark:text-emerald-400 font-semibold">● COMPARE 2082</span>
-              </div>
+              <p className="font-baloo text-sm font-extrabold text-slate-900 dark:text-white leading-tight mb-1">
+                Zero Sponsored Ranks
+              </p>
+              <p className="text-[11px] text-slate-600 dark:text-slate-400 font-nunito leading-snug">
+                Campuses cannot pay for higher positions. Moderated reviews from verified students.
+              </p>
             </Link>
           </motion.div>
         </div>
 
         {/* ── MOBILE FALLBACK: Summary Cards below on small screens ── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2 lg:hidden max-w-md mx-auto text-left">
-          <div className="rounded-2xl bg-white/80 dark:bg-[#0C2229]/80 border border-black/[0.08] dark:border-white/[0.1] p-2.5 shadow-2xs">
-            <div className="flex items-center justify-between mb-0.5">
-              <span className="text-[8.5px] font-mono font-bold uppercase text-slate-400">
-                Comparison Tool
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mt-3 lg:hidden max-w-md mx-auto text-left">
+          <div className="apple-card p-3 rounded-xl">
+            <div className="flex items-center gap-2 mb-1.5">
+              <div className="w-6 h-6 rounded-md bg-primary/10 dark:bg-primary/20 flex items-center justify-center text-primary dark:text-[#F5A524]">
+                <Scale className="w-3 h-3" />
+              </div>
+              <span className="text-xs font-bold text-slate-900 dark:text-white font-nunito">
+                Transparent Fees
               </span>
-              <ArrowLeftRight className="w-2.5 h-2.5 text-blue-500" />
             </div>
-            <p className="font-baloo text-sm font-bold text-slate-900 dark:text-white">
-              Compare 3 Colleges
-            </p>
-            <p className="text-[9px] text-emerald-600 dark:text-emerald-400 font-semibold mt-0.5">
-              ● Side-by-side fee &amp; degree analysis
+            <p className="text-[11px] text-slate-600 dark:text-slate-400 font-nunito leading-tight">
+              Compare published tuition costs and seat quotas for up to 3 colleges.
             </p>
           </div>
 
           <Link
             href="/compare"
-            className="rounded-2xl bg-white/80 dark:bg-[#0C2229]/80 border border-black/[0.08] dark:border-white/[0.1] p-2.5 shadow-2xs flex items-center justify-between"
+            className="group block apple-card p-3 rounded-xl"
           >
-            <div>
-              <p className="text-[8.5px] font-mono font-bold uppercase text-slate-400">
-                100% Free
-              </p>
-              <p className="font-baloo text-sm font-bold text-slate-900 dark:text-white">
-                Launch Compare
-              </p>
-              <p className="text-[9px] text-sky-600 dark:text-sky-400 font-semibold mt-0.5">
-                ● Works on any mobile browser
-              </p>
+            <div className="flex items-center justify-between gap-2 mb-1.5">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-md bg-emerald-500/10 dark:bg-emerald-400/15 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                  <ShieldCheck className="w-3 h-3" />
+                </div>
+                <span className="text-xs font-bold text-slate-900 dark:text-white font-nunito">
+                  Zero Sponsored Ranks
+                </span>
+              </div>
+              <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-primary dark:group-hover:text-[#F5A524] transition-colors" />
             </div>
-            <div className="w-6 h-6 rounded-full bg-black/[0.05] dark:bg-white/[0.08] flex items-center justify-center text-slate-700 dark:text-slate-200">
-              <ArrowRight className="w-3 h-3" />
-            </div>
+            <p className="text-[11px] text-slate-600 dark:text-slate-400 font-nunito leading-tight">
+              Unbiased comparisons with verified student reviews across Nepal.
+            </p>
           </Link>
         </div>
 
