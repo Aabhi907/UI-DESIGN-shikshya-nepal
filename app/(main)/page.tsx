@@ -22,6 +22,7 @@ import {
   Building2,
   FileText,
   Bell,
+  ArrowUpRight,
   Monitor,
   BarChart3,
   Wrench,
@@ -64,11 +65,23 @@ export const metadata: Metadata = {
 }
 
 const UNIVERSITY_SHOWCASE = [
-  { short: 'TU',   label: 'Tribhuvan University',  affiliation: 'Tribhuvan University' },
-  { short: 'KU',   label: 'Kathmandu University',  affiliation: 'Kathmandu University' },
-  { short: 'PU',   label: 'Pokhara University',    affiliation: 'Pokhara University' },
-  { short: 'PurU', label: 'Purbanchal University', affiliation: 'Purbanchal University' },
+  { short: 'TU',   label: 'Tribhuvan University',  affiliation: 'Tribhuvan University',  location: 'Kirtipur, Kathmandu', estd: 'Estd. 2016 BS' },
+  { short: 'KU',   label: 'Kathmandu University',  affiliation: 'Kathmandu University',  location: 'Dhulikhel, Kavre',    estd: 'Estd. 2048 BS' },
+  { short: 'PU',   label: 'Pokhara University',    affiliation: 'Pokhara University',    location: 'Lekhnath, Kaski',     estd: 'Estd. 2054 BS' },
+  { short: 'PurU', label: 'Purbanchal University', affiliation: 'Purbanchal University', location: 'Biratnagar, Morang',  estd: 'Estd. 2052 BS' },
 ]
+
+const FACULTY_PREVIEWS: Record<string, string> = {
+  'plus-two':    'Science · Management · Law',
+  'it':          'BSc CSIT · BCA · BIT',
+  'management':  'BBA · BBS · BHM',
+  'engineering': 'Civil · Computer · Electrical',
+  'medical':     'MBBS · BDS · B.Sc Nursing',
+  'humanities':  'BA · BSW · Mass Comm',
+  'science':     'Physics · Chemistry · Biology',
+  'education':   'B.Ed · M.Ed · Special Ed',
+  'law':         'BA LLB · LLB · LLM',
+}
 
 // Consistent container + gutter + section rhythm, used on every major section
 // on this page: 20/32/48px side gutters, ~1200px content width, 64px→96px
@@ -167,86 +180,147 @@ export default async function HomePage() {
       <StudentToolsDock />
 
       {/* ════════════════════════════════════════════════════════
-          5. BROWSE — capsule pill-strip & elevated metrics
+          5. BROWSE — Apple-Grade Bento Split (Faculties & Universities)
       ════════════════════════════════════════════════════════ */}
       <section data-home-motion className={`border-b border-sn-border bg-sn-ground ${SECTION_PAD}`}>
         <div className={CONTAINER}>
-          <SectionHeader title="Browse by program or university" />
+          <SectionHeader
+            title="Browse by program or university"
+            description="Explore academic faculties, popular degree pathways, and certified university affiliations across Nepal."
+          />
 
-          {/* 4A. Faculties: Sleek horizontal pill-strip */}
-          <div className="mt-8 lg:mt-10">
-            <div className="flex items-end justify-between gap-4">
-              <h3 className="font-baloo text-lg font-bold text-sn-ink">By program</h3>
-              <Link href="/programs" className="text-sm font-bold font-nunito text-sn-primary hover:text-sn-primary-hover">All programs</Link>
-            </div>
-            <div className="mt-4 flex flex-wrap items-center gap-2.5 sm:gap-3">
-              {FACULTIES.map((faculty, index) => {
-                const Icon = FACULTY_ICONS[faculty.slug] ?? Monitor
-                const href = faculty.slug === 'plus-two' ? '/colleges?level=%2B2' : `/programs?faculty=${faculty.slug}`
-                const tint = FACULTY_TINTS[index % FACULTY_TINTS.length]
-                const tintBg = tint === 'peach'
-                  ? 'bg-sn-tint-peach'
-                  : tint === 'mint'
-                  ? 'bg-sn-tint-mint'
-                  : tint === 'butter'
-                  ? 'bg-sn-tint-butter'
-                  : 'bg-sn-tint-lilac'
-
-                return (
+          <div className="mt-8 lg:mt-12 grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
+            {/* ── Left Bento: Fields of Study (Academic Streams) ── */}
+            <div className="lg:col-span-7 flex flex-col justify-between rounded-[28px] border border-black/[0.08] dark:border-white/[0.08] bg-white/70 dark:bg-[#151518]/60 p-5 sm:p-7 backdrop-blur-md shadow-xs">
+              <div>
+                <div className="flex items-center justify-between gap-4 mb-5">
+                  <div>
+                    <h3 className="font-baloo text-xl sm:text-2xl font-bold text-slate-900 dark:text-white leading-tight">
+                      Fields of Study
+                    </h3>
+                    <p className="text-xs sm:text-sm font-nunito text-slate-500 dark:text-slate-400 mt-1">
+                      Choose a faculty to explore curated degrees &amp; entrance cutoffs
+                    </p>
+                  </div>
                   <Link
-                    key={faculty.slug}
-                    href={href}
-                    className="apple-pill group flex items-center gap-2.5 rounded-full px-3.5 py-2 transition-all duration-200 hover:border-white/[0.18] hover:bg-white/[0.06] hover:shadow-sm"
+                    href="/programs"
+                    className="shrink-0 inline-flex items-center gap-1 text-xs sm:text-sm font-bold font-nunito text-sn-primary hover:text-sn-primary-hover group"
                   >
-                    <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-sn-ink shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] ${tintBg}`}>
-                      <Icon className="h-3 w-3" aria-hidden="true" />
-                    </span>
-                    <span className="text-sm font-bold font-nunito text-sn-ink group-hover:text-sn-primary dark:group-hover:text-[#CAFFA6] transition-colors">
-                      {faculty.name}
-                    </span>
+                    <span>All programs</span>
+                    <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                   </Link>
-                )
-              })}
-            </div>
-          </div>
+                </div>
 
-          {/* 4B. Universities: Elevated metric rows with prominent tabular counts */}
-          <div className="mt-8 lg:mt-10">
-            <div className="flex items-end justify-between gap-4">
-              <h3 className="font-baloo text-lg font-bold text-sn-ink">By university</h3>
-              <Link href="/colleges" className="text-sm font-bold font-nunito text-sn-primary hover:text-sn-primary-hover">All affiliated colleges</Link>
+                {/* 3x3 Perfectly Balanced Faculty Tile Matrix (Zero Orphan Pills) */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  {FACULTIES.map((faculty, index) => {
+                    const Icon = FACULTY_ICONS[faculty.slug] ?? Monitor
+                    const href = faculty.slug === 'plus-two' ? '/colleges?level=%2B2' : `/programs?faculty=${faculty.slug}`
+                    const tint = FACULTY_TINTS[index % FACULTY_TINTS.length]
+                    const tintBg = tint === 'peach'
+                      ? 'bg-sn-tint-peach text-sn-primary dark:text-[#A9E0F1]'
+                      : tint === 'mint'
+                      ? 'bg-sn-tint-mint text-emerald-800 dark:text-[#CAFFA6]'
+                      : tint === 'butter'
+                      ? 'bg-sn-tint-butter text-amber-800 dark:text-[#FDE047]'
+                      : 'bg-sn-tint-lilac text-purple-800 dark:text-[#E9D5FF]'
+
+                    return (
+                      <Link
+                        key={faculty.slug}
+                        href={href}
+                        className="group relative flex flex-col justify-between p-3.5 rounded-[18px] border border-black/[0.06] dark:border-white/[0.08] bg-white/90 dark:bg-white/[0.03] hover:bg-white dark:hover:bg-white/[0.07] hover:border-black/15 dark:hover:border-white/20 hover:shadow-md transition-all duration-200"
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ${tintBg} transition-transform duration-200 group-hover:scale-105 shadow-2xs`}>
+                            <Icon className="h-3.5 w-3.5" aria-hidden="true" />
+                          </span>
+                          <ArrowUpRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-sn-primary dark:group-hover:text-[#CAFFA6] transition-colors opacity-0 group-hover:opacity-100" />
+                        </div>
+                        <div className="mt-3">
+                          <h4 className="font-baloo text-sm font-bold text-slate-900 dark:text-white group-hover:text-sn-primary dark:group-hover:text-[#CAFFA6] transition-colors leading-tight">
+                            {faculty.name}
+                          </h4>
+                          <p className="mt-1 text-[11px] font-nunito text-slate-500 dark:text-slate-400 leading-snug truncate">
+                            {FACULTY_PREVIEWS[faculty.slug] ?? 'Curated Programs'}
+                          </p>
+                        </div>
+                      </Link>
+                    )
+                  })}
+                </div>
+              </div>
             </div>
-            <div className="mt-4 grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4">
-              {UNIVERSITY_SHOWCASE.map((u, index) => {
-                const count = universityCounts[u.short] ?? 0
-                const tint = ['bg-sn-tint-peach text-primary dark:text-[#A9E0F1]', 'bg-sn-tint-mint text-emerald-800 dark:text-[#CAFFA6]', 'bg-sn-tint-butter text-amber-800 dark:text-[#F7F9E1]', 'bg-sn-tint-lilac text-indigo-800 dark:text-[#D9EEF7]'][index % 4]
-                return (
+
+            {/* ── Right Bento: National Universities ── */}
+            <div className="lg:col-span-5 flex flex-col justify-between rounded-[28px] border border-black/[0.08] dark:border-white/[0.08] bg-white/70 dark:bg-[#151518]/60 p-5 sm:p-7 backdrop-blur-md shadow-xs">
+              <div>
+                <div className="flex items-center justify-between gap-4 mb-5">
+                  <div>
+                    <h3 className="font-baloo text-xl sm:text-2xl font-bold text-slate-900 dark:text-white leading-tight">
+                      University Boards
+                    </h3>
+                    <p className="text-xs sm:text-sm font-nunito text-slate-500 dark:text-slate-400 mt-1">
+                      Official campuses verified against university gazettes
+                    </p>
+                  </div>
                   <Link
-                    key={u.short}
-                    href={`/colleges?affiliation=${encodeURIComponent(u.affiliation)}`}
-                    className="apple-card group flex items-center justify-between gap-3.5 p-4 rounded-[20px] backdrop-blur-md cursor-pointer"
+                    href="/colleges"
+                    className="shrink-0 inline-flex items-center gap-1 text-xs sm:text-sm font-bold font-nunito text-sn-primary hover:text-sn-primary-hover group"
                   >
-                    <div className="flex items-center gap-3 min-w-0">
-                      <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl font-baloo text-base font-bold shadow-sm border border-black/[0.06] dark:border-white/[0.08] ${tint} transition-transform duration-300 group-hover:scale-[1.05]`}>
-                        {u.short}
-                      </span>
-                      <div className="min-w-0">
-                        <p className="text-sm font-bold font-nunito leading-snug text-slate-900 dark:text-sn-ink group-hover:text-sn-primary dark:group-hover:text-[#CAFFA6] transition-colors truncate">
-                          {u.label}
-                        </p>
-                        <p className="text-xs font-nunito text-slate-500 dark:text-sn-ink-muted truncate">
-                          {u.affiliation}
-                        </p>
-                      </div>
-                    </div>
-                    {count > 0 && (
-                      <span className="shrink-0 rounded-full border border-black/[0.08] dark:border-white/[0.1] bg-black/[0.04] dark:bg-white/[0.06] px-2.5 py-1 text-xs font-bold font-nunito tabular-nums text-slate-700 dark:text-sn-ink shadow-sm group-hover:border-sn-primary/30 dark:group-hover:border-[#CAFFA6]/30 group-hover:text-sn-primary dark:group-hover:text-[#CAFFA6] transition-colors">
-                        {count}
-                      </span>
-                    )}
+                    <span>All colleges</span>
+                    <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                   </Link>
-                )
-              })}
+                </div>
+
+                {/* 2x2 Spacious University Grid (Full Names, Zero Ellipses) */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  {UNIVERSITY_SHOWCASE.map((u, index) => {
+                    const count = universityCounts[u.short] ?? 0
+                    const tint = [
+                      'bg-sn-tint-peach text-primary dark:text-[#A9E0F1]',
+                      'bg-sn-tint-mint text-emerald-800 dark:text-[#CAFFA6]',
+                      'bg-sn-tint-butter text-amber-800 dark:text-[#F7F9E1]',
+                      'bg-sn-tint-lilac text-indigo-800 dark:text-[#D9EEF7]'
+                    ][index % 4]
+
+                    return (
+                      <Link
+                        key={u.short}
+                        href={`/colleges?affiliation=${encodeURIComponent(u.affiliation)}`}
+                        className="group flex flex-col justify-between p-4 rounded-[20px] border border-black/[0.06] dark:border-white/[0.08] bg-white/90 dark:bg-white/[0.03] hover:bg-white dark:hover:bg-white/[0.07] hover:border-black/15 dark:hover:border-white/20 hover:shadow-md transition-all duration-200"
+                      >
+                        <div className="flex items-center justify-between gap-2">
+                          <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl font-baloo text-base font-extrabold shadow-2xs border border-black/[0.06] dark:border-white/[0.08] ${tint} transition-transform duration-300 group-hover:scale-105`}>
+                            {u.short}
+                          </span>
+                          {count > 0 ? (
+                            <span className="shrink-0 rounded-full border border-black/[0.08] dark:border-white/[0.1] bg-black/[0.04] dark:bg-white/[0.06] px-2.5 py-1 text-[11px] font-bold font-nunito tabular-nums text-slate-700 dark:text-sn-ink shadow-2xs group-hover:border-sn-primary/30 dark:group-hover:border-[#CAFFA6]/30 group-hover:text-sn-primary dark:group-hover:text-[#CAFFA6] transition-colors">
+                              {count} {count === 1 ? 'Campus' : 'Campuses'}
+                            </span>
+                          ) : (
+                            <span className="shrink-0 rounded-full border border-black/[0.06] dark:border-white/[0.08] bg-black/[0.02] dark:bg-white/[0.04] px-2 py-0.5 text-[10px] font-medium font-nunito text-slate-400">
+                              Directory
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="mt-3.5">
+                          <h4 className="font-baloo text-base font-bold text-slate-900 dark:text-white group-hover:text-sn-primary dark:group-hover:text-[#CAFFA6] transition-colors leading-snug">
+                            {u.label}
+                          </h4>
+                          <p className="mt-1 text-xs font-nunito text-slate-500 dark:text-slate-400 leading-tight">
+                            {u.location}
+                          </p>
+                          <p className="mt-0.5 text-[11px] font-mono text-slate-400 dark:text-slate-500">
+                            {u.estd}
+                          </p>
+                        </div>
+                      </Link>
+                    )
+                  })}
+                </div>
+              </div>
             </div>
           </div>
         </div>
