@@ -201,8 +201,8 @@ export default function ShikshyaWhatMakesUsDifferent() {
           </p>
         </div>
 
-        {/* ── DESKTOP & TABLET: Pure Floating Canvas (No Timeline Guides) ── */}
-        <div className="hidden md:block relative w-full h-[400px] lg:h-[440px] rounded-3xl bg-white/40 dark:bg-white/[0.02] border border-black/[0.06] dark:border-white/[0.06] p-6 shadow-2xs backdrop-blur-xs select-none">
+        {/* ── DESKTOP & TABLET: Pure Floating Canvas (Completely Open, Borderless Air) ── */}
+        <div className="hidden md:block relative w-full h-[380px] lg:h-[420px] select-none">
           
           {/* Subtle Floating Ambient Particles in Background */}
           <div className="pointer-events-none absolute inset-0 overflow-hidden">
