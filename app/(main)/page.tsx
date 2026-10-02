@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import { FACULTIES } from '@/lib/utils'
 import Hero from '@/components/home/Hero'
+import StudentCompanionShowcase from '@/components/home/StudentCompanionShowcase'
 import ResultCard from '@/components/results/ResultCard'
 import NoticeCard from '@/components/notices/NoticeCard'
 import EmailSubscribe from '@/components/notifications/EmailSubscribe'
@@ -158,6 +159,11 @@ export default async function HomePage() {
           1. HERO — Himalayan Calm, Single Focused Action
       ════════════════════════════════════════════════════════ */}
       <Hero heroStats={heroStats} admissions={admissions} />
+
+      {/* ════════════════════════════════════════════════════════
+          2. MOBILE STUDENT COMPANION — Interactive Phone & Flanking Badges
+      ════════════════════════════════════════════════════════ */}
+      <StudentCompanionShowcase />
 
       {/* ════════════════════════════════════════════════════════
           3. WHAT MAKES OUR GUIDE DIFFERENT — 4-Column Strip (Matching Image 2)
