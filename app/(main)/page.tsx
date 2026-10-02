@@ -1,6 +1,5 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import Image from 'next/image'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import { FACULTIES } from '@/lib/utils'
 import Hero from '@/components/home/Hero'
@@ -15,8 +14,7 @@ import AdmissionCard from '@/components/admissions/AdmissionCard'
 import Card from '@/components/design-system/Card'
 import IconTile from '@/components/design-system/IconTile'
 import SectionHeader from '@/components/design-system/SectionHeader'
-import Button from '@/components/design-system/Button'
-import FeaturedCollegeCard, { CAMPUS_FALLBACK_IMAGES } from '@/components/design-system/FeaturedCollegeCard'
+import FeaturedCollegeCard from '@/components/design-system/FeaturedCollegeCard'
 import TestimonialsColumns from '@/components/home/TestimonialsColumns'
 import HomeScrollMotion from '@/components/home/HomeScrollMotion'
 import SikshyaDemo from '@/components/sikshya-demo/SikshyaDemo'
@@ -40,7 +38,6 @@ import {
   ShieldCheck,
   CheckCircle2,
   Clock,
-  Paperclip,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
@@ -521,101 +518,7 @@ export default async function HomePage() {
         </div>
       </section>}
 
-      {/* Student perspective retained from the former pathway section. */}
-      <section data-home-motion className="border-b border-sn-border bg-sn-ground py-16 sm:py-20">
-        <div className={CONTAINER}>
-          <figure className="mx-auto max-w-3xl overflow-hidden rounded-[28px] border border-black/[0.08] dark:border-white/[0.08] bg-white dark:bg-[#151518] px-7 py-9 text-center shadow-md dark:shadow-[0_10px_30px_rgba(0,0,0,0.5)] sm:px-12 sm:py-12">
-            <div className="mx-auto mb-5 flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 dark:bg-[#1c1c22] font-serif text-3xl font-bold leading-none text-primary dark:text-[#CAFFA6] shadow-sm dark:shadow-[0_4px_14px_rgba(0,0,0,0.3)]" aria-hidden="true">“</div>
-            <blockquote className="font-baloo text-xl font-bold leading-[1.45] text-slate-900 dark:text-sn-ink sm:text-2xl lg:text-3xl">
-              I spent weeks asking coaching institutes. ShikshyaXNepal gave me the{' '}
-              <span className="font-extrabold text-primary dark:text-[#CAFFA6] underline decoration-primary/40 dark:decoration-[#CAFFA6]/40 decoration-4 underline-offset-4">exact eligibility and official dates</span>{' '}
-              in under two minutes.
-            </blockquote>
-            <figcaption className="mt-6 flex items-center justify-center gap-3">
-              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-sn-primary text-sm font-bold text-white shadow-[0_4px_12px_rgba(0,0,0,0.3)]">AS</span>
-              <span className="text-left font-nunito text-xs leading-5">
-                <span className="block font-bold text-slate-900 dark:text-sn-ink">Ayush Shrestha</span>
-                <span className="block text-slate-500 dark:text-sn-ink-muted">Pulchowk Campus Aspirant · Lalitpur</span>
-              </span>
-            </figcaption>
-          </figure>
-        </div>
-      </section>
 
-      {/* ════════════════════════════════════════════════════════
-          7. EDITORIAL STORY — Paperclip & Polaroid (Matching Image 3 & 1)
-      ════════════════════════════════════════════════════════ */}
-      <section data-home-motion className={`border-b border-sn-border bg-sn-ground ${SECTION_PAD}`}>
-        <div className={CONTAINER}>
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-            {/* Left Column: The Editorial Story */}
-            <div className="lg:col-span-7 space-y-6">
-              <h2 className="font-baloo text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-sn-ink leading-[1.1] tracking-[-0.03em]">
-                Top students choose with data, not consultancy promises.
-              </h2>
-              <div className="space-y-4 font-nunito text-base sm:text-lg text-slate-600 dark:text-sn-ink-soft leading-relaxed">
-                <p>
-                  Every academic year in Nepal, over 400,000 students graduate from SEE and +2 facing high-pressure decisions. Too often, they are guided by sponsored billboards, consultancy sales agents, or unverified social media claims.
-                </p>
-                <p>
-                  Constituent campus vs private quota fees can differ by over 800,000 NPR for the exact same syllabus. Knowing the entrance date, seat allocation, and scholarship quota in advance changes your career trajectory.
-                </p>
-                <p className="font-bold text-slate-900 dark:text-sn-ink">
-                  Shikshya Nepal exists to give every student in Nepal the clear, dated, official truth — free, always.
-                </p>
-              </div>
-
-              <div className="pt-2 flex flex-wrap items-center gap-4">
-                <Button.Link href="/colleges" variant="primary" className="rounded-full px-6 py-3">
-                  Explore verified colleges
-                </Button.Link>
-                <Link
-                  href="/news"
-                  className="font-bold font-nunito text-sm text-slate-800 dark:text-sn-ink hover:text-primary dark:hover:text-[#CAFFA6] flex items-center gap-1.5 transition-colors"
-                >
-                  <span>Read our verification policy</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-              </div>
-            </div>
-
-            {/* Right Column: Tactile Polaroid Photo with Metallic Paperclip (Image 3) */}
-            <div className="lg:col-span-5 flex justify-center">
-              <div className="relative rotate-2 hover:rotate-0 transition-transform duration-300">
-                {/* Paperclip matching Image 3 */}
-                <div className="absolute -top-5 right-10 z-20 drop-shadow-md">
-                  <Paperclip className="w-10 h-10 -rotate-12 stroke-[2.2] text-slate-400" />
-                </div>
-
-                {/* Polaroid / Photographic Card */}
-                <div className="apple-card rounded-2xl bg-white dark:bg-[#151518] p-4 pb-6 shadow-xl dark:shadow-[0_20px_50px_rgba(0,0,0,0.6)] border border-black/[0.08] dark:border-white/[0.08] max-w-[340px] sm:max-w-[380px]">
-                  <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl bg-slate-900">
-                    <Image
-                      src={CAMPUS_FALLBACK_IMAGES[1]}
-                      alt="Student studying on campus in Nepal"
-                      fill
-                      sizes="(max-width: 768px) 100vw, 380px"
-                      className="object-cover"
-                    />
-                    <div className="absolute bottom-2 left-2 rounded-md bg-black/60 backdrop-blur-sm px-2 py-0.5 text-[10px] font-bold text-white">
-                      Pulchowk Campus, Lalitpur
-                    </div>
-                  </div>
-
-                  <div className="mt-4 space-y-1">
-                    <p className="font-baloo text-base font-bold text-sn-ink">
-                      Real campuses, official gazettes.
-                    </p>
-                    <p className="font-nunito text-xs text-sn-ink-muted">
-                      Source-dated to university boards. No paid rankings.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
 
 
