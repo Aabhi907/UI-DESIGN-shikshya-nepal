@@ -79,18 +79,17 @@ export default function StudentCompanionShowcase() {
         {/* ── 2. Fixed 3D Showcase (Calibrated Height for Single Screen Viewing) ── */}
         <div
           style={{ perspective: '1200px' }}
-          className="relative mx-auto max-w-3xl flex items-center justify-center pt-1 pb-2 select-none"
+          className="relative mx-auto w-full max-w-5xl flex items-center justify-center gap-3 sm:gap-4 lg:gap-6 xl:gap-10 pt-1 pb-2 select-none"
         >
           {/* ── LEFT 3D FLOATING CAPSULE CARD (Desktop) ── */}
           <motion.div
-            initial={{ opacity: 0, x: -24, y: 16 }}
+            initial={{ opacity: 0, x: -24, y: 10 }}
             whileInView={{ opacity: 1, x: 0, y: 0 }}
             viewport={{ once: true, amount: 0.3 }}
             transition={{ duration: 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-            className="hidden lg:block absolute -left-2 xl:-left-8 top-12 z-30 pointer-events-auto"
-            style={{ transform: 'translateZ(40px)' }}
+            className="hidden lg:block flex-shrink-0 w-[215px] xl:w-[230px] z-30 pointer-events-auto"
           >
-            <div className="w-[225px] rounded-2xl bg-white/95 dark:bg-[#0C2229]/95 backdrop-blur-2xl border border-black/[0.08] dark:border-white/[0.12] p-3 shadow-[0_16px_32px_rgba(11,43,51,0.1)] dark:shadow-[0_20px_45px_rgba(0,0,0,0.6)] transition-transform duration-300 hover:scale-105">
+            <div className="rounded-2xl bg-white/95 dark:bg-[#0C2229]/95 backdrop-blur-2xl border border-black/[0.08] dark:border-white/[0.12] p-3 shadow-[0_16px_32px_rgba(11,43,51,0.1)] dark:shadow-[0_20px_45px_rgba(0,0,0,0.6)] transition-transform duration-300 hover:scale-105">
               <div className="grid grid-cols-2 divide-x divide-black/[0.06] dark:divide-white/[0.08] text-left">
                 {/* Cell 1 */}
                 <div className="pr-2">
@@ -127,46 +126,6 @@ export default function StudentCompanionShowcase() {
             </div>
           </motion.div>
 
-          {/* ── RIGHT 3D FLOATING CAPSULE CARD (Desktop) ── */}
-          <motion.div
-            initial={{ opacity: 0, x: 24, y: 16 }}
-            whileInView={{ opacity: 1, x: 0, y: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.7, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            className="hidden lg:block absolute -right-2 xl:-right-8 top-12 z-30 pointer-events-auto"
-            style={{ transform: 'translateZ(45px)' }}
-          >
-            <Link
-              href="/compare"
-              className="group block w-[235px] rounded-2xl bg-white/95 dark:bg-[#0C2229]/95 backdrop-blur-2xl border border-black/[0.08] dark:border-white/[0.12] p-3 shadow-[0_16px_32px_rgba(11,43,51,0.1)] dark:shadow-[0_20px_45px_rgba(0,0,0,0.6)] transition-transform duration-300 hover:scale-105 text-left"
-            >
-              <div className="flex items-center justify-between gap-2">
-                <div className="flex items-center gap-2 min-w-0">
-                  <div className="w-8 h-8 rounded-xl bg-emerald-500/10 dark:bg-emerald-400/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400 flex-shrink-0">
-                    <ShieldCheck className="w-4 h-4" />
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-[10px] font-bold text-slate-900 dark:text-white truncate">
-                      Zero Sponsored Rankings
-                    </p>
-                    <p className="text-[9px] text-slate-500 dark:text-slate-400 truncate">
-                      Moderated student reviews
-                    </p>
-                  </div>
-                </div>
-
-                <div className="w-6 h-6 rounded-full bg-black/[0.05] dark:bg-white/[0.08] flex items-center justify-center text-slate-700 dark:text-slate-200 flex-shrink-0 group-hover:bg-[#0B2B33] group-hover:text-white dark:group-hover:bg-[#F5A524] dark:group-hover:text-black transition-colors">
-                  <ArrowRight className="w-3 h-3" />
-                </div>
-              </div>
-
-              <div className="mt-2 pt-1 border-t border-black/[0.05] dark:border-white/[0.06] flex items-center justify-between text-[8px] font-mono text-slate-500 dark:text-slate-400">
-                <span>VERIFIED METRICS ONLY</span>
-                <span className="text-emerald-600 dark:text-emerald-400 font-semibold">● COMPARE 2082</span>
-              </div>
-            </Link>
-          </motion.div>
-
           {/* ── CENTER: COMPACT 3D PHONE MOCKUP (Full Height Fits on Screen) ── */}
           <motion.div
             initial={{ opacity: 0, y: 40, scale: 0.95, rotateX: 14, rotateY: -7 }}
@@ -178,7 +137,7 @@ export default function StudentCompanionShowcase() {
               damping: 20,
               duration: 0.8,
             }}
-            className="relative w-full max-w-[245px] sm:max-w-[255px]"
+            className="relative flex-shrink-0 w-[240px] sm:w-[250px] z-20"
             style={{
               transformStyle: 'preserve-3d',
             }}
@@ -366,6 +325,45 @@ export default function StudentCompanionShowcase() {
                 </div>
               </div>
             </div>
+          </motion.div>
+
+          {/* ── RIGHT 3D FLOATING CAPSULE CARD (Desktop) ── */}
+          <motion.div
+            initial={{ opacity: 0, x: 24, y: 10 }}
+            whileInView={{ opacity: 1, x: 0, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.7, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            className="hidden lg:block flex-shrink-0 w-[225px] xl:w-[240px] z-30 pointer-events-auto"
+          >
+            <Link
+              href="/compare"
+              className="group block rounded-2xl bg-white/95 dark:bg-[#0C2229]/95 backdrop-blur-2xl border border-black/[0.08] dark:border-white/[0.12] p-3 shadow-[0_16px_32px_rgba(11,43,51,0.1)] dark:shadow-[0_20px_45px_rgba(0,0,0,0.6)] transition-transform duration-300 hover:scale-105 text-left"
+            >
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2 min-w-0">
+                  <div className="w-8 h-8 rounded-xl bg-emerald-500/10 dark:bg-emerald-400/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400 flex-shrink-0">
+                    <ShieldCheck className="w-4 h-4" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-[10px] font-bold text-slate-900 dark:text-white truncate">
+                      Zero Sponsored Rankings
+                    </p>
+                    <p className="text-[9px] text-slate-500 dark:text-slate-400 truncate">
+                      Moderated student reviews
+                    </p>
+                  </div>
+                </div>
+
+                <div className="w-6 h-6 rounded-full bg-black/[0.05] dark:bg-white/[0.08] flex items-center justify-center text-slate-700 dark:text-slate-200 flex-shrink-0 group-hover:bg-[#0B2B33] group-hover:text-white dark:group-hover:bg-[#F5A524] dark:group-hover:text-black transition-colors">
+                  <ArrowRight className="w-3 h-3" />
+                </div>
+              </div>
+
+              <div className="mt-2 pt-1 border-t border-black/[0.05] dark:border-white/[0.06] flex items-center justify-between text-[8px] font-mono text-slate-500 dark:text-slate-400">
+                <span>VERIFIED METRICS ONLY</span>
+                <span className="text-emerald-600 dark:text-emerald-400 font-semibold">● COMPARE 2082</span>
+              </div>
+            </Link>
           </motion.div>
         </div>
 
