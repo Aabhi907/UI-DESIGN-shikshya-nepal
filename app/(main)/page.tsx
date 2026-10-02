@@ -8,7 +8,7 @@ import StudentCompanionShowcase from '@/components/home/StudentCompanionShowcase
 import ShikshyaWhatMakesUsDifferent from '@/components/home/ShikshyaWhatMakesUsDifferent'
 import ResultCard from '@/components/results/ResultCard'
 import NoticeCard from '@/components/notices/NoticeCard'
-import EmailSubscribe from '@/components/notifications/EmailSubscribe'
+import UpdatesAndAlerts from '@/components/home/UpdatesAndAlerts'
 import type { Result, Notice, College } from '@/types'
 import type { Admission } from '@/types'
 import AdmissionCard from '@/components/admissions/AdmissionCard'
@@ -1059,22 +1059,16 @@ export default async function HomePage() {
                   <span>100% Free Public Guide · No student registration fees</span>
                 </p>
 
-                {/* Email Alert Newsletter Form */}
-                <div className="mx-auto mt-10 max-w-md border-t border-black/[0.08] dark:border-white/[0.08] pt-8 lg:mt-12 lg:pt-10">
-                  <p className="font-bold font-nunito text-sm text-sn-ink flex items-center gap-2 justify-center">
-                    <Bell className="w-4 h-4 text-sn-primary" aria-hidden="true" />
-                    Get result alerts in your inbox
-                  </p>
-                  <p className="text-sn-ink-muted text-xs font-nunito mt-1 mb-5">
-                    Email updates when a new result or notice is published
-                  </p>
-                  <EmailSubscribe />
-                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
+
+      {/* ════════════════════════════════════════════════════════
+          7. UPDATES & ALERTS — 3D Floating Envelope Newsletter
+      ════════════════════════════════════════════════════════ */}
+      <UpdatesAndAlerts />
     </div>
   )
 }
