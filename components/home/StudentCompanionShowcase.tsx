@@ -14,6 +14,7 @@ import {
   Share2,
   Check,
   Scale,
+  Lock,
 } from 'lucide-react'
 
 export default function StudentCompanionShowcase() {
@@ -234,8 +235,21 @@ export default function StudentCompanionShowcase() {
                     </div>
                   </div>
 
-                  {/* 2. Top Floating Navigation Capsule (Screenshot Match) */}
-                  <div className="relative z-10 px-3 pt-2">
+                  {/* 2. Top Browser Domain Bar (Domain: shikshyaxnepal.com) */}
+                  <div className="relative z-20 px-3 pt-1.5 pb-0.5">
+                    <div className="h-6 rounded-full bg-white/95 dark:bg-slate-900/95 border border-black/[0.08] dark:border-white/[0.1] px-2.5 flex items-center justify-between text-[10px] text-slate-500 font-mono shadow-2xs">
+                      <span className="flex items-center gap-1.5 min-w-0">
+                        <Lock className="w-2.5 h-2.5 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
+                        <span className="font-semibold text-slate-800 dark:text-slate-200 truncate">
+                          shikshyaxnepal.com
+                        </span>
+                      </span>
+                      <span className="text-[9px] text-slate-400 flex-shrink-0">AA</span>
+                    </div>
+                  </div>
+
+                  {/* 3. Top Floating Navigation Capsule (Screenshot Match) */}
+                  <div className="relative z-10 px-3 pt-1">
                     <div className="rounded-full bg-white dark:bg-slate-900/90 border border-black/[0.08] dark:border-white/[0.1] px-3.5 py-1.5 flex items-center justify-between shadow-xs">
                       <span className="font-baloo font-bold text-xs text-slate-900 dark:text-white">
                         ShikshyaXNepal
