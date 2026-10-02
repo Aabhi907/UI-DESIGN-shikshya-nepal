@@ -180,9 +180,15 @@ export default async function HomePage() {
             {/* Left Column: Typography & Feature Checklist */}
             <div className="lg:col-span-6 space-y-6">
               <h2 className="font-baloo text-3xl sm:text-4xl font-extrabold text-sn-ink leading-[1.12] tracking-[-0.025em]">
-                Direct board results <span className="relative inline-block px-2">
-                  <span className="relative z-10">without the chaos</span>
-                  <span className="absolute inset-0 -rotate-1 rounded-full border border-sn-primary/40 bg-sn-primary-bg/35 -z-0" />
+                Direct board results{' '}
+                <span className="relative inline-block px-2 py-0.5 mx-0.5">
+                  <span className="relative z-10 text-slate-900 dark:text-slate-950 font-extrabold">
+                    without the chaos
+                  </span>
+                  <span
+                    className="absolute inset-x-[-3px] inset-y-[2px] -rotate-1 rounded-sm bg-[#FDE047] dark:bg-[#F5A524] opacity-90 shadow-2xs -z-0 pointer-events-none"
+                    aria-hidden="true"
+                  />
                 </span>
               </h2>
 
