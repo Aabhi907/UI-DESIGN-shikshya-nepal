@@ -8,7 +8,7 @@ import {
   CheckCircle2,
   FileText,
   Clock,
-  Building,
+  Building2,
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -58,7 +58,7 @@ export default function StudentToolsDock() {
     <section className="relative overflow-hidden bg-sn-ground py-20 sm:py-28 lg:py-32 border-b border-sn-border">
       <div className="relative mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 flex flex-col items-center select-none">
         {/* ════════════════════════════════════════════════════════
-            1. HEADER (Handwritten font with kinetic blur)
+            1. HEADER (Handwritten font with subtle kinetic blur)
         ════════════════════════════════════════════════════════ */}
         <motion.div
           animate={{
@@ -77,7 +77,7 @@ export default function StudentToolsDock() {
         </motion.div>
 
         {/* ════════════════════════════════════════════════════════
-            2. DOCK ROW (4 Bespoke Tactile Tool Icons)
+            2. DOCK ROW (4 Apple-Grade System Icons)
         ════════════════════════════════════════════════════════ */}
         <div className="relative my-auto w-full py-20 sm:py-24">
           <div
@@ -98,7 +98,7 @@ export default function StudentToolsDock() {
                   }`}
                 >
                   {/* ───────────────────────────────────────────────
-                      AI-SLOP-FREE HOVER PREVIEW (Physical Card)
+                      APPLE-STYLE HOVER PREVIEW (Clean Archival Sheet)
                   ─────────────────────────────────────────────── */}
                   <AnimatePresence>
                     {isHovered && (
@@ -109,13 +109,13 @@ export default function StudentToolsDock() {
                         transition={{ type: 'spring', stiffness: 320, damping: 26 }}
                         className="absolute bottom-full mb-4 pointer-events-none select-none flex flex-col items-center"
                       >
-                        <ToolPreviewCard item={item} />
+                        <AppleToolPreview item={item} />
                       </motion.div>
                     )}
                   </AnimatePresence>
 
                   {/* ───────────────────────────────────────────────
-                      TACTILE PHYSICAL TOOL ICON
+                      APPLE-GRADE PHYSICAL APP ICON
                   ─────────────────────────────────────────────── */}
                   <motion.button
                     type="button"
@@ -127,14 +127,14 @@ export default function StudentToolsDock() {
                       opacity: isBlurred ? 0.35 : 1,
                     }}
                     transition={{ duration: 0.35, ease: 'easeOut' }}
-                    className="relative group flex h-20 w-20 sm:h-24 sm:w-24 md:h-28 md:w-28 items-center justify-center rounded-[22px] sm:rounded-[26px] md:rounded-[28px] focus:outline-none transition-shadow duration-300"
+                    className="relative group flex h-20 w-20 sm:h-24 sm:w-24 md:h-28 md:w-28 items-center justify-center rounded-[22px] sm:rounded-[26px] md:rounded-[28px] focus:outline-none transition-shadow duration-300 overflow-hidden"
                     style={{
                       boxShadow: isHovered
-                        ? '0 24px 45px -10px rgba(0,0,0,0.22), 0 0 0 1.5px rgba(0,0,0,0.1)'
-                        : '0 12px 28px -6px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.04)',
+                        ? '0 24px 45px -10px rgba(0,0,0,0.22), 0 0 0 1px rgba(0,0,0,0.08)'
+                        : '0 10px 24px -6px rgba(0,0,0,0.1), 0 1px 3px rgba(0,0,0,0.04)',
                     }}
                   >
-                    <BespokeToolIcon id={item.id} isHovered={isHovered} />
+                    <AppleAppIcon id={item.id} />
                   </motion.button>
 
                   {/* ───────────────────────────────────────────────
@@ -192,38 +192,43 @@ export default function StudentToolsDock() {
 }
 
 // ─────────────────────────────────────────────────────────────
-// BESPOKE TACTILE TOOL ICONS (No Generic Squircles, No Neon)
+// APPLE-GRADE SYSTEM APP ICONS (Zero Neon, True Apple Craft)
 // ─────────────────────────────────────────────────────────────
-function BespokeToolIcon({ id }: { id: ToolItem['id']; isHovered: boolean }) {
-  // 1. GPA CALCULATOR: Tactile mechanical pocket calculator tile
+function AppleAppIcon({ id }: { id: ToolItem['id'] }) {
+  // 1. GPA CALCULATOR: Apple Calculator / Space Gray Precision Aesthetic
   if (id === 'gpa') {
     return (
-      <div className="relative w-full h-full rounded-[22px] sm:rounded-[26px] md:rounded-[28px] bg-[#16181D] border border-white/10 p-2.5 sm:p-3 flex flex-col justify-between overflow-hidden shadow-inner">
-        {/* Subtle top rim light */}
+      <div
+        className="relative w-full h-full rounded-[22px] sm:rounded-[26px] md:rounded-[28px] p-2.5 sm:p-3 flex flex-col justify-between border border-black/10 dark:border-white/10 select-none"
+        style={{
+          background: 'linear-gradient(180deg, #2A2B30 0%, #1A1B1F 100%)',
+        }}
+      >
+        {/* Subtle top bevel light */}
         <div className="absolute top-0 left-0 right-0 h-[1px] bg-white/20" />
 
-        {/* Recessed LCD Screen */}
-        <div className="w-full h-7 sm:h-8 rounded-lg bg-[#0D1015] border border-white/5 px-2 flex items-center justify-between shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)]">
-          <span className="font-mono text-[9px] font-bold text-slate-500 tracking-wider">NEB-12</span>
-          <span className="font-mono text-xs sm:text-sm font-bold text-[#CAFFA6] tracking-widest drop-shadow-[0_0_1px_rgba(202,255,166,0.4)]">
+        {/* Recessed Minimalist Display (Apple style: Crisp White numbers, zero neon glow) */}
+        <div className="w-full h-7 sm:h-8 rounded-lg bg-[#111215] border border-white/[0.06] px-2 flex items-center justify-between shadow-[inset_0_1px_3px_rgba(0,0,0,0.6)]">
+          <span className="font-mono text-[9px] text-[#86868B] font-semibold">NEB-12</span>
+          <span className="font-mono text-xs sm:text-sm font-bold text-white tracking-wider">
             3.84
           </span>
         </div>
 
-        {/* Tactile Keypad Matrix */}
-        <div className="grid grid-cols-3 gap-1.5 pt-1">
-          {['7', '8', '9', '4', '5', '6'].map((key) => (
+        {/* Tactile Keypad (Apple Calculator buttons) */}
+        <div className="grid grid-cols-3 gap-1 pt-1">
+          {['7', '8', '9', '4', '5', '6'].map((k) => (
             <div
-              key={key}
-              className="h-3.5 sm:h-4 rounded bg-[#242832] border-t border-white/15 border-b border-black/40 flex items-center justify-center text-[9px] font-mono text-slate-300 font-semibold shadow-xs"
+              key={k}
+              className="h-3.5 sm:h-4 rounded-md bg-[#33353B] flex items-center justify-center text-[9px] font-nunito font-semibold text-slate-200 shadow-[0_1px_2px_rgba(0,0,0,0.3)]"
             >
-              {key}
+              {k}
             </div>
           ))}
-          <div className="col-span-2 h-3.5 sm:h-4 rounded bg-[#2563EB] border-t border-blue-400 border-b border-blue-900 flex items-center justify-center text-[10px] font-mono font-bold text-white shadow-xs">
+          <div className="col-span-2 h-3.5 sm:h-4 rounded-md bg-[#007AFF] flex items-center justify-center text-[10px] font-nunito font-bold text-white shadow-[0_1px_2px_rgba(0,0,0,0.3)]">
             GPA
           </div>
-          <div className="h-3.5 sm:h-4 rounded bg-[#D97706] border-t border-amber-400 border-b border-amber-900 flex items-center justify-center text-[10px] font-mono font-bold text-white shadow-xs">
+          <div className="h-3.5 sm:h-4 rounded-md bg-[#FF9500] flex items-center justify-center text-[10px] font-nunito font-bold text-white shadow-[0_1px_2px_rgba(0,0,0,0.3)]">
             =
           </div>
         </div>
@@ -231,41 +236,46 @@ function BespokeToolIcon({ id }: { id: ToolItem['id']; isHovered: boolean }) {
     )
   }
 
-  // 2. VERIFIED CAMPUSES: Embossed University Archive & Colonnade Portico
+  // 2. VERIFIED CAMPUSES: Apple Books / Midnight Academic Colonnade
   if (id === 'colleges') {
     return (
-      <div className="relative w-full h-full rounded-[22px] sm:rounded-[26px] md:rounded-[28px] bg-[#0E1F18] border border-emerald-900/50 p-2.5 sm:p-3 flex flex-col justify-between overflow-hidden shadow-inner">
-        {/* Subtle top rim light */}
-        <div className="absolute top-0 left-0 right-0 h-[1px] bg-emerald-400/20" />
+      <div
+        className="relative w-full h-full rounded-[22px] sm:rounded-[26px] md:rounded-[28px] p-2.5 sm:p-3 flex flex-col justify-between border border-black/10 dark:border-white/10 select-none text-white"
+        style={{
+          background: 'linear-gradient(180deg, #1E293B 0%, #0F172A 100%)',
+        }}
+      >
+        {/* Subtle top bevel light */}
+        <div className="absolute top-0 left-0 right-0 h-[1px] bg-white/20" />
 
         {/* Header Ribbon Stamp */}
         <div className="flex items-center justify-between">
-          <span className="px-1.5 py-0.5 rounded bg-emerald-950/80 border border-emerald-800/60 font-mono text-[8px] font-bold text-emerald-300 tracking-wider">
+          <span className="px-2 py-0.5 rounded-full bg-white/10 font-mono text-[8px] font-semibold text-slate-200 tracking-wider">
             TU · KU · PU
           </span>
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+          <span className="font-mono text-[8px] text-slate-400">2082</span>
         </div>
 
-        {/* Classical Colonnade Portico Crest */}
+        {/* Apple-style Classical Portico Icon (Crisp Platinum Silver) */}
         <div className="my-auto flex flex-col items-center justify-center py-1">
-          {/* Triangular Pediment */}
-          <div className="w-10 sm:w-12 h-3 border-b-2 border-emerald-300/80 flex items-center justify-center">
-            <div className="w-0 h-0 border-l-[18px] border-l-transparent border-r-[18px] border-r-transparent border-b-[9px] border-b-emerald-400/60" />
+          {/* Pediment Roof */}
+          <div className="w-10 sm:w-12 h-2.5 border-b border-white/40 flex items-center justify-center">
+            <div className="w-0 h-0 border-l-[18px] border-l-transparent border-r-[18px] border-r-transparent border-b-[8px] border-b-slate-200" />
           </div>
-          {/* 4 Classical Pillars */}
+          {/* Columns */}
           <div className="flex justify-between w-9 sm:w-11 pt-0.5 pb-0.5">
-            <div className="w-1 h-5 sm:h-6 bg-emerald-200/70 rounded-xs" />
-            <div className="w-1 h-5 sm:h-6 bg-emerald-200/70 rounded-xs" />
-            <div className="w-1 h-5 sm:h-6 bg-emerald-200/70 rounded-xs" />
-            <div className="w-1 h-5 sm:h-6 bg-emerald-200/70 rounded-xs" />
+            <div className="w-1 h-5 sm:h-6 bg-slate-300 rounded-xs" />
+            <div className="w-1 h-5 sm:h-6 bg-slate-300 rounded-xs" />
+            <div className="w-1 h-5 sm:h-6 bg-slate-300 rounded-xs" />
+            <div className="w-1 h-5 sm:h-6 bg-slate-300 rounded-xs" />
           </div>
-          {/* Base Plinth */}
-          <div className="w-12 sm:w-14 h-1 bg-emerald-300/80 rounded-xs" />
+          {/* Base */}
+          <div className="w-11 sm:w-13 h-1 bg-slate-300 rounded-xs" />
         </div>
 
-        {/* Bottom Seal Label */}
+        {/* Bottom Tag */}
         <div className="text-center">
-          <span className="font-mono text-[9px] font-bold text-emerald-300 tracking-widest uppercase">
+          <span className="font-mono text-[9px] font-semibold text-slate-300 tracking-wider">
             1,200+ Verified
           </span>
         </div>
@@ -273,135 +283,133 @@ function BespokeToolIcon({ id }: { id: ToolItem['id']; isHovered: boolean }) {
     )
   }
 
-  // 3. SCHOLARSHIP ALERTS: Tactile Brass Bell & Calendar Countdown Stamp
+  // 3. SCHOLARSHIP ALERTS: Apple Calendar Icon Signature Design
   if (id === 'deadlines') {
     return (
-      <div className="relative w-full h-full rounded-[22px] sm:rounded-[26px] md:rounded-[28px] bg-[#221611] border border-amber-900/50 p-2.5 sm:p-3 flex flex-col justify-between overflow-hidden shadow-inner">
-        {/* Subtle top rim light */}
-        <div className="absolute top-0 left-0 right-0 h-[1px] bg-amber-400/20" />
-
-        {/* Top Notification Bead */}
-        <div className="flex items-center justify-between">
-          <span className="px-1.5 py-0.5 rounded bg-amber-950/80 border border-amber-800/60 font-mono text-[8px] font-bold text-amber-300 tracking-wider">
-            NOTICE RADAR
+      <div
+        className="relative w-full h-full rounded-[22px] sm:rounded-[26px] md:rounded-[28px] flex flex-col justify-between border border-black/10 dark:border-white/15 select-none overflow-hidden"
+        style={{
+          background: 'linear-gradient(180deg, #FFFFFF 0%, #F5F5F7 100%)',
+        }}
+      >
+        {/* Iconic Apple Calendar Red Top Bar (Apple System Red #FF3B30) */}
+        <div className="w-full bg-[#FF3B30] py-1 sm:py-1.5 px-3 flex items-center justify-between text-white shadow-xs">
+          <span className="font-mono text-[9px] font-extrabold tracking-widest uppercase">
+            KARTIK
           </span>
-          <span className="w-2 h-2 rounded-full bg-rose-500 shadow-sm" />
+          <span className="font-mono text-[8px] opacity-80">2082</span>
         </div>
 
-        {/* Tactile Brass Bell / Desk Chime Illustration */}
-        <div className="my-auto flex items-center justify-center py-1">
-          <div className="relative flex flex-col items-center">
-            {/* Top Loop */}
-            <div className="w-3.5 h-3 rounded-full border-2 border-amber-300/80 -mb-1" />
-            {/* Bell Dome */}
-            <div className="w-8 sm:w-10 h-7 sm:h-8 rounded-t-full bg-amber-500 border-t border-amber-200 flex items-end justify-center shadow-[inset_0_2px_4px_rgba(255,255,255,0.4),0_4px_8px_rgba(0,0,0,0.4)]">
-              {/* Bell Flange */}
-              <div className="w-10 sm:w-12 h-2 rounded-full bg-amber-600 border-t border-amber-300/60" />
-            </div>
-            {/* Clapper */}
-            <div className="w-2.5 h-2.5 rounded-full bg-amber-200 -mt-1 shadow-sm" />
-          </div>
+        {/* Huge Apple Calendar Date Number (Bold Charcoal #1D1D1F) */}
+        <div className="my-auto text-center">
+          <span className="font-baloo text-2xl sm:text-3xl font-extrabold text-[#1D1D1F] tracking-tight leading-none">
+            15
+          </span>
+          <p className="text-[9px] font-nunito font-semibold text-[#86868B] tracking-tight mt-0.5">
+            MoEST Quota
+          </p>
         </div>
 
-        {/* Bottom Countdown Badge */}
-        <div className="text-center">
-          <span className="font-mono text-[9px] font-bold text-amber-300 tracking-wider">
-            2082 INTAKES
+        {/* Bottom Pill Badge */}
+        <div className="pb-1.5 text-center">
+          <span className="inline-block px-2 py-0.5 rounded-full bg-black/[0.04] text-[8px] font-mono font-semibold text-slate-600">
+            4 Days Left
           </span>
         </div>
       </div>
     )
   }
 
-  // 4. ADMISSION PLANNER: Physical Student Pocket Clipboard & Ruled Checklist
+  // 4. ADMISSION PLANNER: Apple Notes / Ruled Legal Pad Aesthetic
   return (
-    <div className="relative w-full h-full rounded-[22px] sm:rounded-[26px] md:rounded-[28px] bg-[#1E1B24] border border-purple-900/40 p-2.5 sm:p-3 flex flex-col justify-between overflow-hidden shadow-inner">
-      {/* Top Silver Metal Clip */}
-      <div className="absolute top-1.5 left-1/2 -translate-x-1/2 w-8 h-2.5 rounded-t-xs bg-slate-300 border-t border-white border-b border-slate-500 flex items-center justify-center shadow-xs">
-        <div className="w-4 h-1 rounded-full bg-slate-400" />
+    <div
+      className="relative w-full h-full rounded-[22px] sm:rounded-[26px] md:rounded-[28px] flex flex-col justify-between border border-black/10 dark:border-white/15 select-none overflow-hidden"
+      style={{
+        background: '#FAF9F5',
+      }}
+    >
+      {/* Iconic Apple Notes Yellow-Gold Top Header (#FFD60A / #F59E0B) */}
+      <div className="w-full bg-[#F59E0B] py-1 px-3 flex items-center justify-between text-white shadow-xs">
+        <span className="font-mono text-[8px] font-extrabold tracking-wider uppercase">
+          CHECKLIST
+        </span>
+        <span className="font-mono text-[8px] font-bold text-amber-950/80">3/3</span>
       </div>
 
-      {/* Paper Surface with Ruled Lines & Checkmarks */}
-      <div className="mt-2 w-full h-full rounded-lg bg-[#FAF9F5] p-2 flex flex-col justify-between shadow-[0_2px_6px_rgba(0,0,0,0.3)]">
-        <div className="flex items-center justify-between pb-1 border-b border-slate-200">
-          <span className="font-mono text-[8px] font-bold text-slate-700 tracking-tight">DOSSIER</span>
-          <span className="font-mono text-[8px] font-bold text-purple-700">3/3 OK</span>
+      {/* Ruled Notebook Paper with Apple Reminders Checkmarks */}
+      <div className="my-auto px-2.5 sm:px-3 space-y-1.5 py-1">
+        <div className="flex items-center gap-1.5 pb-1 border-b border-slate-200">
+          <div className="w-3 h-3 rounded-full bg-[#1D1D1F] flex items-center justify-center shrink-0">
+            <Check className="w-2 h-2 text-white stroke-[3]" />
+          </div>
+          <span className="font-nunito text-[9px] font-semibold text-slate-800 truncate">
+            Transcript
+          </span>
         </div>
-
-        <div className="space-y-1 my-auto">
-          <div className="flex items-center gap-1.5 text-[8px] font-nunito font-bold text-slate-800">
-            <span className="w-2.5 h-2.5 rounded-xs bg-emerald-600 text-white flex items-center justify-center text-[7px] font-bold">
-              ✓
-            </span>
-            <span className="truncate">Transcript</span>
+        <div className="flex items-center gap-1.5 pb-1 border-b border-slate-200">
+          <div className="w-3 h-3 rounded-full bg-[#1D1D1F] flex items-center justify-center shrink-0">
+            <Check className="w-2 h-2 text-white stroke-[3]" />
           </div>
-          <div className="flex items-center gap-1.5 text-[8px] font-nunito font-bold text-slate-800">
-            <span className="w-2.5 h-2.5 rounded-xs bg-emerald-600 text-white flex items-center justify-center text-[7px] font-bold">
-              ✓
-            </span>
-            <span className="truncate">Character Cert</span>
-          </div>
-          <div className="flex items-center gap-1.5 text-[8px] font-nunito font-bold text-slate-800">
-            <span className="w-2.5 h-2.5 rounded-xs bg-purple-600 text-white flex items-center justify-center text-[7px] font-bold">
-              ✓
-            </span>
-            <span className="truncate">Admit Card</span>
-          </div>
+          <span className="font-nunito text-[9px] font-semibold text-slate-800 truncate">
+            Character Cert
+          </span>
         </div>
+        <div className="flex items-center gap-1.5">
+          <div className="w-3 h-3 rounded-full border border-slate-400 shrink-0" />
+          <span className="font-nunito text-[9px] font-medium text-slate-600 truncate">
+            Admit Slip
+          </span>
+        </div>
+      </div>
 
-        <div className="h-0.5 w-full bg-slate-200 rounded-full" />
+      {/* Bottom Footer */}
+      <div className="pb-1.5 text-center">
+        <span className="text-[8px] font-mono text-slate-400">
+          Dossier Ready
+        </span>
       </div>
     </div>
   )
 }
 
 // ─────────────────────────────────────────────────────────────
-// AI-SLOP-FREE PREVIEW CARDS (Authentic Physical Documents)
+// APPLE-STYLE HOVER PREVIEW CARDS (Minimalist System Sheets)
 // ─────────────────────────────────────────────────────────────
-function ToolPreviewCard({ item }: { item: ToolItem }) {
-  // 1. GPA CALCULATOR: Authentic NEB Class 12 Grade Sheet Table
+function AppleToolPreview({ item }: { item: ToolItem }) {
+  // 1. GPA CALCULATOR: Apple Numbers / Clean Verification Sheet
   if (item.id === 'gpa') {
     return (
-      <div className="relative w-72 sm:w-80 rounded-2xl bg-white dark:bg-[#15161A] p-4 text-slate-900 dark:text-white border border-black/[0.1] dark:border-white/[0.12] shadow-[0_24px_45px_-12px_rgba(0,0,0,0.18)] flex flex-col justify-between">
-        {/* Document Header */}
-        <div className="flex items-center justify-between pb-2 border-b border-black/[0.08] dark:border-white/[0.08]">
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-slate-900 dark:bg-white" />
-            <span className="font-baloo text-xs font-bold text-slate-900 dark:text-white">
-              NEB Grade Simulation
-            </span>
-          </div>
-          <span className="font-mono text-[10px] text-slate-500 font-semibold">
-            Class 12 · 2082 BS
+      <div className="relative w-72 sm:w-80 rounded-2xl bg-white dark:bg-[#1C1D22] p-4 text-[#1D1D1F] dark:text-white border border-black/[0.08] dark:border-white/[0.1] shadow-[0_20px_40px_-12px_rgba(0,0,0,0.14)] flex flex-col justify-between">
+        {/* Header */}
+        <div className="flex items-center justify-between pb-2 border-b border-black/[0.06] dark:border-white/[0.08]">
+          <span className="font-baloo text-xs font-bold text-[#1D1D1F] dark:text-white">
+            NEB Grade Simulation
           </span>
+          <span className="font-mono text-[10px] text-[#86868B]">Class 12 · 2082</span>
         </div>
 
-        {/* Clean Structured Table (No neon, no fake gradients) */}
+        {/* Table Rows (Crisp typography, zero neon) */}
         <div className="my-2.5 space-y-1.5 text-xs font-nunito">
-          <div className="flex justify-between items-center py-1 border-b border-black/[0.04] dark:border-white/[0.04] text-slate-700 dark:text-slate-300">
+          <div className="flex justify-between items-center py-0.5 text-slate-700 dark:text-slate-300">
             <span>Compulsory English (3.0 cr)</span>
-            <span className="font-mono font-bold text-slate-900 dark:text-white">A (3.6)</span>
+            <span className="font-mono font-semibold text-[#1D1D1F] dark:text-white">A (3.6)</span>
           </div>
-          <div className="flex justify-between items-center py-1 border-b border-black/[0.04] dark:border-white/[0.04] text-slate-700 dark:text-slate-300">
+          <div className="flex justify-between items-center py-0.5 text-slate-700 dark:text-slate-300">
             <span>Physics / Accounting (3.0 cr)</span>
-            <span className="font-mono font-bold text-slate-900 dark:text-white">A+ (4.0)</span>
+            <span className="font-mono font-semibold text-[#1D1D1F] dark:text-white">A+ (4.0)</span>
           </div>
-          <div className="flex justify-between items-center py-1 text-slate-700 dark:text-slate-300">
+          <div className="flex justify-between items-center py-0.5 text-slate-700 dark:text-slate-300">
             <span>Mathematics (3.0 cr)</span>
-            <span className="font-mono font-bold text-slate-900 dark:text-white">A (3.6)</span>
+            <span className="font-mono font-semibold text-[#1D1D1F] dark:text-white">A (3.6)</span>
           </div>
         </div>
 
-        {/* Official Summary Footer */}
-        <div className="pt-2 border-t border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between">
-          <span className="text-[11px] font-nunito font-semibold text-slate-500">
-            Weighted GPA
-          </span>
-          <div className="flex items-center gap-1.5">
-            <span className="font-mono text-sm font-extrabold text-slate-900 dark:text-white">
-              3.73
-            </span>
-            <span className="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-slate-100 dark:bg-white/10 text-slate-800 dark:text-slate-200">
+        {/* Total Summary */}
+        <div className="pt-2 border-t border-black/[0.06] dark:border-white/[0.08] flex items-center justify-between">
+          <span className="text-[11px] font-nunito text-[#86868B]">Weighted GPA</span>
+          <div className="flex items-center gap-2">
+            <span className="font-mono text-sm font-bold text-[#1D1D1F] dark:text-white">3.73</span>
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-black/[0.04] dark:bg-white/[0.08] text-slate-800 dark:text-slate-200">
               Distinction
             </span>
           </div>
@@ -410,78 +418,67 @@ function ToolPreviewCard({ item }: { item: ToolItem }) {
     )
   }
 
-  // 2. VERIFIED CAMPUSES: Official Gazette Affiliation Extract
+  // 2. VERIFIED CAMPUSES: Apple Keynote Institutional Extract
   if (item.id === 'colleges') {
     return (
-      <div className="relative w-72 sm:w-80 rounded-2xl bg-white dark:bg-[#15161A] p-4 text-slate-900 dark:text-white border border-black/[0.1] dark:border-white/[0.12] shadow-[0_24px_45px_-12px_rgba(0,0,0,0.18)] flex flex-col justify-between">
-        {/* Header */}
-        <div className="flex items-center justify-between pb-2 border-b border-black/[0.08] dark:border-white/[0.08]">
+      <div className="relative w-72 sm:w-80 rounded-2xl bg-white dark:bg-[#1C1D22] p-4 text-[#1D1D1F] dark:text-white border border-black/[0.08] dark:border-white/[0.1] shadow-[0_20px_40px_-12px_rgba(0,0,0,0.14)] flex flex-col justify-between">
+        <div className="flex items-center justify-between pb-2 border-b border-black/[0.06] dark:border-white/[0.08]">
           <div className="flex items-center gap-1.5">
-            <Building className="w-3.5 h-3.5 text-slate-700 dark:text-slate-300" />
-            <span className="font-baloo text-xs font-bold text-slate-900 dark:text-white">
+            <Building2 className="w-3.5 h-3.5 text-[#86868B]" />
+            <span className="font-baloo text-xs font-bold text-[#1D1D1F] dark:text-white">
               University Affiliation Extract
             </span>
           </div>
-          <span className="font-mono text-[10px] text-slate-500 font-semibold">
-            TU-GAZETTE
-          </span>
+          <span className="font-mono text-[10px] text-[#86868B]">TU-GAZETTE</span>
         </div>
 
-        {/* Body Record */}
         <div className="my-2.5 space-y-1 text-xs font-nunito">
           <div className="flex justify-between items-start">
-            <span className="font-bold text-slate-900 dark:text-white">
-              Pulchowk Campus, IOE
-            </span>
-            <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-slate-100 dark:bg-white/10 text-slate-700 dark:text-slate-300">
+            <span className="font-bold text-[#1D1D1F] dark:text-white">Pulchowk Campus, IOE</span>
+            <span className="px-2 py-0.5 rounded-full text-[9px] font-mono font-medium bg-black/[0.04] dark:bg-white/[0.08] text-slate-700 dark:text-slate-300">
               Constituent
             </span>
           </div>
-          <p className="text-[11px] text-slate-500">
-            Tribhuvan University · Lalitpur, Bagmati Province
-          </p>
+          <p className="text-[11px] text-[#86868B]">Tribhuvan University · Lalitpur</p>
           <div className="pt-1.5 text-[11px] text-slate-600 dark:text-slate-300 space-y-0.5">
             <p>• Seats: 432 Regular / 216 Full-Fee</p>
-            <p>• Affiliation Status: Approved 2082/83 Intake</p>
+            <p>• Affiliation Status: Approved 2082 Intake</p>
           </div>
         </div>
 
-        {/* Verification Tag */}
-        <div className="pt-2 border-t border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between text-[11px] font-nunito text-slate-500">
-          <span className="flex items-center gap-1 font-semibold text-emerald-700 dark:text-emerald-400">
+        <div className="pt-2 border-t border-black/[0.06] dark:border-white/[0.08] flex items-center justify-between text-[11px] font-nunito text-[#86868B]">
+          <span className="flex items-center gap-1 font-medium text-emerald-700 dark:text-emerald-400">
             <CheckCircle2 className="w-3.5 h-3.5" />
             Verified against gazette
           </span>
-          <span className="font-mono text-[10px]">No paid rank</span>
+          <span className="font-mono text-[10px]">No paid ranks</span>
         </div>
       </div>
     )
   }
 
-  // 3. SCHOLARSHIP ALERTS: Official MoEST Notice Brief
+  // 3. SCHOLARSHIP ALERTS: Apple Calendar Deadline Notification
   if (item.id === 'deadlines') {
     return (
-      <div className="relative w-72 sm:w-80 rounded-2xl bg-white dark:bg-[#15161A] p-4 text-slate-900 dark:text-white border border-black/[0.1] dark:border-white/[0.12] shadow-[0_24px_45px_-12px_rgba(0,0,0,0.18)] flex flex-col justify-between">
-        {/* Header */}
-        <div className="flex items-center justify-between pb-2 border-b border-black/[0.08] dark:border-white/[0.08]">
+      <div className="relative w-72 sm:w-80 rounded-2xl bg-white dark:bg-[#1C1D22] p-4 text-[#1D1D1F] dark:text-white border border-black/[0.08] dark:border-white/[0.1] shadow-[0_20px_40px_-12px_rgba(0,0,0,0.14)] flex flex-col justify-between">
+        <div className="flex items-center justify-between pb-2 border-b border-black/[0.06] dark:border-white/[0.08]">
           <div className="flex items-center gap-1.5">
-            <Clock className="w-3.5 h-3.5 text-slate-700 dark:text-slate-300" />
-            <span className="font-baloo text-xs font-bold text-slate-900 dark:text-white">
+            <Clock className="w-3.5 h-3.5 text-[#86868B]" />
+            <span className="font-baloo text-xs font-bold text-[#1D1D1F] dark:text-white">
               Official Ministry Notice
             </span>
           </div>
-          <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300">
+          <span className="px-2 py-0.5 rounded-full text-[9px] font-mono font-semibold bg-rose-50 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300">
             4 Days Left
           </span>
         </div>
 
-        {/* Body Notice */}
         <div className="my-2.5 space-y-1 text-xs font-nunito">
-          <p className="font-bold text-slate-900 dark:text-white leading-snug">
+          <p className="font-bold text-[#1D1D1F] dark:text-white leading-snug">
             MoEST Higher Technical Education Grant
           </p>
-          <p className="text-[11px] text-slate-500">
-            Government of Nepal · Ministry of Education, Science &amp; Tech
+          <p className="text-[11px] text-[#86868B]">
+            Ministry of Education, Science &amp; Technology
           </p>
           <div className="pt-1.5 text-[11px] text-slate-600 dark:text-slate-300 space-y-0.5">
             <p>• Closes: 15 Kartik 2082 (17:00 NST)</p>
@@ -489,67 +486,63 @@ function ToolPreviewCard({ item }: { item: ToolItem }) {
           </div>
         </div>
 
-        {/* Footer */}
-        <div className="pt-2 border-t border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between text-[11px] font-nunito text-slate-500">
-          <span>Source: moest.gov.np</span>
-          <span className="font-mono text-[10px] font-semibold text-slate-700 dark:text-slate-300">
-            Direct apply link
+        <div className="pt-2 border-t border-black/[0.06] dark:border-white/[0.08] flex items-center justify-between text-[11px] font-nunito text-[#86868B]">
+          <span>moest.gov.np</span>
+          <span className="font-mono text-[10px] font-medium text-slate-700 dark:text-slate-300">
+            Direct Apply Link
           </span>
         </div>
       </div>
     )
   }
 
-  // 4. ADMISSION PLANNER: Physical Application Dossier Checklist
+  // 4. ADMISSION PLANNER: Apple Reminders Checklist Sheet
   return (
-    <div className="relative w-72 sm:w-80 rounded-2xl bg-white dark:bg-[#15161A] p-4 text-slate-900 dark:text-white border border-black/[0.1] dark:border-white/[0.12] shadow-[0_24px_45px_-12px_rgba(0,0,0,0.18)] flex flex-col justify-between">
-      {/* Header */}
-      <div className="flex items-center justify-between pb-2 border-b border-black/[0.08] dark:border-white/[0.08]">
+    <div className="relative w-72 sm:w-80 rounded-2xl bg-white dark:bg-[#1C1D22] p-4 text-[#1D1D1F] dark:text-white border border-black/[0.08] dark:border-white/[0.1] shadow-[0_20px_40px_-12px_rgba(0,0,0,0.14)] flex flex-col justify-between">
+      <div className="flex items-center justify-between pb-2 border-b border-black/[0.06] dark:border-white/[0.08]">
         <div className="flex items-center gap-1.5">
-          <FileText className="w-3.5 h-3.5 text-slate-700 dark:text-slate-300" />
-          <span className="font-baloo text-xs font-bold text-slate-900 dark:text-white">
-            Admission Document Dossier
+          <FileText className="w-3.5 h-3.5 text-[#86868B]" />
+          <span className="font-baloo text-xs font-bold text-[#1D1D1F] dark:text-white">
+            Admission Dossier
           </span>
         </div>
-        <span className="font-mono text-[10px] font-bold text-emerald-700 dark:text-emerald-400">
+        <span className="font-mono text-[10px] font-semibold text-emerald-700 dark:text-emerald-400">
           2/3 Ready
         </span>
       </div>
 
-      {/* Checklist items */}
       <div className="my-2.5 space-y-1.5 text-xs font-nunito">
         <div className="flex items-center justify-between py-0.5 text-slate-800 dark:text-slate-200">
           <span className="flex items-center gap-2">
-            <span className="flex items-center justify-center w-3.5 h-3.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300">
-              <Check className="w-2.5 h-2.5" />
+            <span className="flex items-center justify-center w-3.5 h-3.5 rounded-full bg-[#1D1D1F] text-white">
+              <Check className="w-2.5 h-2.5 stroke-[2.5]" />
             </span>
-            SEE / NEB Official Marksheet
+            SEE &amp; NEB Official Marksheet
           </span>
-          <span className="font-mono text-[10px] text-slate-400">Verified</span>
+          <span className="font-mono text-[10px] text-[#86868B]">Verified</span>
         </div>
         <div className="flex items-center justify-between py-0.5 text-slate-800 dark:text-slate-200">
           <span className="flex items-center gap-2">
-            <span className="flex items-center justify-center w-3.5 h-3.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300">
-              <Check className="w-2.5 h-2.5" />
+            <span className="flex items-center justify-center w-3.5 h-3.5 rounded-full bg-[#1D1D1F] text-white">
+              <Check className="w-2.5 h-2.5 stroke-[2.5]" />
             </span>
             Character &amp; Transfer Certificate
           </span>
-          <span className="font-mono text-[10px] text-slate-400">Verified</span>
+          <span className="font-mono text-[10px] text-[#86868B]">Verified</span>
         </div>
         <div className="flex items-center justify-between py-0.5 text-slate-500">
           <span className="flex items-center gap-2">
             <span className="flex items-center justify-center w-3.5 h-3.5 rounded-full border border-slate-300 dark:border-white/20" />
-            Entrance Exam Admit Card
+            Entrance Exam Admit Slip
           </span>
-          <span className="font-mono text-[10px] text-amber-600 dark:text-amber-400">Pending</span>
+          <span className="font-mono text-[10px] text-amber-700 dark:text-amber-400">Pending</span>
         </div>
       </div>
 
-      {/* Footer */}
-      <div className="pt-2 border-t border-black/[0.08] dark:border-white/[0.08] flex items-center justify-between text-[11px] font-nunito text-slate-500">
+      <div className="pt-2 border-t border-black/[0.06] dark:border-white/[0.08] flex items-center justify-between text-[11px] font-nunito text-[#86868B]">
         <span>Stored privately in browser</span>
-        <span className="font-mono text-[10px] font-semibold text-slate-700 dark:text-slate-300">
-          Download Checklist
+        <span className="font-mono text-[10px] font-medium text-slate-700 dark:text-slate-300">
+          Download PDF
         </span>
       </div>
     </div>
