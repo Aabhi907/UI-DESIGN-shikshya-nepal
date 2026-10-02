@@ -1,56 +1,31 @@
 'use client'
 
-import { useState, useRef } from 'react'
 import Link from 'next/link'
+import { motion } from 'framer-motion'
 import {
   ArrowRight,
   ShieldCheck,
   Search,
-  Lock,
+  Moon,
   Menu,
-  GraduationCap,
-  Building2,
-  CheckCircle2,
-  Smartphone,
-  Zap,
+  ArrowLeftRight,
+  MapPin,
+  Plus,
+  Share2,
+  Check,
+  Scale,
 } from 'lucide-react'
 
 export default function StudentCompanionShowcase() {
-  // 3D Tilt State reacting to cursor movement
-  const showcaseRef = useRef<HTMLDivElement>(null)
-  const [rotate, setRotate] = useState({ x: 8, y: -6 })
-  const [, setIsHovered] = useState(false)
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!showcaseRef.current) return
-    const rect = showcaseRef.current.getBoundingClientRect()
-    const x = e.clientX - rect.left
-    const y = e.clientY - rect.top
-    const centerX = rect.width / 2
-    const centerY = rect.height / 2
-    // Smooth 3D tilt angles (clamped to ±14deg)
-    const rotX = -((y - centerY) / centerY) * 12
-    const rotY = ((x - centerX) / centerX) * 14
-    setRotate({
-      x: Math.max(-14, Math.min(14, rotX)),
-      y: Math.max(-14, Math.min(14, rotY)),
-    })
-  }
-
-  const handleMouseLeave = () => {
-    setIsHovered(false)
-    setRotate({ x: 8, y: -6 }) // Reset to natural resting 3D angle
-  }
-
   return (
     <section className="relative border-b border-sn-border bg-sn-ground overflow-hidden py-16 sm:py-24">
-      {/* ── Soft Atmospheric Radial Glow ── */}
+      {/* ── Soft Atmospheric Background Aurora ── */}
       <div
         className="pointer-events-none absolute inset-0 flex items-center justify-center select-none"
         aria-hidden="true"
       >
         <div
-          className="w-[850px] h-[580px] rounded-full blur-[140px] opacity-40 dark:opacity-20 transition-all duration-700"
+          className="w-[850px] h-[580px] rounded-full blur-[140px] opacity-35 dark:opacity-20 transition-all duration-700"
           style={{
             background:
               'radial-gradient(circle, rgba(56, 189, 248, 0.28) 0%, rgba(245, 165, 36, 0.16) 45%, transparent 70%)',
@@ -60,111 +35,109 @@ export default function StudentCompanionShowcase() {
 
       <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 text-center">
         
-        {/* ── 1. Header & Eyebrow: Mobile Purpose ── */}
-        <div className="max-w-2xl mx-auto mb-10 sm:mb-14">
+        {/* ── 1. Header & Eyebrow: Mobile Compare Tool ── */}
+        <div className="max-w-2xl mx-auto mb-12 sm:mb-16">
           {/* Eyebrow Pill */}
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/80 dark:bg-white/[0.06] border border-black/[0.08] dark:border-white/[0.1] shadow-xs text-xs font-nunito font-bold text-slate-700 dark:text-slate-300 mb-5 backdrop-blur-md">
-            <Smartphone className="w-3.5 h-3.5 text-primary dark:text-[#F5A524]" />
-            <span>Built for Mobile • Fast &amp; Accessible Across Nepal</span>
+            <Scale className="w-3.5 h-3.5 text-primary dark:text-[#F5A524]" />
+            <span>Mobile-First College Comparison • 100% Unbiased</span>
           </div>
 
           {/* Main Headline */}
           <h2 className="font-baloo text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-white tracking-[-0.02em] leading-[1.1] text-balance mb-4">
-            <span className="text-primary dark:text-[#F5A524]">Works Smoothly on Every Phone.</span>{' '}
+            <span className="text-primary dark:text-[#F5A524]">Compare Campuses Side-by-Side.</span>{' '}
             <br className="hidden sm:inline" />
-            Higher Education in Your Pocket.
+            Right on Your Phone.
           </h2>
 
           {/* Subline */}
           <p className="font-nunito text-sm sm:text-base text-slate-600 dark:text-slate-300 font-medium max-w-xl mx-auto text-balance leading-relaxed mb-7">
-            Most students and parents in Nepal research colleges on their smartphones. Shikshya Nepal is lightweight, touch-optimized, and built to work effortlessly on mobile browsers with zero clutter.
+            Compare published fee structures, verified degree offerings, and university affiliations for up to 3 colleges at once—optimized for fast mobile touchscreens across Nepal.
           </p>
 
           {/* Dual Action CTA Buttons */}
           <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
             <Link
-              href="/colleges"
+              href="/compare"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#0B2B33] hover:bg-[#16414D] text-white dark:bg-[#F5A524] dark:text-[#061519] dark:hover:bg-[#ffb43a] text-sm font-bold font-nunito shadow-[0_8px_20px_-4px_rgba(11,43,51,0.3)] dark:shadow-[0_8px_20px_-4px_rgba(245,165,36,0.3)] transition-all duration-200 active:scale-[0.98]"
             >
-              <span>Explore Colleges on Mobile</span>
+              <span>Try College Comparison</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
 
             <Link
-              href="/tools/gpa-calculator"
+              href="/colleges"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/80 hover:bg-white dark:bg-white/[0.08] dark:hover:bg-white/[0.14] text-slate-800 dark:text-white border border-black/[0.08] dark:border-white/[0.12] text-sm font-bold font-nunito shadow-xs backdrop-blur-md transition-all duration-200"
             >
-              <span>Open GPA Calculator</span>
+              <span>Browse All Campuses</span>
               <ArrowRight className="w-4 h-4 text-slate-400" />
             </Link>
           </div>
         </div>
 
-        {/* ── 2. Interactive 3D Phone Showcase: Actual Website in Mockup ── */}
+        {/* ── 2. Fixed 3D Showcase with Scroll Pop-Up Animation ── */}
         <div
-          ref={showcaseRef}
-          onMouseMove={(e) => {
-            setIsHovered(true)
-            handleMouseMove(e)
-          }}
-          onMouseLeave={handleMouseLeave}
-          style={{ perspective: '1200px' }}
-          className="relative mx-auto max-w-4xl flex items-center justify-center pt-4 pb-6 select-none"
+          style={{ perspective: '1300px' }}
+          className="relative mx-auto max-w-4xl flex items-center justify-center pt-4 pb-12 select-none"
         >
           {/* ── LEFT 3D FLOATING CAPSULE CARD (Desktop) ── */}
-          <div
-            className="hidden lg:block absolute -left-4 xl:-left-12 top-24 z-30 pointer-events-auto transition-transform duration-300 ease-out"
-            style={{
-              transform: `translateZ(50px) rotateX(${rotate.x * 0.4}deg) rotateY(${rotate.y * 0.4}deg)`,
-            }}
+          <motion.div
+            initial={{ opacity: 0, x: -40, y: 30 }}
+            whileInView={{ opacity: 1, x: 0, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.7, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+            className="hidden lg:block absolute -left-4 xl:-left-12 top-28 z-30 pointer-events-auto"
+            style={{ transform: 'translateZ(45px)' }}
           >
-            <div className="w-[285px] rounded-3xl bg-white/85 dark:bg-[#0C2229]/90 backdrop-blur-2xl border border-black/[0.08] dark:border-white/[0.12] p-4 shadow-[0_20px_45px_rgba(11,43,51,0.12)] dark:shadow-[0_24px_55px_rgba(0,0,0,0.65)] transition-transform duration-300 hover:scale-105">
+            <div className="w-[285px] rounded-3xl bg-white/90 dark:bg-[#0C2229]/90 backdrop-blur-2xl border border-black/[0.08] dark:border-white/[0.12] p-4 shadow-[0_20px_45px_rgba(11,43,51,0.12)] dark:shadow-[0_24px_55px_rgba(0,0,0,0.65)] transition-transform duration-300 hover:scale-105">
               <div className="grid grid-cols-2 divide-x divide-black/[0.06] dark:divide-white/[0.08] text-left">
-                {/* Cell 1: Mobile Speed */}
+                {/* Cell 1 */}
                 <div className="pr-3">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-[10px] font-mono font-bold uppercase text-slate-400 dark:text-slate-400">
-                      Mobile Speed
+                    <span className="text-[10px] font-mono font-bold uppercase text-slate-400">
+                      Comparison
                     </span>
-                    <Zap className="w-4 h-4 text-amber-500" />
+                    <ArrowLeftRight className="w-3.5 h-3.5 text-blue-500" />
                   </div>
                   <p className="font-baloo text-xl font-extrabold text-slate-900 dark:text-white leading-none">
-                    &lt; 1s Load
+                    Up to 3
                   </p>
                   <p className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 mt-1">
-                    Lightweight on 4G
+                    Side-by-Side
                   </p>
                 </div>
 
-                {/* Cell 2: No App Download */}
+                {/* Cell 2 */}
                 <div className="pl-3">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-[10px] font-mono font-bold uppercase text-slate-400 dark:text-slate-400">
-                      Browser
+                    <span className="text-[10px] font-mono font-bold uppercase text-slate-400">
+                      Fees
                     </span>
-                    <Smartphone className="w-4 h-4 text-sky-500" />
+                    <Check className="w-3.5 h-3.5 text-emerald-500" />
                   </div>
                   <p className="font-baloo text-xl font-extrabold text-slate-900 dark:text-white leading-none">
-                    Instant Web
+                    Dated &amp; Sourced
                   </p>
                   <p className="text-[10px] font-semibold text-sky-600 dark:text-sky-400 mt-1">
-                    No App Needed
+                    Official Quotas
                   </p>
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* ── RIGHT 3D FLOATING CAPSULE CARD (Desktop) ── */}
-          <div
-            className="hidden lg:block absolute -right-4 xl:-right-12 top-24 z-30 pointer-events-auto transition-transform duration-300 ease-out"
-            style={{
-              transform: `translateZ(55px) rotateX(${rotate.x * 0.4}deg) rotateY(${rotate.y * 0.4}deg)`,
-            }}
+          <motion.div
+            initial={{ opacity: 0, x: 40, y: 30 }}
+            whileInView={{ opacity: 1, x: 0, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.7, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            className="hidden lg:block absolute -right-4 xl:-right-12 top-28 z-30 pointer-events-auto"
+            style={{ transform: 'translateZ(55px)' }}
           >
             <Link
-              href="/colleges"
-              className="group block w-[295px] rounded-3xl bg-white/85 dark:bg-[#0C2229]/90 backdrop-blur-2xl border border-black/[0.08] dark:border-white/[0.12] p-4 shadow-[0_20px_45px_rgba(11,43,51,0.12)] dark:shadow-[0_24px_55px_rgba(0,0,0,0.65)] transition-transform duration-300 hover:scale-105 text-left"
+              href="/compare"
+              className="group block w-[295px] rounded-3xl bg-white/90 dark:bg-[#0C2229]/90 backdrop-blur-2xl border border-black/[0.08] dark:border-white/[0.12] p-4 shadow-[0_20px_45px_rgba(11,43,51,0.12)] dark:shadow-[0_24px_55px_rgba(0,0,0,0.65)] transition-transform duration-300 hover:scale-105 text-left"
             >
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3 min-w-0">
@@ -173,10 +146,10 @@ export default function StudentCompanionShowcase() {
                   </div>
                   <div className="min-w-0">
                     <p className="text-xs font-bold text-slate-900 dark:text-white truncate">
-                      Touch-Optimized
+                      Zero Sponsored Rankings
                     </p>
                     <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
-                      1,200+ colleges &amp; 450+ programs
+                      Moderated student reviews
                     </p>
                   </div>
                 </div>
@@ -187,27 +160,34 @@ export default function StudentCompanionShowcase() {
               </div>
 
               <div className="mt-2.5 pt-2 border-t border-black/[0.05] dark:border-white/[0.06] flex items-center justify-between text-[10px] font-mono text-slate-500 dark:text-slate-400">
-                <span>ZERO AD POPUPS</span>
-                <span className="text-emerald-600 dark:text-emerald-400 font-semibold">● CLEAN REGISTRY</span>
+                <span>VERIFIED METRICS ONLY</span>
+                <span className="text-emerald-600 dark:text-emerald-400 font-semibold">● COMPARE 2082</span>
               </div>
             </Link>
-          </div>
+          </motion.div>
 
-          {/* ── CENTER: 3D SMARTPHONE DISPLAYING ACTUAL SHIKSHYA NEPAL WEBSITE ── */}
-          <div
-            className="relative w-full max-w-[325px] sm:max-w-[345px] transition-transform duration-300 ease-out"
+          {/* ── CENTER: 3D PHONE MOCKUP (Scroll Pop-up Entrance, Non-Interactive with Mouse) ── */}
+          <motion.div
+            initial={{ opacity: 0, y: 70, scale: 0.93, rotateX: 18, rotateY: -8 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1, rotateX: 8, rotateY: -6 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{
+              type: 'spring',
+              stiffness: 90,
+              damping: 20,
+              duration: 0.9,
+            }}
+            className="relative w-full max-w-[340px] sm:max-w-[365px]"
             style={{
-              transform: `rotateX(${rotate.x}deg) rotateY(${rotate.y}deg) rotateZ(1deg)`,
               transformStyle: 'preserve-3d',
-              willChange: 'transform',
             }}
           >
-            {/* 3D Ground Shadow Projection */}
+            {/* 3D Realistic Ground Cast Shadow */}
             <div
-              className="absolute -bottom-8 left-1/2 -translate-x-1/2 w-[85%] h-12 rounded-full blur-xl opacity-60 dark:opacity-80 pointer-events-none"
+              className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-[88%] h-14 rounded-full blur-2xl opacity-60 dark:opacity-85 pointer-events-none"
               style={{
                 background: 'radial-gradient(ellipse at center, rgba(11, 43, 51, 0.45) 0%, transparent 75%)',
-                transform: 'translateZ(-60px) rotateX(90deg)',
+                transform: 'translateZ(-50px) rotateX(90deg)',
               }}
             />
 
@@ -219,21 +199,21 @@ export default function StudentCompanionShowcase() {
 
             {/* Titanium Chassis Outer Rim */}
             <div
-              className="relative rounded-[50px] p-[10px] bg-slate-900 border border-slate-700/80 transition-shadow duration-300"
+              className="relative rounded-[50px] p-[10px] bg-slate-900 border border-slate-700/80"
               style={{
                 boxShadow:
-                  '0 35px 75px -15px rgba(11, 43, 51, 0.4), 0 20px 40px -10px rgba(0,0,0,0.5), inset 0 1px 2px rgba(255, 255, 255, 0.35), inset 0 -2px 4px rgba(0, 0, 0, 0.8)',
+                  '0 35px 80px -15px rgba(11, 43, 51, 0.45), 0 20px 40px -10px rgba(0,0,0,0.5), inset 0 1px 2px rgba(255, 255, 255, 0.35), inset 0 -2px 4px rgba(0, 0, 0, 0.8)',
               }}
             >
               {/* Inner Bezel Ring */}
               <div className="rounded-[40px] p-[2px] bg-black border border-slate-800">
                 
-                {/* ── PHONE SCREEN: SHIKSHYA NEPAL MOBILE WEBSITE LAYOUT ── */}
-                <div className="relative rounded-[38px] bg-[#FAF9F5] dark:bg-[#07191E] overflow-hidden text-left aspect-[9/18.8] flex flex-col justify-between text-slate-900 dark:text-white border border-black/[0.08] dark:border-white/[0.08]">
+                {/* ── PHONE DISPLAY: EXACT MATCH TO USER'S COMPARE COLLEGES SCREENSHOT ── */}
+                <div className="relative rounded-[38px] bg-[#EEF2EB] dark:bg-[#08181D] overflow-hidden text-left aspect-[9/18.8] flex flex-col justify-between text-slate-900 dark:text-white border border-black/[0.08] dark:border-white/[0.08]">
                   
-                  {/* Subtle Diagonal Screen Glare */}
+                  {/* Subtle Diagonal Glass Sheen */}
                   <div
-                    className="pointer-events-none absolute inset-0 z-30 opacity-25 select-none"
+                    className="pointer-events-none absolute inset-0 z-30 opacity-20 select-none"
                     style={{
                       background:
                         'linear-gradient(130deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.04) 40%, transparent 60%)',
@@ -243,7 +223,7 @@ export default function StudentCompanionShowcase() {
                   {/* 1. Mobile Status Bar & Dynamic Island */}
                   <div className="relative z-20 flex items-center justify-between text-[11px] font-semibold text-slate-800 dark:text-slate-300 pt-2 px-4 select-none">
                     <span>9:41</span>
-                    {/* Dynamic Island */}
+                    {/* Dynamic Island Capsule */}
                     <div className="w-22 h-4 rounded-full bg-black border border-white/[0.12] mx-auto flex items-center justify-center gap-1.5 px-1.5 shadow-inner">
                       <span className="w-2 h-2 rounded-full bg-slate-900 border border-slate-700" />
                       <span className="w-1.5 h-1.5 rounded-full bg-blue-950/80" />
@@ -254,162 +234,154 @@ export default function StudentCompanionShowcase() {
                     </div>
                   </div>
 
-                  {/* 2. Mobile Browser URL Bar */}
-                  <div className="relative z-10 px-3 pt-1.5 pb-2 border-b border-black/[0.06] dark:border-white/[0.06] bg-black/[0.02] dark:bg-white/[0.02]">
-                    <div className="h-6 rounded-full bg-white dark:bg-slate-900/90 border border-black/[0.08] dark:border-white/[0.1] px-2.5 flex items-center justify-between text-[10px] text-slate-500 font-mono shadow-2xs">
-                      <span className="flex items-center gap-1">
-                        <Lock className="w-2.5 h-2.5 text-emerald-600 dark:text-emerald-400" />
-                        <span className="font-semibold text-slate-700 dark:text-slate-300">shikshyanepal.org</span>
+                  {/* 2. Top Floating Navigation Capsule (Screenshot Match) */}
+                  <div className="relative z-10 px-3 pt-2">
+                    <div className="rounded-full bg-white dark:bg-slate-900/90 border border-black/[0.08] dark:border-white/[0.1] px-3.5 py-1.5 flex items-center justify-between shadow-xs">
+                      <span className="font-baloo font-bold text-xs text-slate-900 dark:text-white">
+                        ShikshyaXNepal
                       </span>
-                      <span className="text-[9px] text-slate-400">AA</span>
+                      <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300">
+                        <span className="w-5 h-5 rounded-full border border-black/[0.08] dark:border-white/[0.1] flex items-center justify-center">
+                          <Search className="w-2.5 h-2.5" />
+                        </span>
+                        <span className="w-5 h-5 rounded-full border border-black/[0.08] dark:border-white/[0.1] flex items-center justify-center">
+                          <Moon className="w-2.5 h-2.5" />
+                        </span>
+                        <span className="w-5 h-5 rounded-full border border-black/[0.08] dark:border-white/[0.1] flex items-center justify-center">
+                          <Menu className="w-2.5 h-2.5" />
+                        </span>
+                      </div>
                     </div>
                   </div>
 
-                  {/* 3. Shikshya Nepal Mobile Website Body */}
-                  <div className="relative z-10 flex-1 overflow-hidden p-3 space-y-2.5">
-                    {/* Mobile Brand Header */}
-                    <div className="flex items-center justify-between pb-1 border-b border-black/[0.05] dark:border-white/[0.06]">
-                      <div className="flex items-center gap-1.5">
-                        <span className="w-6 h-6 rounded-lg bg-[#0B2B33] text-white flex items-center justify-center text-xs font-bold">
-                          SN
-                        </span>
-                        <div>
-                          <p className="font-baloo text-xs font-extrabold text-slate-900 dark:text-white leading-none">
-                            Shikshya Nepal
-                          </p>
-                          <p className="text-[8px] text-slate-400 font-mono">शिक्षा, स्पष्ट रूपमा।</p>
-                        </div>
+                  {/* 3. Compare Colleges Content Screen (Exact Screenshot Match) */}
+                  <div className="relative z-10 flex-1 overflow-y-auto no-scrollbar px-3 py-2 space-y-2.5 text-left">
+                    {/* Heading Section */}
+                    <div>
+                      <div className="flex items-center gap-1.5 text-blue-600 dark:text-blue-400 mb-0.5">
+                        <ArrowLeftRight className="w-4 h-4" />
+                        <h3 className="font-baloo text-base sm:text-lg font-extrabold text-slate-900 dark:text-white leading-tight">
+                          Compare colleges
+                        </h3>
                       </div>
-                      <Menu className="w-4 h-4 text-slate-600 dark:text-slate-400" />
-                    </div>
-
-                    {/* Mini Hero Header in Mobile */}
-                    <div className="text-center pt-0.5">
-                      <h4 className="font-baloo text-sm font-extrabold text-slate-900 dark:text-white leading-tight">
-                        Decide what to study.{' '}
-                        <span className="text-[#F5A524]">Find where.</span>
-                      </h4>
-                      <p className="text-[9px] text-slate-500 dark:text-slate-400 font-nunito mt-0.5">
-                        Verified higher-education registry for Nepal.
+                      <p className="text-[9px] font-nunito font-semibold text-slate-600 dark:text-slate-300 leading-tight">
+                        Compare up to 3 colleges using published fees, programs, scholarships and moderated student reviews.
+                      </p>
+                      <p className="text-[7.5px] font-nunito text-slate-500 dark:text-slate-400 mt-1 leading-normal line-clamp-2">
+                        Each published fee shows its programme, payment period and recorded academic year where available...
                       </p>
                     </div>
 
-                    {/* Mobile Search Box */}
-                    <div className="rounded-xl bg-white dark:bg-slate-900 border border-black/[0.08] dark:border-white/[0.1] px-2.5 py-1.5 flex items-center gap-2 shadow-2xs">
-                      <Search className="w-3.5 h-3.5 text-slate-400" />
-                      <span className="text-[10px] text-slate-400 font-nunito truncate">
-                        Search BSc CSIT, Pulchowk, MBBS...
-                      </span>
-                    </div>
-
-                    {/* University Quick Chips on Mobile */}
-                    <div className="flex items-center gap-1 overflow-x-auto no-scrollbar pt-0.5">
-                      {['TU (Tribhuvan)', 'KU (Kathmandu)', 'PokU', 'Purbanchal'].map((u) => (
-                        <span
-                          key={u}
-                          className="px-2 py-0.5 rounded-md bg-black/[0.04] dark:bg-white/[0.06] border border-black/[0.06] dark:border-white/[0.08] text-[9px] font-mono font-semibold text-slate-700 dark:text-slate-300 flex-shrink-0"
-                        >
-                          {u}
-                        </span>
-                      ))}
-                    </div>
-
-                    {/* Sample Verified College Card (As rendered on mobile) */}
-                    <div className="rounded-xl bg-white dark:bg-slate-900/90 border border-black/[0.07] dark:border-white/[0.1] p-2.5 shadow-2xs text-left">
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="text-[8px] font-mono font-bold uppercase px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20">
-                          Constituent Campus
-                        </span>
-                        <span className="text-[9px] text-slate-400 flex items-center gap-0.5">
-                          <CheckCircle2 className="w-2.5 h-2.5 text-emerald-500" />
-                          Verified
-                        </span>
-                      </div>
-                      <p className="font-baloo text-xs font-bold text-slate-900 dark:text-white leading-tight">
-                        Pulchowk Campus (IOE)
-                      </p>
-                      <p className="text-[9px] text-slate-500 dark:text-slate-400 font-nunito mb-1.5">
-                        Lalitpur • Tribhuvan University
-                      </p>
-
-                      <div className="pt-1.5 border-t border-black/[0.05] dark:border-white/[0.06] flex items-center justify-between text-[9px] font-nunito">
-                        <span className="text-slate-500">BE Programs: 12</span>
-                        <span className="font-bold text-[#F5A524]">NPR 4.5L Regular</span>
-                      </div>
-                    </div>
-
-                    {/* Sample Tool Shortcut Card */}
-                    <div className="rounded-xl bg-sky-500/10 dark:bg-sky-400/10 border border-sky-500/20 p-2 flex items-center justify-between">
-                      <div className="flex items-center gap-1.5">
-                        <div className="w-5 h-5 rounded-md bg-sky-500 text-white flex items-center justify-center text-[10px]">
-                          🧮
+                    {/* Card 1: Kathmandu Model College (KMC Bagbazar) */}
+                    <div className="rounded-xl bg-white dark:bg-slate-900/90 border border-sky-300 dark:border-sky-700/60 p-2.5 shadow-2xs relative">
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-950/70 border border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-300 flex items-center justify-center font-bold text-xs font-mono">
+                            K
+                          </div>
+                          <div>
+                            <p className="font-baloo text-[11px] font-bold text-slate-900 dark:text-white leading-tight">
+                              Kathmandu Model College (KMC Bagbazar)
+                            </p>
+                            <p className="text-[8.5px] text-slate-500 dark:text-slate-400 flex items-center gap-0.5 mt-0.5">
+                              <MapPin className="w-2.5 h-2.5 text-slate-400" />
+                              Bagbazar, Kathmandu
+                            </p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="text-[9px] font-bold text-slate-900 dark:text-white leading-none">
-                            NEB Grade 12 GPA Tool
-                          </p>
-                          <p className="text-[8px] text-slate-500 dark:text-slate-400">Calculate instantly on phone</p>
+                        <span className="text-[10px] text-slate-400 leading-none">✕</span>
+                      </div>
+                      <p className="text-[8.5px] font-semibold text-blue-600 dark:text-blue-400 mt-1.5">
+                        View Profile →
+                      </p>
+                    </div>
+
+                    {/* Card 2: Nepal Commerce Campus (NCC Minbhawan) */}
+                    <div className="rounded-xl bg-white dark:bg-slate-900/90 border border-sky-300 dark:border-sky-700/60 p-2.5 shadow-2xs relative">
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-center gap-2">
+                          <div className="w-7 h-7 rounded-lg bg-blue-100 dark:bg-blue-950/70 border border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-300 flex items-center justify-center font-bold text-xs font-mono">
+                            N
+                          </div>
+                          <div>
+                            <p className="font-baloo text-[11px] font-bold text-slate-900 dark:text-white leading-tight">
+                              Nepal Commerce Campus (NCC Minbhawan)
+                            </p>
+                            <p className="text-[8.5px] text-slate-500 dark:text-slate-400 flex items-center gap-0.5 mt-0.5">
+                              <MapPin className="w-2.5 h-2.5 text-slate-400" />
+                              Minbhawan, Kathmandu
+                            </p>
+                          </div>
+                        </div>
+                        <span className="text-[10px] text-slate-400 leading-none">✕</span>
+                      </div>
+                      <p className="text-[8.5px] font-semibold text-blue-600 dark:text-blue-400 mt-1.5">
+                        View Profile →
+                      </p>
+                    </div>
+
+                    {/* Card 3: Add College 3 (Dashed Slot) */}
+                    <div className="rounded-xl border border-dashed border-slate-300 dark:border-slate-700 py-3 flex flex-col items-center justify-center gap-1 text-slate-500 dark:text-slate-400">
+                      <div className="w-6 h-6 rounded-full bg-slate-200/80 dark:bg-slate-800 flex items-center justify-center">
+                        <Plus className="w-3 h-3 text-slate-600 dark:text-slate-300" />
+                      </div>
+                      <span className="text-[9px] font-semibold font-nunito">Add College 3</span>
+                    </div>
+
+                    {/* Bottom Options Row */}
+                    <div className="pt-1">
+                      <div className="flex items-center gap-1.5 text-[9px] font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                        <span className="w-3 h-3 rounded border border-slate-400 flex items-center justify-center text-[8px]" />
+                        <span>Only show differences</span>
+                      </div>
+
+                      <div className="flex items-center justify-between text-[8px] text-slate-500 dark:text-slate-400">
+                        <span>Swipe sideways to see every college.</span>
+                        <div className="rounded-md bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 px-2 py-1 flex items-center gap-1 font-semibold text-slate-700 dark:text-slate-300 shadow-2xs">
+                          <Share2 className="w-2.5 h-2.5" />
+                          <span>Share comparison</span>
                         </div>
                       </div>
-                      <ArrowRight className="w-3 h-3 text-sky-600 dark:text-sky-400" />
                     </div>
                   </div>
 
-                  {/* 4. Mobile Bottom Nav Bar */}
-                  <div className="relative z-10 px-3 py-1.5 border-t border-black/[0.06] dark:border-white/[0.06] bg-white/80 dark:bg-slate-900/80 backdrop-blur-md flex items-center justify-around text-[9px] font-nunito text-slate-600 dark:text-slate-400">
-                    <span className="font-bold text-[#F5A524] flex items-center gap-0.5">
-                      <Building2 className="w-3 h-3" />
-                      Colleges
-                    </span>
-                    <span className="flex items-center gap-0.5">
-                      <GraduationCap className="w-3 h-3" />
-                      Programs
-                    </span>
-                    <span className="flex items-center gap-0.5">
-                      <Search className="w-3 h-3" />
-                      Search
-                    </span>
-                  </div>
-
-                  {/* iOS Home Indicator */}
-                  <div className="relative z-10 pb-1 pt-0.5 flex justify-center">
-                    <div className="w-24 h-1 rounded-full bg-slate-300 dark:bg-slate-700" />
+                  {/* 4. iOS Home Indicator */}
+                  <div className="relative z-10 pb-1.5 pt-0.5 flex justify-center">
+                    <div className="w-24 h-1 rounded-full bg-slate-400/50 dark:bg-slate-600" />
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
 
-        {/* ── MOBILE FALLBACK: Flanking Cards shown below on small screens ── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mt-8 lg:hidden max-w-md mx-auto text-left">
-          {/* Mobile Card 1 */}
+        {/* ── MOBILE FALLBACK: Summary Cards below on small screens ── */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 mt-4 lg:hidden max-w-md mx-auto text-left">
           <div className="rounded-2xl bg-white/80 dark:bg-[#0C2229]/80 border border-black/[0.08] dark:border-white/[0.1] p-3.5 shadow-sm">
             <div className="flex items-center justify-between mb-1">
               <span className="text-[10px] font-mono font-bold uppercase text-slate-400">
-                Mobile First
+                Comparison Tool
               </span>
-              <Zap className="w-4 h-4 text-amber-500" />
+              <ArrowLeftRight className="w-3.5 h-3.5 text-blue-500" />
             </div>
             <p className="font-baloo text-lg font-bold text-slate-900 dark:text-white">
-              Under 1s Page Load
+              Compare 3 Colleges
             </p>
             <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold mt-0.5">
-              ● Fast on 3G / 4G Connections
+              ● Side-by-side fee &amp; degree analysis
             </p>
           </div>
 
-          {/* Mobile Card 2 */}
           <Link
-            href="/colleges"
+            href="/compare"
             className="rounded-2xl bg-white/80 dark:bg-[#0C2229]/80 border border-black/[0.08] dark:border-white/[0.1] p-3.5 shadow-sm flex items-center justify-between"
           >
             <div>
               <p className="text-[10px] font-mono font-bold uppercase text-slate-400">
-                Mobile Web
+                100% Free
               </p>
               <p className="font-baloo text-lg font-bold text-slate-900 dark:text-white">
-                No App Download
+                Launch Compare
               </p>
               <p className="text-[11px] text-sky-600 dark:text-sky-400 font-semibold mt-0.5">
                 ● Works on any mobile browser
