@@ -1,0 +1,323 @@
+'use client'
+
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import {
+  ShieldCheck,
+  Clock,
+  ExternalLink,
+  GraduationCap,
+  Sparkles,
+  Info,
+  BadgePercent,
+  CheckCircle2,
+  Users,
+  Building2,
+} from 'lucide-react'
+
+interface FloatingPillar {
+  id: string
+  label: string
+  detail: string
+  topPercent: number // 15% to 75%
+  leftPercent: number // 8% to 92%
+  bgLight: string
+  textLight: string
+  borderLight: string
+  bgDark: string
+  textDark: string
+  borderDark: string
+  duration: number
+  delay: number
+  icon: typeof ShieldCheck
+}
+
+const PILLARS: FloatingPillar[] = [
+  {
+    id: 'zero-paid-rankings',
+    label: 'Zero Paid Rankings',
+    detail: 'Colleges cannot pay for higher positions, sponsored badges, or promoted placement.',
+    topPercent: 24,
+    leftPercent: 16,
+    bgLight: 'bg-[#ECFDF5]',
+    textLight: 'text-[#047857]',
+    borderLight: 'border-[#A7F3D0]',
+    bgDark: 'dark:bg-[#0D3323]',
+    textDark: 'dark:text-[#6EE7B7]',
+    borderDark: 'dark:border-[#135439]',
+    duration: 3.8,
+    delay: 0,
+    icon: ShieldCheck,
+  },
+  {
+    id: 'dated-sourced',
+    label: 'Dated & Sourced Fees',
+    detail: 'Every tuition and semester fee displays the exact date it was verified against official circulars.',
+    topPercent: 68,
+    leftPercent: 14,
+    bgLight: 'bg-[#FEF3C7]',
+    textLight: 'text-[#B45309]',
+    borderLight: 'border-[#FDE68A]',
+    bgDark: 'dark:bg-[#38280D]',
+    textDark: 'dark:text-[#FCD34D]',
+    borderDark: 'dark:border-[#5A3F14]',
+    duration: 4.4,
+    delay: 0.6,
+    icon: Clock,
+  },
+  {
+    id: 'no-consultancy',
+    label: 'No Consultancy Markups',
+    detail: 'Independent student guide with zero broker kickbacks or admission agency commissions.',
+    topPercent: 18,
+    leftPercent: 42,
+    bgLight: 'bg-[#FFEAEB]',
+    textLight: 'text-[#BE185D]',
+    borderLight: 'border-[#FBCFE8]',
+    bgDark: 'dark:bg-[#3D1420]',
+    textDark: 'dark:text-[#F472B6]',
+    borderDark: 'dark:border-[#5E1E32]',
+    duration: 4.1,
+    delay: 0.3,
+    icon: BadgePercent,
+  },
+  {
+    id: 'free-forever',
+    label: '100% Free for Students',
+    detail: 'Rs. 0 paywalls. Free access to college comparisons, cut-offs, and GPA calculators.',
+    topPercent: 58,
+    leftPercent: 38,
+    bgLight: 'bg-[#F3E8FF]',
+    textLight: 'text-[#7E22CE]',
+    borderLight: 'border-[#E9D5FF]',
+    bgDark: 'dark:bg-[#2C1347]',
+    textDark: 'dark:text-[#D8B4FE]',
+    borderDark: 'dark:border-[#4B1E78]',
+    duration: 4.6,
+    delay: 0.9,
+    icon: GraduationCap,
+  },
+  {
+    id: 'official-gazettes',
+    label: 'Official Gazette Links',
+    detail: 'Direct verification links to TU, KU, Pokhara, NEB & CTEVT portals without ad traps.',
+    topPercent: 74,
+    leftPercent: 62,
+    bgLight: 'bg-[#E0F2FE]',
+    textLight: 'text-[#0369A1]',
+    borderLight: 'border-[#BAE6FD]',
+    bgDark: 'dark:bg-[#0C2B3F]',
+    textDark: 'dark:text-[#7DD3FC]',
+    borderDark: 'dark:border-[#144766]',
+    duration: 3.9,
+    delay: 0.2,
+    icon: ExternalLink,
+  },
+  {
+    id: 'student-reviews',
+    label: 'Verified Student Reviews',
+    detail: 'Moderated feedback backed by roll number checks to block fake campus PR praise.',
+    topPercent: 22,
+    leftPercent: 70,
+    bgLight: 'bg-[#F0FDFA]',
+    textLight: 'text-[#0F766E]',
+    borderLight: 'border-[#99F6E4]',
+    bgDark: 'dark:bg-[#0B332F]',
+    textDark: 'dark:text-[#5EEAD4]',
+    borderDark: 'dark:border-[#13544D]',
+    duration: 4.3,
+    delay: 0.7,
+    icon: Users,
+  },
+  {
+    id: 'merit-transparency',
+    label: 'Merit & Quota Clarity',
+    detail: 'Published entrance cut-offs with clear open merit versus reservation seat breakdowns.',
+    topPercent: 44,
+    leftPercent: 88,
+    bgLight: 'bg-[#FEF9C3]',
+    textLight: 'text-[#A16207]',
+    borderLight: 'border-[#FEF08A]',
+    bgDark: 'dark:bg-[#38330D]',
+    textDark: 'dark:text-[#FDE047]',
+    borderDark: 'dark:border-[#5A5014]',
+    duration: 4.0,
+    delay: 0.4,
+    icon: CheckCircle2,
+  },
+  {
+    id: 'all-provinces',
+    label: 'Open for All 7 Provinces',
+    detail: 'Accessible nationwide on fast mobile touchscreens with zero registration locks.',
+    topPercent: 80,
+    leftPercent: 86,
+    bgLight: 'bg-[#EEF2FF]',
+    textLight: 'text-[#4338CA]',
+    borderLight: 'border-[#C7D2FE]',
+    bgDark: 'dark:bg-[#1E1B4B]',
+    textDark: 'dark:text-[#A5B4FC]',
+    borderDark: 'dark:border-[#312E81]',
+    duration: 4.5,
+    delay: 1.0,
+    icon: Building2,
+  },
+]
+
+export default function ShikshyaWhatMakesUsDifferent() {
+  const [activePillar, setActivePillar] = useState<FloatingPillar | null>(null)
+
+  return (
+    <section className="relative border-b border-sn-border bg-sn-ground overflow-hidden py-16 sm:py-20 lg:py-24">
+      {/* ── Soft Atmospheric Ambient Glow ── */}
+      <div
+        className="pointer-events-none absolute inset-0 flex items-center justify-center select-none"
+        aria-hidden="true"
+      >
+        <div
+          className="w-[850px] h-[520px] rounded-full blur-[140px] opacity-25 dark:opacity-15"
+          style={{
+            background:
+              'radial-gradient(ellipse at center, rgba(14, 165, 233, 0.16) 0%, rgba(245, 165, 36, 0.12) 45%, transparent 70%)',
+          }}
+        />
+      </div>
+
+      <div className="relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        
+        {/* ── Section Header ── */}
+        <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-14">
+          <div className="mx-auto w-12 h-12 rounded-full p-0.5 ring-4 ring-[#F5A524]/20 bg-white dark:bg-slate-900 flex items-center justify-center shadow-sm mb-4">
+            <div className="w-full h-full rounded-full bg-[#0B2B33] dark:bg-[#F5A524] flex items-center justify-center text-white dark:text-[#061519]">
+              <Sparkles className="w-5 h-5" />
+            </div>
+          </div>
+
+          <h2 className="font-baloo text-3xl sm:text-4xl lg:text-[2.65rem] font-extrabold text-slate-900 dark:text-white tracking-[-0.02em] leading-[1.12] text-balance mb-3">
+            What makes us different from others
+          </h2>
+
+          <p className="text-sm sm:text-base font-nunito text-slate-600 dark:text-slate-300 leading-relaxed max-w-xl mx-auto">
+            Every detail is calibrated for the student, not the marketing department. We built Shikshya Nepal to be 100% independent, transparent, and free.
+          </p>
+        </div>
+
+        {/* ── DESKTOP & TABLET: Pure Floating Canvas (No Timeline Guides) ── */}
+        <div className="hidden md:block relative w-full h-[400px] lg:h-[440px] rounded-3xl bg-white/40 dark:bg-white/[0.02] border border-black/[0.06] dark:border-white/[0.06] p-6 shadow-2xs backdrop-blur-xs select-none">
+          
+          {/* Subtle Floating Ambient Particles in Background */}
+          <div className="pointer-events-none absolute inset-0 overflow-hidden">
+            <div className="absolute top-1/4 left-1/3 w-32 h-32 rounded-full blur-2xl bg-sky-400/10 dark:bg-sky-500/5" />
+            <div className="absolute bottom-1/3 right-1/4 w-40 h-40 rounded-full blur-2xl bg-amber-400/10 dark:bg-amber-500/5" />
+          </div>
+
+          {/* Floating Points in Air */}
+          {PILLARS.map((p) => {
+            const Icon = p.icon
+            const isHovered = activePillar?.id === p.id
+
+            return (
+              <motion.div
+                key={p.id}
+                animate={{
+                  y: [0, -8, 0],
+                  x: [0, 3, 0],
+                }}
+                transition={{
+                  duration: p.duration,
+                  repeat: Infinity,
+                  ease: 'easeInOut',
+                  delay: p.delay,
+                }}
+                style={{
+                  top: `${p.topPercent}%`,
+                  left: `${p.leftPercent}%`,
+                  transform: 'translate(-50%, -50%)',
+                }}
+                className="absolute z-20 cursor-pointer"
+                onMouseEnter={() => setActivePillar(p)}
+                onMouseLeave={() => setActivePillar(null)}
+              >
+                <motion.div
+                  whileHover={{ scale: 1.08 }}
+                  whileTap={{ scale: 0.96 }}
+                  className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-full border shadow-2xs transition-shadow duration-200 ${p.bgLight} ${p.textLight} ${p.borderLight} ${p.bgDark} ${p.textDark} ${p.borderDark}`}
+                >
+                  <Icon className="w-4 h-4 shrink-0 opacity-85" />
+                  <span className="text-xs lg:text-[13.5px] font-bold font-nunito whitespace-nowrap">
+                    {p.label}
+                  </span>
+                </motion.div>
+
+                {/* Micro Detail Popover on Hover */}
+                <AnimatePresence>
+                  {isHovered && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 6, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 4, scale: 0.95 }}
+                      transition={{ duration: 0.18 }}
+                      className="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-56 rounded-xl bg-white dark:bg-slate-900 border border-black/[0.08] dark:border-white/[0.12] p-2.5 shadow-lg z-30 pointer-events-none text-left"
+                    >
+                      <div className="flex items-start gap-1.5">
+                        <Info className="w-3.5 h-3.5 text-primary dark:text-[#F5A524] shrink-0 mt-0.5" />
+                        <p className="text-[11px] font-nunito text-slate-600 dark:text-slate-300 leading-snug">
+                          {p.detail}
+                        </p>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            )
+          })}
+        </div>
+
+        {/* ── MOBILE: Floating Pill Cloud for Small Screens ── */}
+        <div className="md:hidden">
+          <div className="flex flex-wrap justify-center gap-2.5">
+            {PILLARS.map((p) => {
+              const Icon = p.icon
+              return (
+                <motion.div
+                  key={p.id}
+                  animate={{
+                    y: [0, -5, 0],
+                  }}
+                  transition={{
+                    duration: p.duration,
+                    repeat: Infinity,
+                    ease: 'easeInOut',
+                    delay: p.delay,
+                  }}
+                  className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-full border shadow-2xs ${p.bgLight} ${p.textLight} ${p.borderLight} ${p.bgDark} ${p.textDark} ${p.borderDark}`}
+                >
+                  <Icon className="w-3.5 h-3.5 shrink-0 opacity-80" />
+                  <span className="text-xs font-bold font-nunito">
+                    {p.label}
+                  </span>
+                </motion.div>
+              )
+            })}
+          </div>
+
+          <div className="mt-6 space-y-2">
+            {PILLARS.slice(0, 4).map((p) => (
+              <div
+                key={p.id}
+                className="p-3 rounded-xl bg-white/70 dark:bg-slate-900/70 border border-black/[0.06] dark:border-white/[0.08] text-left text-xs font-nunito"
+              >
+                <span className="font-bold text-slate-900 dark:text-white block mb-0.5">
+                  {p.label}
+                </span>
+                <span className="text-slate-600 dark:text-slate-400 text-[11px]">
+                  {p.detail}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+      </div>
+    </section>
+  )
+}

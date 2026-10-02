@@ -5,7 +5,7 @@ import { createServerSupabaseClient } from '@/lib/supabase'
 import { FACULTIES } from '@/lib/utils'
 import Hero from '@/components/home/Hero'
 import StudentCompanionShowcase from '@/components/home/StudentCompanionShowcase'
-import ShikshyaVerificationTimeline from '@/components/home/ShikshyaVerificationTimeline'
+import ShikshyaWhatMakesUsDifferent from '@/components/home/ShikshyaWhatMakesUsDifferent'
 import ResultCard from '@/components/results/ResultCard'
 import NoticeCard from '@/components/notices/NoticeCard'
 import EmailSubscribe from '@/components/notifications/EmailSubscribe'
@@ -167,9 +167,9 @@ export default async function HomePage() {
       <StudentCompanionShowcase />
 
       {/* ════════════════════════════════════════════════════════
-          3. THE SCOPE OF OUR VERIFICATION — Interactive Floating Timeline (Matching Scope Reference)
+          3. WHAT MAKES US DIFFERENT FROM OTHERS — Floating Points in Air
       ════════════════════════════════════════════════════════ */}
-      <ShikshyaVerificationTimeline />
+      <ShikshyaWhatMakesUsDifferent />
 
       {/* ════════════════════════════════════════════════════════
           4. FEATURE SHOWCASE 1 — Results without the chaos (TinyShots Rhythm)
