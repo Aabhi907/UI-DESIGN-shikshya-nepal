@@ -20,6 +20,7 @@ import FeaturedCollegeCard, { CAMPUS_FALLBACK_IMAGES } from '@/components/design
 import TestimonialsColumns from '@/components/home/TestimonialsColumns'
 import HomeScrollMotion from '@/components/home/HomeScrollMotion'
 import SikshyaDemo from '@/components/sikshya-demo/SikshyaDemo'
+import StudentToolsDock from '@/components/home/StudentToolsDock'
 import {
   Building2,
   FileText,
@@ -936,6 +937,11 @@ export default async function HomePage() {
           5. SIKSHYA NEPAL AI WINDOW (4-Layer Interactive Experience Below Testimonials)
       ════════════════════════════════════════════════════════ */}
       <SikshyaDemo />
+
+      {/* ════════════════════════════════════════════════════════
+          6. INTERACTIVE STUDENT TOOLS DOCK (Interactive Kinetic Grid)
+      ════════════════════════════════════════════════════════ */}
+      <StudentToolsDock />
 
       {/* ════════════════════════════════════════════════════════
           6. GET STARTED — Apple Verification & Alert Center
