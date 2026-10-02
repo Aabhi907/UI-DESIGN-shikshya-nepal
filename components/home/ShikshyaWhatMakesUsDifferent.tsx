@@ -214,6 +214,7 @@ export default function ShikshyaWhatMakesUsDifferent() {
           {PILLARS.map((p) => {
             const Icon = p.icon
             const isHovered = activePillar?.id === p.id
+            const isLowerHalf = p.topPercent >= 50
 
             return (
               <motion.div
@@ -233,14 +234,16 @@ export default function ShikshyaWhatMakesUsDifferent() {
                   left: `${p.leftPercent}%`,
                   transform: 'translate(-50%, -50%)',
                 }}
-                className="absolute z-20 cursor-pointer"
+                className={`absolute cursor-pointer transition-all duration-150 ${isHovered ? 'z-50' : 'z-20'}`}
                 onMouseEnter={() => setActivePillar(p)}
                 onMouseLeave={() => setActivePillar(null)}
               >
                 <motion.div
-                  whileHover={{ scale: 1.08 }}
+                  whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.96 }}
-                  className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-full border shadow-2xs transition-shadow duration-200 ${p.bgLight} ${p.textLight} ${p.borderLight} ${p.bgDark} ${p.textDark} ${p.borderDark}`}
+                  className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-full border shadow-2xs transition-all duration-200 ${p.bgLight} ${p.textLight} ${p.borderLight} ${p.bgDark} ${p.textDark} ${p.borderDark} ${
+                    isHovered ? 'ring-2 ring-primary/40 dark:ring-[#F5A524]/50 shadow-md' : ''
+                  }`}
                 >
                   <Icon className="w-4 h-4 shrink-0 opacity-85" />
                   <span className="text-xs lg:text-[13.5px] font-bold font-nunito whitespace-nowrap">
@@ -248,19 +251,21 @@ export default function ShikshyaWhatMakesUsDifferent() {
                   </span>
                 </motion.div>
 
-                {/* Micro Detail Popover on Hover */}
+                {/* Micro Detail Popover on Hover (Smart Directional & z-50 to Prevent Overlapping) */}
                 <AnimatePresence>
                   {isHovered && (
                     <motion.div
-                      initial={{ opacity: 0, y: 6, scale: 0.95 }}
+                      initial={{ opacity: 0, y: isLowerHalf ? -6 : 6, scale: 0.95 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 4, scale: 0.95 }}
+                      exit={{ opacity: 0, y: isLowerHalf ? -4 : 4, scale: 0.95 }}
                       transition={{ duration: 0.18 }}
-                      className="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-56 rounded-xl bg-white dark:bg-slate-900 border border-black/[0.08] dark:border-white/[0.12] p-2.5 shadow-lg z-30 pointer-events-none text-left"
+                      className={`absolute left-1/2 -translate-x-1/2 w-60 rounded-xl bg-white dark:bg-slate-900 border border-black/[0.08] dark:border-white/[0.12] p-3 shadow-xl z-50 pointer-events-none text-left backdrop-blur-md ${
+                        isLowerHalf ? 'bottom-full mb-3' : 'top-full mt-3'
+                      }`}
                     >
-                      <div className="flex items-start gap-1.5">
+                      <div className="flex items-start gap-2">
                         <Info className="w-3.5 h-3.5 text-primary dark:text-[#F5A524] shrink-0 mt-0.5" />
-                        <p className="text-[11px] font-nunito text-slate-600 dark:text-slate-300 leading-snug">
+                        <p className="text-[11.5px] font-nunito text-slate-700 dark:text-slate-200 leading-snug">
                           {p.detail}
                         </p>
                       </div>
@@ -270,6 +275,23 @@ export default function ShikshyaWhatMakesUsDifferent() {
               </motion.div>
             )
           })}
+        </div>
+
+        {/* ── Active Pillar Spotlight Dock (Guaranteed Zero-Collision Detail Display) ── */}
+        <div className="hidden md:flex justify-center mt-6">
+          <div className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-white/80 dark:bg-slate-900/80 border border-black/[0.08] dark:border-white/[0.1] shadow-2xs backdrop-blur-md text-xs font-nunito text-slate-700 dark:text-slate-300 max-w-xl text-center">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+            {activePillar ? (
+              <span className="truncate">
+                <strong className="text-slate-900 dark:text-white font-bold">{activePillar.label}:</strong>{' '}
+                {activePillar.detail}
+              </span>
+            ) : (
+              <span className="text-slate-500 dark:text-slate-400">
+                Hover over any floating point to explore what makes Shikshya Nepal different.
+              </span>
+            )}
+          </div>
         </div>
 
         {/* ── MOBILE: Floating Pill Cloud for Small Screens ── */}
