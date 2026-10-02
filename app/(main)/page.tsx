@@ -342,9 +342,15 @@ export default async function HomePage() {
             {/* Right Column: Typography & Checklist */}
             <div className="order-1 lg:order-2 lg:col-span-6 space-y-6">
               <h2 className="font-baloo text-3xl sm:text-4xl font-extrabold text-sn-ink leading-[1.12] tracking-[-0.025em]">
-                Track intake deadlines <span className="relative inline-block px-2">
-                  <span className="relative z-10">before they close</span>
-                  <span className="absolute inset-0 1 rounded-full border border-emerald-500/40 bg-emerald-50/50 -z-0" />
+                Track intake deadlines{' '}
+                <span className="relative inline-block px-2 py-0.5 mx-0.5">
+                  <span className="relative z-10 text-slate-900 dark:text-slate-950 font-extrabold">
+                    before they close
+                  </span>
+                  <span
+                    className="absolute inset-x-[-3px] inset-y-[2px] -rotate-1 rounded-sm bg-[#FDE047] dark:bg-[#F5A524] opacity-90 shadow-2xs -z-0 pointer-events-none"
+                    aria-hidden="true"
+                  />
                 </span>
               </h2>
 
