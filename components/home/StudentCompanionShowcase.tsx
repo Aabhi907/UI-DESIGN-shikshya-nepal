@@ -151,11 +151,6 @@ export default function StudentCompanionShowcase() {
               }}
             />
 
-            {/* Hardware Side Buttons */}
-            <div className="absolute -left-[3px] top-14 w-[3px] h-5 rounded-l-md bg-slate-600 border-l border-slate-400/50 shadow-2xs" />
-            <div className="absolute -left-[3px] top-22 w-[3px] h-8 rounded-l-md bg-slate-600 border-l border-slate-400/50 shadow-2xs" />
-            <div className="absolute -left-[3px] top-33 w-[3px] h-8 rounded-l-md bg-slate-600 border-l border-slate-400/50 shadow-2xs" />
-            <div className="absolute -right-[3px] top-24 w-[3px] h-12 rounded-r-md bg-slate-600 border-r border-slate-400/50 shadow-2xs" />
 
             {/* Titanium Chassis Outer Rim */}
             <div
