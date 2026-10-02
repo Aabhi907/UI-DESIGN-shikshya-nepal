@@ -71,8 +71,8 @@ export default function StudentToolsDock() {
           <span className="font-mono text-xs uppercase tracking-widest font-semibold text-sn-primary-hover mb-2 inline-block">
             Student Toolkit
           </span>
-          <h2 className="font-handwriting text-3xl sm:text-4xl lg:text-5xl text-sn-ink tracking-wide font-bold">
-            Student tools built for your journey :)
+          <h2 className="font-baloo text-3xl sm:text-4xl lg:text-[40px] font-extrabold text-sn-ink leading-[1.12] tracking-[-0.025em]">
+            Student tools built for your journey
           </h2>
         </motion.div>
 

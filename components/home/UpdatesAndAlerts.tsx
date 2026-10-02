@@ -44,8 +44,8 @@ export default function UpdatesAndAlerts() {
   return (
     <section className="relative overflow-hidden bg-sn-ground py-12 sm:py-16 lg:py-20">
       <div className="relative mx-auto max-w-2xl px-4 sm:px-6 text-center">
-        {/* Compact Apple-style Sans Headline (Clean 2-line layout, zero awkward wrap) */}
-        <h2 className="font-sans text-xl sm:text-2xl md:text-3xl lg:text-[32px] font-bold tracking-[-0.025em] text-sn-ink leading-snug max-w-xl mx-auto">
+        {/* Compact Headline (Clean 2-line layout, consistent font-baloo) */}
+        <h2 className="font-baloo text-2xl sm:text-3xl md:text-4xl lg:text-[36px] font-extrabold tracking-[-0.025em] text-sn-ink leading-[1.18] max-w-xl mx-auto">
           Nepal campus{' '}
           <span className="inline-flex items-center justify-center align-middle mx-1 px-1.5 py-0.5 rounded-lg border border-black/10 dark:border-white/15 bg-black/[0.03] dark:bg-white/[0.06] shadow-2xs -translate-y-0.5">
             <Newspaper className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-sn-ink" aria-hidden="true" />
@@ -143,7 +143,7 @@ export default function UpdatesAndAlerts() {
 
             {/* Inscribed micro-text on bottom of envelope */}
             <div className="absolute bottom-5 sm:bottom-6 left-0 right-0 text-center pointer-events-none z-10 px-4">
-              <p className="text-[10px] sm:text-[11px] font-sans font-medium tracking-wider text-slate-500/90 uppercase">
+              <p className="text-[10px] sm:text-[11px] font-nunito font-bold tracking-wider text-slate-500/90 uppercase">
                 From Students → For Students
               </p>
             </div>
@@ -159,7 +159,7 @@ export default function UpdatesAndAlerts() {
               className="flex items-center justify-center gap-2.5 py-3 px-5 rounded-full bg-white dark:bg-[#151518] border border-emerald-500/30 dark:border-[#CAFFA6]/30 shadow-md text-emerald-800 dark:text-[#CAFFA6]"
             >
               <CheckCircle2 className="w-4 h-4 flex-shrink-0" aria-hidden="true" />
-              <p className="text-xs sm:text-sm font-semibold font-sans">
+              <p className="text-xs sm:text-sm font-semibold font-nunito">
                 You&apos;re subscribed! We&apos;ll notify you when notices drop.
               </p>
             </motion.div>
@@ -178,12 +178,12 @@ export default function UpdatesAndAlerts() {
                   if (state === 'error') setState('idle')
                 }}
                 placeholder="Your Best Email"
-                className="w-full flex-1 bg-transparent px-3.5 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-sans text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 outline-none"
+                className="w-full flex-1 bg-transparent px-3.5 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-nunito font-semibold text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 outline-none"
               />
               <button
                 type="submit"
                 disabled={state === 'loading'}
-                className="flex shrink-0 items-center justify-center gap-1.5 rounded-full bg-[#121316] hover:bg-black dark:bg-white dark:hover:bg-slate-200 text-white dark:text-[#121316] px-4 sm:px-5 py-2 sm:py-2.5 text-xs font-bold font-sans transition-all active:scale-95 disabled:opacity-60 shadow-xs"
+                className="flex shrink-0 items-center justify-center gap-1.5 rounded-full bg-[#121316] hover:bg-black dark:bg-white dark:hover:bg-slate-200 text-white dark:text-[#121316] px-4 sm:px-5 py-2 sm:py-2.5 text-xs font-bold font-nunito transition-all active:scale-95 disabled:opacity-60 shadow-xs"
               >
                 {state === 'loading' ? (
                   <>
@@ -202,19 +202,19 @@ export default function UpdatesAndAlerts() {
 
           {/* Error Message */}
           {state === 'error' && (
-            <p className="mt-2 text-xs font-sans font-semibold text-rose-600 dark:text-rose-400 text-center">
+            <p className="mt-2 text-xs font-nunito font-semibold text-rose-600 dark:text-rose-400 text-center">
               {errorMsg}
             </p>
           )}
 
           {/* Social Proof Counter: "👥 Join 14,000+ Nepali Students" */}
-          <div className="mt-3 flex items-center justify-center gap-1.5 text-[11px] font-sans font-medium text-slate-500 dark:text-slate-400">
+          <div className="mt-3 flex items-center justify-center gap-1.5 text-[11px] font-nunito font-medium text-slate-500 dark:text-slate-400">
             <Users className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500" aria-hidden="true" />
             <span>Join 14,000+ Nepali Students</span>
           </div>
 
           {/* Privacy Note */}
-          <p className="mt-2 text-[10px] font-sans text-slate-400 dark:text-slate-500 text-center">
+          <p className="mt-2 text-[10px] font-nunito text-slate-400 dark:text-slate-500 text-center">
             No spam. Unsubscribe anytime. View our{' '}
             <Link href="/privacy" className="underline hover:text-slate-700 dark:hover:text-slate-300">
               privacy policy
