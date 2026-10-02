@@ -5,7 +5,6 @@ import { createServerSupabaseClient } from '@/lib/supabase'
 import { FACULTIES } from '@/lib/utils'
 import Hero from '@/components/home/Hero'
 import StudentCompanionShowcase from '@/components/home/StudentCompanionShowcase'
-import ShikshyaStandardBento from '@/components/home/ShikshyaStandardBento'
 import ResultCard from '@/components/results/ResultCard'
 import NoticeCard from '@/components/notices/NoticeCard'
 import EmailSubscribe from '@/components/notifications/EmailSubscribe'
@@ -167,9 +166,69 @@ export default async function HomePage() {
       <StudentCompanionShowcase />
 
       {/* ════════════════════════════════════════════════════════
-          3. WHAT MAKES OUR GUIDE DIFFERENT — Asymmetric Bento Grid
+          3. WHAT MAKES OUR GUIDE DIFFERENT — 4-Column Strip (Matching Image 2)
       ════════════════════════════════════════════════════════ */}
-      <ShikshyaStandardBento />
+      <section data-home-motion className={`border-b border-sn-border bg-sn-ground ${SECTION_PAD}`}>
+        <div className={CONTAINER}>
+          <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-12">
+            <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-sn-ink-muted font-nunito mb-2.5">
+              The Shikshya Standard
+            </p>
+            <h2 className="font-baloo text-3xl sm:text-[2.55rem] font-extrabold text-sn-ink tracking-tight">
+              What makes our guide different
+            </h2>
+            <p className="mt-3 text-sm sm:text-base font-nunito text-sn-ink-soft">
+              Every detail is calibrated for the student, not the marketing department.
+            </p>
+          </div>
+
+          <div className="apple-feature-grid grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
+            <article className="apple-feature-card group relative min-h-[240px] rounded-[22px] p-6 text-center backdrop-blur-md sm:text-left cursor-default">
+              <span className="absolute right-5 top-5 text-[11px] font-mono font-semibold tracking-wider text-slate-400 dark:text-sn-ink-muted/50">01</span>
+              <div className="relative inline-flex h-12 w-12 items-center justify-center rounded-[16px] bg-sn-tint-mint text-primary dark:text-[#CAFFA6] transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06] group-hover:-translate-y-0.5">
+                <ShieldCheck className="h-5 w-5" />
+              </div>
+              <h3 className="relative mt-5 font-baloo text-xl font-bold text-slate-900 dark:text-sn-ink">Zero paid rankings</h3>
+              <p className="relative mt-2 text-sm font-nunito leading-relaxed text-slate-600 dark:text-sn-ink-soft">
+                Colleges cannot pay for higher placement or skewed reviews. Real affiliation &amp; merit data always comes first.
+              </p>
+            </article>
+
+            <article className="apple-feature-card group relative min-h-[240px] rounded-[22px] p-6 text-center backdrop-blur-md sm:text-left cursor-default">
+              <span className="absolute right-5 top-5 text-[11px] font-mono font-semibold tracking-wider text-slate-400 dark:text-sn-ink-muted/50">02</span>
+              <div className="relative inline-flex h-12 w-12 items-center justify-center rounded-[16px] bg-sn-tint-peach text-primary dark:text-[#A9E0F1] transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06] group-hover:-translate-y-0.5">
+                <Clock className="h-5 w-5" />
+              </div>
+              <h3 className="relative mt-5 font-baloo text-xl font-bold text-slate-900 dark:text-sn-ink">Dated &amp; sourced</h3>
+              <p className="relative mt-2 text-sm font-nunito leading-relaxed text-slate-600 dark:text-sn-ink-soft">
+                Every fee figure, seat quota, and deadline displays the exact date it was checked against official notices.
+              </p>
+            </article>
+
+            <article className="apple-feature-card group relative min-h-[240px] rounded-[22px] p-6 text-center backdrop-blur-md sm:text-left cursor-default">
+              <span className="absolute right-5 top-5 text-[11px] font-mono font-semibold tracking-wider text-slate-400 dark:text-sn-ink-muted/50">03</span>
+              <div className="relative inline-flex h-12 w-12 items-center justify-center rounded-[16px] bg-sn-tint-butter text-amber-700 dark:text-[#F7F9E1] transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06] group-hover:-translate-y-0.5">
+                <FileText className="h-5 w-5" />
+              </div>
+              <h3 className="relative mt-5 font-baloo text-xl font-bold text-slate-900 dark:text-sn-ink">Official gazette links</h3>
+              <p className="relative mt-2 text-sm font-nunito leading-relaxed text-slate-600 dark:text-sn-ink-soft">
+                Direct verification links to TU, KU, Pokhara, NEB and CTEVT portals without confusing redirects or ads.
+              </p>
+            </article>
+
+            <article className="apple-feature-card group relative min-h-[240px] rounded-[22px] p-6 text-center backdrop-blur-md sm:text-left cursor-default">
+              <span className="absolute right-5 top-5 text-[11px] font-mono font-semibold tracking-wider text-slate-400 dark:text-sn-ink-muted/50">04</span>
+              <div className="relative inline-flex h-12 w-12 items-center justify-center rounded-[16px] bg-sn-tint-lilac text-indigo-700 dark:text-[#D9EEF7] transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06] group-hover:-translate-y-0.5">
+                <GraduationCap className="h-5 w-5" />
+              </div>
+              <h3 className="relative mt-5 font-baloo text-xl font-bold text-slate-900 dark:text-sn-ink">100% Free for students</h3>
+              <p className="relative mt-2 text-sm font-nunito leading-relaxed text-slate-600 dark:text-sn-ink-soft">
+                No subscription, no paywalled GPA calculators, and no gated guides. Public access for every student in Nepal.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
 
       {/* ════════════════════════════════════════════════════════
           4. FEATURE SHOWCASE 1 — Results without the chaos (TinyShots Rhythm)
