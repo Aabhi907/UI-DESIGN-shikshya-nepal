@@ -87,8 +87,8 @@ export default function CollegeCard({ college, matchReasons = [] }: CollegeCardP
               className="object-cover"
             />
           ) : (
-            <div className="flex h-full items-center justify-center">
-              <span className="font-baloo text-2xl font-bold text-sn-primary/40">{college.name.charAt(0)}</span>
+            <div className="flex h-full items-center justify-center bg-gradient-to-br from-sn-primary/10 to-sn-primary/5">
+              <span className="font-baloo text-3xl font-extrabold text-sn-primary/25">{college.name.charAt(0)}</span>
             </div>
           )}
 

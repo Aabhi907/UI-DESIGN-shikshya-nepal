@@ -114,7 +114,7 @@ export default function Nav() {
   useEffect(() => {
     let lastY = window.scrollY
     let lastTime = performance.now()
-    let settleTimer: ReturnType<typeof window.setTimeout>
+    let settleTimer: number
 
     const fn = () => {
       const now = performance.now()
@@ -273,7 +273,7 @@ export default function Nav() {
 
           {/* Right Cluster: Search Capsule, Theme Toggle, Subscribe, Account, CTA */}
           <div className="flex items-center gap-2 sm:gap-2.5">
-            {/* Search Pill matching [ Q    ⌘K ] */}
+            {/* Search Pill */}
             <button
               type="button"
               onClick={() => window.dispatchEvent(new Event('open-site-search'))}
@@ -282,9 +282,6 @@ export default function Nav() {
             >
               <Search className="h-3 w-3 text-slate-600 dark:text-sn-ink-muted" />
               <span className="hidden xl:inline text-[11px] font-mono text-slate-700 dark:text-sn-ink-soft font-semibold">search</span>
-              <kbd className="hidden sm:inline rounded border border-black/15 dark:border-white/10 bg-black/5 dark:bg-white/10 px-1 py-0.2 text-[9px] font-mono text-slate-700 dark:text-sn-ink-muted shadow-[inset_0_1px_0_rgba(255,255,255,0.06)]">
-                ⌘K
-              </kbd>
             </button>
 
             {/* Theme Toggle */}

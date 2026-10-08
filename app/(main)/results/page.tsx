@@ -160,32 +160,56 @@ export default async function ResultsPage({
 
         {results.length > 0 ? (
           <div className="space-y-3">
-            {results.map((result, idx) => (
-              <Fragment key={result.id}>
-                <Card as="article" interactive className="p-0 lg:p-0">
-                  <Link href={`/results/${result.slug}`} className="block min-h-11 rounded-sn-card p-5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sn-primary">
-                    <h2 className="font-baloo text-lg font-bold leading-snug text-sn-ink">{result.title}</h2>
-                    <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-sn-ink-soft">
-                      {result.university?.short_name && <Pill tone="primary" className="!text-sn-ink-soft">{result.university.short_name}</Pill>}
-                      {result.program && <Pill tone="neutral">{result.program}</Pill>}
-                      {result.semester && <Pill tone="neutral">{result.semester}</Pill>}
-                      {result.content_type === 'pdf' && <Pill tone="neutral">PDF</Pill>}
-                      {result.content_type === 'image' && <Pill tone="neutral">Image</Pill>}
-                      {result.published_date && Date.now() - new Date(result.published_date).getTime() < 86400000 && <Pill tone="primary" className="!text-sn-ink-soft">New</Pill>}
-                      <PublishedDate value={result.published_date} className="ml-auto text-sn-ink-soft" />
-                    </div>
-                  </Link>
-                </Card>
-                {idx === 4 && (
-                  <AdUnit
-                    key="ad-results"
-                    slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_RESULTS ?? ''}
-                    format="auto"
-                    className="my-1 rounded-sn-card border border-sn-border bg-sn-surface min-h-[90px]"
-                  />
-                )}
-              </Fragment>
-            ))}
+            {(() => {
+              let lastDateLabel = ''
+              let globalIdx = 0
+              return results.map((result) => {
+                const idx = globalIdx++
+                const dateLabel = result.published_date
+                  ? (() => {
+                      const d = new Date(result.published_date)
+                      const now = new Date()
+                      const diffMs = now.getTime() - d.getTime()
+                      const diffDays = Math.floor(diffMs / 86400000)
+                      if (diffDays === 0) return 'Today'
+                      if (diffDays === 1) return 'Yesterday'
+                      if (diffDays < 7) return 'This week'
+                      return d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+                    })()
+                  : 'Undated'
+                const showLabel = dateLabel !== lastDateLabel
+                lastDateLabel = dateLabel
+                return (
+                  <Fragment key={result.id}>
+                    {showLabel && (
+                      <h3 className="pt-4 pb-1 text-xs font-bold uppercase tracking-wider text-sn-ink-muted first:pt-0">{dateLabel}</h3>
+                    )}
+                    <Card as="article" interactive className="p-0 lg:p-0">
+                      <Link href={`/results/${result.slug}`} className="block min-h-11 rounded-sn-card p-5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-sn-primary">
+                        <h2 className="font-baloo text-lg font-bold leading-snug text-sn-ink">{result.title}</h2>
+                        <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-sn-ink-soft">
+                          {result.university?.short_name && <Pill tone="primary" className="!text-sn-ink-soft">{result.university.short_name}</Pill>}
+                          {result.program && <Pill tone="neutral">{result.program}</Pill>}
+                          {result.semester && <Pill tone="neutral">{result.semester}</Pill>}
+                          {result.content_type === 'pdf' && <Pill tone="neutral">PDF</Pill>}
+                          {result.content_type === 'image' && <Pill tone="neutral">Image</Pill>}
+                          {result.published_date && Date.now() - new Date(result.published_date).getTime() < 86400000 && <Pill tone="primary" className="!text-sn-ink-soft">New</Pill>}
+                          <PublishedDate value={result.published_date} className="ml-auto text-sn-ink-soft" />
+                        </div>
+                      </Link>
+                    </Card>
+                    {idx === 4 && (
+                      <AdUnit
+                        key="ad-results"
+                        slot={process.env.NEXT_PUBLIC_ADSENSE_SLOT_RESULTS ?? ''}
+                        format="auto"
+                        className="my-1 rounded-sn-card border border-sn-border bg-sn-surface min-h-[90px]"
+                      />
+                    )}
+                  </Fragment>
+                )
+              })
+            })()}
           </div>
         ) : (
           <Card className="py-16 text-center lg:py-16">

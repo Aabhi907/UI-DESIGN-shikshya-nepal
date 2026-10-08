@@ -13,6 +13,10 @@ function useCountUp(target: number, durationMs = 1200, isVisible = false): numbe
 
   useEffect(() => {
     if (!isVisible) return
+    if (target <= 0) {
+      setCount(0)
+      return
+    }
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       setCount(target)
       return
@@ -39,7 +43,7 @@ function useCountUp(target: number, durationMs = 1200, isVisible = false): numbe
   return count
 }
 
-export default function TrustStrip({ collegeCount = 1200, programCount = 450 }: TrustStripProps) {
+export default function TrustStrip({ collegeCount = 0, programCount = 0 }: TrustStripProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const [hasAppeared, setHasAppeared] = useState(false)
 
@@ -90,27 +94,27 @@ export default function TrustStrip({ collegeCount = 1200, programCount = 450 }: 
 
         {/* Quiet Trust Data Line */}
         <div className="flex flex-wrap items-center justify-center gap-x-2 gap-y-1">
-          <span>
+          {collegeCount > 0 && <span>
             <strong className="font-bold text-slate-800 dark:text-slate-200 tabular-nums">
               {colleges.toLocaleString()}+
             </strong>{' '}
             colleges
-          </span>
-          <span className="text-slate-300 dark:text-slate-700">·</span>
-          <span>
+          </span>}
+          {collegeCount > 0 && programCount > 0 && <span className="text-slate-300 dark:text-slate-700">·</span>}
+          {programCount > 0 && <span>
             <strong className="font-bold text-slate-800 dark:text-slate-200 tabular-nums">
               {programs.toLocaleString()}+
             </strong>{' '}
             programs
-          </span>
-          <span className="text-slate-300 dark:text-slate-700">·</span>
+          </span>}
+          {(collegeCount > 0 || programCount > 0) && <span className="text-slate-300 dark:text-slate-700">·</span>}
           <span>
             <strong className="font-bold text-slate-800 dark:text-slate-200">7</strong> provinces
           </span>
           <span className="hidden md:inline-block text-slate-300 dark:text-slate-700">·</span>
           <span className="hidden md:inline-flex items-center gap-1 text-slate-600 dark:text-slate-400">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-            Every record dated &amp; sourced
+            <ShieldCheck className="w-3.5 h-3.5 text-primary dark:text-slate-300" />
+            Independent guidance · No paid rankings
           </span>
         </div>
       </div>
