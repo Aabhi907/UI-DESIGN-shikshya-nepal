@@ -114,7 +114,7 @@ export default function TrustStrip({ collegeCount = 0, programCount = 0 }: Trust
           <span className="hidden md:inline-block text-slate-300 dark:text-slate-700">·</span>
           <span className="hidden md:inline-flex items-center gap-1 text-slate-600 dark:text-slate-400">
             <ShieldCheck className="w-3.5 h-3.5 text-primary dark:text-slate-300" />
-            Independent guidance · No paid rankings
+            Source details where available
           </span>
         </div>
       </div>
