@@ -39,9 +39,7 @@ export default function Hero({ heroStats, admissions = [] }: HeroProps) {
         </p>
 
         <div className="mt-5 w-full max-w-xl sm:mt-6 xl:max-w-2xl">
-          <div className="rounded-2xl border border-sn-border bg-white/80 p-1 shadow-[0_2px_12px_rgba(0,0,0,0.06)] backdrop-blur-sm dark:bg-sn-surface/80">
-            <AnimatedSearch />
-          </div>
+          <AnimatedSearch />
           <p className="mt-2 flex items-center justify-center gap-1.5 text-[11px] font-medium text-sn-ink-muted sm:text-xs">
             <ShieldCheck className="h-3.5 w-3.5 text-sn-primary/60" aria-hidden="true" />
             Independent guidance · No paid rankings

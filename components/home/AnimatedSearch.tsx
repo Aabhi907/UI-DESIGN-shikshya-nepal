@@ -35,7 +35,6 @@ export default function AnimatedSearch() {
   const [query, setQuery] = useState('')
   const [placeholderIndex, setPlaceholderIndex] = useState(0)
   const [isFocused, setIsFocused] = useState(false)
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
 
   // Cycle animated placeholder every 3.5s
   useEffect(() => {
@@ -65,16 +64,6 @@ export default function AnimatedSearch() {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [])
 
-  // Spotlight mouse tracking inside container
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!containerRef.current) return
-    const rect = containerRef.current.getBoundingClientRect()
-    setMousePos({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
-    })
-  }
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     const targetQuery = query.trim() || PLACEHOLDERS[placeholderIndex]
@@ -100,32 +89,17 @@ export default function AnimatedSearch() {
   return (
     <div
       ref={containerRef}
-      onMouseMove={handleMouseMove}
       className={`relative w-full transition-all duration-300 mx-auto ${
         isFocused ? 'max-w-[720px] scale-[1.01]' : 'max-w-[660px]'
       }`}
     >
-      {/* Soft spotlight radial glow behind glass card */}
-      <div
-        className="pointer-events-none absolute -inset-2 rounded-[28px] opacity-0 transition-opacity duration-300"
-        style={{
-          opacity: isFocused ? 0.35 : 0.15,
-          background: `radial-gradient(280px circle at ${mousePos.x}px ${mousePos.y}px, rgba(191, 227, 240, 0.4), transparent 80%)`,
-        }}
-        aria-hidden="true"
-      />
-
       {/* Raised Glass Search Card */}
-      <div
-        className={`group relative rounded-[20px] transition-all duration-300 ${
-          isFocused ? 'hero-search-gradient-border' : ''
-        }`}
-      >
+      <div className="group relative rounded-[20px]">
         <form
           onSubmit={handleSubmit}
           role="search"
           aria-label="Search colleges, programs and board results"
-          className="relative flex items-center h-14 sm:h-16 w-full rounded-[20px] bg-white/80 dark:bg-[#0C2229]/80 backdrop-blur-xl border border-black/[0.08] dark:border-white/[0.1] px-4 shadow-[0_8px_32px_rgba(11,43,51,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.5)] transition-all duration-300"
+          className="relative flex items-center h-14 sm:h-16 w-full rounded-[20px] bg-white dark:bg-[#0C2229] border border-slate-300 dark:border-white/[0.14] px-4 shadow-sm transition-colors duration-200 focus-within:border-primary dark:focus-within:border-[#F5A524]"
         >
           {/* Search Icon */}
           <Search className="w-5 h-5 text-slate-400 dark:text-slate-400 flex-shrink-0 mr-3 transition-colors group-focus-within:text-primary dark:group-focus-within:text-[#F5A524]" />
