@@ -3,7 +3,6 @@
 import type { Admission } from '@/types'
 import CountdownPill from './CountdownPill'
 import AnimatedSearch from './AnimatedSearch'
-import TrustStrip from './TrustStrip'
 import { BookOpen, CalendarDays, Compass, ShieldCheck } from 'lucide-react'
 import Link from 'next/link'
 
@@ -12,15 +11,12 @@ interface HeroProps {
   admissions?: Admission[]
 }
 
-export default function Hero({ heroStats, admissions = [] }: HeroProps) {
-  const collegeCount = heroStats.find((s) => s.label === 'Colleges')?.value ?? 0
-  const programCount = heroStats.find((s) => s.label === 'Programs')?.value ?? 0
-
+export default function Hero({ admissions = [] }: HeroProps) {
   return (
-    <section className="relative isolate flex min-h-[560px] flex-col justify-between overflow-hidden border-b border-sn-border bg-sn-ground px-4 pb-8 pt-8 sm:min-h-[620px] sm:px-6 sm:pb-10 sm:pt-12">
+    <section className="relative isolate flex min-h-[calc(100dvh-64px)] flex-col justify-center overflow-hidden border-b border-sn-border bg-sn-ground px-4 py-8 sm:px-6 sm:py-12">
       <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[520px] bg-[radial-gradient(ellipse_at_50%_0%,rgba(191,227,240,.24),transparent_68%)] dark:bg-[radial-gradient(ellipse_at_50%_0%,rgba(31,78,95,.28),transparent_68%)]" aria-hidden="true" />
 
-      <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-1 flex-col items-center justify-center py-6 text-center sm:py-8">
+      <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-col items-center justify-center text-center">
         <div className="mb-5 flex justify-center sm:mb-6">
           <CountdownPill admissions={admissions} />
         </div>
@@ -64,10 +60,6 @@ export default function Hero({ heroStats, admissions = [] }: HeroProps) {
             Deadlines
           </Link>
         </nav>
-      </div>
-
-      <div className="relative z-10 mx-auto max-w-4xl px-4 sm:px-6 w-full">
-        <TrustStrip collegeCount={collegeCount} programCount={programCount} />
       </div>
     </section>
   )
