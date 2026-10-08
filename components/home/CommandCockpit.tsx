@@ -140,7 +140,7 @@ export default function CommandCockpit({ admissions = [] }: CommandCockpitProps)
 
       {/* Double-Bezel Precision Island */}
       <div className="p-1.5 sm:p-2 rounded-[28px] bg-white/70 dark:bg-[#0C2229]/75 backdrop-blur-2xl border border-black/[0.08] dark:border-white/[0.1] shadow-[0_16px_48px_rgba(11,43,51,0.08)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
-        <div className="rounded-[22px] bg-white/95 dark:bg-[#081B20]/95 border border-black/[0.06] dark:border-white/[0.08] overflow-hidden">
+        <div className="rounded-[22px] bg-white/95 dark:bg-[#081B20]/95 border border-black/[0.12] dark:border-white/[0.08] overflow-hidden">
           {/* ── 1. Top Deck: Integrated Live Radar Header ─────── */}
           <div className="flex items-center justify-between px-4 sm:px-5 py-2.5 border-b border-black/[0.05] dark:border-white/[0.06] bg-black/[0.015] dark:bg-white/[0.015]">
             <CountdownPill admissions={admissions} variant="embedded" />
@@ -157,7 +157,7 @@ export default function CommandCockpit({ admissions = [] }: CommandCockpitProps)
               onSubmit={handleSubmit}
               role="search"
               aria-label="Search colleges, programs and board results"
-              className="relative flex items-center h-13 sm:h-15 w-full rounded-2xl bg-white dark:bg-[#0C2229] border border-black/[0.06] dark:border-white/[0.08] px-3.5 sm:px-4 shadow-sm transition-all duration-200"
+              className="relative flex items-center h-13 sm:h-15 w-full rounded-2xl bg-white dark:bg-[#0C2229] border border-black/[0.12] dark:border-white/[0.08] px-3.5 sm:px-4 shadow-sm transition-all duration-200"
             >
               {/* Search Icon */}
               <Search className="w-5 h-5 text-slate-400 dark:text-slate-400 flex-shrink-0 mr-3 transition-colors group-focus-within:text-primary dark:group-focus-within:text-[#F5A524]" />
@@ -224,7 +224,7 @@ export default function CommandCockpit({ admissions = [] }: CommandCockpitProps)
             {isFocused && (
               <div className="absolute top-[calc(100%+6px)] left-2 right-2 z-30 overflow-hidden rounded-2xl border border-black/[0.08] dark:border-white/[0.1] bg-white/98 dark:bg-[#0C2229]/98 backdrop-blur-2xl p-4 shadow-xl dark:shadow-[0_16px_40px_rgba(0,0,0,0.6)] motion-menu-enter">
                 {/* Category Quick Tabs */}
-                <div className="flex items-center gap-1.5 pb-3 border-b border-black/[0.06] dark:border-white/[0.08] overflow-x-auto no-scrollbar">
+                <div className="flex items-center gap-1.5 pb-3 border-b border-black/[0.12] dark:border-white/[0.08] overflow-x-auto no-scrollbar">
                   {CATEGORY_TABS.map((tab) => {
                     const Icon = tab.icon
                     return (
@@ -275,7 +275,7 @@ export default function CommandCockpit({ admissions = [] }: CommandCockpitProps)
                 <Link
                   key={chip.label}
                   href={chip.href}
-                  className="rounded-full px-2.5 py-1 text-xs font-nunito font-semibold text-slate-700 dark:text-slate-300 border border-black/[0.06] dark:border-white/[0.08] bg-white/70 dark:bg-white/[0.04] hover:border-primary/50 dark:hover:border-[#F5A524]/60 hover:text-primary dark:hover:text-white hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 flex-shrink-0"
+                  className="rounded-full px-2.5 py-1 text-xs font-nunito font-semibold text-slate-700 dark:text-slate-300 border border-black/[0.12] dark:border-white/[0.08] bg-white/70 dark:bg-white/[0.04] hover:border-primary/50 dark:hover:border-[#F5A524]/60 hover:text-primary dark:hover:text-white hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 flex-shrink-0"
                 >
                   {chip.label}
                 </Link>

@@ -5,12 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Search, X, ArrowRight, Sparkles, Building2, BookOpen, FileCheck2, Bell } from 'lucide-react'
 
-const PLACEHOLDERS = [
-  'BCA colleges in Kathmandu',
-  'IOE entrance date',
-  'TU results',
-  'MBBS fee in Nepal',
-]
+const SEARCH_EXAMPLE = 'e.g. BCA colleges in Kathmandu'
 
 const CATEGORY_TABS = [
   { id: 'colleges', label: 'Colleges', href: '/colleges', icon: Building2 },
@@ -33,18 +28,8 @@ export default function AnimatedSearch() {
   const inputRef = useRef<HTMLInputElement>(null)
 
   const [query, setQuery] = useState('')
-  const [placeholderIndex, setPlaceholderIndex] = useState(0)
   const [isFocused, setIsFocused] = useState(false)
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
-
-  // Cycle animated placeholder every 3.5s
-  useEffect(() => {
-    if (isFocused || query) return
-    const interval = setInterval(() => {
-      setPlaceholderIndex((prev) => (prev + 1) % PLACEHOLDERS.length)
-    }, 3500)
-    return () => clearInterval(interval)
-  }, [isFocused, query])
 
   // Global ⌘K and / shortcut
   useEffect(() => {
@@ -77,8 +62,8 @@ export default function AnimatedSearch() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    const targetQuery = query.trim() || PLACEHOLDERS[placeholderIndex]
-    if (targetQuery) {
+    const targetQuery = query.trim()
+    if (targetQuery.length > 0) {
       router.push(`/search?q=${encodeURIComponent(targetQuery)}`)
     } else {
       router.push('/colleges')
@@ -102,7 +87,7 @@ export default function AnimatedSearch() {
       ref={containerRef}
       onMouseMove={handleMouseMove}
       className={`relative w-full transition-all duration-300 mx-auto ${
-        isFocused ? 'max-w-[720px] scale-[1.01]' : 'max-w-[660px]'
+        isFocused ? 'z-40 max-w-[720px] scale-[1.01]' : 'max-w-[660px]'
       }`}
     >
       {/* Soft spotlight radial glow behind glass card */}
@@ -145,13 +130,13 @@ export default function AnimatedSearch() {
               className="w-full bg-transparent text-sm sm:text-base font-nunito font-semibold text-slate-900 dark:text-[#E6F2F5] placeholder-transparent focus:outline-none pr-8"
             />
 
-            {/* Cycling animated placeholder text */}
+            {/* A static example guides input without implying it'll be submitted automatically. */}
             {!query && (
               <span
                 onClick={() => inputRef.current?.focus()}
                 className="pointer-events-none absolute left-0 text-sm sm:text-base font-nunito text-slate-400 dark:text-slate-400 select-none transition-all duration-300 truncate pr-4"
               >
-                {PLACEHOLDERS[placeholderIndex]}
+                {SEARCH_EXAMPLE}
               </span>
             )}
           </div>
@@ -171,12 +156,6 @@ export default function AnimatedSearch() {
             </button>
           )}
 
-          {/* Desktop ⌘K Hint */}
-          <div className="hidden sm:flex items-center gap-1.5 mr-2.5 pointer-events-none select-none">
-            <kbd className="px-2 py-0.5 rounded-md border border-black/[0.08] dark:border-white/[0.1] bg-black/[0.03] dark:bg-white/[0.06] text-[11px] font-mono font-bold text-slate-500 dark:text-slate-400">
-              ⌘K
-            </kbd>
-          </div>
 
           {/* Action Search Button */}
           <button
@@ -192,7 +171,7 @@ export default function AnimatedSearch() {
         {isFocused && (
           <div className="absolute top-[calc(100%+8px)] left-0 right-0 z-30 overflow-hidden rounded-2xl border border-black/[0.08] dark:border-white/[0.1] bg-white/95 dark:bg-[#0C2229]/95 backdrop-blur-2xl p-4 shadow-xl dark:shadow-[0_16px_40px_rgba(0,0,0,0.6)] motion-menu-enter">
             {/* Category Quick Tabs */}
-            <div className="flex items-center gap-1.5 pb-3 border-b border-black/[0.06] dark:border-white/[0.08] overflow-x-auto no-scrollbar">
+            <div className="flex items-center gap-1.5 pb-3 border-b border-black/[0.12] dark:border-white/[0.08] overflow-x-auto no-scrollbar">
               {CATEGORY_TABS.map((tab) => {
                 const Icon = tab.icon
                 return (

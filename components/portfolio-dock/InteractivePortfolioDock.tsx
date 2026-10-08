@@ -421,7 +421,7 @@ function PreviewContent({ item }: { item: DockItem }) {
         </div>
 
         {/* Footer Bar */}
-        <div className="flex items-center justify-between pt-2 border-t border-black/[0.06] dark:border-white/[0.08] text-[10px] font-nunito text-slate-500">
+        <div className="flex items-center justify-between pt-2 border-t border-black/[0.12] dark:border-white/[0.08] text-[10px] font-nunito text-slate-500">
           <span>portal.v2.preview</span>
           <span className="font-bold text-blue-600 dark:text-blue-400">99.8% Uptime</span>
         </div>
@@ -481,14 +481,14 @@ function PreviewContent({ item }: { item: DockItem }) {
           {['Next.js 14', 'Tailwind', 'Framer', 'Supabase', 'Raycast', 'Linear'].map((tool, idx) => (
             <div
               key={idx}
-              className="p-1.5 rounded-lg bg-slate-50 dark:bg-white/[0.04] border border-black/[0.06] dark:border-white/[0.08] text-center text-[10px] font-nunito font-semibold text-slate-700 dark:text-slate-200 truncate"
+              className="p-1.5 rounded-lg bg-slate-50 dark:bg-white/[0.04] border border-black/[0.12] dark:border-white/[0.08] text-center text-[10px] font-nunito font-semibold text-slate-700 dark:text-slate-200 truncate"
             >
               {tool}
             </div>
           ))}
         </div>
 
-        <div className="flex items-center justify-between text-[10px] font-nunito text-slate-400 pt-1 border-t border-black/[0.06] dark:border-white/[0.08]">
+        <div className="flex items-center justify-between text-[10px] font-nunito text-slate-400 pt-1 border-t border-black/[0.12] dark:border-white/[0.08]">
           <span>Verified workflow</span>
           <span className="text-purple-600 dark:text-purple-400 font-bold">Inspect Config →</span>
         </div>

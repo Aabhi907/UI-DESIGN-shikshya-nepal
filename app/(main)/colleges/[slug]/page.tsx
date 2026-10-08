@@ -334,52 +334,7 @@ export default async function CollegeProfilePage({
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-3 lg:gap-10">
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-8 lg:space-y-10">
-          <section aria-labelledby="college-at-a-glance">
-            <div className="mb-3 flex items-start gap-3">
-              <div>
-                <h2 id="college-at-a-glance" className="text-xl font-baloo font-bold text-sn-ink">What students should know</h2>
-                <p className="mt-2 max-w-2xl text-sm leading-6 font-nunito text-sn-ink-soft">{answerSummary}</p>
-              </div>
-            </div>
-            <div className="mt-2">
-              {verifiedDate && college.source_name ? (
-                <EvidenceChip state="verified" source={college.source_name} checkedDate={college.last_verified_at!} />
-              ) : (
-                <EvidenceChip state="limited" label="Confirm changing details with the college directly" />
-              )}
-            </div>
-          </section>
-
-          <CollegeDecisionCheck collegeSlug={college.slug} sourceUrl={sourceUrl} website={websiteUrl} />
-
-          <CollegeEvidenceLedger items={evidence} />
-
-          <Card>
-            <div className="flex flex-wrap items-start justify-between gap-3">
-              <div>
-                <h2 className="text-lg font-baloo font-bold text-sn-ink">Source and verification</h2>
-                <p className="mt-1 text-sm font-nunito text-sn-ink-muted">
-                  {college.source_name ? `Information checked against ${college.source_name}.` : 'Use the official college contact details to confirm current information.'}
-                </p>
-              </div>
-              <VerificationBadge status={college.verification_status} />
-            </div>
-            <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-sn-border pt-4 text-sm">
-              {college.last_verified_at && college.source_name ? (
-                <EvidenceChip state="verified" source={college.source_name} checkedDate={college.last_verified_at} />
-              ) : (
-                <EvidenceChip state="limited" />
-              )}
-              {sourceUrl && (
-                <a href={sourceUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-bold font-nunito text-sn-primary hover:text-sn-primary-hover">
-                  Open source <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
-                </a>
-              )}
-              <ReportCorrectionForm entityType="college" entityId={college.id} entityName={college.name} />
-            </div>
-          </Card>
-
-          {/* Programs */}
+          {/* Programs — above the fold */}
           <Card>
             <div className="flex items-center gap-2 mb-4">
               <IconTile icon={GraduationCap} tint="peach" size={32} />
@@ -469,6 +424,51 @@ export default async function CollegeProfilePage({
               <div className="divide-y divide-sn-border">{news.map(article => <Link key={article.id} href={`/news/${article.slug}`} className="group flex items-center justify-between gap-4 py-3 first:pt-0 last:pb-0"><div><p className="text-xs font-bold font-nunito uppercase tracking-wide text-sn-primary">{article.content_category?.replaceAll('_', ' ') || 'College news'}</p><h3 className="mt-1 text-sm font-bold font-nunito text-sn-ink group-hover:text-sn-primary">{article.title}</h3></div><span className="text-xs font-nunito text-sn-ink-muted">{article.published_date ? new Date(article.published_date).toLocaleDateString('en-NP', { day: 'numeric', month: 'short', year: 'numeric' }) : DATE_NOT_PUBLISHED}</span></Link>)}</div>
             </Card>
           )}
+
+          <section aria-labelledby="college-at-a-glance">
+            <div className="mb-3 flex items-start gap-3">
+              <div>
+                <h2 id="college-at-a-glance" className="text-xl font-baloo font-bold text-sn-ink">What students should know</h2>
+                <p className="mt-2 max-w-2xl text-sm leading-6 font-nunito text-sn-ink-soft">{answerSummary}</p>
+              </div>
+            </div>
+            <div className="mt-2">
+              {verifiedDate && college.source_name ? (
+                <EvidenceChip state="verified" source={college.source_name} checkedDate={college.last_verified_at!} />
+              ) : (
+                <EvidenceChip state="limited" label="Confirm changing details with the college directly" />
+              )}
+            </div>
+          </section>
+
+          <CollegeDecisionCheck collegeSlug={college.slug} sourceUrl={sourceUrl} website={websiteUrl} />
+
+          <CollegeEvidenceLedger items={evidence} />
+
+          <Card>
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <h2 className="text-lg font-baloo font-bold text-sn-ink">Source and verification</h2>
+                <p className="mt-1 text-sm font-nunito text-sn-ink-muted">
+                  {college.source_name ? `Information checked against ${college.source_name}.` : 'Use the official college contact details to confirm current information.'}
+                </p>
+              </div>
+              <VerificationBadge status={college.verification_status} />
+            </div>
+            <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-sn-border pt-4 text-sm">
+              {college.last_verified_at && college.source_name ? (
+                <EvidenceChip state="verified" source={college.source_name} checkedDate={college.last_verified_at} />
+              ) : (
+                <EvidenceChip state="limited" />
+              )}
+              {sourceUrl && (
+                <a href={sourceUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-bold font-nunito text-sn-primary hover:text-sn-primary-hover">
+                  Open source <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                </a>
+              )}
+              <ReportCorrectionForm entityType="college" entityId={college.id} entityName={college.name} />
+            </div>
+          </Card>
 
           <section aria-labelledby="student-questions-heading">
             <h2 id="student-questions-heading" className="text-lg font-baloo font-bold text-sn-ink">Questions students ask about {college.name}</h2>

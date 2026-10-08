@@ -56,7 +56,7 @@ export default function GpaCalculatorPage() {
             {subjects.map((subject, index) => (
               <div
                 key={subject.id}
-                className="group/row grid gap-2.5 rounded-[18px] bg-slate-50/90 dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.08] p-3 transition-all duration-200 hover:border-black/[0.12] dark:hover:border-white/[0.14] sm:grid-cols-[1fr_130px_80px_44px] sm:items-center"
+                className="group/row grid gap-2.5 rounded-[18px] bg-slate-50/90 dark:bg-white/[0.03] border border-black/[0.12] dark:border-white/[0.08] p-3 transition-all duration-200 hover:border-black/[0.12] dark:hover:border-white/[0.14] sm:grid-cols-[1fr_130px_80px_44px] sm:items-center"
               >
                 <input
                   aria-label={`Subject ${index + 1} name`}

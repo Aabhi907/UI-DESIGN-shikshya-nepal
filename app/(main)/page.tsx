@@ -3,8 +3,7 @@ import Link from 'next/link'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import { FACULTIES } from '@/lib/utils'
 import Hero from '@/components/home/Hero'
-import StudentCompanionShowcase from '@/components/home/StudentCompanionShowcase'
-import ShikshyaWhatMakesUsDifferent from '@/components/home/ShikshyaWhatMakesUsDifferent'
+import WhyShikshyaNepal from '@/components/home/WhyShikshyaNepal'
 import ResultCard from '@/components/results/ResultCard'
 import NoticeCard from '@/components/notices/NoticeCard'
 import UpdatesAndAlerts from '@/components/home/UpdatesAndAlerts'
@@ -17,7 +16,6 @@ import SectionHeader from '@/components/design-system/SectionHeader'
 import FeaturedCollegeCard from '@/components/design-system/FeaturedCollegeCard'
 import TestimonialsColumns from '@/components/home/TestimonialsColumns'
 import HomeScrollMotion from '@/components/home/HomeScrollMotion'
-import StudentToolsDock from '@/components/home/StudentToolsDock'
 import {
   Building2,
   FileText,
@@ -165,19 +163,9 @@ export default async function HomePage() {
       <Hero heroStats={heroStats} admissions={admissions} />
 
       {/* ════════════════════════════════════════════════════════
-          2. MOBILE STUDENT COMPANION — Interactive Phone & Flanking Badges
+          2. WHY SHIKSHYANEPAL — Trust features + Student tools
       ════════════════════════════════════════════════════════ */}
-      <StudentCompanionShowcase />
-
-      {/* ════════════════════════════════════════════════════════
-          3. WHAT MAKES US DIFFERENT FROM OTHERS — Floating Points in Air
-      ════════════════════════════════════════════════════════ */}
-      <ShikshyaWhatMakesUsDifferent />
-
-      {/* ════════════════════════════════════════════════════════
-          4. STUDENT TOOLS DOCK — Interactive Toolkit
-      ════════════════════════════════════════════════════════ */}
-      <StudentToolsDock />
+      <WhyShikshyaNepal />
 
       {/* ════════════════════════════════════════════════════════
           5. BROWSE — Apple-Grade Bento Split (Faculties & Universities)
@@ -229,7 +217,7 @@ export default async function HomePage() {
                       <Link
                         key={faculty.slug}
                         href={href}
-                        className="group relative flex flex-col justify-between p-3.5 rounded-[18px] border border-black/[0.06] dark:border-white/[0.08] bg-white/90 dark:bg-white/[0.03] hover:bg-white dark:hover:bg-white/[0.07] hover:border-black/15 dark:hover:border-white/20 hover:shadow-md transition-all duration-200"
+                        className="group relative flex flex-col justify-between p-3.5 rounded-[18px] border border-black/[0.12] dark:border-white/[0.08] bg-white/90 dark:bg-white/[0.03] hover:bg-white dark:hover:bg-white/[0.07] hover:border-black/15 dark:hover:border-white/20 hover:shadow-md transition-all duration-200"
                       >
                         <div className="flex items-start justify-between gap-2">
                           <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ${tintBg} transition-transform duration-200 group-hover:scale-105 shadow-2xs`}>
@@ -288,10 +276,10 @@ export default async function HomePage() {
                       <Link
                         key={u.short}
                         href={`/colleges?affiliation=${encodeURIComponent(u.affiliation)}`}
-                        className="group flex flex-col justify-between p-4 rounded-[20px] border border-black/[0.06] dark:border-white/[0.08] bg-white/90 dark:bg-white/[0.03] hover:bg-white dark:hover:bg-white/[0.07] hover:border-black/15 dark:hover:border-white/20 hover:shadow-md transition-all duration-200"
+                        className="group flex flex-col justify-between p-4 rounded-[20px] border border-black/[0.12] dark:border-white/[0.08] bg-white/90 dark:bg-white/[0.03] hover:bg-white dark:hover:bg-white/[0.07] hover:border-black/15 dark:hover:border-white/20 hover:shadow-md transition-all duration-200"
                       >
                         <div className="flex items-center justify-between gap-2">
-                          <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl font-baloo text-base font-extrabold shadow-2xs border border-black/[0.06] dark:border-white/[0.08] ${tint} transition-transform duration-300 group-hover:scale-105`}>
+                          <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl font-baloo text-base font-extrabold shadow-2xs border border-black/[0.12] dark:border-white/[0.08] ${tint} transition-transform duration-300 group-hover:scale-105`}>
                             {u.short}
                           </span>
                           {count > 0 ? (
@@ -299,7 +287,7 @@ export default async function HomePage() {
                               {count} {count === 1 ? 'Campus' : 'Campuses'}
                             </span>
                           ) : (
-                            <span className="shrink-0 rounded-full border border-black/[0.06] dark:border-white/[0.08] bg-black/[0.02] dark:bg-white/[0.04] px-2 py-0.5 text-[10px] font-medium font-nunito text-slate-400">
+                            <span className="shrink-0 rounded-full border border-black/[0.12] dark:border-white/[0.08] bg-black/[0.02] dark:bg-white/[0.04] px-2 py-0.5 text-[10px] font-medium font-nunito text-slate-400">
                               Directory
                             </span>
                           )}

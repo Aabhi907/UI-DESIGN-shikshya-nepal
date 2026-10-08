@@ -205,7 +205,7 @@ export default function Nav() {
         <div className={`mx-auto flex h-14 items-center justify-between rounded-full border px-4 backdrop-blur-xl transition-all duration-300 sm:px-6 lg:px-8 ${
           scrolled
             ? 'bg-white/95 dark:bg-[#061519]/95 border-black/[0.1] dark:border-white/[0.14] shadow-[0_12px_36px_rgba(11,43,51,0.1)] dark:shadow-[0_12px_36px_rgba(0,0,0,0.7)] backdrop-blur-2xl'
-            : 'bg-white/80 dark:bg-[#061519]/80 border-black/[0.06] dark:border-white/[0.08] shadow-[0_4px_16px_rgba(0,0,0,0.04)] backdrop-blur-xl'
+            : 'bg-white/80 dark:bg-[#061519]/80 border-black/[0.12] dark:border-white/[0.08] shadow-[0_4px_16px_rgba(0,0,0,0.04)] backdrop-blur-xl'
         }`}>
           {/* Left Cluster: Wordmark + Minimal Quiet Nav Links */}
           <div className="flex items-center gap-6 lg:gap-8">

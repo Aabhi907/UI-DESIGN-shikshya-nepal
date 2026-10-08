@@ -23,7 +23,7 @@ export default function IconTile({
 }) {
   return (
     <span
-      className={cn('inline-flex shrink-0 items-center justify-center rounded-sn-control border border-black/[0.06] dark:border-white/[0.08] shadow-sm', tints[tint], className)}
+      className={cn('inline-flex shrink-0 items-center justify-center rounded-sn-control border border-black/[0.12] dark:border-white/[0.08] shadow-sm', tints[tint], className)}
       style={{ width: size, height: size }}
       aria-hidden="true"
     >

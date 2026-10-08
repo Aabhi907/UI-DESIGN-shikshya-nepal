@@ -138,7 +138,7 @@ export default function HeroQuestionCards({ admissions = [] }: HeroQuestionCards
               </div>
 
               {/* Bottom Quick Chips */}
-              <div className="mt-4 pt-3 border-t border-black/[0.06] dark:border-white/[0.08]">
+              <div className="mt-4 pt-3 border-t border-black/[0.12] dark:border-white/[0.08]">
                 <div className="flex flex-wrap gap-1.5">
                   {card.chips.map((chip) => (
                     <Link
