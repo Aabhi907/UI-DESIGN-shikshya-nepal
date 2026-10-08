@@ -3,7 +3,6 @@ import Link from 'next/link'
 import { createServerSupabaseClient } from '@/lib/supabase'
 import { FACULTIES } from '@/lib/utils'
 import Hero from '@/components/home/Hero'
-import TrustStrip from '@/components/home/TrustStrip'
 import StudentCompanionShowcase from '@/components/home/StudentCompanionShowcase'
 import ShikshyaWhatMakesUsDifferent from '@/components/home/ShikshyaWhatMakesUsDifferent'
 import ResultCard from '@/components/results/ResultCard'
@@ -164,16 +163,6 @@ export default async function HomePage() {
           1. HERO — Himalayan Calm, Single Focused Action
       ════════════════════════════════════════════════════════ */}
       <Hero heroStats={heroStats} admissions={admissions} />
-
-      {/* ── Trust data strip between hero and content ── */}
-      <div className="border-b border-sn-border bg-sn-ground">
-        <div className="mx-auto max-w-4xl px-5 sm:px-8">
-          <TrustStrip
-            collegeCount={heroStats.find((s) => s.label === 'Colleges')?.value ?? 0}
-            programCount={heroStats.find((s) => s.label === 'Programs')?.value ?? 0}
-          />
-        </div>
-      </div>
 
       {/* ════════════════════════════════════════════════════════
           2. MOBILE STUDENT COMPANION — Interactive Phone & Flanking Badges

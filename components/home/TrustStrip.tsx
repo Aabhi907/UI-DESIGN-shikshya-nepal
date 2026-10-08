@@ -71,7 +71,7 @@ export default function TrustStrip({ collegeCount = 0, programCount = 0 }: Trust
   return (
     <div
       ref={containerRef}
-      className="relative z-10 w-full pt-8 sm:pt-10 border-t border-black/[0.06] dark:border-white/[0.08]"
+      className="relative z-10 w-full pt-4 pb-1 sm:pt-5 border-t border-black/[0.06] dark:border-white/[0.08]"
     >
       <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-center text-xs font-nunito text-slate-500 dark:text-slate-400">
         {/* University Monograms in muted grayscale */}
